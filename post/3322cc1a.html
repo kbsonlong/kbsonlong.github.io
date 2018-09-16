@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-flash.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Linux," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="蜷缩的蜗牛" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="一、介绍：什么是双因素认证　　双因素身份认证就是通过你所知道再加上你所能拥有的这二个要素组合到一起才能发挥作用的身份认证系统。双因素认证是一种采用时间同步技术的系统，采用了基于时间、事件和密钥三变量而产生的一次性密码来代替传统的静态密码。每个动态密码卡都有一个唯一的密钥，该密钥同时存放在服务器端，每次认证时动态密码卡与服务器分别根据同样的密钥，同样的随机参数（时间、事件）和同样的算法计算了认证的动">
+<meta name="keywords" content="Linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="利用Google Authenticator实现用户双因素认证">
+<meta property="og:url" content="http://www.alongparty.cn/post/3322cc1a.html">
+<meta property="og:site_name" content="蜷缩的蜗牛">
+<meta property="og:description" content="一、介绍：什么是双因素认证　　双因素身份认证就是通过你所知道再加上你所能拥有的这二个要素组合到一起才能发挥作用的身份认证系统。双因素认证是一种采用时间同步技术的系统，采用了基于时间、事件和密钥三变量而产生的一次性密码来代替传统的静态密码。每个动态密码卡都有一个唯一的密钥，该密钥同时存放在服务器端，每次认证时动态密码卡与服务器分别根据同样的密钥，同样的随机参数（时间、事件）和同样的算法计算了认证的动">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://www.along.party/wp-content/uploads/2018/05/image-13.png">
+<meta property="og:image" content="https://www.along.party/wp-content/uploads/2018/05/image-14.png">
+<meta property="og:image" content="https://www.along.party/wp-content/uploads/2018/05/image-15.png">
+<meta property="og:image" content="https://www.along.party/wp-content/uploads/2018/05/image-16.png">
+<meta property="og:updated_time" content="2018-09-12T08:32:19.845Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="利用Google Authenticator实现用户双因素认证">
+<meta name="twitter:description" content="一、介绍：什么是双因素认证　　双因素身份认证就是通过你所知道再加上你所能拥有的这二个要素组合到一起才能发挥作用的身份认证系统。双因素认证是一种采用时间同步技术的系统，采用了基于时间、事件和密钥三变量而产生的一次性密码来代替传统的静态密码。每个动态密码卡都有一个唯一的密钥，该密钥同时存放在服务器端，每次认证时动态密码卡与服务器分别根据同样的密钥，同样的随机参数（时间、事件）和同样的算法计算了认证的动">
+<meta name="twitter:image" content="https://www.along.party/wp-content/uploads/2018/05/image-13.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":true,"scrollpercent":true,"onmobile":true},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '小蜗牛'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.alongparty.cn/post/3322cc1a.html"/>
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/d3214a7c.js","daovoice")
+  daovoice('init', {
+      app_id: "d3214a7c"
+    });
+  daovoice('update');
+  </script>
+
+
+
+
+
+  <title>利用Google Authenticator实现用户双因素认证 | 蜷缩的蜗牛</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?8f780a9211579e9f889c75d7d6491abb";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/kbsonlong" class="github-corner" aria-label="View source on Github">
+      <svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; left: 0; transform: scale(-1, 1);" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path>
+      </svg>
+      <style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}
+      </style>
+    </a>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">蜷缩的蜗牛</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">德不孤,必有邻</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-messages">
+          <a href="/messages/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-comments"></i> <br />
+            
+            留言板
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.alongparty.cn/post/3322cc1a.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="along.zeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/touxiang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">利用Google Authenticator实现用户双因素认证</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-12T12:31:53+08:00">
+                2018/09/12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/post/3322cc1a.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/post/3322cc1a.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-eye">热度</i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span><span>℃</span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  5.7k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  33
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="一、介绍：什么是双因素认证"><a href="#一、介绍：什么是双因素认证" class="headerlink" title="一、介绍：什么是双因素认证"></a>一、介绍：什么是双因素认证</h1><p>　　双因素身份认证就是通过你所知道再加上你所能拥有的这二个要素组合到一起才能发挥作用的身份认证系统。双因素认证是一种采用时间同步技术的系统，采用了基于时间、事件和密钥三变量而产生的一次性密码来代替传统的静态密码。每个动态密码卡都有一个唯一的密钥，该密钥同时存放在服务器端，每次认证时动态密码卡与服务器分别根据同样的密钥，同样的随机参数（时间、事件）和同样的算法计算了认证的动态密码，从而确保密码的一致性，从而实现了用户的认证。就像我们去银行办卡送的口令牌.</p>
+<h1 id="二、安装-Google-Authenticator"><a href="#二、安装-Google-Authenticator" class="headerlink" title="二、安装 Google Authenticator"></a>二、安装 Google Authenticator</h1><h2 id="2-1-基本环境："><a href="#2-1-基本环境：" class="headerlink" title="2.1 基本环境："></a>2.1 基本环境：</h2><pre><code>OS：Centos 7
+IP ：192.168.150.125
+</code></pre><h2 id="2-2-所需软件："><a href="#2-2-所需软件：" class="headerlink" title="2.2 所需软件："></a>2.2 所需软件：</h2><pre><code>chrony
+pam-devel
+qrencode－3.4.4
+libpng、libpng-devel
+</code></pre><h2 id="2-3-部署"><a href="#2-3-部署" class="headerlink" title="2.3 部署"></a>2.3 部署</h2><h3 id="2-3-1-安装-gcc-等编译器，以及需要用到的库"><a href="#2-3-1-安装-gcc-等编译器，以及需要用到的库" class="headerlink" title="2.3.1 安装 gcc 等编译器，以及需要用到的库"></a>2.3.1 安装 gcc 等编译器，以及需要用到的库</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@kbsonlong ~]<span class="comment"># yum install gcc-c++ git -y</span></span><br></pre></td></tr></table></figure>
+<h3 id="2-3-2-安装-pam-开发包"><a href="#2-3-2-安装-pam-开发包" class="headerlink" title="2.3.2 安装 pam 开发包"></a>2.3.2 安装 pam 开发包</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@kbsonlong ~]<span class="comment"># yum install pam-devel -y</span></span><br></pre></td></tr></table></figure>
+<h3 id="2-3-3-安装-chrony-软件，因为动态口令再验证时用到了时间，所以要保持时间上的一致性。简单说下-chrony：chrony-是网络时间协议的（NTP）的另一种实现，与网络时间协议后台程序（ntpd）不同，它可以更快地更准确地同步系统始终。如果要使用-ntp-需要单独安装。"><a href="#2-3-3-安装-chrony-软件，因为动态口令再验证时用到了时间，所以要保持时间上的一致性。简单说下-chrony：chrony-是网络时间协议的（NTP）的另一种实现，与网络时间协议后台程序（ntpd）不同，它可以更快地更准确地同步系统始终。如果要使用-ntp-需要单独安装。" class="headerlink" title="2.3.3 安装 chrony 软件，因为动态口令再验证时用到了时间，所以要保持时间上的一致性。简单说下 chrony：chrony 是网络时间协议的（NTP）的另一种实现，与网络时间协议后台程序（ntpd）不同，它可以更快地更准确地同步系统始终。如果要使用 ntp 需要单独安装。"></a>2.3.3 安装 chrony 软件，因为动态口令再验证时用到了时间，所以要保持时间上的一致性。简单说下 chrony：chrony 是网络时间协议的（NTP）的另一种实现，与网络时间协议后台程序（ntpd）不同，它可以更快地更准确地同步系统始终。如果要使用 ntp 需要单独安装。</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[root@kbsonlong ~]<span class="comment"># yum install chrony -y</span></span><br><span class="line">[root@kbsonlong ~]<span class="comment"># vim /etc/chrony.conf</span></span><br><span class="line">…</span><br><span class="line">server 2.cn.pool.ntp.org iburst</span><br><span class="line"></span><br><span class="line">重启服务并使用命令查看同步（注：202.118.1.130 就是我们上一步添加的那个 ntp server）</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[root@kbsonlong ~]<span class="comment"># systemctl restart chronyd</span></span><br><span class="line">[root@kbsonlong ~]<span class="comment"># chronyc sources</span></span><br><span class="line">210 Number of sources = 3</span><br><span class="line">MS Name/IP address         Stratum Poll Reach LastRx Last sample</span><br><span class="line">===============================================================================</span><br><span class="line">^* 202.118.1.130                 2   6    17    54    -58us[ +132us] +/-   85ms</span><br><span class="line">^+ news.neu.edu.cn               2   6    17    54   +542us[ +732us] +/-   89ms</span><br><span class="line">^- dns1.synet.edu.cn             2   6   251    46    +25ms[  +25ms] +/-   60ms</span><br></pre></td></tr></table></figure>
+<p>如果时区不对的话，可以拷贝你当前地区所在地的时区到系统运行的时区，如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime</span><br></pre></td></tr></table></figure>
+<h3 id="2-3-4-下载-Google-Authenticator-源码"><a href="#2-3-4-下载-Google-Authenticator-源码" class="headerlink" title="2.3.4 下载 Google Authenticator 源码"></a>2.3.4 下载 Google Authenticator 源码</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/google/google-authenticator-libpam.git</span><br></pre></td></tr></table></figure>
+<h3 id="2-3-5-编译安装-Google-Authentication"><a href="#2-3-5-编译安装-Google-Authentication" class="headerlink" title="2.3.5 编译安装 Google Authentication"></a>2.3.5 编译安装 Google Authentication</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br></pre></td><td class="code"><pre><span class="line">[root@kbsonlong google-authenticator-libpam]<span class="comment"># pwd</span></span><br><span class="line">/data/google-authenticator/google-authenticator-libpam</span><br><span class="line">[root@kbsonlong google-authenticator-libpam]<span class="comment"># ll</span></span><br><span class="line">total 80</span><br><span class="line">-rwxr-xr-x 1 root root   605 May  7 16:31 bootstrap.sh</span><br><span class="line">drwxr-xr-x 2 root root  4096 May  7 16:31 build</span><br><span class="line">-rw-r--r-- 1 root root  2081 May  7 16:31 configure.ac</span><br><span class="line">drwxr-xr-x 2 root root  4096 May  7 16:31 contrib</span><br><span class="line">-rw-r--r-- 1 root root  1452 May  7 16:31 CONTRIBUTING.md</span><br><span class="line">drwxr-xr-x 2 root root  4096 May  7 16:31 examples</span><br><span class="line">-rw-r--r-- 1 root root  2622 May  7 16:31 FILEFORMAT</span><br><span class="line">-rw-r--r-- 1 root root 11358 May  7 16:31 LICENSE</span><br><span class="line">-rw-r--r-- 1 root root  2340 May  7 16:31 Makefile.am</span><br><span class="line">drwxr-xr-x 2 root root  4096 May  7 16:31 man</span><br><span class="line">-rw-r--r-- 1 root root  7155 May  7 16:31 README.md</span><br><span class="line">drwxr-xr-x 2 root root  4096 May  7 16:31 src</span><br><span class="line">drwxr-xr-x 2 root root  4096 May  7 16:31 tests</span><br><span class="line">-rw-r--r-- 1 root root  9423 May  7 16:31 totp.html</span><br><span class="line">drwxr-xr-x 2 root root  4096 May  7 16:31 utc-time</span><br><span class="line">[root@kbsonlong google-authenticator-libpam]<span class="comment"># ./bootstrap.sh</span></span><br><span class="line">libtoolize: putting auxiliary files <span class="keyword">in</span> AC_CONFIG_AUX_DIR, `build<span class="string">'.</span></span><br><span class="line"><span class="string">libtoolize: copying file `build/ltmain.sh'</span></span><br><span class="line">libtoolize: putting macros <span class="keyword">in</span> AC_CONFIG_MACRO_DIR, `build<span class="string">'.</span></span><br><span class="line"><span class="string">libtoolize: copying file `build/libtool.m4'</span></span><br><span class="line">libtoolize: copying file `build/ltoptions.m4<span class="string">'</span></span><br><span class="line"><span class="string">libtoolize: copying file `build/ltsugar.m4'</span></span><br><span class="line">libtoolize: copying file `build/ltversion.m4<span class="string">'</span></span><br><span class="line"><span class="string">libtoolize: copying file `build/lt~obsolete.m4'</span></span><br><span class="line">configure.ac:16: installing <span class="string">'build/config.guess'</span></span><br><span class="line">configure.ac:16: installing <span class="string">'build/config.sub'</span></span><br><span class="line">configure.ac:13: installing <span class="string">'build/install-sh'</span></span><br><span class="line">configure.ac:13: installing <span class="string">'build/missing'</span></span><br><span class="line">Makefile.am: installing <span class="string">'build/depcomp'</span></span><br><span class="line">parallel-tests: installing <span class="string">'build/test-driver'</span></span><br><span class="line">[root@kbsonlong google-authenticator-libpam]<span class="comment"># ./configure</span></span><br><span class="line">checking whether make supports nested variables... yes</span><br><span class="line">checking <span class="keyword">for</span> gcc... gcc</span><br><span class="line">checking whether the C compiler works... yes</span><br><span class="line">checking <span class="keyword">for</span> C compiler default output file name... a.out</span><br><span class="line">checking <span class="keyword">for</span> suffix of executables...</span><br><span class="line">checking whether we are cross compiling... no</span><br><span class="line">checking <span class="keyword">for</span> suffix of object files... o</span><br><span class="line">checking whether we are using the GNU C compiler... yes</span><br><span class="line">checking whether gcc accepts -g... yes</span><br><span class="line">checking <span class="keyword">for</span> gcc option to accept ISO C89... none needed</span><br><span class="line">checking how to run the C preprocessor... gcc -E</span><br><span class="line">checking <span class="keyword">for</span> grep that handles long lines and -e... /usr/bin/grep</span><br><span class="line">checking <span class="keyword">for</span> egrep... /usr/bin/grep -E</span><br><span class="line">checking <span class="keyword">for</span> ANSI C header files... yes</span><br><span class="line">checking <span class="keyword">for</span> sys/types.h... yes</span><br><span class="line">checking <span class="keyword">for</span> sys/stat.h... yes</span><br><span class="line">checking <span class="keyword">for</span> stdlib.h... yes</span><br><span class="line">checking <span class="keyword">for</span> string.h... yes</span><br><span class="line">checking <span class="keyword">for</span> memory.h... yes</span><br><span class="line">checking <span class="keyword">for</span> strings.h... yes</span><br><span class="line">checking <span class="keyword">for</span> inttypes.h... yes</span><br><span class="line">checking <span class="keyword">for</span> stdint.h... yes</span><br><span class="line">checking <span class="keyword">for</span> unistd.h... yes</span><br><span class="line">checking minix/config.h usability... no</span><br><span class="line">checking minix/config.h presence... no</span><br><span class="line">checking <span class="keyword">for</span> minix/config.h... no</span><br><span class="line">checking whether it is safe to define __EXTENSIONS__... yes</span><br><span class="line">checking <span class="keyword">for</span> a BSD-compatible install... /usr/bin/install -c</span><br><span class="line">checking whether build environment is sane... yes</span><br><span class="line">checking <span class="keyword">for</span> a thread-safe mkdir -p... /usr/bin/mkdir -p</span><br><span class="line">checking <span class="keyword">for</span> gawk... gawk</span><br><span class="line">checking whether make sets $(MAKE)... yes</span><br><span class="line">checking <span class="keyword">for</span> style of include used by make... GNU</span><br><span class="line">checking dependency style of gcc... gcc3</span><br><span class="line">checking whether to <span class="built_in">enable</span> maintainer-specific portions of Makefiles... yes</span><br><span class="line">checking build system <span class="built_in">type</span>... x86_64-unknown-linux-gnu</span><br><span class="line">checking host system <span class="built_in">type</span>... x86_64-unknown-linux-gnu</span><br><span class="line">checking how to <span class="built_in">print</span> strings... <span class="built_in">printf</span></span><br><span class="line">checking <span class="keyword">for</span> a sed that does not truncate output... /usr/bin/sed</span><br><span class="line">checking <span class="keyword">for</span> fgrep... /usr/bin/grep -F</span><br><span class="line">checking <span class="keyword">for</span> ld used by gcc... /usr/bin/ld</span><br><span class="line">checking <span class="keyword">if</span> the linker (/usr/bin/ld) is GNU ld... yes</span><br><span class="line">checking <span class="keyword">for</span> BSD- or MS-compatible name lister (nm)... /usr/bin/nm -B</span><br><span class="line">checking the name lister (/usr/bin/nm -B) interface... BSD nm</span><br><span class="line">checking whether ln -s works... yes</span><br><span class="line">checking the maximum length of <span class="built_in">command</span> line arguments... 1572864</span><br><span class="line">checking whether the shell understands some XSI constructs... yes</span><br><span class="line">checking whether the shell understands <span class="string">"+="</span>... yes</span><br><span class="line">checking how to convert x86_64-unknown-linux-gnu file names to x86_64-unknown-linux-gnu format... func_convert_file_noop</span><br><span class="line">checking how to convert x86_64-unknown-linux-gnu file names to toolchain format... func_convert_file_noop</span><br><span class="line">checking <span class="keyword">for</span> /usr/bin/ld option to reload object files... -r</span><br><span class="line">checking <span class="keyword">for</span> objdump... objdump</span><br><span class="line">checking how to recognize dependent libraries... pass_all</span><br><span class="line">checking <span class="keyword">for</span> dlltool... no</span><br><span class="line">checking how to associate runtime and link libraries... <span class="built_in">printf</span> %s\n</span><br><span class="line">checking <span class="keyword">for</span> ar... ar</span><br><span class="line">checking <span class="keyword">for</span> archiver @FILE support... @</span><br><span class="line">checking <span class="keyword">for</span> strip... strip</span><br><span class="line">checking <span class="keyword">for</span> ranlib... ranlib</span><br><span class="line">checking <span class="built_in">command</span> to parse /usr/bin/nm -B output from gcc object... ok</span><br><span class="line">checking <span class="keyword">for</span> sysroot... no</span><br><span class="line">checking <span class="keyword">for</span> mt... no</span><br><span class="line">checking <span class="keyword">if</span> : is a manifest tool... no</span><br><span class="line">checking <span class="keyword">for</span> dlfcn.h... yes</span><br><span class="line">checking <span class="keyword">for</span> objdir... .libs</span><br><span class="line">checking <span class="keyword">if</span> gcc supports -fno-rtti -fno-exceptions... no</span><br><span class="line">checking <span class="keyword">for</span> gcc option to produce PIC... -fPIC -DPIC</span><br><span class="line">checking <span class="keyword">if</span> gcc PIC flag -fPIC -DPIC works... yes</span><br><span class="line">checking <span class="keyword">if</span> gcc static flag -static works... no</span><br><span class="line">checking <span class="keyword">if</span> gcc supports -c -o file.o... yes</span><br><span class="line">checking <span class="keyword">if</span> gcc supports -c -o file.o... (cached) yes</span><br><span class="line">checking whether the gcc linker (/usr/bin/ld -m elf_x86_64) supports shared libraries... yes</span><br><span class="line">checking whether -lc should be explicitly linked <span class="keyword">in</span>... no</span><br><span class="line">checking dynamic linker characteristics... GNU/Linux ld.so</span><br><span class="line">checking how to hardcode library paths into programs... immediate</span><br><span class="line">checking whether stripping libraries is possible... yes</span><br><span class="line">checking <span class="keyword">if</span> libtool supports shared libraries... yes</span><br><span class="line">checking whether to build shared libraries... yes</span><br><span class="line">checking whether to build static libraries... yes</span><br><span class="line">checking <span class="keyword">for</span> gcc... (cached) gcc</span><br><span class="line">checking whether we are using the GNU C compiler... (cached) yes</span><br><span class="line">checking whether gcc accepts -g... (cached) yes</span><br><span class="line">checking <span class="keyword">for</span> gcc option to accept ISO C89... (cached) none needed</span><br><span class="line">checking <span class="keyword">for</span> gcc option to accept ISO C99... -std=gnu99</span><br><span class="line">checking <span class="keyword">for</span> gcc -std=gnu99 option to accept ISO Standard C... (cached) -std=gnu99</span><br><span class="line">checking sys/fsuid.h usability... yes</span><br><span class="line">checking sys/fsuid.h presence... yes</span><br><span class="line">checking <span class="keyword">for</span> sys/fsuid.h... yes</span><br><span class="line">checking <span class="keyword">for</span> explicit_bzero... no</span><br><span class="line">checking <span class="keyword">for</span> setfsuid... yes</span><br><span class="line">checking <span class="keyword">for</span> security/pam_appl.h... yes</span><br><span class="line">checking <span class="keyword">for</span> security/pam_modules.h... yes</span><br><span class="line">checking <span class="keyword">for</span> pam_get_user <span class="keyword">in</span> -lpam... yes</span><br><span class="line">checking whether certain PAM <span class="built_in">functions</span> require const arguments... yes</span><br><span class="line">checking <span class="keyword">for</span> library containing dlopen... -ldl</span><br><span class="line">checking that generated files are newer than configure... <span class="keyword">done</span></span><br><span class="line">configure: creating ./config.status</span><br><span class="line">config.status: creating Makefile</span><br><span class="line">config.status: creating contrib/rpm.spec</span><br><span class="line">config.status: creating config.h</span><br><span class="line">config.status: executing depfiles commands</span><br><span class="line">config.status: executing libtool commands</span><br><span class="line">  google-authenticator version 1.05</span><br><span class="line">  Prefix.........: /usr/<span class="built_in">local</span></span><br><span class="line">  Debug Build....:</span><br><span class="line">  C Compiler.....: gcc -std=gnu99 -g -O2</span><br><span class="line">  Linker.........: /usr/bin/ld -m elf_x86_64  -ldl</span><br><span class="line">[root@kbsonlong google-authenticator-libpam]<span class="comment"># make &amp;&amp; make install</span></span><br><span class="line">make  all-am</span><br><span class="line">make[1]: Entering directory `/data/google-authenticator/google-authenticator-libpam<span class="string">'</span></span><br><span class="line"><span class="string">  CC       src/pam_google_authenticator_la-pam_google_authenticator.lo</span></span><br><span class="line"><span class="string">  CC       src/pam_google_authenticator_la-util.lo</span></span><br><span class="line"><span class="string">  CC       src/pam_google_authenticator_la-base32.lo</span></span><br><span class="line"><span class="string">  CC       src/pam_google_authenticator_la-hmac.lo</span></span><br><span class="line"><span class="string">  CC       src/pam_google_authenticator_la-sha1.lo</span></span><br><span class="line"><span class="string">  CCLD     pam_google_authenticator.la</span></span><br><span class="line"><span class="string">  CC       src/google-authenticator.o</span></span><br><span class="line"><span class="string">  CC       src/util.o</span></span><br><span class="line"><span class="string">  CC       src/base32.o</span></span><br><span class="line"><span class="string">  CC       src/hmac.o</span></span><br><span class="line"><span class="string">  CC       src/sha1.o</span></span><br><span class="line"><span class="string">  CCLD     google-authenticator</span></span><br><span class="line"><span class="string">make[1]: Leaving directory `/data/google-authenticator/google-authenticator-libpam'</span></span><br><span class="line">make[1]: Entering directory `/data/google-authenticator/google-authenticator-libpam<span class="string">'</span></span><br><span class="line"><span class="string"> /usr/bin/mkdir -p '</span>/usr/<span class="built_in">local</span>/bin<span class="string">'</span></span><br><span class="line"><span class="string">  /bin/sh ./libtool   --mode=install /usr/bin/install -c google-authenticator '</span>/usr/<span class="built_in">local</span>/bin<span class="string">'</span></span><br><span class="line"><span class="string">libtool: install: /usr/bin/install -c google-authenticator /usr/local/bin/google-authenticator</span></span><br><span class="line"><span class="string"> /usr/bin/mkdir -p '</span>/usr/<span class="built_in">local</span>/share/doc/google-authenticator<span class="string">'</span></span><br><span class="line"><span class="string"> /usr/bin/install -c -m 644 FILEFORMAT README.md '</span>/usr/<span class="built_in">local</span>/share/doc/google-authenticator<span class="string">'</span></span><br><span class="line"><span class="string"> /usr/bin/mkdir -p '</span>/usr/<span class="built_in">local</span>/share/doc/google-authenticator<span class="string">'</span></span><br><span class="line"><span class="string"> /usr/bin/install -c -m 644 totp.html '</span>/usr/<span class="built_in">local</span>/share/doc/google-authenticator<span class="string">'</span></span><br><span class="line"><span class="string"> /usr/bin/mkdir -p '</span>/usr/<span class="built_in">local</span>/share/man/man1<span class="string">'</span></span><br><span class="line"><span class="string"> /usr/bin/install -c -m 644 man/google-authenticator.1 '</span>/usr/<span class="built_in">local</span>/share/man/man1<span class="string">'</span></span><br><span class="line"><span class="string"> /usr/bin/mkdir -p '</span>/usr/<span class="built_in">local</span>/share/man/man8<span class="string">'</span></span><br><span class="line"><span class="string"> /usr/bin/install -c -m 644 man/pam_google_authenticator.8 '</span>/usr/<span class="built_in">local</span>/share/man/man8<span class="string">'</span></span><br><span class="line"><span class="string"> /usr/bin/mkdir -p '</span>/usr/<span class="built_in">local</span>/lib/security<span class="string">'</span></span><br><span class="line"><span class="string"> /bin/sh ./libtool   --mode=install /usr/bin/install -c   pam_google_authenticator.la '</span>/usr/<span class="built_in">local</span>/lib/security<span class="string">'</span></span><br><span class="line"><span class="string">libtool: install: /usr/bin/install -c .libs/pam_google_authenticator.so /usr/local/lib/security/pam_google_authenticator.so</span></span><br><span class="line"><span class="string">libtool: install: /usr/bin/install -c .libs/pam_google_authenticator.lai /usr/local/lib/security/pam_google_authenticator.la</span></span><br><span class="line"><span class="string">libtool: finish: PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/root/go/bin:/usr/local/go/bin:/root/bin:/sbin" ldconfig -n /usr/local/lib/security</span></span><br><span class="line"><span class="string">----------------------------------------------------------------------</span></span><br><span class="line"><span class="string">Libraries have been installed in:</span></span><br><span class="line"><span class="string">   /usr/local/lib/security</span></span><br><span class="line"><span class="string">If you ever happen to want to link against installed libraries</span></span><br><span class="line"><span class="string">in a given directory, LIBDIR, you must either use libtool, and</span></span><br><span class="line"><span class="string">specify the full pathname of the library, or use the `-LLIBDIR'</span></span><br><span class="line">flag during linking and <span class="keyword">do</span> at least one of the following:</span><br><span class="line">   - add LIBDIR to the `LD_LIBRARY_PATH<span class="string">' environment variable</span></span><br><span class="line"><span class="string">     during execution</span></span><br><span class="line"><span class="string">   - add LIBDIR to the `LD_RUN_PATH'</span> environment variable</span><br><span class="line">     during linking</span><br><span class="line">   - use the `-Wl,-rpath -Wl,LIBDIR<span class="string">' linker flag</span></span><br><span class="line"><span class="string">   - have your system administrator add LIBDIR to `/etc/ld.so.conf'</span></span><br><span class="line">See any operating system documentation about shared libraries <span class="keyword">for</span></span><br><span class="line">more information, such as the ld(1) and ld.so(8) manual pages.</span><br><span class="line">----------------------------------------------------------------------</span><br><span class="line">make[1]: Leaving directory `/data/google-authenticator/google-authenticator-libpam<span class="string">'</span></span><br></pre></td></tr></table></figure>
+<h3 id="2-3-6-安装二维码生成工具。"><a href="#2-3-6-安装二维码生成工具。" class="headerlink" title="2.3.6 安装二维码生成工具。"></a>2.3.6 安装二维码生成工具。</h3><p>这步✌也可以省略，如果不装的话，因为下一步生成的二维码就会成一个链接，到时将链接复制到你的浏览器中，也是可以出现二维码的，到时利用智能手机打开 google author 进行扫描。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br></pre></td><td class="code"><pre><span class="line">[root@kbsonlong google-authenticator]<span class="comment"># wget -c http://fukuchi.org/works/qrencode/qrencode-3.4.4.tar.gz</span></span><br><span class="line">--2018-05-07 16:35:22--  http://fukuchi.org/works/qrencode/qrencode-3.4.4.tar.gz</span><br><span class="line">Resolving fukuchi.org (fukuchi.org)... 173.230.148.37</span><br><span class="line">Connecting to fukuchi.org (fukuchi.org)|173.230.148.37|:80... connected.</span><br><span class="line">HTTP request sent, awaiting response... 301 Moved Permanently</span><br><span class="line">Location: https://fukuchi.org/works/qrencode/qrencode-3.4.4.tar.gz [following]</span><br><span class="line">--2018-05-07 16:35:23--  https://fukuchi.org/works/qrencode/qrencode-3.4.4.tar.gz</span><br><span class="line">Connecting to fukuchi.org (fukuchi.org)|173.230.148.37|:443... connected.</span><br><span class="line">HTTP request sent, awaiting response... 200 OK</span><br><span class="line">Length: 468788 (458K) [application/x-gzip]</span><br><span class="line">Saving to: ‘qrencode-3.4.4.tar.gz’</span><br><span class="line">100%[=========================================================================================================================================&gt;] 468,788     --.-K/s   <span class="keyword">in</span> 0.05s</span><br><span class="line">2018-05-07 16:35:23 (8.95 MB/s) - ‘qrencode-3.4.4.tar.gz’ saved [468788/468788]</span><br><span class="line">[root@kbsonlong google-authenticator]<span class="comment"># tar zxvf qrencode-3.4.4.tar.gz</span></span><br><span class="line">qrencode-3.4.4/</span><br><span class="line">qrencode-3.4.4/tests/</span><br><span class="line">qrencode-3.4.4/tests/Makefile.am</span><br><span class="line">qrencode-3.4.4/tests/test_all.sh</span><br><span class="line">qrencode-3.4.4/tests/Makefile.in</span><br><span class="line">qrencode-3.4.4/tests/common.h</span><br><span class="line">qrencode-3.4.4/tests/decoder.c</span><br><span class="line">qrencode-3.4.4/tests/decoder.h</span><br><span class="line">qrencode-3.4.4/tests/create_frame_pattern.c</span><br><span class="line">qrencode-3.4.4/tests/create_mqr_frame_pattern.c</span><br><span class="line">qrencode-3.4.4/tests/prof_qrencode.c</span><br><span class="line">qrencode-3.4.4/tests/pthread_qrencode.c</span><br><span class="line">qrencode-3.4.4/tests/test_bitstream.c</span><br><span class="line">qrencode-3.4.4/tests/test_estimatebit.c</span><br><span class="line">qrencode-3.4.4/tests/test_mask.c</span><br><span class="line">qrencode-3.4.4/tests/test_mmask.c</span><br><span class="line">qrencode-3.4.4/tests/test_monkey.c</span><br><span class="line">qrencode-3.4.4/tests/test_mqrspec.c</span><br><span class="line">qrencode-3.4.4/tests/test_qrencode.c</span><br><span class="line">qrencode-3.4.4/tests/test_qrinput.c</span><br><span class="line">qrencode-3.4.4/tests/test_qrspec.c</span><br><span class="line">qrencode-3.4.4/tests/test_rs.c</span><br><span class="line">qrencode-3.4.4/tests/test_split.c</span><br><span class="line">qrencode-3.4.4/tests/view_qrcode.c</span><br><span class="line">qrencode-3.4.4/tests/frame</span><br><span class="line">qrencode-3.4.4/use/</span><br><span class="line">qrencode-3.4.4/use/depcomp</span><br><span class="line">qrencode-3.4.4/use/compile</span><br><span class="line">qrencode-3.4.4/use/config.guess</span><br><span class="line">qrencode-3.4.4/use/config.rpath</span><br><span class="line">qrencode-3.4.4/use/config.sub</span><br><span class="line">qrencode-3.4.4/use/install-sh</span><br><span class="line">qrencode-3.4.4/use/missing</span><br><span class="line">qrencode-3.4.4/use/ltmain.sh</span><br><span class="line">qrencode-3.4.4/Makefile.in</span><br><span class="line">qrencode-3.4.4/Makefile.am</span><br><span class="line">qrencode-3.4.4/configure</span><br><span class="line">qrencode-3.4.4/acinclude.m4</span><br><span class="line">qrencode-3.4.4/configure.ac</span><br><span class="line">qrencode-3.4.4/aclocal.m4</span><br><span class="line">qrencode-3.4.4/config.h.in</span><br><span class="line">qrencode-3.4.4/libqrencode.pc.in</span><br><span class="line">qrencode-3.4.4/qrencode.spec.in</span><br><span class="line">qrencode-3.4.4/qrencode.1.in</span><br><span class="line">qrencode-3.4.4/qrencode.h</span><br><span class="line">qrencode-3.4.4/COPYING</span><br><span class="line">qrencode-3.4.4/ChangeLog</span><br><span class="line">qrencode-3.4.4/NEWS</span><br><span class="line">qrencode-3.4.4/README</span><br><span class="line">qrencode-3.4.4/TODO</span><br><span class="line">qrencode-3.4.4/qrencode.c</span><br><span class="line">qrencode-3.4.4/qrencode_inner.h</span><br><span class="line">qrencode-3.4.4/qrinput.c</span><br><span class="line">qrencode-3.4.4/qrinput.h</span><br><span class="line">qrencode-3.4.4/bitstream.c</span><br><span class="line">qrencode-3.4.4/bitstream.h</span><br><span class="line">qrencode-3.4.4/qrspec.c</span><br><span class="line">qrencode-3.4.4/qrspec.h</span><br><span class="line">qrencode-3.4.4/rscode.c</span><br><span class="line">qrencode-3.4.4/rscode.h</span><br><span class="line">qrencode-3.4.4/split.c</span><br><span class="line">qrencode-3.4.4/split.h</span><br><span class="line">qrencode-3.4.4/mask.c</span><br><span class="line">qrencode-3.4.4/mask.h</span><br><span class="line">qrencode-3.4.4/mqrspec.c</span><br><span class="line">qrencode-3.4.4/mqrspec.h</span><br><span class="line">qrencode-3.4.4/mmask.c</span><br><span class="line">qrencode-3.4.4/mmask.h</span><br><span class="line">qrencode-3.4.4/qrenc.c</span><br><span class="line">qrencode-3.4.4/autogen.sh</span><br><span class="line">qrencode-3.4.4/qrencode.spec</span><br><span class="line">qrencode-3.4.4/Doxyfile</span><br><span class="line">[root@kbsonlong google-authenticator]<span class="comment"># yum install libpng libpng-devel</span></span><br><span class="line">Loaded plugins: fastestmirror</span><br><span class="line">Loading mirror speeds from cached hostfile</span><br><span class="line"> * base: mirror.scalabledns.com</span><br><span class="line"> * elrepo-kernel: repos.lax-noc.com</span><br><span class="line"> * extras: mirror.linuxfix.com</span><br><span class="line"> * remi-safe: mirrors.mediatemple.net</span><br><span class="line"> * updates: mirror.steadfast.net</span><br><span class="line">Package 2:libpng-1.5.13-7.el7_2.x86_64 already installed and latest version</span><br><span class="line">Package 2:libpng-devel-1.5.13-7.el7_2.x86_64 already installed and latest version</span><br><span class="line">Nothing to <span class="keyword">do</span></span><br><span class="line">[root@kbsonlong google-authenticator]<span class="comment"># cd qrencode-3.4.4</span></span><br><span class="line">[root@kbsonlong qrencode-3.4.4]<span class="comment"># ./configure</span></span><br><span class="line">checking build system <span class="built_in">type</span>... x86_64-unknown-linux-gnu</span><br><span class="line">checking host system <span class="built_in">type</span>... x86_64-unknown-linux-gnu</span><br><span class="line">checking target system <span class="built_in">type</span>... x86_64-unknown-linux-gnu</span><br><span class="line">checking <span class="keyword">for</span> a BSD-compatible install... /usr/bin/install -c</span><br><span class="line">checking whether build environment is sane... yes</span><br><span class="line">checking <span class="keyword">for</span> a thread-safe mkdir -p... /usr/bin/mkdir -p</span><br><span class="line">checking <span class="keyword">for</span> gawk... gawk</span><br><span class="line">checking whether make sets $(MAKE)... yes</span><br><span class="line">checking whether make supports nested variables... yes</span><br><span class="line">checking <span class="keyword">for</span> style of include used by make... GNU</span><br><span class="line">checking <span class="keyword">for</span> gcc... gcc</span><br><span class="line">checking whether the C compiler works... yes</span><br><span class="line">checking <span class="keyword">for</span> C compiler default output file name... a.out</span><br><span class="line">checking <span class="keyword">for</span> suffix of executables...</span><br><span class="line">checking whether we are cross compiling... no</span><br><span class="line">checking <span class="keyword">for</span> suffix of object files... o</span><br><span class="line">checking whether we are using the GNU C compiler... yes</span><br><span class="line">checking whether gcc accepts -g... yes</span><br><span class="line">checking <span class="keyword">for</span> gcc option to accept ISO C89... none needed</span><br><span class="line">checking whether gcc understands -c and -o together... yes</span><br><span class="line">checking dependency style of gcc... gcc3</span><br><span class="line">checking <span class="keyword">for</span> an ANSI C-conforming const... yes</span><br><span class="line">checking <span class="keyword">for</span> inline... inline</span><br><span class="line">checking how to run the C preprocessor... gcc -E</span><br><span class="line">checking <span class="keyword">for</span> grep that handles long lines and -e... /usr/bin/grep</span><br><span class="line">checking <span class="keyword">for</span> egrep... /usr/bin/grep -E</span><br><span class="line">checking <span class="keyword">for</span> ANSI C header files... yes</span><br><span class="line">checking <span class="keyword">for</span> gcc... (cached) gcc</span><br><span class="line">checking whether we are using the GNU C compiler... (cached) yes</span><br><span class="line">checking whether gcc accepts -g... (cached) yes</span><br><span class="line">checking <span class="keyword">for</span> gcc option to accept ISO C89... (cached) none needed</span><br><span class="line">checking whether gcc understands -c and -o together... (cached) yes</span><br><span class="line">checking dependency style of gcc... (cached) gcc3</span><br><span class="line">checking how to <span class="built_in">print</span> strings... <span class="built_in">printf</span></span><br><span class="line">checking <span class="keyword">for</span> a sed that does not truncate output... /usr/bin/sed</span><br><span class="line">checking <span class="keyword">for</span> fgrep... /usr/bin/grep -F</span><br><span class="line">checking <span class="keyword">for</span> ld used by gcc... /usr/bin/ld</span><br><span class="line">checking <span class="keyword">if</span> the linker (/usr/bin/ld) is GNU ld... yes</span><br><span class="line">checking <span class="keyword">for</span> BSD- or MS-compatible name lister (nm)... /usr/bin/nm -B</span><br><span class="line">checking the name lister (/usr/bin/nm -B) interface... BSD nm</span><br><span class="line">checking whether ln -s works... yes</span><br><span class="line">checking the maximum length of <span class="built_in">command</span> line arguments... 1572864</span><br><span class="line">checking whether the shell understands some XSI constructs... yes</span><br><span class="line">checking whether the shell understands <span class="string">"+="</span>... yes</span><br><span class="line">checking how to convert x86_64-unknown-linux-gnu file names to x86_64-unknown-linux-gnu format... func_convert_file_noop</span><br><span class="line">checking how to convert x86_64-unknown-linux-gnu file names to toolchain format... func_convert_file_noop</span><br><span class="line">checking <span class="keyword">for</span> /usr/bin/ld option to reload object files... -r</span><br><span class="line">checking <span class="keyword">for</span> objdump... objdump</span><br><span class="line">checking how to recognize dependent libraries... pass_all</span><br><span class="line">checking <span class="keyword">for</span> dlltool... no</span><br><span class="line">checking how to associate runtime and link libraries... <span class="built_in">printf</span> %s\n</span><br><span class="line">checking <span class="keyword">for</span> ar... ar</span><br><span class="line">checking <span class="keyword">for</span> archiver @FILE support... @</span><br><span class="line">checking <span class="keyword">for</span> strip... strip</span><br><span class="line">checking <span class="keyword">for</span> ranlib... ranlib</span><br><span class="line">checking <span class="built_in">command</span> to parse /usr/bin/nm -B output from gcc object... ok</span><br><span class="line">checking <span class="keyword">for</span> sysroot... no</span><br><span class="line">checking <span class="keyword">for</span> mt... no</span><br><span class="line">checking <span class="keyword">if</span> : is a manifest tool... no</span><br><span class="line">checking <span class="keyword">for</span> sys/types.h... yes</span><br><span class="line">checking <span class="keyword">for</span> sys/stat.h... yes</span><br><span class="line">checking <span class="keyword">for</span> stdlib.h... yes</span><br><span class="line">checking <span class="keyword">for</span> string.h... yes</span><br><span class="line">checking <span class="keyword">for</span> memory.h... yes</span><br><span class="line">checking <span class="keyword">for</span> strings.h... yes</span><br><span class="line">checking <span class="keyword">for</span> inttypes.h... yes</span><br><span class="line">checking <span class="keyword">for</span> stdint.h... yes</span><br><span class="line">checking <span class="keyword">for</span> unistd.h... yes</span><br><span class="line">checking <span class="keyword">for</span> dlfcn.h... yes</span><br><span class="line">checking <span class="keyword">for</span> objdir... .libs</span><br><span class="line">checking <span class="keyword">if</span> gcc supports -fno-rtti -fno-exceptions... no</span><br><span class="line">checking <span class="keyword">for</span> gcc option to produce PIC... -fPIC -DPIC</span><br><span class="line">checking <span class="keyword">if</span> gcc PIC flag -fPIC -DPIC works... yes</span><br><span class="line">checking <span class="keyword">if</span> gcc static flag -static works... no</span><br><span class="line">checking <span class="keyword">if</span> gcc supports -c -o file.o... yes</span><br><span class="line">checking <span class="keyword">if</span> gcc supports -c -o file.o... (cached) yes</span><br><span class="line">checking whether the gcc linker (/usr/bin/ld -m elf_x86_64) supports shared libraries... yes</span><br><span class="line">checking whether -lc should be explicitly linked <span class="keyword">in</span>... no</span><br><span class="line">checking dynamic linker characteristics... GNU/Linux ld.so</span><br><span class="line">checking how to hardcode library paths into programs... immediate</span><br><span class="line">checking whether stripping libraries is possible... yes</span><br><span class="line">checking <span class="keyword">if</span> libtool supports shared libraries... yes</span><br><span class="line">checking whether to build shared libraries... yes</span><br><span class="line">checking whether to build static libraries... no</span><br><span class="line">checking <span class="keyword">for</span> ranlib... (cached) ranlib</span><br><span class="line">checking <span class="keyword">for</span> pkg-config... /usr/bin/pkg-config</span><br><span class="line">checking pkg-config is at least version 0.9.0... yes</span><br><span class="line">checking <span class="keyword">for</span> strdup... yes</span><br><span class="line">checking <span class="keyword">for</span> pthread_mutex_init <span class="keyword">in</span> -lpthread... yes</span><br><span class="line">checking <span class="keyword">for</span> png... yes</span><br><span class="line">checking that generated files are newer than configure... <span class="keyword">done</span></span><br><span class="line">configure: creating ./config.status</span><br><span class="line">config.status: creating Makefile</span><br><span class="line">config.status: creating libqrencode.pc</span><br><span class="line">config.status: creating tests/Makefile</span><br><span class="line">config.status: creating qrencode.spec</span><br><span class="line">config.status: creating qrencode.1</span><br><span class="line">config.status: creating config.h</span><br><span class="line">config.status: executing depfiles commands</span><br><span class="line">config.status: executing libtool commands</span><br><span class="line">Options used to compile and link:</span><br><span class="line">  CC       = gcc</span><br><span class="line">  CFLAGS   = -Wall -g -O2</span><br><span class="line">  CPPFLAGS =</span><br><span class="line">  CXX      =</span><br><span class="line">  CXXFLAGS =</span><br><span class="line">  LDFLAGS  =</span><br><span class="line">[root@kbsonlong qrencode-3.4.4]<span class="comment"># make &amp;&amp; make install</span></span><br><span class="line">make  all-recursive</span><br><span class="line">make[1]: Entering directory `/data/google-authenticator/qrencode-3.4.4<span class="string">'</span></span><br><span class="line"><span class="string">Making all in .</span></span><br><span class="line"><span class="string">make[2]: Entering directory `/data/google-authenticator/qrencode-3.4.4'</span></span><br><span class="line">/bin/sh ./libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.     -Wall -g -O2 -MT qrencode.lo -MD -MP -MF .deps/qrencode.Tpo -c -o qrencode.lo qrencode.c</span><br><span class="line">libtool: compile:  gcc -DHAVE_CONFIG_H -I. -Wall -g -O2 -MT qrencode.lo -MD -MP -MF .deps/qrencode.Tpo -c qrencode.c  -fPIC -DPIC -o .libs/qrencode.o</span><br><span class="line">mv -f .deps/qrencode.Tpo .deps/qrencode.Plo</span><br><span class="line">/bin/sh ./libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.     -Wall -g -O2 -MT qrinput.lo -MD -MP -MF .deps/qrinput.Tpo -c -o qrinput.lo qrinput.c</span><br><span class="line">libtool: compile:  gcc -DHAVE_CONFIG_H -I. -Wall -g -O2 -MT qrinput.lo -MD -MP -MF .deps/qrinput.Tpo -c qrinput.c  -fPIC -DPIC -o .libs/qrinput.o</span><br><span class="line">mv -f .deps/qrinput.Tpo .deps/qrinput.Plo</span><br><span class="line">/bin/sh ./libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.     -Wall -g -O2 -MT bitstream.lo -MD -MP -MF .deps/bitstream.Tpo -c -o bitstream.lo bitstream.c</span><br><span class="line">libtool: compile:  gcc -DHAVE_CONFIG_H -I. -Wall -g -O2 -MT bitstream.lo -MD -MP -MF .deps/bitstream.Tpo -c bitstream.c  -fPIC -DPIC -o .libs/bitstream.o</span><br><span class="line">mv -f .deps/bitstream.Tpo .deps/bitstream.Plo</span><br><span class="line">/bin/sh ./libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.     -Wall -g -O2 -MT qrspec.lo -MD -MP -MF .deps/qrspec.Tpo -c -o qrspec.lo qrspec.c</span><br><span class="line">libtool: compile:  gcc -DHAVE_CONFIG_H -I. -Wall -g -O2 -MT qrspec.lo -MD -MP -MF .deps/qrspec.Tpo -c qrspec.c  -fPIC -DPIC -o .libs/qrspec.o</span><br><span class="line">mv -f .deps/qrspec.Tpo .deps/qrspec.Plo</span><br><span class="line">/bin/sh ./libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.     -Wall -g -O2 -MT rscode.lo -MD -MP -MF .deps/rscode.Tpo -c -o rscode.lo rscode.c</span><br><span class="line">libtool: compile:  gcc -DHAVE_CONFIG_H -I. -Wall -g -O2 -MT rscode.lo -MD -MP -MF .deps/rscode.Tpo -c rscode.c  -fPIC -DPIC -o .libs/rscode.o</span><br><span class="line">mv -f .deps/rscode.Tpo .deps/rscode.Plo</span><br><span class="line">/bin/sh ./libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.     -Wall -g -O2 -MT split.lo -MD -MP -MF .deps/split.Tpo -c -o split.lo split.c</span><br><span class="line">libtool: compile:  gcc -DHAVE_CONFIG_H -I. -Wall -g -O2 -MT split.lo -MD -MP -MF .deps/split.Tpo -c split.c  -fPIC -DPIC -o .libs/split.o</span><br><span class="line">mv -f .deps/split.Tpo .deps/split.Plo</span><br><span class="line">/bin/sh ./libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.     -Wall -g -O2 -MT mask.lo -MD -MP -MF .deps/mask.Tpo -c -o mask.lo mask.c</span><br><span class="line">libtool: compile:  gcc -DHAVE_CONFIG_H -I. -Wall -g -O2 -MT mask.lo -MD -MP -MF .deps/mask.Tpo -c mask.c  -fPIC -DPIC -o .libs/mask.o</span><br><span class="line">mv -f .deps/mask.Tpo .deps/mask.Plo</span><br><span class="line">/bin/sh ./libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.     -Wall -g -O2 -MT mqrspec.lo -MD -MP -MF .deps/mqrspec.Tpo -c -o mqrspec.lo mqrspec.c</span><br><span class="line">libtool: compile:  gcc -DHAVE_CONFIG_H -I. -Wall -g -O2 -MT mqrspec.lo -MD -MP -MF .deps/mqrspec.Tpo -c mqrspec.c  -fPIC -DPIC -o .libs/mqrspec.o</span><br><span class="line">mv -f .deps/mqrspec.Tpo .deps/mqrspec.Plo</span><br><span class="line">/bin/sh ./libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.     -Wall -g -O2 -MT mmask.lo -MD -MP -MF .deps/mmask.Tpo -c -o mmask.lo mmask.c</span><br><span class="line">libtool: compile:  gcc -DHAVE_CONFIG_H -I. -Wall -g -O2 -MT mmask.lo -MD -MP -MF .deps/mmask.Tpo -c mmask.c  -fPIC -DPIC -o .libs/mmask.o</span><br><span class="line">mv -f .deps/mmask.Tpo .deps/mmask.Plo</span><br><span class="line">/bin/sh ./libtool  --tag=CC   --mode=link gcc  -Wall -g -O2 -version-number 3:4:4  -o libqrencode.la -rpath /usr/<span class="built_in">local</span>/lib qrencode.lo qrinput.lo bitstream.lo qrspec.lo rscode.lo split.lo mask.lo mqrspec.lo mmask.lo</span><br><span class="line">libtool: link: gcc -shared  -fPIC -DPIC  .libs/qrencode.o .libs/qrinput.o .libs/bitstream.o .libs/qrspec.o .libs/rscode.o .libs/split.o .libs/mask.o .libs/mqrspec.o .libs/mmask.o    -O2   -Wl,-soname -Wl,libqrencode.so.3 -o .libs/libqrencode.so.3.4.4</span><br><span class="line">libtool: link: (<span class="built_in">cd</span> <span class="string">".libs"</span> &amp;&amp; rm -f <span class="string">"libqrencode.so.3"</span> &amp;&amp; ln -s <span class="string">"libqrencode.so.3.4.4"</span> <span class="string">"libqrencode.so.3"</span>)</span><br><span class="line">libtool: link: (<span class="built_in">cd</span> <span class="string">".libs"</span> &amp;&amp; rm -f <span class="string">"libqrencode.so"</span> &amp;&amp; ln -s <span class="string">"libqrencode.so.3.4.4"</span> <span class="string">"libqrencode.so"</span>)</span><br><span class="line">libtool: link: ( <span class="built_in">cd</span> <span class="string">".libs"</span> &amp;&amp; rm -f <span class="string">"libqrencode.la"</span> &amp;&amp; ln -s <span class="string">"../libqrencode.la"</span> <span class="string">"libqrencode.la"</span> )</span><br><span class="line">gcc -DHAVE_CONFIG_H -I.    -I/usr/include/libpng15   -Wall -g -O2 -MT qrencode-qrenc.o -MD -MP -MF .deps/qrencode-qrenc.Tpo -c -o qrencode-qrenc.o `<span class="built_in">test</span> -f <span class="string">'qrenc.c'</span> || <span class="built_in">echo</span> <span class="string">'./'</span>`qrenc.c</span><br><span class="line">mv -f .deps/qrencode-qrenc.Tpo .deps/qrencode-qrenc.Po</span><br><span class="line">/bin/sh ./libtool  --tag=CC   --mode=link gcc -I/usr/include/libpng15   -Wall -g -O2   -o qrencode qrencode-qrenc.o libqrencode.la -lpng15</span><br><span class="line">libtool: link: gcc -I/usr/include/libpng15 -Wall -g -O2 -o .libs/qrencode qrencode-qrenc.o  ./.libs/libqrencode.so -lpng15</span><br><span class="line">make[2]: Leaving directory `/data/google-authenticator/qrencode-3.4.4<span class="string">'</span></span><br><span class="line"><span class="string">make[1]: Leaving directory `/data/google-authenticator/qrencode-3.4.4'</span></span><br><span class="line">Making install <span class="keyword">in</span> .</span><br><span class="line">make[1]: Entering directory `/data/google-authenticator/qrencode-3.4.4<span class="string">'</span></span><br><span class="line"><span class="string">make[2]: Entering directory `/data/google-authenticator/qrencode-3.4.4'</span></span><br><span class="line"> /usr/bin/mkdir -p <span class="string">'/usr/local/lib'</span></span><br><span class="line"> /bin/sh ./libtool   --mode=install /usr/bin/install -c   libqrencode.la <span class="string">'/usr/local/lib'</span></span><br><span class="line">libtool: install: /usr/bin/install -c .libs/libqrencode.so.3.4.4 /usr/<span class="built_in">local</span>/lib/libqrencode.so.3.4.4</span><br><span class="line">libtool: install: (<span class="built_in">cd</span> /usr/<span class="built_in">local</span>/lib &amp;&amp; &#123; ln -s -f libqrencode.so.3.4.4 libqrencode.so.3 || &#123; rm -f libqrencode.so.3 &amp;&amp; ln -s libqrencode.so.3.4.4 libqrencode.so.3; &#125;; &#125;)</span><br><span class="line">libtool: install: (<span class="built_in">cd</span> /usr/<span class="built_in">local</span>/lib &amp;&amp; &#123; ln -s -f libqrencode.so.3.4.4 libqrencode.so || &#123; rm -f libqrencode.so &amp;&amp; ln -s libqrencode.so.3.4.4 libqrencode.so; &#125;; &#125;)</span><br><span class="line">libtool: install: /usr/bin/install -c .libs/libqrencode.lai /usr/<span class="built_in">local</span>/lib/libqrencode.la</span><br><span class="line">libtool: finish: PATH=<span class="string">"/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/root/go/bin:/usr/local/go/bin:/root/bin:/sbin"</span> ldconfig -n /usr/<span class="built_in">local</span>/lib</span><br><span class="line">----------------------------------------------------------------------</span><br><span class="line">Libraries have been installed <span class="keyword">in</span>:</span><br><span class="line">   /usr/<span class="built_in">local</span>/lib</span><br><span class="line">If you ever happen to want to link against installed libraries</span><br><span class="line"><span class="keyword">in</span> a given directory, LIBDIR, you must either use libtool, and</span><br><span class="line">specify the full pathname of the library, or use the `-LLIBDIR<span class="string">'</span></span><br><span class="line"><span class="string">flag during linking and do at least one of the following:</span></span><br><span class="line"><span class="string">   - add LIBDIR to the `LD_LIBRARY_PATH'</span> environment variable</span><br><span class="line">     during execution</span><br><span class="line">   - add LIBDIR to the `LD_RUN_PATH<span class="string">' environment variable</span></span><br><span class="line"><span class="string">     during linking</span></span><br><span class="line"><span class="string">   - use the `-Wl,-rpath -Wl,LIBDIR'</span> linker flag</span><br><span class="line">   - have your system administrator add LIBDIR to `/etc/ld.so.conf<span class="string">'</span></span><br><span class="line"><span class="string">See any operating system documentation about shared libraries for</span></span><br><span class="line"><span class="string">more information, such as the ld(1) and ld.so(8) manual pages.</span></span><br><span class="line"><span class="string">----------------------------------------------------------------------</span></span><br><span class="line"><span class="string"> /usr/bin/mkdir -p '</span>/usr/<span class="built_in">local</span>/bin<span class="string">'</span></span><br><span class="line"><span class="string">  /bin/sh ./libtool   --mode=install /usr/bin/install -c qrencode '</span>/usr/<span class="built_in">local</span>/bin<span class="string">'</span></span><br><span class="line"><span class="string">libtool: install: /usr/bin/install -c .libs/qrencode /usr/local/bin/qrencode</span></span><br><span class="line"><span class="string"> /usr/bin/mkdir -p '</span>/usr/<span class="built_in">local</span>/include<span class="string">'</span></span><br><span class="line"><span class="string"> /usr/bin/install -c -m 644 qrencode.h '</span>/usr/<span class="built_in">local</span>/include<span class="string">'</span></span><br><span class="line"><span class="string"> /usr/bin/mkdir -p '</span>/usr/<span class="built_in">local</span>/share/man/man1<span class="string">'</span></span><br><span class="line"><span class="string"> /usr/bin/install -c -m 644 qrencode.1 '</span>/usr/<span class="built_in">local</span>/share/man/man1<span class="string">'</span></span><br><span class="line"><span class="string"> /usr/bin/mkdir -p '</span>/usr/<span class="built_in">local</span>/lib/pkgconfig<span class="string">'</span></span><br><span class="line"><span class="string"> /usr/bin/install -c -m 644 libqrencode.pc '</span>/usr/<span class="built_in">local</span>/lib/pkgconfig<span class="string">'</span></span><br><span class="line"><span class="string">make[2]: Leaving directory `/data/google-authenticator/qrencode-3.4.4'</span></span><br><span class="line">make[1]: Leaving directory `/data/google-authenticator/qrencode-3.4.4<span class="string">'</span></span><br></pre></td></tr></table></figure>
+<h3 id="2-3-7-生成二维码"><a href="#2-3-7-生成二维码" class="headerlink" title="2.3.7 生成二维码"></a>2.3.7 生成二维码</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">[root@kbsonlong qrencode-3.4.4]<span class="comment"># google-authenticator</span></span><br><span class="line">Do you want authentication tokens to be time-based (y/n) y</span><br><span class="line">Warning: pasting the following URL into your browser exposes the OTP secret to Google:</span><br><span class="line">  https://www.google.com/chart?chs=200x200&amp;chld=M|0&amp;cht=qr&amp;chl=otpauth://totp/root@kbsonlong%3Fsecret%3DOESKRCPFBHVX4QNLJ6J65MWTR4%26issuer%3Dkbsonlong</span><br><span class="line">![img](https://www.along.party/wp-content/uploads/2018/05/image-12.png)</span><br><span class="line">Your new secret key is: OESKRCPFBHVX4QNLJ6J65MWTR4</span><br><span class="line">Your verification code is 170906</span><br><span class="line">Your emergency scratch codes are:</span><br><span class="line">  71500218</span><br><span class="line">  28529324</span><br><span class="line">  55227626</span><br><span class="line">  10866708</span><br><span class="line">  44540819</span><br><span class="line">Do you want me to update your <span class="string">"/root/.google_authenticator"</span> file? (y/n) y</span><br><span class="line">Do you want to disallow multiple uses of the same authentication</span><br><span class="line">token? This restricts you to one login about every 30s, but it increases</span><br><span class="line">your chances to notice or even prevent man-in-the-middle attacks (y/n) y</span><br><span class="line">By default, a new token is generated every 30 seconds by the mobile app.</span><br><span class="line">In order to compensate <span class="keyword">for</span> possible time-skew between the client and the server,</span><br><span class="line">we allow an extra token before and after the current time. This allows <span class="keyword">for</span> a</span><br><span class="line">time skew of up to 30 seconds between authentication server and client. If you</span><br><span class="line">experience problems with poor time synchronization, you can increase the window</span><br><span class="line">from its default size of 3 permitted codes (one previous code, the current</span><br><span class="line">code, the next code) to 17 permitted codes (the 8 previous codes, the current</span><br><span class="line">code, and the 8 next codes). This will permit <span class="keyword">for</span> a time skew of up to 4 minutes</span><br><span class="line">between client and server.</span><br><span class="line">Do you want to <span class="keyword">do</span> so? (y/n) y</span><br><span class="line">If the computer that you are logging into isn<span class="string">'t hardened against brute-force</span></span><br><span class="line"><span class="string">login attempts, you can enable rate-limiting for the authentication module.</span></span><br><span class="line"><span class="string">By default, this limits attackers to no more than 3 login attempts every 30s.</span></span><br><span class="line"><span class="string">Do you want to enable rate-limiting? (y/n) y</span></span><br><span class="line"><span class="string">[root@kbsonlong qrencode-3.4.4]# more /root/.google_authenticator</span></span><br><span class="line"><span class="string">OESKRCPFBHVX4QNLJ6J65MWTR4</span></span><br><span class="line"><span class="string">" RATE_LIMIT 3 30</span></span><br><span class="line"><span class="string">" WINDOW_SIZE 17</span></span><br><span class="line"><span class="string">" DISALLOW_REUSE</span></span><br><span class="line"><span class="string">" TOTP_AUTH</span></span><br><span class="line"><span class="string">71500218</span></span><br><span class="line"><span class="string">28529324</span></span><br><span class="line"><span class="string">55227626</span></span><br><span class="line"><span class="string">10866708</span></span><br><span class="line"><span class="string">44540819</span></span><br><span class="line"><span class="string">[root@kbsonlong qrencode-3.4.4]#</span></span><br></pre></td></tr></table></figure>
+<h1 id="三、openvpn、ssh-配置-Google-Authenticator"><a href="#三、openvpn、ssh-配置-Google-Authenticator" class="headerlink" title="三、openvpn、ssh 配置 Google Authenticator"></a>三、openvpn、ssh 配置 Google Authenticator</h1><h2 id="3-1-配置-ssh"><a href="#3-1-配置-ssh" class="headerlink" title="3.1 配置 ssh"></a>3.1 配置 ssh</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">[root@kbsonlong ~]<span class="comment"># vim /etc/pam.d/sshd</span></span><br><span class="line"> auth       required pam_google_authenticator.so no_increment_hotp</span><br><span class="line">配置 sshd 服务，/etc/ssh/sshd_config，主要修改以下 3 个值：</span><br><span class="line"></span><br><span class="line">[root@kbsonlong ~]<span class="comment"># vim /etc/ssh/sshd_config</span></span><br><span class="line"> ...</span><br><span class="line"> PasswordAuthentication yes</span><br><span class="line"> ChallengeResponseAuthentication yes</span><br><span class="line"> UsePAM yes</span><br><span class="line">注意：这里插一条错误记录,测试过程中出现的。</span><br><span class="line"></span><br><span class="line">[root@kbsonlong ~]<span class="comment"># tail -40f /var/log/secure</span></span><br><span class="line"> ....</span><br><span class="line"> May 7 16:43:01 kbsonlong sshd[33414]: PAM unable to dlopen(/usr/lib64/security/pam_google_authenticator.so): /usr/lib64/security/pam_google_authenticator.so: cannot open shared object file: No such file or directory</span><br><span class="line"> May 7 16:43:01 kbsonlong sshd[33414]: PAM adding faulty module: /usr/lib64/security/pam_google_authenticator.so</span><br><span class="line"> May 7 16:43:03 kbsonlong sshd[33416]: pam_succeed_if(sshd:auth): requirement <span class="string">"uid &gt;= 1000"</span> not met by user <span class="string">"root"</span></span><br><span class="line">修改方法：创建软链接即可，必须创建，或者直接复制过去也可。</span><br><span class="line"></span><br><span class="line">[root@kbsonlong ~]<span class="comment"># ln -s /usr/local/lib/security/pam_google_authenticator.so /usr/lib64/security/pam_google_authenticator.so</span></span><br><span class="line">之后，重启 sshd 服务</span><br><span class="line">[root@kbsonlong ~]<span class="comment"># systemctl restart sshd</span></span><br></pre></td></tr></table></figure>
+<p>测试登录</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@kbsonlong ~]<span class="comment"># ssh test@192.168.150.125</span></span><br><span class="line">Verification code:</span><br><span class="line">Password:</span><br><span class="line">Last failed login: Mon May  7 17:35:55 CST 2018 from hadoop1 on ssh:notty</span><br><span class="line">There was 1 failed login attempt since the last successful login.</span><br><span class="line">Last login: Mon May  7 17:33:13 2018</span><br><span class="line">[<span class="built_in">test</span>@kbsonlong ~]$</span><br></pre></td></tr></table></figure>
+<p><img src="https://www.along.party/wp-content/uploads/2018/05/image-13.png" alt="img"><br>使用 xshell 等工具登录需要修改登录方式</p>
+<p><img src="https://www.along.party/wp-content/uploads/2018/05/image-14.png" alt="img"></p>
+<p>登录提示输入验证码</p>
+<p><img src="https://www.along.party/wp-content/uploads/2018/05/image-15.png" alt="img"></p>
+<p>验证码通过后提示输入密码<br><img src="https://www.along.party/wp-content/uploads/2018/05/image-16.png" alt="img"></p>
+<h2 id="3-2-配置-openvpn"><a href="#3-2-配置-openvpn" class="headerlink" title="3.2 配置 openvpn"></a>3.2 配置 openvpn</h2><p>/etc/pam.d/openvpn<br>这个配置文件是真正认证 openvpn 登录的配置文件，里面内容主要是以下几句：<br>auth    required    pam_google_authenticator.so nullok forward_pass debug<br>account required    pam_unix.so<br>第一行的 forward_pass 参数使得一次读入 google authenticator 的密码，然后把密码扔给后续的 pam 处理<br>  debug 参数完全是调试的需要，生产环境可以不用<br>第二行是必须的，否则 openvpn 登录不上</p>
+<h2 id="3-3-用户初始化"><a href="#3-3-用户初始化" class="headerlink" title="3.3 用户初始化"></a>3.3 用户初始化</h2><p>因为 google authenticator 需要在每个用户的家目录里生成一个叫 .google_authenticator 的文件，里面存有密钥和几个一次性的超级认证码及其他一些配置，所以，我们需要在 openvpn 服务器上做一次初始化数据的工作。假设有 10 个用户要用这个系统登录 openvpn、ssh，用户名从 user1 到 user10，那么初始化脚本就是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">for i in &#123;1..10&#125;</span><br><span class="line"> do</span><br><span class="line">     useradd user$&#123;i&#125;</span><br><span class="line">     su -c \</span><br><span class="line">         &quot;google-authenticator -t -f -d -w 17 -r 3 -R 30 -q&quot; \</span><br><span class="line">         user$&#123;i&#125;</span><br><span class="line">     cat /home/user$&#123;i&#125;/.google_authenticator | \</span><br><span class="line">         mail -s &quot;your .google_authenticator is:&quot; \</span><br><span class="line">         user$&#123;i&#125;@xxx.com</span><br><span class="line"> done</span><br><span class="line">这里注意，在用户数据初始化的最后部分，将生成的 .google_authenticator 发给了每个用户自己。</span><br></pre></td></tr></table></figure>
+<h1 id="四、优化"><a href="#四、优化" class="headerlink" title="四、优化"></a>四、优化</h1><h2 id="4-1-不足之处"><a href="#4-1-不足之处" class="headerlink" title="4.1 不足之处"></a>4.1 不足之处</h2><p>　　上面的环境即使在内网还是需要二次认证；所以这个好解决，将允许本地局域网直接登录系统。</p>
+<h2 id="4-2-解决内网主机跳过二次认证"><a href="#4-2-解决内网主机跳过二次认证" class="headerlink" title="4.2 解决内网主机跳过二次认证"></a>4.2 解决内网主机跳过二次认证</h2><p>编辑 pam.d 下的 sshd 文件，在第一行增加内容，主要是指定允许的主机信息文件，如下所示：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root@kbsonlong ~]<span class="comment"># more -2 /etc/pam.d/sshd</span></span><br><span class="line"> auth [success=1 default=ignore] pam_access.so accessfile=/etc/security/access-localhost.conf</span><br><span class="line"> auth       required pam_google_authenticator.so no_increment_hotp</span><br><span class="line">然后在/etc/security/目录下创建 access-localhost.conf 文件，并添加内容如下：</span><br><span class="line"></span><br><span class="line">[root@kbsonlong ~]<span class="comment"># cat /etc/security/access-localhost.conf</span></span><br><span class="line"> <span class="comment"># skipped local network for google auth...</span></span><br><span class="line"> + : ALL : 192.168.150.0/24</span><br><span class="line"> + : ALL : LOCAL</span><br><span class="line">- : ALL : ALL</span><br><span class="line">最后，重启 sshd 服务</span><br><span class="line"></span><br><span class="line">[root@kbsonlong ~]<span class="comment"># systemctl restart sshd</span></span><br></pre></td></tr></table></figure>
+<h2 id="4-3-测试，内网主机登陆便直接使用密钥登陆了。"><a href="#4-3-测试，内网主机登陆便直接使用密钥登陆了。" class="headerlink" title="4.3 测试，内网主机登陆便直接使用密钥登陆了。"></a>4.3 测试，内网主机登陆便直接使用密钥登陆了。</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sk:~ kbsonlong$ ssh root@192.168.150.125</span><br><span class="line"> Password:</span><br><span class="line"> Last login: Sun May 07 17:21:46 2018 from 192.168.150.101</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/uploads/weixin.bng" alt="along.zeng wechat" style="width: 200px; max-width: 100%;"/>
+    <div>欢迎您扫一扫上面的微信公众号，订阅我的博客！</div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/uploads/wechatpay.png" alt="along.zeng 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    along.zeng
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://www.alongparty.cn/post/3322cc1a.html" title="利用Google Authenticator实现用户双因素认证">http://www.alongparty.cn/post/3322cc1a.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux/" rel="tag"><i class="fa fa-tag"> Linux</i></a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div id="needsharebutton-postbottom">
+            <span class="btn">
+              <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </span>
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/post/4fa44865.html" rel="next" title="Linux开机启动流程">
+                <i class="fa fa-chevron-left"></i> Linux开机启动流程
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/post/17c57d6d.html" rel="prev" title="Git忽略提交.gitignore">
+                Git忽略提交.gitignore <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zOTY0Mi8xNjE2OQ=="></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+      <div id="sidebar-dimmer"></div>
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/uploads/touxiang.jpg"
+                alt="along.zeng" />
+            
+              <p class="site-author-name" itemprop="name">along.zeng</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/kbsonlong" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:kbsonlong@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="http://weibo.com/kbsonlong" target="_blank" title="新浪微博">
+                      
+                        <i class="fa fa-fw fa-weibo"></i>新浪微博</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.along.party/" target="_blank" title="Blog">
+                      
+                        <i class="fa fa-fw fa-wordpress"></i>Blog</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="//shang.qq.com/wpa/qunwpa?idkey=efa4718935a27552a6ccfb6bd1ef39ccc087d5c30a3e4168ee3089337f666a47" target="_blank" title="Q群">
+                      
+                        <i class="fa fa-fw fa-qq"></i>Q群</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                推荐阅读
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.along.party" title="蜷缩的蜗牛" target="_blank">蜷缩的蜗牛</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.zsythink.net/" title="朱双印" target="_blank">朱双印</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://brucedone.com/" title="大鱼的鱼塘" target="_blank">大鱼的鱼塘</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、介绍：什么是双因素认证"><span class="nav-text">一、介绍：什么是双因素认证</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、安装-Google-Authenticator"><span class="nav-text">二、安装 Google Authenticator</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-基本环境："><span class="nav-text">2.1 基本环境：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-所需软件："><span class="nav-text">2.2 所需软件：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-部署"><span class="nav-text">2.3 部署</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-1-安装-gcc-等编译器，以及需要用到的库"><span class="nav-text">2.3.1 安装 gcc 等编译器，以及需要用到的库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-2-安装-pam-开发包"><span class="nav-text">2.3.2 安装 pam 开发包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-3-安装-chrony-软件，因为动态口令再验证时用到了时间，所以要保持时间上的一致性。简单说下-chrony：chrony-是网络时间协议的（NTP）的另一种实现，与网络时间协议后台程序（ntpd）不同，它可以更快地更准确地同步系统始终。如果要使用-ntp-需要单独安装。"><span class="nav-text">2.3.3 安装 chrony 软件，因为动态口令再验证时用到了时间，所以要保持时间上的一致性。简单说下 chrony：chrony 是网络时间协议的（NTP）的另一种实现，与网络时间协议后台程序（ntpd）不同，它可以更快地更准确地同步系统始终。如果要使用 ntp 需要单独安装。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-4-下载-Google-Authenticator-源码"><span class="nav-text">2.3.4 下载 Google Authenticator 源码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-5-编译安装-Google-Authentication"><span class="nav-text">2.3.5 编译安装 Google Authentication</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-6-安装二维码生成工具。"><span class="nav-text">2.3.6 安装二维码生成工具。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-7-生成二维码"><span class="nav-text">2.3.7 生成二维码</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、openvpn、ssh-配置-Google-Authenticator"><span class="nav-text">三、openvpn、ssh 配置 Google Authenticator</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-配置-ssh"><span class="nav-text">3.1 配置 ssh</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-配置-openvpn"><span class="nav-text">3.2 配置 openvpn</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-用户初始化"><span class="nav-text">3.3 用户初始化</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、优化"><span class="nav-text">四、优化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-不足之处"><span class="nav-text">4.1 不足之处</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-解决内网主机跳过二次认证"><span class="nav-text">4.2 解决内网主机跳过二次认证</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-3-测试，内网主机登陆便直接使用密钥登陆了。"><span class="nav-text">4.3 测试，内网主机登陆便直接使用密钥登陆了。</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">along.zeng</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">博客全站共&#58;</span>
+    
+    <span title="博客全站共">10.3k</span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user">本站访客数</i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人次
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye">本站总访问量</i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+  <!-- 页面点击小红心 -->
+  <script type="text/javascript" src="/js/src/love.js"></script>
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: true,
+        notify: true,
+        appId: 'GpjEYuXf9yKa5FVQQCPmCC6N-gzGzoHsz',
+        appKey: 'Y92C0yfeA8QvSgTk0jXz8ti9',
+        placeholder: '老铁，尽情吐槽吧！',
+        avatar:'/uploads/touxiang.jpg',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/needsharebutton/needsharebutton.css">
+
+  
+  
+  <script src="/lib/needsharebutton/needsharebutton.js"></script>
+
+  <script>
+    
+      pbOptions = {};
+      
+          pbOptions.iconStyle = "box";
+      
+          pbOptions.boxForm = "horizontal";
+      
+          pbOptions.position = "bottomCenter";
+      
+          pbOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-postbottom', pbOptions);
+    
+    
+  </script>
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"model":{"scale":1,"hHeadPos":0.5,"vHeadPos":0.618,"jsonPath":"/live2dw/assets/hibiki.model.json"},"display":{"superSample":2,"width":100,"height":230,"position":"left","hOffset":0,"vOffset":10},"mobile":{"show":false,"scale":0.5},"react":{"opacityDefault":0.7,"opacityOnHover":0.2},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>
