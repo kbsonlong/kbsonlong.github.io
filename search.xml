@@ -6,7 +6,7 @@
       <title>Pandas数据分析入门</title>
       <link href="/post/20f5942b.html"/>
       <url>/post/20f5942b.html</url>
-      <content type="html"><![CDATA[<p>Python数据分析工具Pandas在之前就已经有听过很多了，也曾去了解一下，但是苦于入门没有练习的实例和数据，慢慢就耽搁下来了；现在来介绍一下了解到相关的资源</p><p>在机缘巧合之下了解到了<a href="https://www.kaggle.com" target="_blank" rel="noopener">kaggle</a>这个网站，kaggle主要为开发商和数据科学家提供举办机器学习竞赛、托管数据库、编写和分享代码的平台。kaggle在2010年墨尔本创立，于2017年3月被Google收购，目前该平台已经吸引了80万名数据科学家的关注。</p><p><a href="https://www.kaggle.com/datasets" target="_blank" rel="noopener">kaggle datasets</a>拥有大量的数据源，有csv、sqlite、json、bigquery等格式，可以根据需要筛选。</p><p><img src="/uploads/kaggle_data.png" alt="img"></p><p>点击任意一个数据集,例如：Google Play Store Apps</p><p><img src="/uploads/kaggle_googleplay.png" alt="img"></p><p>点击Kernels,可以看到一些用户分享的运行案例，点击进去就可以根据案例练习，在练习的过程中掌握</p><p><img src="/uploads/kaggle_googlekernels.png" alt="img"></p><p>持续更新…….</p>]]></content>
+      <content type="html"><![CDATA[<p>Python数据分析工具Pandas在之前就已经有听过很多了，也曾去了解一下，但是苦于入门没有练习的实例和数据，慢慢就耽搁下来了；现在来分享一下了解到相关的资源</p><p>在机缘巧合之下了解到了<a href="https://www.kaggle.com" target="_blank" rel="noopener">kaggle</a>这个网站，kaggle主要为开发商和数据科学家提供举办机器学习竞赛、托管数据库、编写和分享代码的平台。kaggle在2010年墨尔本创立，于2017年3月被Google收购，目前该平台已经吸引了80万名数据科学家的关注。</p><p><a href="https://www.kaggle.com/datasets" target="_blank" rel="noopener">kaggle datasets</a>拥有大量的数据源，有csv、sqlite、json、bigquery等格式，可以根据需要筛选。</p><p><img src="/uploads/kaggle_data.png" alt="img"></p><p>点击任意一个数据集,例如：Google Play Store Apps</p><p><img src="/uploads/kaggle_googleplay.png" alt="img"></p><p>点击Kernels,可以看到一些用户分享的运行案例，点击进去就可以根据案例练习，在练习的过程中掌握</p><p><img src="/uploads/kaggle_googlekernels.png" alt="img"></p><p>持续更新…….</p>]]></content>
       
       <categories>
           
@@ -42,6 +42,8 @@
             
             <tag> Python </tag>
             
+            <tag> 数据分析 </tag>
+            
             <tag> pandas </tag>
             
         </tags>
@@ -64,6 +66,8 @@
         <tags>
             
             <tag> Python </tag>
+            
+            <tag> 数据分析 </tag>
             
             <tag> pandas </tag>
             
