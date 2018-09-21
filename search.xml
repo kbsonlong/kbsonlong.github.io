@@ -3,6 +3,54 @@
   
     
     <entry>
+      <title>Docker设置http代理</title>
+      <link href="/post/60b36f47.html"/>
+      <url>/post/60b36f47.html</url>
+      <content type="html"><![CDATA[<p>在国内由于不可描述的原因无法访问Google等网站，但是作为一枚挨踢人士，无法使用Google搜索，在使用Ctrl + C技能时是抓狂的；特别是当下Docker、Kubernetes等容器技术火热的时代，很多的文档、镜像都需要访问Google相关网站。</p><p>在此简单介绍Centos7配置http代理和Docker pull时使用http代理</p><h1 id="1、Centos7配置HTTP代理"><a href="#1、Centos7配置HTTP代理" class="headerlink" title="1、Centos7配置HTTP代理"></a>1、Centos7配置HTTP代理</h1><h2 id="1-1、安装epel源和pip包管理"><a href="#1-1、安装epel源和pip包管理" class="headerlink" title="1.1、安装epel源和pip包管理"></a>1.1、安装epel源和pip包管理</h2><pre><code># yum install epel-release -y# yum install python-pip -y</code></pre><h2 id="1-2、安装Shadowsocks客户端"><a href="#1-2、安装Shadowsocks客户端" class="headerlink" title="1.2、安装Shadowsocks客户端"></a>1.2、安装Shadowsocks客户端</h2><pre><code># pip install shadowsocks</code></pre><h2 id="1-3、配置Shadowsocks连接"><a href="#1-3、配置Shadowsocks连接" class="headerlink" title="1.3、配置Shadowsocks连接"></a>1.3、配置Shadowsocks连接</h2><pre><code># mkdir /etc/shadowsocks# vim /etc/shadowsocks/shadowsocks.json{&quot;server&quot;:&quot;x.x.x.x&quot;,  # Shadowsocks服务器地址&quot;server_port&quot;:1035,  # Shadowsocks服务器端口&quot;local_address&quot;: &quot;127.0.0.1&quot;, # 本地IP&quot;local_port&quot;:1080,  # 本地端口&quot;password&quot;:&quot;password&quot;, # Shadowsocks连接密码&quot;timeout&quot;:300,  # 等待超时时间&quot;method&quot;:&quot;aes-256-cfb&quot;,  # 加密方式&quot;fast_open&quot;: false,  # true或false。开启fast_open以降低延迟，但要求Linux内核在3.7+&quot;workers&quot;: 1  #工作线程数 }</code></pre><p>注：Shadowsocks服务器地址、端口自行准备</p><h2 id="1-4、启动Shadowsocks"><a href="#1-4、启动Shadowsocks" class="headerlink" title="1.4、启动Shadowsocks"></a>1.4、启动Shadowsocks</h2><pre><code># /usr/bin/sslocal -c /etc/shadowsocks/shadowsocks.json</code></pre><p>Centos7开机自启脚本</p><pre><code># vim /etc/systemd/system/shadowsocks.service[Unit]Description=Shadowsocks[Service]TimeoutStartSec=0ExecStart=/usr/bin/sslocal -c /etc/shadowsocks/shadowsocks.json[Install]WantedBy=multi-user.target# systemctl enable shadowsocks.service# systemctl start shadowsocks.service# systemctl status shadowsocks.service</code></pre><p>验证代理是否可用</p><pre><code># curl --socks5 127.0.0.1:1080 http://httpbin.org/ip正常应该返回Shadowsocks服务器地址</code></pre><p>至此算是可以实现代理，但是每次访问都需要带上参数，是否可以每当访问就可以代理而不需要手动添加参数呢？这个当然是可以的</p><h1 id="2、安装配置Privoxy"><a href="#2、安装配置Privoxy" class="headerlink" title="2、安装配置Privoxy"></a>2、安装配置Privoxy</h1><h2 id="2-1、安装Privoxy"><a href="#2-1、安装Privoxy" class="headerlink" title="2.1、安装Privoxy"></a>2.1、安装Privoxy</h2><pre><code># yum install privoxy -y</code></pre><h2 id="2-2、配置privoxy"><a href="#2-2、配置privoxy" class="headerlink" title="2.2、配置privoxy"></a>2.2、配置privoxy</h2><pre><code># vim /etc/privoxy/config  ##修改如下参数listen-address 127.0.0.1:8118 # 8118 是默认端口，不用改forward-socks5t / 127.0.0.1:1080 . #转发到本地端口，注意最后有个点</code></pre><h2 id="2-3、配置http、https代理"><a href="#2-3、配置http、https代理" class="headerlink" title="2.3、配置http、https代理"></a>2.3、配置http、https代理</h2><pre><code># vim  /etc/profilePROXY_HOST=127.0.0.1export all_proxy=http://$PROXY_HOST:8118export ftp_proxy=http://$PROXY_HOST:8118export http_proxy=http://$PROXY_HOST:8118export https_proxy=http://$PROXY_HOST:8118export no_proxy=localhost,172.16.0.0/16,192.168.0.0/16.,127.0.0.1,10.10.0.0/16# source /etc/profile</code></pre><h2 id="2-4、测试代理"><a href="#2-4、测试代理" class="headerlink" title="2.4、测试代理"></a>2.4、测试代理</h2><pre><code># curl -I www.google.comHTTP/1.1 200 OKDate: Fri, 21 Sep 2018 02:46:43 GMTExpires: -1Cache-Control: private, max-age=0Content-Type: text/html; charset=ISO-8859-1P3P: CP=&quot;This is not a P3P policy! See g.co/p3phelp for more info.&quot;Server: gwsX-XSS-Protection: 1; mode=blockX-Frame-Options: SAMEORIGINSet-Cookie: 1P_JAR=2018-09-21-02; expires=Sun, 21-Oct-2018 02:46:43 GMT; path=/; domain=.google.comSet-Cookie: NID=139=asr4pvtu-vqfmdfMyrtIEjQ7qYPBBEf-6p7DYMiz2HI1SLn81kWiXtc-G1nr9VUw_bq-bwxUMf5HnPKw9UXYx7VpTSVxKHsETJiW-NtjSWIEZDaOMs01UJe0KM7gfuzA; expires=Sat, 23-Mar-2019 02:46:43 GMT; path=/; domain=.google.com; HttpOnlyTransfer-Encoding: chunkedAccept-Ranges: noneVary: Accept-EncodingProxy-Connection: keep-alive</code></pre><h1 id="3、Docker配置HTTP代理"><a href="#3、Docker配置HTTP代理" class="headerlink" title="3、Docker配置HTTP代理"></a>3、Docker配置HTTP代理</h1><p>通过上面步骤已经在Centos7上访问google等网站，并下载一些资源包，但是在docker pull某些镜像的时候（例如k8s.gcr.io/pause ）会发现还是无法pull镜像，但是这个镜像是在使用kubernetes必不可少</p><h2 id="3-1、修改Docker配置"><a href="#3-1、修改Docker配置" class="headerlink" title="3.1、修改Docker配置"></a>3.1、修改Docker配置</h2><pre><code># mkdir /etc/systemd/system/docker.service.d# vim  /etc/systemd/system/docker.service.d/http-proxy.conf[Service]Environment=&quot;HTTP_PROXY=http://127.0.0.1:8118&quot;</code></pre><h2 id="3-2、重启Docker服务"><a href="#3-2、重启Docker服务" class="headerlink" title="3.2、重启Docker服务"></a>3.2、重启Docker服务</h2><pre><code># systemctl daemon-reload# systemctl restart docker# docker infoContainers: 26 Running: 15 Paused: 0 Stopped: 11Images: 47Server Version: 18.06.1-ceStorage Driver: overlay2 Backing Filesystem: xfs Supports d_type: true Native Overlay Diff: trueLogging Driver: json-fileCgroup Driver: cgroupfsPlugins: Volume: local Network: bridge host macvlan null overlay weavemesh Log: awslogs fluentd gcplogs gelf journald json-file logentries splunk syslogSwarm: active NodeID: j4i6athr04yfqhusrpx6mwkyf Is Manager: true ClusterID: vejlbon9n62xzznz7gc7lcem7 Managers: 1 Nodes: 3 Orchestration:  Task History Retention Limit: 5 Raft:  Snapshot Interval: 10000  Number of Old Snapshots to Retain: 0  Heartbeat Tick: 1  Election Tick: 10 Dispatcher:  Heartbeat Period: 5 seconds CA Configuration:  Expiry Duration: 3 months  Force Rotate: 0 Autolock Managers: false Root Rotation In Progress: false Node Address: 192.168.99.143 Manager Addresses:  192.168.99.143:2377Runtimes: runcDefault Runtime: runcInit Binary: docker-initcontainerd version: 468a545b9edcd5932818eb9de8e72413e616e86erunc version: 69663f0bd4b60df09991c08812a60108003fa340init version: fec3683Security Options: seccomp  Profile: defaultKernel Version: 3.10.0-862.el7.x86_64Operating System: CentOS Linux 7 (Core)OSType: linuxArchitecture: x86_64CPUs: 2Total Memory: 1.796GiBName: docker01ID: BYKL:LKWQ:32GB:DJJA:VU6V:RU7Q:EV7G:IJWZ:OYIP:SWXM:SWO7:WD3YDocker Root Dir: /var/lib/dockerDebug Mode (client): falseDebug Mode (server): falseHTTP Proxy: http://127.0.0.1:8118Registry: https://index.docker.io/v1/Labels:Experimental: falseInsecure Registries: 127.0.0.0/8Registry Mirrors: https://so9gt83b.mirror.aliyuncs.com/Live Restore Enabled: false</code></pre><p>执行docker info 可以看到HTTP Proxy: <a href="http://127.0.0.1:8118" target="_blank" rel="noopener">http://127.0.0.1:8118</a> 刚刚配置的http代理地址</p>]]></content>
+      
+      <categories>
+          
+          <category> 容器 </category>
+          
+          <category> Docker </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Docker </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Docker垃圾清理</title>
+      <link href="/post/f0772435.html"/>
+      <url>/post/f0772435.html</url>
+      <content type="html"><![CDATA[<h2 id="1、整体分析"><a href="#1、整体分析" class="headerlink" title="1、整体分析"></a>1、整体分析</h2><p>对于Docker来说，存在镜像、容器、存储卷和网络这些对象。因此，也就会生产相对应的这些对象，这些对象会占据磁盘空间。当这些对象不在被使用时，为了不占据额外的磁盘空间，就需要对这些对象进行清理，即进行垃圾清理。在docker 1.13版本之后，提供了对各种对象的prune命令，也提供了清理所有对象类型的docker system prune命令。但在docker 1.13之前的版本，则需要提供其他方式进行垃圾清理。</p><h2 id="2、垃圾清理"><a href="#2、垃圾清理" class="headerlink" title="2、垃圾清理"></a>2、垃圾清理</h2><h3 id="2-1-docker-v1-13之后版本的垃圾清理"><a href="#2-1-docker-v1-13之后版本的垃圾清理" class="headerlink" title="2.1 docker v1.13之后版本的垃圾清理"></a>2.1 docker v1.13之后版本的垃圾清理</h3><h4 id="2-1-1-容器"><a href="#2-1-1-容器" class="headerlink" title="2.1.1 容器"></a>2.1.1 容器</h4><p>在停止容器时，系统并不会知道删除这个容器，除非在运行此容器时设置了–rm字段。停止后的容器仍然会占据磁盘的存储空间，通过docker container prune能够删除这些被停止后的容器。</p><pre><code>$ docker container pruneWARNING! This will remove all stopped containers.Are you sure you want to continue? [y/N] y</code></pre><p>执行此命令时，默认会提示是否继续。如果在执行命令是设置了-f或–force字段，则会直接删除已所有已停止的容器。默认情况下，此命令执行时会删除所有的已停止的容器，也可以通过设置–filter字段，来过滤所要删除的容器。例如，下面的命令仅仅删除停止超过24小时的容器。</p><pre><code>$ docker container prune --filter &quot;until=24h&quot;</code></pre><h4 id="2-1-2-镜像"><a href="#2-1-2-镜像" class="headerlink" title="2.1.2 镜像"></a>2.1.2 镜像</h4><p>通过执行docker images prune命令可以清除所有不再使用的镜像，默认情况下此命令仅仅清除状态为dangling的镜像。状态为dangling的镜像为未被打标签和没有被任何容器引用的镜像。</p><pre><code>$ docker image pruneWARNING! This will remove all dangling images.Are you sure you want to continue? [y/N] y</code></pre><p>如果要移除所有未被使用的镜像，则通过设置-a字段来实现：</p><pre><code>$ docker image prune -aWARNING! This will remove all images without at least one container associated to them.Are you sure you want to continue? [y/N] y</code></pre><p>执行此命令时，默认会提示是否继续。如果在执行命令是设置了-f或–force字段，则会直接进行删除操作。可以通过设置–filter字段，来过滤所要删除的镜像。例如，下面的命令仅仅删除停止创建超过24小时的镜像。</p><pre><code>$ docker image prune -a --filter &quot;until=24h&quot;</code></pre><h4 id="2-1-3-存储卷"><a href="#2-1-3-存储卷" class="headerlink" title="2.1.3 存储卷"></a>2.1.3 存储卷</h4><p>存储卷可以被一个或者多个容器使用，也会占据磁盘空间。为保持数据，存储卷永远都不会自动被删除。</p><pre><code>$ docker volume pruneWARNING! This will remove all volumes not used by at least one container.Are you sure you want to continue? [y/N] y</code></pre><p>执行此命令时，默认会提示是否继续。如果在执行命令是设置了-f或–force字段，则会直接进行删除操作。默认情况下，此命令执行时会删除所有的未被使用的存储卷，也可以通过设置–filter字段，来过滤所要删除的存储卷。例如，下面的命令仅仅删除label值为keep的存储卷。</p><pre><code>$ docker volume prune --filter &quot;label!=keep&quot;</code></pre><h4 id="2-1-4-网络"><a href="#2-1-4-网络" class="headerlink" title="2.1.4 网络"></a>2.1.4 网络</h4><p>docker网络并不会占据磁盘空间，但是会创建iptables规则，桥网络设备和路由表。因此，但如何不再使用这些资源时，应该对其进行清理。</p><pre><code>$ docker network pruneWARNING! This will remove all networks not used by at least one container.Are you sure you want to continue? [y/N] y</code></pre><p>执行此命令时，默认会提示是否继续。如果在执行命令是设置了-f或–force字段，则会直接进行删除操作。默认情况下，此命令执行时会删除所有的未被使用的网络，也可以通过设置–filter字段，来过滤所要删除的网络。例如，下面的命令仅仅为被使用超过24小时的网络。</p><pre><code>$ docker network prune --filter &quot;until=24h&quot;</code></pre><h4 id="2-1-5-删除所有的对象"><a href="#2-1-5-删除所有的对象" class="headerlink" title="2.1.5 删除所有的对象"></a>2.1.5 删除所有的对象</h4><p>通过docker system prune命令能够快速的删除所有的未被使用的对象，包括镜像、容器、网络和存储卷。在docker 17.06.0之前，存储卷会同时被清理。在docker 17.06.1之后，需要通过设置–volumes字段，才会同时清理存储卷。</p><pre><code>$ docker system pruneWARNING! This will remove:        - all stopped containers        - all networks not used by at least one container        - all dangling images        - all build cacheAre you sure you want to continue? [y/N] y</code></pre><p>如果所使用的docker 17.06.1之后的版本，则需要在命令后添加–volumes字段来清理存储卷的内容。</p><pre><code>$ docker system prune --volumesWARNING! This will remove:        - all stopped containers        - all networks not used by at least one container        - all volumes not used by at least one container        - all dangling images        - all build cacheAre you sure you want to continue? [y/N] y</code></pre><h3 id="2-2-docker-v1-13之前版本的垃圾清理"><a href="#2-2-docker-v1-13之前版本的垃圾清理" class="headerlink" title="2.2 docker v1.13之前版本的垃圾清理"></a>2.2 docker v1.13之前版本的垃圾清理</h3><h4 id="2-2-1-容器"><a href="#2-2-1-容器" class="headerlink" title="2.2.1 容器"></a>2.2.1 容器</h4><p>在停止容器时，系统并不会知道删除这个容器，除非在运行此容器时设置了–rm字段。停止后的容器仍然会占据磁盘的存储空间，通过docker rm能够删除这些被停止后的容器。通过下面的命令能够清除所有已停止的容器。</p><pre><code>$ docker rm $(docker ps -a -q)</code></pre><h4 id="2-2-2-镜像"><a href="#2-2-2-镜像" class="headerlink" title="2.2.2 镜像"></a>2.2.2 镜像</h4><p>通过执行docker rmi命令可以清除所有不再使用的镜像，一般情况下仅仅清除状态为dangling的镜像。状态为dangling的镜像为未被打标签和没有被任何容器引用的镜像。</p><pre><code>$ docker rmi $(docker images -q -f &quot;dangling=true&quot;)</code></pre><h4 id="2-2-3-存储卷"><a href="#2-2-3-存储卷" class="headerlink" title="2.2.3 存储卷"></a>2.2.3 存储卷</h4><p>存储卷可以被一个或者多个容器使用，也会占据磁盘空间。为了保持数据，存储卷永远都不会自动被删除。</p><pre><code>$ docker volume rm $(docker volume ls -q -f dangling=true)</code></pre><p>参考资料:</p><p>1.<a href="https://docs.docker.com/engine/reference/commandline/container_prune/" target="_blank" rel="noopener">《docker container prune》</a></p><p>2.<a href="https://docs.docker.com/config/pruning/" target="_blank" rel="noopener">《Prune unused Docker objects》</a></p><p>3.<a href="https://docs.docker.com/engine/reference/commandline/image_prune/" target="_blank" rel="noopener">《docker image prune》</a></p><p>4.<a href="https://docs.docker.com/engine/reference/commandline/volume_prune/" target="_blank" rel="noopener">《docker volume prune》</a></p><p>5.<a href="https://docs.docker.com/engine/reference/commandline/network_prune/" target="_blank" rel="noopener">《docker network prune》</a></p>]]></content>
+      
+      <categories>
+          
+          <category> 容器 </category>
+          
+          <category> Docker </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Docker </tag>
+            
+            <tag> 容器 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
       <title>利用Python进行数据分析--阅读总结</title>
       <link href="/post/6d01c3dd.html"/>
       <url>/post/6d01c3dd.html</url>
@@ -205,9 +253,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> Docker </tag>
+            
+            <tag> 容器 </tag>
             
         </tags>
       

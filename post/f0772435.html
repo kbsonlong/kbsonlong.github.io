@@ -75,7 +75,7 @@
 
 
 
-  <meta name="keywords" content="Nginx,Web," />
+  <meta name="keywords" content="Docker,容器," />
 
 
 
@@ -88,18 +88,18 @@
 
 
 
-<meta name="description" content="1、背景由于早期注册的域名不能备案，后期重新注册一个域名完成备案，但是早期域名还能正常使用，而且早期域名网站放在海外vps上，为了避免早期域名用户流失和早期域名下的网站文章，还能保证多节点访问(说到底还是懒，不想迁移)，所以用新的域名做了一个镜像网站，所以就涉及到了跨域访问问题 2、利用Nginx做镜像代理完整配置如下：123456789101112131415161718192021222324">
-<meta name="keywords" content="Nginx,Web">
+<meta name="description" content="1、整体分析对于Docker来说，存在镜像、容器、存储卷和网络这些对象。因此，也就会生产相对应的这些对象，这些对象会占据磁盘空间。当这些对象不在被使用时，为了不占据额外的磁盘空间，就需要对这些对象进行清理，即进行垃圾清理。在docker 1.13版本之后，提供了对各种对象的prune命令，也提供了清理所有对象类型的docker system prune命令。但在docker 1.13之前的版本，则">
+<meta name="keywords" content="Docker,容器">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Nginx反向代理跨域问题">
-<meta property="og:url" content="http://www.alongparty.cn/post/706fb7e.html">
+<meta property="og:title" content="Docker垃圾清理">
+<meta property="og:url" content="http://www.alongparty.cn/post/f0772435.html">
 <meta property="og:site_name" content="蜷缩的蜗牛">
-<meta property="og:description" content="1、背景由于早期注册的域名不能备案，后期重新注册一个域名完成备案，但是早期域名还能正常使用，而且早期域名网站放在海外vps上，为了避免早期域名用户流失和早期域名下的网站文章，还能保证多节点访问(说到底还是懒，不想迁移)，所以用新的域名做了一个镜像网站，所以就涉及到了跨域访问问题 2、利用Nginx做镜像代理完整配置如下：123456789101112131415161718192021222324">
+<meta property="og:description" content="1、整体分析对于Docker来说，存在镜像、容器、存储卷和网络这些对象。因此，也就会生产相对应的这些对象，这些对象会占据磁盘空间。当这些对象不在被使用时，为了不占据额外的磁盘空间，就需要对这些对象进行清理，即进行垃圾清理。在docker 1.13版本之后，提供了对各种对象的prune命令，也提供了清理所有对象类型的docker system prune命令。但在docker 1.13之前的版本，则">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-09-21T03:04:31.332Z">
+<meta property="og:updated_time" content="2018-09-21T03:04:31.307Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Nginx反向代理跨域问题">
-<meta name="twitter:description" content="1、背景由于早期注册的域名不能备案，后期重新注册一个域名完成备案，但是早期域名还能正常使用，而且早期域名网站放在海外vps上，为了避免早期域名用户流失和早期域名下的网站文章，还能保证多节点访问(说到底还是懒，不想迁移)，所以用新的域名做了一个镜像网站，所以就涉及到了跨域访问问题 2、利用Nginx做镜像代理完整配置如下：123456789101112131415161718192021222324">
+<meta name="twitter:title" content="Docker垃圾清理">
+<meta name="twitter:description" content="1、整体分析对于Docker来说，存在镜像、容器、存储卷和网络这些对象。因此，也就会生产相对应的这些对象，这些对象会占据磁盘空间。当这些对象不在被使用时，为了不占据额外的磁盘空间，就需要对这些对象进行清理，即进行垃圾清理。在docker 1.13版本之后，提供了对各种对象的prune命令，也提供了清理所有对象类型的docker system prune命令。但在docker 1.13之前的版本，则">
 
 
 
@@ -129,7 +129,7 @@
 
 
 
-  <link rel="canonical" href="http://www.alongparty.cn/post/706fb7e.html"/>
+  <link rel="canonical" href="http://www.alongparty.cn/post/f0772435.html"/>
 
 
 
@@ -145,7 +145,7 @@
 
 
 
-  <title>Nginx反向代理跨域问题 | 蜷缩的蜗牛</title>
+  <title>Docker垃圾清理 | 蜷缩的蜗牛</title>
   
 
 
@@ -365,7 +365,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://www.alongparty.cn/post/706fb7e.html">
+    <link itemprop="mainEntityOfPage" href="http://www.alongparty.cn/post/f0772435.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="小仓鼠">
@@ -382,7 +382,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">Nginx反向代理跨域问题</h2>
+          <h2 class="post-title" itemprop="name headline">Docker垃圾清理</h2>
         
 
         <div class="post-meta">
@@ -394,8 +394,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-17T16:23:00+08:00">
-                2018/09/17
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-20T16:29:00+08:00">
+                2018/09/20
               </time>
             
 
@@ -417,8 +417,19 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/WEB-Server/" itemprop="url" rel="index">
-                    <span itemprop="name">WEB Server</span>
+                  <a href="/categories/容器/" itemprop="url" rel="index">
+                    <span itemprop="name">容器</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/容器/Docker/" itemprop="url" rel="index">
+                    <span itemprop="name">Docker</span>
                   </a>
                 </span>
 
@@ -435,8 +446,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/post/706fb7e.html#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/post/706fb7e.html" itemprop="commentCount"></span>
+                <a href="/post/f0772435.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/post/f0772435.html" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -463,7 +474,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  665
+                  1.5k
                 </span>
               
 
@@ -479,7 +490,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  3
+                  6
                 </span>
               
             </div>
@@ -500,11 +511,70 @@
       
 
       
-        <h2 id="1、背景"><a href="#1、背景" class="headerlink" title="1、背景"></a>1、背景</h2><p>由于早期注册的域名不能备案，后期重新注册一个域名完成备案，但是早期域名还能正常使用，而且早期域名网站放在海外vps上，为了避免早期域名用户流失和早期域名下的网站文章，还能保证多节点访问(说到底还是懒，不想迁移)，所以用新的域名做了一个镜像网站，所以就涉及到了跨域访问问题</p>
-<h2 id="2、利用Nginx做镜像代理"><a href="#2、利用Nginx做镜像代理" class="headerlink" title="2、利用Nginx做镜像代理"></a>2、利用Nginx做镜像代理</h2><p>完整配置如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br></pre></td><td class="code"><pre><span class="line">server</span><br><span class="line">&#123;</span><br><span class="line">    listen 80;</span><br><span class="line">	listen 443 ssl http2;</span><br><span class="line">    server_name blog.alongparty.cn;</span><br><span class="line">    index index.php index.html index.htm default.php default.htm default.html;</span><br><span class="line">    root /www/wwwroot/blog.alongparty.cn;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">#SSL-START SSL相关配置，请勿删除或修改下一行带注释的404规则</span></span><br><span class="line">    <span class="comment">#error_page 404/404.html;</span></span><br><span class="line">    ssl_certificate    /etc/letsencrypt/live/blog.alongparty.cn/fullchain.pem;</span><br><span class="line">    ssl_certificate_key    /etc/letsencrypt/live/blog.alongparty.cn/privkey.pem;</span><br><span class="line">    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;</span><br><span class="line">    ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:HIGH:!aNULL:!MD5:!RC4:!DHE;</span><br><span class="line">    ssl_prefer_server_ciphers on;</span><br><span class="line">    ssl_session_cache shared:SSL:10m;</span><br><span class="line">    ssl_session_timeout 10m;</span><br><span class="line">    error_page 497  https://<span class="variable">$host</span><span class="variable">$request_uri</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">#SSL-END</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">#ERROR-PAGE-START  错误页配置，可以注释、删除或修改</span></span><br><span class="line">    error_page 404 /404.html;</span><br><span class="line">    error_page 502 /502.html;</span><br><span class="line">    <span class="comment">#ERROR-PAGE-END</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">#PHP-INFO-START  PHP引用配置，可以注释或修改</span></span><br><span class="line">    include <span class="built_in">enable</span>-php-54.conf;</span><br><span class="line">    <span class="comment">#PHP-INFO-END</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">#REWRITE-START URL重写规则引用,修改后将导致面板设置的伪静态规则失效</span></span><br><span class="line">    include /www/server/panel/vhost/rewrite/blog.alongparty.cn.conf;</span><br><span class="line">    <span class="comment">#REWRITE-END</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">#禁止访问的文件或目录</span></span><br><span class="line">    location ~ ^/(\.user.ini|\.htaccess|\.git|\.svn|\.project|LICENSE|README.md)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">return</span> 404;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">#一键申请SSL证书验证目录相关设置</span></span><br><span class="line">    location ~ \.well-known&#123;</span><br><span class="line">        allow all;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    location ~ .*\.(gif|jpg|jpeg|png|bmp|swf)$</span><br><span class="line">    &#123;</span><br><span class="line">        expires      30d;</span><br><span class="line">        error_log off;</span><br><span class="line">        access_log off;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    location ~ .*\.(js|css)?$</span><br><span class="line">    &#123;</span><br><span class="line">        expires      12h;</span><br><span class="line">        error_log off;</span><br><span class="line">        access_log off; </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    location / &#123;</span><br><span class="line">            <span class="comment">#subs_filter 'https://www.along.party' 'http://blog.alongparty.cn';</span></span><br><span class="line">            <span class="comment">#subs_filter 'https:\/\/www.along.party' 'http:\/\/blog.alongparty.cn';</span></span><br><span class="line">            <span class="comment">#subs_filter_types application/json;</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># remove the line below when your server is in Amarica</span></span><br><span class="line">            <span class="comment">#set $args "$&#123;args&#125;&amp;gws_rd=cr";</span></span><br><span class="line">            proxy_cookie_domain along.party alongparty.cn;</span><br><span class="line">            proxy_redirect https://www.along.party https://blog.alongparty.cn;</span><br><span class="line">            proxy_redirect http://www.along.party https://blog.alongparty.cn;</span><br><span class="line">            proxy_set_header  Accept-Encoding <span class="string">""</span>;</span><br><span class="line">            proxy_set_header  Host  <span class="string">"www.along.party"</span>;</span><br><span class="line">            proxy_set_header  User-Agent <span class="variable">$http_user_agent</span>;</span><br><span class="line">            proxy_set_header  Connection <span class="string">""</span>;</span><br><span class="line">            <span class="comment">#add_header 'Access-Control-Allow-Origin' 'https://blog.alongparty.cn';</span></span><br><span class="line">            proxy_http_version 1.1;</span><br><span class="line">            proxy_pass http://unix:/var/run/along.party.sock;</span><br><span class="line">        &#125;</span><br><span class="line">    </span><br><span class="line">    access_log  /www/wwwlogs/blog.alongparty.cn.log;</span><br><span class="line">    error_log  /www/wwwlogs/blog.alongparty.cn.error.log;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">upstream along.party &#123;</span><br><span class="line">        server 113.243.30.15:443;</span><br><span class="line">        <span class="comment"># add more servers here</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">server &#123;</span><br><span class="line">        listen unix:/var/run/along.party.sock;</span><br><span class="line">        server_name www.along.party;</span><br><span class="line">        proxy_set_header Accept-Encoding gzip;</span><br><span class="line">        proxy_set_header  Host  <span class="string">"www.along.party"</span>;</span><br><span class="line">        gunzip on;</span><br><span class="line">        location / &#123;</span><br><span class="line">            proxy_pass  https://along.party;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="3、源主机server需要添加如下配置"><a href="#3、源主机server需要添加如下配置" class="headerlink" title="3、源主机server需要添加如下配置"></a>3、源主机server需要添加如下配置</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">###配置跨域访问问题</span></span><br><span class="line"><span class="built_in">set</span> <span class="variable">$cors_origin</span> <span class="string">""</span>;</span><br><span class="line"><span class="built_in">set</span> <span class="variable">$cors_cred</span>   <span class="string">""</span>;</span><br><span class="line"><span class="built_in">set</span> <span class="variable">$cors_header</span> <span class="string">""</span>;</span><br><span class="line"><span class="built_in">set</span> <span class="variable">$cors_method</span> <span class="string">""</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="variable">$http_origin</span> ~* <span class="string">"^http.*\.alongparty\.cn$"</span>) &#123;</span><br><span class="line">        <span class="built_in">set</span> <span class="variable">$cors_origin</span> <span class="variable">$http_origin</span>;</span><br><span class="line">        <span class="built_in">set</span> <span class="variable">$cors_cred</span>   <span class="literal">true</span>;</span><br><span class="line">        <span class="built_in">set</span> <span class="variable">$cors_header</span> <span class="variable">$http_access_control_request_headers</span>;</span><br><span class="line">        <span class="built_in">set</span> <span class="variable">$cors_method</span> <span class="variable">$http_access_control_request_method</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">add_header Access-Control-Allow-Origin      <span class="variable">$cors_origin</span>;</span><br><span class="line">add_header Access-Control-Allow-Credentials <span class="variable">$cors_cred</span>;</span><br><span class="line">add_header Access-Control-Allow-Headers     <span class="variable">$cors_header</span>;</span><br><span class="line">add_header Access-Control-Allow-Methods     <span class="variable">$cors_method</span>;</span><br></pre></td></tr></table></figure>
-<p>参考资料</p>
-<p><a href="https://stackoverflow.com/questions/27955233/nginx-config-for-cors-add-header-directive-is-not-allowed" target="_blank" rel="noopener">https://stackoverflow.com/questions/27955233/nginx-config-for-cors-add-header-directive-is-not-allowed</a></p>
+        <h2 id="1、整体分析"><a href="#1、整体分析" class="headerlink" title="1、整体分析"></a>1、整体分析</h2><p>对于Docker来说，存在镜像、容器、存储卷和网络这些对象。因此，也就会生产相对应的这些对象，这些对象会占据磁盘空间。当这些对象不在被使用时，为了不占据额外的磁盘空间，就需要对这些对象进行清理，即进行垃圾清理。在docker 1.13版本之后，提供了对各种对象的prune命令，也提供了清理所有对象类型的docker system prune命令。但在docker 1.13之前的版本，则需要提供其他方式进行垃圾清理。</p>
+<h2 id="2、垃圾清理"><a href="#2、垃圾清理" class="headerlink" title="2、垃圾清理"></a>2、垃圾清理</h2><h3 id="2-1-docker-v1-13之后版本的垃圾清理"><a href="#2-1-docker-v1-13之后版本的垃圾清理" class="headerlink" title="2.1 docker v1.13之后版本的垃圾清理"></a>2.1 docker v1.13之后版本的垃圾清理</h3><h4 id="2-1-1-容器"><a href="#2-1-1-容器" class="headerlink" title="2.1.1 容器"></a>2.1.1 容器</h4><p>在停止容器时，系统并不会知道删除这个容器，除非在运行此容器时设置了–rm字段。停止后的容器仍然会占据磁盘的存储空间，通过docker container prune能够删除这些被停止后的容器。</p>
+<pre><code>$ docker container prune
+WARNING! This will remove all stopped containers.
+Are you sure you want to continue? [y/N] y
+</code></pre><p>执行此命令时，默认会提示是否继续。如果在执行命令是设置了-f或–force字段，则会直接删除已所有已停止的容器。默认情况下，此命令执行时会删除所有的已停止的容器，也可以通过设置–filter字段，来过滤所要删除的容器。例如，下面的命令仅仅删除停止超过24小时的容器。</p>
+<pre><code>$ docker container prune --filter &quot;until=24h&quot;
+</code></pre><h4 id="2-1-2-镜像"><a href="#2-1-2-镜像" class="headerlink" title="2.1.2 镜像"></a>2.1.2 镜像</h4><p>通过执行docker images prune命令可以清除所有不再使用的镜像，默认情况下此命令仅仅清除状态为dangling的镜像。状态为dangling的镜像为未被打标签和没有被任何容器引用的镜像。</p>
+<pre><code>$ docker image prune
+
+WARNING! This will remove all dangling images.
+Are you sure you want to continue? [y/N] y
+</code></pre><p>如果要移除所有未被使用的镜像，则通过设置-a字段来实现：</p>
+<pre><code>$ docker image prune -a
+
+WARNING! This will remove all images without at least one container associated to them.
+Are you sure you want to continue? [y/N] y
+</code></pre><p>执行此命令时，默认会提示是否继续。如果在执行命令是设置了-f或–force字段，则会直接进行删除操作。可以通过设置–filter字段，来过滤所要删除的镜像。例如，下面的命令仅仅删除停止创建超过24小时的镜像。</p>
+<pre><code>$ docker image prune -a --filter &quot;until=24h&quot;
+</code></pre><h4 id="2-1-3-存储卷"><a href="#2-1-3-存储卷" class="headerlink" title="2.1.3 存储卷"></a>2.1.3 存储卷</h4><p>存储卷可以被一个或者多个容器使用，也会占据磁盘空间。为保持数据，存储卷永远都不会自动被删除。</p>
+<pre><code>$ docker volume prune
+
+WARNING! This will remove all volumes not used by at least one container.
+Are you sure you want to continue? [y/N] y
+</code></pre><p>执行此命令时，默认会提示是否继续。如果在执行命令是设置了-f或–force字段，则会直接进行删除操作。默认情况下，此命令执行时会删除所有的未被使用的存储卷，也可以通过设置–filter字段，来过滤所要删除的存储卷。例如，下面的命令仅仅删除label值为keep的存储卷。</p>
+<pre><code>$ docker volume prune --filter &quot;label!=keep&quot;
+</code></pre><h4 id="2-1-4-网络"><a href="#2-1-4-网络" class="headerlink" title="2.1.4 网络"></a>2.1.4 网络</h4><p>docker网络并不会占据磁盘空间，但是会创建iptables规则，桥网络设备和路由表。因此，但如何不再使用这些资源时，应该对其进行清理。</p>
+<pre><code>$ docker network prune
+
+WARNING! This will remove all networks not used by at least one container.
+Are you sure you want to continue? [y/N] y
+</code></pre><p>执行此命令时，默认会提示是否继续。如果在执行命令是设置了-f或–force字段，则会直接进行删除操作。默认情况下，此命令执行时会删除所有的未被使用的网络，也可以通过设置–filter字段，来过滤所要删除的网络。例如，下面的命令仅仅为被使用超过24小时的网络。</p>
+<pre><code>$ docker network prune --filter &quot;until=24h&quot;
+</code></pre><h4 id="2-1-5-删除所有的对象"><a href="#2-1-5-删除所有的对象" class="headerlink" title="2.1.5 删除所有的对象"></a>2.1.5 删除所有的对象</h4><p>通过docker system prune命令能够快速的删除所有的未被使用的对象，包括镜像、容器、网络和存储卷。在docker 17.06.0之前，存储卷会同时被清理。在docker 17.06.1之后，需要通过设置–volumes字段，才会同时清理存储卷。</p>
+<pre><code>$ docker system prune
+
+WARNING! This will remove:
+        - all stopped containers
+        - all networks not used by at least one container
+        - all dangling images
+        - all build cache
+Are you sure you want to continue? [y/N] y
+</code></pre><p>如果所使用的docker 17.06.1之后的版本，则需要在命令后添加–volumes字段来清理存储卷的内容。</p>
+<pre><code>$ docker system prune --volumes
+
+WARNING! This will remove:
+        - all stopped containers
+        - all networks not used by at least one container
+        - all volumes not used by at least one container
+        - all dangling images
+        - all build cache
+Are you sure you want to continue? [y/N] y
+</code></pre><h3 id="2-2-docker-v1-13之前版本的垃圾清理"><a href="#2-2-docker-v1-13之前版本的垃圾清理" class="headerlink" title="2.2 docker v1.13之前版本的垃圾清理"></a>2.2 docker v1.13之前版本的垃圾清理</h3><h4 id="2-2-1-容器"><a href="#2-2-1-容器" class="headerlink" title="2.2.1 容器"></a>2.2.1 容器</h4><p>在停止容器时，系统并不会知道删除这个容器，除非在运行此容器时设置了–rm字段。停止后的容器仍然会占据磁盘的存储空间，通过docker rm能够删除这些被停止后的容器。通过下面的命令能够清除所有已停止的容器。</p>
+<pre><code>$ docker rm $(docker ps -a -q)
+</code></pre><h4 id="2-2-2-镜像"><a href="#2-2-2-镜像" class="headerlink" title="2.2.2 镜像"></a>2.2.2 镜像</h4><p>通过执行docker rmi命令可以清除所有不再使用的镜像，一般情况下仅仅清除状态为dangling的镜像。状态为dangling的镜像为未被打标签和没有被任何容器引用的镜像。</p>
+<pre><code>$ docker rmi $(docker images -q -f &quot;dangling=true&quot;)
+</code></pre><h4 id="2-2-3-存储卷"><a href="#2-2-3-存储卷" class="headerlink" title="2.2.3 存储卷"></a>2.2.3 存储卷</h4><p>存储卷可以被一个或者多个容器使用，也会占据磁盘空间。为了保持数据，存储卷永远都不会自动被删除。</p>
+<pre><code>$ docker volume rm $(docker volume ls -q -f dangling=true)
+</code></pre><p>参考资料:</p>
+<p>1.<a href="https://docs.docker.com/engine/reference/commandline/container_prune/" target="_blank" rel="noopener">《docker container prune》</a></p>
+<p>2.<a href="https://docs.docker.com/config/pruning/" target="_blank" rel="noopener">《Prune unused Docker objects》</a></p>
+<p>3.<a href="https://docs.docker.com/engine/reference/commandline/image_prune/" target="_blank" rel="noopener">《docker image prune》</a></p>
+<p>4.<a href="https://docs.docker.com/engine/reference/commandline/volume_prune/" target="_blank" rel="noopener">《docker volume prune》</a></p>
+<p>5.<a href="https://docs.docker.com/engine/reference/commandline/network_prune/" target="_blank" rel="noopener">《docker network prune》</a></p>
 
       
     </div>
@@ -557,7 +627,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://www.alongparty.cn/post/706fb7e.html" title="Nginx反向代理跨域问题">http://www.alongparty.cn/post/706fb7e.html</a>
+    <a href="http://www.alongparty.cn/post/f0772435.html" title="Docker垃圾清理">http://www.alongparty.cn/post/f0772435.html</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -572,9 +642,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Nginx/" rel="tag"><i class="fa fa-tag"> Nginx</i></a>
+            <a href="/tags/Docker/" rel="tag"><i class="fa fa-tag"> Docker</i></a>
           
-            <a href="/tags/Web/" rel="tag"><i class="fa fa-tag"> Web</i></a>
+            <a href="/tags/容器/" rel="tag"><i class="fa fa-tag"> 容器</i></a>
           
         </div>
       
@@ -602,8 +672,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/post/20f5942b.html" rel="next" title="Pandas数据分析入门">
-                <i class="fa fa-chevron-left"></i> Pandas数据分析入门
+              <a href="/post/6d01c3dd.html" rel="next" title="利用Python进行数据分析--阅读总结">
+                <i class="fa fa-chevron-left"></i> 利用Python进行数据分析--阅读总结
               </a>
             
           </div>
@@ -612,8 +682,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/post/6d01c3dd.html" rel="prev" title="利用Python进行数据分析--阅读总结">
-                利用Python进行数据分析--阅读总结 <i class="fa fa-chevron-right"></i>
+              <a href="/post/60b36f47.html" rel="prev" title="Docker设置http代理">
+                Docker设置http代理 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -820,7 +890,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、背景"><span class="nav-text">1、背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、利用Nginx做镜像代理"><span class="nav-text">2、利用Nginx做镜像代理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、源主机server需要添加如下配置"><span class="nav-text">3、源主机server需要添加如下配置</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、整体分析"><span class="nav-text">1、整体分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、垃圾清理"><span class="nav-text">2、垃圾清理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-docker-v1-13之后版本的垃圾清理"><span class="nav-text">2.1 docker v1.13之后版本的垃圾清理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-1-容器"><span class="nav-text">2.1.1 容器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-2-镜像"><span class="nav-text">2.1.2 镜像</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-3-存储卷"><span class="nav-text">2.1.3 存储卷</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-4-网络"><span class="nav-text">2.1.4 网络</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-5-删除所有的对象"><span class="nav-text">2.1.5 删除所有的对象</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-docker-v1-13之前版本的垃圾清理"><span class="nav-text">2.2 docker v1.13之前版本的垃圾清理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-1-容器"><span class="nav-text">2.2.1 容器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-2-镜像"><span class="nav-text">2.2.2 镜像</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-3-存储卷"><span class="nav-text">2.2.3 存储卷</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>

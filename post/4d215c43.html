@@ -96,7 +96,7 @@
 <meta property="og:site_name" content="蜷缩的蜗牛">
 <meta property="og:description" content="ELK的一次吞吐量优化 问题一 最近发现kibana的日志传的很慢，常常查不到日志，由于所有的日志收集都只传输到了一个logstash进行收集和过滤，于是怀疑是否是由于logstash的吞吐量存在瓶颈。一看，还真是到了瓶颈。优化过程 经过查询logstash完整配置文件，有几个参数需要调整12345678# pipeline线程数，官方建议是等于CPU内核数pipeline.workers: 24">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-09-19T09:58:34.863Z">
+<meta property="og:updated_time" content="2018-09-21T03:04:31.327Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Elasticsearch的一次吞吐量优化">
 <meta name="twitter:description" content="ELK的一次吞吐量优化 问题一 最近发现kibana的日志传的很慢，常常查不到日志，由于所有的日志收集都只传输到了一个logstash进行收集和过滤，于是怀疑是否是由于logstash的吞吐量存在瓶颈。一看，还真是到了瓶颈。优化过程 经过查询logstash完整配置文件，有几个参数需要调整12345678# pipeline线程数，官方建议是等于CPU内核数pipeline.workers: 24">
@@ -760,7 +760,7 @@ pipeline.batch.delay: 10
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">16</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -903,7 +903,7 @@ pipeline.batch.delay: 10
     
       <span class="post-meta-item-text">博客全站共&#58;</span>
     
-    <span title="博客全站共">13.1k</span>
+    <span title="博客全站共">15.6k</span>
   
 </div>
 
