@@ -22,7 +22,7 @@
 <meta name="twitter:card" content="summary">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/gh/nexmoe/nexmoe.github.io@latest/css/style.css,npm/highlight.js@9.15.8/styles/atom-one-dark.css,gh/nexmoe/nexmoe.github.io@latest/lib/mdui_043tiny/css/mdui.css,gh/nexmoe/nexmoe.github.io@latest/lib/iconfont/iconfont.css" crossorigin>
   
-  <!--<link rel="stylesheet" href="/css/style.css?v=1589470542573">-->
+  <!--<link rel="stylesheet" href="/css/style.css?v=1589470630911">-->
 <meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/atom.xml" title="蜷缩的蜗牛" type="application/atom+xml">
 </head>
 
@@ -329,6 +329,442 @@
   <div id="nexmoe-content">
     <div class="nexmoe-primary">
         <section class="nexmoe-posts">
+    
+    <div class="nexmoe-post">
+        <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/nacos/nacos%E9%83%A8%E7%BD%B2/">
+            
+                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 66.66666666666666%;"> 
+                    <img data-src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg" data-sizes="auto" alt="nacos部署.md" class="lazyload">
+                    <h1>nacos部署.md</h1>
+                </div>
+            
+        </a>
+
+        <div class="nexmoe-post-meta nexmoe-rainbow">
+            <a><i class="nexmoefont icon-calendar-fill"></i>2020年05月14日</a>
+            <a><i class="nexmoefont icon-areachart"></i>1.4k 字</a>
+            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 8 分钟</a>
+        </div>
+
+        <article>
+            
+                <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /data/server/nacos/conf</span><br><span class="line">mkdir -p /data/logs/nacos</span><br><span class="line">cat &lt;&lt; EOF &gt; /data/server/nacos/docker-compose.yml</span><br><span class="line">version: <span class="string">"3"</span></span><br><span class="line">services:</span><br><span class="line">  nacos:</span><br><span class="line">    network_mode: host</span><br><span class="line">    container_name: nacos</span><br><span class="line">    image: nacos/nacos-server:latest</span><br><span class="line">    volumes:</span><br><span class="line">      - /data/logs/nacos:/home/nacos/logs</span><br><span class="line">      - /data/server/nacos/conf/custom.properties:/home/nacos/init.d/custom.properties</span><br><span class="line">    env_file:</span><br><span class="line">      - /data/server/nacos/.env</span><br><span class="line">    restart: always</span><br><span class="line">      </span><br><span class="line">EOF</span><br><span class="line">      </span><br><span class="line">cat &lt;&lt; EOF &gt; /data/server/nacos/.env</span><br><span class="line">PREFER_HOST_MODE=hostname</span><br><span class="line">NACOS_SERVERS=quanbu-env-skywalking01:8848 quanbu-env-skywalking02:8848 quanbu-env-skywalking03:8848</span><br><span class="line">MYSQL_SERVICE_HOST=rm-bp1jni3djl3050fxa.mysql.rds.aliyuncs.com</span><br><span class="line">MYSQL_SERVICE_DB_NAME=nacos</span><br><span class="line">MYSQL_SERVICE_PORT=3306</span><br><span class="line">MYSQL_SERVICE_USER=nacos</span><br><span class="line">MYSQL_SERVICE_PASSWORD=NSqC2R365qFFFUdVFoWeV9LWdaagrg</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">touch /data/server/nacos/conf/custom.properties</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">cat &lt;&lt; EOF &gt;&gt; /etc/hosts</span><br><span class="line">172.16.5.56 quanbu-env-skywalking01</span><br><span class="line">172.16.5.55 quanbu-env-skywalking02</span><br><span class="line">172.16.5.57 quanbu-env-skywalking03</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+<p>#nacos初始化表结构</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/******************************************/</span></span><br><span class="line"><span class="comment">/*   数据库全名 = nacos_config   */</span></span><br><span class="line"><span class="comment">/*   表名称 = config_info   */</span></span><br><span class="line"><span class="comment">/******************************************/</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`config_info`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">bigint</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT <span class="keyword">COMMENT</span> <span class="string">'id'</span>,</span><br><span class="line">  <span class="string">`data_id`</span> <span class="built_in">varchar</span>(<span class="number">255</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'data_id'</span>,</span><br><span class="line">  <span class="string">`group_id`</span> <span class="built_in">varchar</span>(<span class="number">255</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`content`</span> longtext <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'content'</span>,</span><br><span class="line">  <span class="string">`md5`</span> <span class="built_in">varchar</span>(<span class="number">32</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'md5'</span>,</span><br><span class="line">  <span class="string">`gmt_create`</span> datetime <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="keyword">CURRENT_TIMESTAMP</span> <span class="keyword">COMMENT</span> <span class="string">'创建时间'</span>,</span><br><span class="line">  <span class="string">`gmt_modified`</span> datetime <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="keyword">CURRENT_TIMESTAMP</span> <span class="keyword">COMMENT</span> <span class="string">'修改时间'</span>,</span><br><span class="line">  <span class="string">`src_user`</span> <span class="built_in">text</span> <span class="keyword">COMMENT</span> <span class="string">'source user'</span>,</span><br><span class="line">  <span class="string">`src_ip`</span> <span class="built_in">varchar</span>(<span class="number">20</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'source ip'</span>,</span><br><span class="line">  <span class="string">`app_name`</span> <span class="built_in">varchar</span>(<span class="number">128</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`tenant_id`</span> <span class="built_in">varchar</span>(<span class="number">128</span>) <span class="keyword">DEFAULT</span> <span class="string">''</span> <span class="keyword">COMMENT</span> <span class="string">'租户字段'</span>,</span><br><span class="line">  <span class="string">`c_desc`</span> <span class="built_in">varchar</span>(<span class="number">256</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`c_use`</span> <span class="built_in">varchar</span>(<span class="number">64</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`effect`</span> <span class="built_in">varchar</span>(<span class="number">64</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`type`</span> <span class="built_in">varchar</span>(<span class="number">64</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`c_schema`</span> <span class="built_in">text</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>),</span><br><span class="line">  <span class="keyword">UNIQUE</span> <span class="keyword">KEY</span> <span class="string">`uk_configinfo_datagrouptenant`</span> (<span class="string">`data_id`</span>,<span class="string">`group_id`</span>,<span class="string">`tenant_id`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=utf8 <span class="keyword">COLLATE</span>=utf8_bin <span class="keyword">COMMENT</span>=<span class="string">'config_info'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/******************************************/</span></span><br><span class="line"><span class="comment">/*   数据库全名 = nacos_config   */</span></span><br><span class="line"><span class="comment">/*   表名称 = config_info_aggr   */</span></span><br><span class="line"><span class="comment">/******************************************/</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`config_info_aggr`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">bigint</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT <span class="keyword">COMMENT</span> <span class="string">'id'</span>,</span><br><span class="line">  <span class="string">`data_id`</span> <span class="built_in">varchar</span>(<span class="number">255</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'data_id'</span>,</span><br><span class="line">  <span class="string">`group_id`</span> <span class="built_in">varchar</span>(<span class="number">255</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'group_id'</span>,</span><br><span class="line">  <span class="string">`datum_id`</span> <span class="built_in">varchar</span>(<span class="number">255</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'datum_id'</span>,</span><br><span class="line">  <span class="string">`content`</span> longtext <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'内容'</span>,</span><br><span class="line">  <span class="string">`gmt_modified`</span> datetime <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'修改时间'</span>,</span><br><span class="line">  <span class="string">`app_name`</span> <span class="built_in">varchar</span>(<span class="number">128</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`tenant_id`</span> <span class="built_in">varchar</span>(<span class="number">128</span>) <span class="keyword">DEFAULT</span> <span class="string">''</span> <span class="keyword">COMMENT</span> <span class="string">'租户字段'</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>),</span><br><span class="line">  <span class="keyword">UNIQUE</span> <span class="keyword">KEY</span> <span class="string">`uk_configinfoaggr_datagrouptenantdatum`</span> (<span class="string">`data_id`</span>,<span class="string">`group_id`</span>,<span class="string">`tenant_id`</span>,<span class="string">`datum_id`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=utf8 <span class="keyword">COLLATE</span>=utf8_bin <span class="keyword">COMMENT</span>=<span class="string">'增加租户字段'</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/******************************************/</span></span><br><span class="line"><span class="comment">/*   数据库全名 = nacos_config   */</span></span><br><span class="line"><span class="comment">/*   表名称 = config_info_beta   */</span></span><br><span class="line"><span class="comment">/******************************************/</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`config_info_beta`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">bigint</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT <span class="keyword">COMMENT</span> <span class="string">'id'</span>,</span><br><span class="line">  <span class="string">`data_id`</span> <span class="built_in">varchar</span>(<span class="number">255</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'data_id'</span>,</span><br><span class="line">  <span class="string">`group_id`</span> <span class="built_in">varchar</span>(<span class="number">128</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'group_id'</span>,</span><br><span class="line">  <span class="string">`app_name`</span> <span class="built_in">varchar</span>(<span class="number">128</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'app_name'</span>,</span><br><span class="line">  <span class="string">`content`</span> longtext <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'content'</span>,</span><br><span class="line">  <span class="string">`beta_ips`</span> <span class="built_in">varchar</span>(<span class="number">1024</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'betaIps'</span>,</span><br><span class="line">  <span class="string">`md5`</span> <span class="built_in">varchar</span>(<span class="number">32</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'md5'</span>,</span><br><span class="line">  <span class="string">`gmt_create`</span> datetime <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="keyword">CURRENT_TIMESTAMP</span> <span class="keyword">COMMENT</span> <span class="string">'创建时间'</span>,</span><br><span class="line">  <span class="string">`gmt_modified`</span> datetime <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="keyword">CURRENT_TIMESTAMP</span> <span class="keyword">COMMENT</span> <span class="string">'修改时间'</span>,</span><br><span class="line">  <span class="string">`src_user`</span> <span class="built_in">text</span> <span class="keyword">COMMENT</span> <span class="string">'source user'</span>,</span><br><span class="line">  <span class="string">`src_ip`</span> <span class="built_in">varchar</span>(<span class="number">20</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'source ip'</span>,</span><br><span class="line">  <span class="string">`tenant_id`</span> <span class="built_in">varchar</span>(<span class="number">128</span>) <span class="keyword">DEFAULT</span> <span class="string">''</span> <span class="keyword">COMMENT</span> <span class="string">'租户字段'</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>),</span><br><span class="line">  <span class="keyword">UNIQUE</span> <span class="keyword">KEY</span> <span class="string">`uk_configinfobeta_datagrouptenant`</span> (<span class="string">`data_id`</span>,<span class="string">`group_id`</span>,<span class="string">`tenant_id`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=utf8 <span class="keyword">COLLATE</span>=utf8_bin <span class="keyword">COMMENT</span>=<span class="string">'config_info_beta'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/******************************************/</span></span><br><span class="line"><span class="comment">/*   数据库全名 = nacos_config   */</span></span><br><span class="line"><span class="comment">/*   表名称 = config_info_tag   */</span></span><br><span class="line"><span class="comment">/******************************************/</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`config_info_tag`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">bigint</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT <span class="keyword">COMMENT</span> <span class="string">'id'</span>,</span><br><span class="line">  <span class="string">`data_id`</span> <span class="built_in">varchar</span>(<span class="number">255</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'data_id'</span>,</span><br><span class="line">  <span class="string">`group_id`</span> <span class="built_in">varchar</span>(<span class="number">128</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'group_id'</span>,</span><br><span class="line">  <span class="string">`tenant_id`</span> <span class="built_in">varchar</span>(<span class="number">128</span>) <span class="keyword">DEFAULT</span> <span class="string">''</span> <span class="keyword">COMMENT</span> <span class="string">'tenant_id'</span>,</span><br><span class="line">  <span class="string">`tag_id`</span> <span class="built_in">varchar</span>(<span class="number">128</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'tag_id'</span>,</span><br><span class="line">  <span class="string">`app_name`</span> <span class="built_in">varchar</span>(<span class="number">128</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'app_name'</span>,</span><br><span class="line">  <span class="string">`content`</span> longtext <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'content'</span>,</span><br><span class="line">  <span class="string">`md5`</span> <span class="built_in">varchar</span>(<span class="number">32</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'md5'</span>,</span><br><span class="line">  <span class="string">`gmt_create`</span> datetime <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="keyword">CURRENT_TIMESTAMP</span> <span class="keyword">COMMENT</span> <span class="string">'创建时间'</span>,</span><br><span class="line">  <span class="string">`gmt_modified`</span> datetime <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="keyword">CURRENT_TIMESTAMP</span> <span class="keyword">COMMENT</span> <span class="string">'修改时间'</span>,</span><br><span class="line">  <span class="string">`src_user`</span> <span class="built_in">text</span> <span class="keyword">COMMENT</span> <span class="string">'source user'</span>,</span><br><span class="line">  <span class="string">`src_ip`</span> <span class="built_in">varchar</span>(<span class="number">20</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'source ip'</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>),</span><br><span class="line">  <span class="keyword">UNIQUE</span> <span class="keyword">KEY</span> <span class="string">`uk_configinfotag_datagrouptenanttag`</span> (<span class="string">`data_id`</span>,<span class="string">`group_id`</span>,<span class="string">`tenant_id`</span>,<span class="string">`tag_id`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=utf8 <span class="keyword">COLLATE</span>=utf8_bin <span class="keyword">COMMENT</span>=<span class="string">'config_info_tag'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/******************************************/</span></span><br><span class="line"><span class="comment">/*   数据库全名 = nacos_config   */</span></span><br><span class="line"><span class="comment">/*   表名称 = config_tags_relation   */</span></span><br><span class="line"><span class="comment">/******************************************/</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`config_tags_relation`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">bigint</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'id'</span>,</span><br><span class="line">  <span class="string">`tag_name`</span> <span class="built_in">varchar</span>(<span class="number">128</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'tag_name'</span>,</span><br><span class="line">  <span class="string">`tag_type`</span> <span class="built_in">varchar</span>(<span class="number">64</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'tag_type'</span>,</span><br><span class="line">  <span class="string">`data_id`</span> <span class="built_in">varchar</span>(<span class="number">255</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'data_id'</span>,</span><br><span class="line">  <span class="string">`group_id`</span> <span class="built_in">varchar</span>(<span class="number">128</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'group_id'</span>,</span><br><span class="line">  <span class="string">`tenant_id`</span> <span class="built_in">varchar</span>(<span class="number">128</span>) <span class="keyword">DEFAULT</span> <span class="string">''</span> <span class="keyword">COMMENT</span> <span class="string">'tenant_id'</span>,</span><br><span class="line">  <span class="string">`nid`</span> <span class="built_in">bigint</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`nid`</span>),</span><br><span class="line">  <span class="keyword">UNIQUE</span> <span class="keyword">KEY</span> <span class="string">`uk_configtagrelation_configidtag`</span> (<span class="string">`id`</span>,<span class="string">`tag_name`</span>,<span class="string">`tag_type`</span>),</span><br><span class="line">  <span class="keyword">KEY</span> <span class="string">`idx_tenant_id`</span> (<span class="string">`tenant_id`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=utf8 <span class="keyword">COLLATE</span>=utf8_bin <span class="keyword">COMMENT</span>=<span class="string">'config_tag_relation'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/******************************************/</span></span><br><span class="line"><span class="comment">/*   数据库全名 = nacos_config   */</span></span><br><span class="line"><span class="comment">/*   表名称 = group_capacity   */</span></span><br><span class="line"><span class="comment">/******************************************/</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`group_capacity`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">bigint</span>(<span class="number">20</span>) <span class="keyword">unsigned</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT <span class="keyword">COMMENT</span> <span class="string">'主键ID'</span>,</span><br><span class="line">  <span class="string">`group_id`</span> <span class="built_in">varchar</span>(<span class="number">128</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">''</span> <span class="keyword">COMMENT</span> <span class="string">'Group ID，空字符表示整个集群'</span>,</span><br><span class="line">  <span class="string">`quota`</span> <span class="built_in">int</span>(<span class="number">10</span>) <span class="keyword">unsigned</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">'0'</span> <span class="keyword">COMMENT</span> <span class="string">'配额，0表示使用默认值'</span>,</span><br><span class="line">  <span class="string">`usage`</span> <span class="built_in">int</span>(<span class="number">10</span>) <span class="keyword">unsigned</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">'0'</span> <span class="keyword">COMMENT</span> <span class="string">'使用量'</span>,</span><br><span class="line">  <span class="string">`max_size`</span> <span class="built_in">int</span>(<span class="number">10</span>) <span class="keyword">unsigned</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">'0'</span> <span class="keyword">COMMENT</span> <span class="string">'单个配置大小上限，单位为字节，0表示使用默认值'</span>,</span><br><span class="line">  <span class="string">`max_aggr_count`</span> <span class="built_in">int</span>(<span class="number">10</span>) <span class="keyword">unsigned</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">'0'</span> <span class="keyword">COMMENT</span> <span class="string">'聚合子配置最大个数，，0表示使用默认值'</span>,</span><br><span class="line">  <span class="string">`max_aggr_size`</span> <span class="built_in">int</span>(<span class="number">10</span>) <span class="keyword">unsigned</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">'0'</span> <span class="keyword">COMMENT</span> <span class="string">'单个聚合数据的子配置大小上限，单位为字节，0表示使用默认值'</span>,</span><br><span class="line">  <span class="string">`max_history_count`</span> <span class="built_in">int</span>(<span class="number">10</span>) <span class="keyword">unsigned</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">'0'</span> <span class="keyword">COMMENT</span> <span class="string">'最大变更历史数量'</span>,</span><br><span class="line">  <span class="string">`gmt_create`</span> datetime <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="keyword">CURRENT_TIMESTAMP</span> <span class="keyword">COMMENT</span> <span class="string">'创建时间'</span>,</span><br><span class="line">  <span class="string">`gmt_modified`</span> datetime <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="keyword">CURRENT_TIMESTAMP</span> <span class="keyword">COMMENT</span> <span class="string">'修改时间'</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>),</span><br><span class="line">  <span class="keyword">UNIQUE</span> <span class="keyword">KEY</span> <span class="string">`uk_group_id`</span> (<span class="string">`group_id`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=utf8 <span class="keyword">COLLATE</span>=utf8_bin <span class="keyword">COMMENT</span>=<span class="string">'集群、各Group容量信息表'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/******************************************/</span></span><br><span class="line"><span class="comment">/*   数据库全名 = nacos_config   */</span></span><br><span class="line"><span class="comment">/*   表名称 = his_config_info   */</span></span><br><span class="line"><span class="comment">/******************************************/</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`his_config_info`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">bigint</span>(<span class="number">64</span>) <span class="keyword">unsigned</span> <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`nid`</span> <span class="built_in">bigint</span>(<span class="number">20</span>) <span class="keyword">unsigned</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`data_id`</span> <span class="built_in">varchar</span>(<span class="number">255</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`group_id`</span> <span class="built_in">varchar</span>(<span class="number">128</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`app_name`</span> <span class="built_in">varchar</span>(<span class="number">128</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'app_name'</span>,</span><br><span class="line">  <span class="string">`content`</span> longtext <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`md5`</span> <span class="built_in">varchar</span>(<span class="number">32</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`gmt_create`</span> datetime <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="keyword">CURRENT_TIMESTAMP</span>,</span><br><span class="line">  <span class="string">`gmt_modified`</span> datetime <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="keyword">CURRENT_TIMESTAMP</span>,</span><br><span class="line">  <span class="string">`src_user`</span> <span class="built_in">text</span>,</span><br><span class="line">  <span class="string">`src_ip`</span> <span class="built_in">varchar</span>(<span class="number">20</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`op_type`</span> <span class="built_in">char</span>(<span class="number">10</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`tenant_id`</span> <span class="built_in">varchar</span>(<span class="number">128</span>) <span class="keyword">DEFAULT</span> <span class="string">''</span> <span class="keyword">COMMENT</span> <span class="string">'租户字段'</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`nid`</span>),</span><br><span class="line">  <span class="keyword">KEY</span> <span class="string">`idx_gmt_create`</span> (<span class="string">`gmt_create`</span>),</span><br><span class="line">  <span class="keyword">KEY</span> <span class="string">`idx_gmt_modified`</span> (<span class="string">`gmt_modified`</span>),</span><br><span class="line">  <span class="keyword">KEY</span> <span class="string">`idx_did`</span> (<span class="string">`data_id`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=utf8 <span class="keyword">COLLATE</span>=utf8_bin <span class="keyword">COMMENT</span>=<span class="string">'多租户改造'</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/******************************************/</span></span><br><span class="line"><span class="comment">/*   数据库全名 = nacos_config   */</span></span><br><span class="line"><span class="comment">/*   表名称 = tenant_capacity   */</span></span><br><span class="line"><span class="comment">/******************************************/</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`tenant_capacity`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">bigint</span>(<span class="number">20</span>) <span class="keyword">unsigned</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT <span class="keyword">COMMENT</span> <span class="string">'主键ID'</span>,</span><br><span class="line">  <span class="string">`tenant_id`</span> <span class="built_in">varchar</span>(<span class="number">128</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">''</span> <span class="keyword">COMMENT</span> <span class="string">'Tenant ID'</span>,</span><br><span class="line">  <span class="string">`quota`</span> <span class="built_in">int</span>(<span class="number">10</span>) <span class="keyword">unsigned</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">'0'</span> <span class="keyword">COMMENT</span> <span class="string">'配额，0表示使用默认值'</span>,</span><br><span class="line">  <span class="string">`usage`</span> <span class="built_in">int</span>(<span class="number">10</span>) <span class="keyword">unsigned</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">'0'</span> <span class="keyword">COMMENT</span> <span class="string">'使用量'</span>,</span><br><span class="line">  <span class="string">`max_size`</span> <span class="built_in">int</span>(<span class="number">10</span>) <span class="keyword">unsigned</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">'0'</span> <span class="keyword">COMMENT</span> <span class="string">'单个配置大小上限，单位为字节，0表示使用默认值'</span>,</span><br><span class="line">  <span class="string">`max_aggr_count`</span> <span class="built_in">int</span>(<span class="number">10</span>) <span class="keyword">unsigned</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">'0'</span> <span class="keyword">COMMENT</span> <span class="string">'聚合子配置最大个数'</span>,</span><br><span class="line">  <span class="string">`max_aggr_size`</span> <span class="built_in">int</span>(<span class="number">10</span>) <span class="keyword">unsigned</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">'0'</span> <span class="keyword">COMMENT</span> <span class="string">'单个聚合数据的子配置大小上限，单位为字节，0表示使用默认值'</span>,</span><br><span class="line">  <span class="string">`max_history_count`</span> <span class="built_in">int</span>(<span class="number">10</span>) <span class="keyword">unsigned</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">'0'</span> <span class="keyword">COMMENT</span> <span class="string">'最大变更历史数量'</span>,</span><br><span class="line">  <span class="string">`gmt_create`</span> datetime <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="keyword">CURRENT_TIMESTAMP</span> <span class="keyword">COMMENT</span> <span class="string">'创建时间'</span>,</span><br><span class="line">  <span class="string">`gmt_modified`</span> datetime <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="keyword">CURRENT_TIMESTAMP</span> <span class="keyword">COMMENT</span> <span class="string">'修改时间'</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>),</span><br><span class="line">  <span class="keyword">UNIQUE</span> <span class="keyword">KEY</span> <span class="string">`uk_tenant_id`</span> (<span class="string">`tenant_id`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=utf8 <span class="keyword">COLLATE</span>=utf8_bin <span class="keyword">COMMENT</span>=<span class="string">'租户容量信息表'</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`tenant_info`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">bigint</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT <span class="keyword">COMMENT</span> <span class="string">'id'</span>,</span><br><span class="line">  <span class="string">`kp`</span> <span class="built_in">varchar</span>(<span class="number">128</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'kp'</span>,</span><br><span class="line">  <span class="string">`tenant_id`</span> <span class="built_in">varchar</span>(<span class="number">128</span>) <span class="keyword">default</span> <span class="string">''</span> <span class="keyword">COMMENT</span> <span class="string">'tenant_id'</span>,</span><br><span class="line">  <span class="string">`tenant_name`</span> <span class="built_in">varchar</span>(<span class="number">128</span>) <span class="keyword">default</span> <span class="string">''</span> <span class="keyword">COMMENT</span> <span class="string">'tenant_name'</span>,</span><br><span class="line">  <span class="string">`tenant_desc`</span> <span class="built_in">varchar</span>(<span class="number">256</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'tenant_desc'</span>,</span><br><span class="line">  <span class="string">`create_source`</span> <span class="built_in">varchar</span>(<span class="number">32</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'create_source'</span>,</span><br><span class="line">  <span class="string">`gmt_create`</span> <span class="built_in">bigint</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'创建时间'</span>,</span><br><span class="line">  <span class="string">`gmt_modified`</span> <span class="built_in">bigint</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'修改时间'</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>),</span><br><span class="line">  <span class="keyword">UNIQUE</span> <span class="keyword">KEY</span> <span class="string">`uk_tenant_info_kptenantid`</span> (<span class="string">`kp`</span>,<span class="string">`tenant_id`</span>),</span><br><span class="line">  <span class="keyword">KEY</span> <span class="string">`idx_tenant_id`</span> (<span class="string">`tenant_id`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=utf8 <span class="keyword">COLLATE</span>=utf8_bin <span class="keyword">COMMENT</span>=<span class="string">'tenant_info'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`users`</span> (</span><br><span class="line">	<span class="string">`username`</span> <span class="built_in">varchar</span>(<span class="number">50</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> PRIMARY <span class="keyword">KEY</span>,</span><br><span class="line">	<span class="string">`password`</span> <span class="built_in">varchar</span>(<span class="number">500</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">	<span class="string">`enabled`</span> <span class="built_in">boolean</span> <span class="keyword">NOT</span> <span class="literal">NULL</span></span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`roles`</span> (</span><br><span class="line">	<span class="string">`username`</span> <span class="built_in">varchar</span>(<span class="number">50</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">	<span class="string">`role`</span> <span class="built_in">varchar</span>(<span class="number">50</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">	<span class="keyword">UNIQUE</span> <span class="keyword">INDEX</span> <span class="string">`idx_user_role`</span> (<span class="string">`username`</span> <span class="keyword">ASC</span>, <span class="string">`role`</span> <span class="keyword">ASC</span>) <span class="keyword">USING</span> BTREE</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`permissions`</span> (</span><br><span class="line">    <span class="string">`role`</span> <span class="built_in">varchar</span>(<span class="number">50</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">    <span class="string">`resource`</span> <span class="built_in">varchar</span>(<span class="number">512</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">    <span class="string">`action`</span> <span class="built_in">varchar</span>(<span class="number">8</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">    <span class="keyword">UNIQUE</span> <span class="keyword">INDEX</span> <span class="string">`uk_role_permission`</span> (<span class="string">`role`</span>,<span class="string">`resource`</span>,<span class="string">`action`</span>) <span class="keyword">USING</span> BTREE</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="keyword">users</span> (username, <span class="keyword">password</span>, enabled) <span class="keyword">VALUES</span> (<span class="string">'nacos'</span>, <span class="string">'$2a$10$EuWPZHzz32dJN7jexM34MOeYirDdFAZm2kuWj7VEOJhhZkDrxfvUu'</span>, <span class="literal">TRUE</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="keyword">roles</span> (username, <span class="keyword">role</span>) <span class="keyword">VALUES</span> (<span class="string">'nacos'</span>, <span class="string">'ROLE_ADMIN'</span>);</span><br></pre></td></tr></table></figure>
+            
+        </article>
+    </div>
+    
+    <div class="nexmoe-post">
+        <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/openLDAP/Ldapsearch%E6%90%9C%E7%B4%A2%E8%AF%AD%E6%B3%95/">
+            
+                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 66.66666666666666%;"> 
+                    <img data-src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg" data-sizes="auto" alt="Ldapsearch搜索语法.md" class="lazyload">
+                    <h1>Ldapsearch搜索语法.md</h1>
+                </div>
+            
+        </a>
+
+        <div class="nexmoe-post-meta nexmoe-rainbow">
+            <a><i class="nexmoefont icon-calendar-fill"></i>2020年05月14日</a>
+            <a><i class="nexmoefont icon-areachart"></i>2.5k 字</a>
+            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 10 分钟</a>
+        </div>
+
+        <article>
+            
+                <p><strong>一、基本操作</strong></p>
+<table>
+<thead>
+<tr>
+<th>连接</th>
+<th>连接操作作用于应用程序与LDAP服务器之间的连接和断开。</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>查询</td>
+<td>查询操作通常指的是搜索search和比较compare。也就是利用属性值查找相应条目。</td>
+</tr>
+<tr>
+<td>更改</td>
+<td>包括add/delete/modify/modifyDN</td>
+</tr>
+</tbody>
+</table>
+<p><strong>二、搜索参数</strong></p>
+<p>（这里只介绍一下搜索参数的搜索层次，为下文做铺垫）</p>
+<table>
+<thead>
+<tr>
+<th>base</th>
+<th>表示把基准DN作为搜索对象。例如：cn=yanzong,ou=Ops,dc=shuyun,dc=com 的基准DN是dc=shuyun,dc=com</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>one</td>
+<td>表示把基准DN的第一层作为搜索对象，如上个例子中的ou=Ops为搜索对象。</td>
+</tr>
+<tr>
+<td>sub</td>
+<td>表示把基准DN及以下的整棵树都作为搜索对象。</td>
+</tr>
+</tbody>
+</table>
+<p><strong>三、ldapsearch 参数表</strong></p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-a deref</td>
+<td>指定别名反向引用。请输入 never、always、search 或 find。如果不使用此参数，缺省为 never。</td>
+</tr>
+<tr>
+<td>-A</td>
+<td>只检索属性的名称，而不检索属性的值。</td>
+</tr>
+<tr>
+<td>-b base dn</td>
+<td>指定用作搜索起始点的专有名称。使用引号来指定该值，如：“ou=Ops,dc=shuyun,dc=com”.如果要搜索的服务器需要指定搜索起点，则必须使用此参数。否则此参数是可选的。也可以同时使用 -b 和 -s 来确定搜索范围。没有 –s，-b 就会搜索指定为起始点的项以及该项的所有子项。</td>
+</tr>
+<tr>
+<td>-B</td>
+<td>允许打印非 ASCII 值</td>
+</tr>
+<tr>
+<td>-D bind dn</td>
+<td>指定服务器用于验证您的专有名称。名称必须与目录中的项相符，并且必须拥有搜索目录所需的权限。请使用引号来指定该名称，例如：“cn=Manager,dc=shuyun,dc=com”。如果不使用此参数，则与服务器的连接是匿名的。如果服务器不允许匿名连接，则必须使用 -D。除了 -D，还必须使用 -w 参数来指定与专有名称相关联的口令。</td>
+</tr>
+<tr>
+<td>-f file</td>
+<td>指定包含要使用的搜索过滤器的文件，如 -f 过滤器。请将每个搜索过滤器置于单独的一行。Ldapsearch 会对每一行执行一次搜索。可选择指定过滤模式。例如，指定 -f 过滤 “cn=%s”，并在文件的每一行中输入公用名称的值。</td>
+</tr>
+<tr>
+<td>-F sep</td>
+<td>在属性名称和值之间打印 sep 而不是等号 (=)。例如，如果读取 ldapsearch 输出的工具希望使用其他的分隔符时，可以使用此参数。</td>
+</tr>
+<tr>
+<td>-h host name</td>
+<td>指定要连接的服务器主机名，如 -h <a href="http://ldap.shuyun.com" target="_blank" rel="noopener">ldap.shuyun.com</a>。</td>
+</tr>
+<tr>
+<td>-l timelimit</td>
+<td>指定完成搜索的时间限制（秒）。如果没有指定此参数或指定的限制为 0，那么搜索就没有时间限制。但是，ldapsearch 的等待时间决不会超过服务器上设置的搜索时间限制。</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>-L</th>
+<th>指定以 LDIF 格式输出。LDIF 格式使用冒号 (:) 而不是等号 (=) 作为属性描述符。LDIF 对一次性添加或修改大量目录项很有帮助。例如，可以将输出内容引入兼容 LDAP 的目录中。</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-M</td>
+<td>将参考对象作为普通项进行管理，以使 ldapsearch 可返回参考项本身的属性，而不是所参考的项的属性。</td>
+</tr>
+<tr>
+<td>-n</td>
+<td>显示如何执行搜索，但不实际执行搜索</td>
+</tr>
+<tr>
+<td>-p port</td>
+<td>指定服务器使用的端口。如果没有使用此参数，缺省情况下 ldapsearch 使用 389 端口。</td>
+</tr>
+<tr>
+<td>-R</td>
+<td>不自动遵循服务器返回的搜索引用。请注意，Netscape 目录服务器将术语 referrals 用于搜索引用。</td>
+</tr>
+<tr>
+<td>-s scope</td>
+<td>指定使用 -b 参数时的搜索范围：base – 仅搜索 -b 参数指定的项onelevel – 仅搜索 -b 参数指定项的直接子项，而不搜索该项本身subtree – 搜索 -b 参数指定的项以及它的所有子项。这是不带 -s 时使用 -b 的缺省行为。指定 -b 和 -s 的顺序并不重要。</td>
+</tr>
+<tr>
+<td>-S attribute</td>
+<td>按指定的属性排序结果。</td>
+</tr>
+<tr>
+<td>-z sizelimit</td>
+<td>指定返回项的最大数目。如果没有指定此参数或指定的限制为 0，那么返回的项没有数量限制。但是，ldapsearch 返回的项决不会多于服务器允许的数量。</td>
+</tr>
+<tr>
+<td>-u</td>
+<td>指定 ldapsearch 以用户友好格式返回专有名称。</td>
+</tr>
+<tr>
+<td>-v</td>
+<td>指定 ldapsearch 以详尽模式运行。</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>-w password</th>
+<th>指定与 -D 参数一起使用的与专有名称关联的口令。</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>x</td>
+<td>与 -S 一起使用时可指定 LDAP 服务器在将结果返回之前就对它们进行排序。如果使用 -S 而不使用 –x，ldapsearch 将对结果排序。</td>
+</tr>
+</tbody>
+</table>
+<p>四、匹配语法</p>
+<table>
+<thead>
+<tr>
+<th>运算符</th>
+<th>用途</th>
+<th>例子</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>=</td>
+<td>查找所包含的属性值与指定值相同的项</td>
+<td>“cn=yanzong”</td>
+</tr>
+<tr>
+<td>&gt;=</td>
+<td>查找特定项，该项中包含的属性的数字或字母值大于或等于指定的值。</td>
+<td>“cn&gt;=D”</td>
+</tr>
+<tr>
+<td>&lt;=</td>
+<td>查找特定项，该项中包含的属性的数字或字母值小于或等于指定的值。</td>
+<td>“roomNumber&lt;=300”</td>
+</tr>
+<tr>
+<td>=*</td>
+<td>查找包含特定属性的值的项，而不用管属性的值是什么。</td>
+<td>“sn=*”</td>
+</tr>
+<tr>
+<td>~=</td>
+<td>查找特定项，该项中所含属性的值约等于指定的值。</td>
+<td>“sn~=Brning” 可能返回 sn=Browning</td>
+</tr>
+<tr>
+<td>&amp;</td>
+<td>查找与所有搜索过滤器中指定的条件相匹配的项</td>
+<td>“(&amp;(cn=John Browning)(l=Dallas))”</td>
+</tr>
+<tr>
+<td>|</td>
+<td>查找与至少一个搜索过滤器中指定的条件相匹配的项</td>
+<td>“(|(cn=John Browning)(l=Dallas))”</td>
+</tr>
+<tr>
+<td>!</td>
+<td>查找与任何搜索过滤器中指定的条件都不匹配的项</td>
+<td>“(!(cn=John Browning)(l=Dallas))”</td>
+</tr>
+<tr>
+<td>= <string>*<string></td>
+<td>查找所包含的属性值与指定值相同的项(模糊匹配)</td>
+<td>“cn=y<em>zong&quot; &quot;cn=yan</em>”</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">必须使用搜索过滤器指定要搜索的属性。搜索过滤器的语法为：</span><br><span class="line">        <span class="string">"&lt;attribute&gt; &lt;operator&gt; &lt;value&gt;"</span></span><br><span class="line">例如，下面的搜索过滤器可以找到所有的特定项，只要该项中以 Smith 作为 sn（别称）属性的值：</span><br><span class="line">        <span class="string">"sn=Smith"</span></span><br><span class="line">可以在搜索过滤器中指定存储在目录中的任意属性。以下是用来搜索个人项的公用属性：</span><br><span class="line">        cn -- 个人的公用名称</span><br><span class="line">        sn -- 个人的姓</span><br><span class="line">        telephonenumber -- 个人的电话号码</span><br><span class="line">        l -- 个人的地理位置</span><br><span class="line">如果这里不是太清楚可以参考：http://407711169.blog.51cto.com/6616996/1439623 </span><br><span class="line">可以在 ldapsearch 命令行中指定搜索过滤器，或在文件中指定它们，并使用 lsearch 参数 -f 引用此文件。如果使用文件，请在单独的行中指定每个搜索过滤器。</span><br><span class="line">请注意：如果 LDAP 目录（如 Domino LDAP 目录）支持语言标记，则可在搜索过滤器中包含它们。例如：</span><br><span class="line">        <span class="string">"givenName;lang-fr=Etienne"</span></span><br><span class="line">使用布尔运算符的多个搜索过滤器</span><br><span class="line">您可以使用多个搜索过滤器以及布尔运算符。使用下列语法：</span><br><span class="line">        <span class="string">"(operator(filter)(filter))"</span></span><br><span class="line">例如，使用下面的搜索过滤器查找别称为 Browning、位置为 Dallas 的项。</span><br><span class="line">        <span class="string">"(&amp;(sn=Browning)(l=Dallas))"</span></span><br><span class="line">布尔运算符可以嵌套。例如，使用下面的搜索过滤器在邮件网络域 MDN 中查找 surname 为 caneel 或 givenname 为 alfred 的项：</span><br><span class="line">        <span class="string">"(&amp;(maildomain=MDN)(|(sn=caneel)(givenname=alfred)))"</span></span><br></pre></td></tr></table></figure>
+<p><strong>五、使用 ldapsearch 的样例</strong></p>
+<table>
+<thead>
+<tr>
+<th>搜索</th>
+<th>命令</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>使用端口 389 的主机 <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a> 上的所有项，并返回所有属性和值同上，但仅返回属性名称</td>
+<td>ldapsearch -h <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a> “objectClass=<em>“ldapsearch -A -h <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a>” objectClass=</em>”</td>
+</tr>
+<tr>
+<td>使用端口 389 的主机 <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a> 上的所有项，并且反向引用找到的所有别名</td>
+<td>ldapsearch -a always -h <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a> “objectClass=*”</td>
+</tr>
+<tr>
+<td>使用端口 389 的主机 <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a> 上的所有项，并返回 mail、cn、sn 和 givenname 等属性</td>
+<td>ldapsearch -h <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a> “objectClass=*” mail cn sn givenname</td>
+</tr>
+<tr>
+<td>在使用端口 389 的主机 <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a> 上，在 ”ou=West，o=Acme，c=US” 基准下搜索 (cn=Mike*)，并返回所有属性和值</td>
+<td>ldapsearch -b “ou=West,o=Acme,c=US” -h <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a> “(cn=Mike*)”</td>
+</tr>
+<tr>
+<td>使用端口 389 的主机 <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a> 上的一个级别，并返回所有属性和值同上，但限制基准的范围</td>
+<td>ldapsearch -s onelevel -h <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a> “objectClass=<em>&quot;ldapsearch -s base -h <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a> &quot;objectClass=</em>”</td>
+</tr>
+<tr>
+<td>使用端口 389 的主机 <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a> 上的所有项，并返回所有的属性和值；搜索时间限制为五秒</td>
+<td>ldapsearch -l 5 -h <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a> “objectClass=*”</td>
+</tr>
+<tr>
+<td>使用端口 389 的主机 <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a> 上的所有项，并返回所有的属性和值；大小限制为五</td>
+<td>ldapsearch -z 5 -h <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a> “objectClass=*”</td>
+</tr>
+<tr>
+<td>使用端口 389 的主机 <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a> 上的所有项，捆绑为：用户“cn=John Doe,o=Acme”，口令“password”，并以 LDIF 格式返回所有的属性和值</td>
+<td>ldapsearch -h <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a> -D “cn=john doe,o=acme” -w password -L “objectClass=*”</td>
+</tr>
+<tr>
+<td>使用端口 389 的主机 <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a>。对“cn=John Doe,o=Acme”项，返回其允许匿名查看的所有属性</td>
+<td>ldapsearch -h <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a>&quot; -s base -b “cn=john doe,o=acme” objectClass=*&quot;</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>配置为在端口 391 上侦听 LDAP 请求的另一台主机 <a href="http://bluepages.ibm.com" target="_blank" rel="noopener">bluepages.ibm.com</a> 上的所有项</th>
+<th>ldapsearch -h <a href="http://bluepages.ibm.com" target="_blank" rel="noopener">bluepages.ibm.com</a> -p 391 “objectClass=*”</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>端口 391 上的 <a href="http://bluepages.ibm.com" target="_blank" rel="noopener">bluepages.ibm.com</a>。对还有与 OR 过滤器中任意一个属性相匹配的属性的任何“个人”对象类型进行子树搜索（缺省），从组织“o=ibm”开始。超时值为 300 秒，返回的最大项数设为 1000。且仅返回 DN（缺省）和 CN（这是 Web 应用程序的公用过滤器）。</td>
+<td>ldapsearch -h <a href="http://bluepages.ibm.com" target="_blank" rel="noopener">bluepages.ibm.com</a> -p 391 -b “o=ibm” -l 300 -z 1000 “(&amp;(objectclass=Person)(|(cn=jerry seinfeld*)(givenname=jerry seinfeld*)(sn=jerry seinfeld*)(mail=jerry seinfeld*)))” cn</td>
+</tr>
+<tr>
+<td>端口 391 上的 <a href="http://bluepages.ibm.com" target="_blank" rel="noopener">bluepages.ibm.com</a>。以基准项“cn=HR Group,ou=Asia,o=IBM”为起始，时间限制为 300 秒，查询此项的所有成员。（Web 应用程序中用以确定群组成员的另一个公用过滤器）。</td>
+<td>ldapsearch -h <a href="http://bluepages.ibm.com" target="_blank" rel="noopener">bluepages.ibm.com</a> -p 391 -b “cn=HR Group,ou=Asia,o=IBM” -s base -l 300 “(objectclass=*)” member</td>
+</tr>
+</tbody>
+</table>
+
+            
+        </article>
+    </div>
+    
+    <div class="nexmoe-post">
+        <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/openLDAP/OpenLDAP/">
+            
+                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 66.66666666666666%;"> 
+                    <img data-src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg" data-sizes="auto" alt="OpenLDAP.md" class="lazyload">
+                    <h1>OpenLDAP.md</h1>
+                </div>
+            
+        </a>
+
+        <div class="nexmoe-post-meta nexmoe-rainbow">
+            <a><i class="nexmoefont icon-calendar-fill"></i>2020年05月14日</a>
+            <a><i class="nexmoefont icon-areachart"></i>1.6k 字</a>
+            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 10 分钟</a>
+        </div>
+
+        <article>
+            
+                <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line">DN=<span class="string">"dc=baibu,dc=la"</span></span><br><span class="line">DOMAIN=<span class="string">"baibu.la"</span></span><br><span class="line">DC=<span class="string">"baibu"</span></span><br><span class="line"><span class="comment">#ldap信息</span></span><br><span class="line">LDAP_HOST=192.168.19.8</span><br><span class="line">LDAP_PORT=<span class="variable">$&#123;LDAP_PORT&#125;</span></span><br><span class="line">LDAP_ADMIN_USER=<span class="string">"admin"</span></span><br><span class="line">LDAP_ADMIN_PASSWD=<span class="string">"kbsonlong"</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">install</span></span> () &#123;</span><br><span class="line"></span><br><span class="line">cat &gt; docker-compose-init.yml &lt;&lt; EOF</span><br><span class="line">version: <span class="string">'3.4'</span></span><br><span class="line">services:</span><br><span class="line">  openldap-init:</span><br><span class="line">    image: osixia/openldap:1.3.0</span><br><span class="line">    container_name: openldap-init</span><br><span class="line">    restart: always</span><br><span class="line">    environment:</span><br><span class="line">      - LDAP_ORGANISATION=<span class="variable">$&#123;DC&#125;</span></span><br><span class="line">      - LDAP_DOMAIN=<span class="variable">$&#123;DOMAIN&#125;</span></span><br><span class="line">      - LDAP_ADMIN_PASSWORD=<span class="variable">$&#123;LDAP_ADMIN_PASSWD&#125;</span></span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">docker-compose -f docker-compose-init.yml up -d </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">sleep 60</span><br><span class="line">mkdir -p /data/server/openldap/</span><br><span class="line">docker cp openldap-init:/var/lib/ldap /data/server/openldap/database</span><br><span class="line">docker cp openldap-init:/etc/ldap/slapd.d /data/server/openldap/slapd.d</span><br><span class="line"></span><br><span class="line">docker-compose -f docker-compose-init.yml down</span><br><span class="line"></span><br><span class="line">cat &gt; docker-compose.yml &lt;&lt; EOF</span><br><span class="line">version: <span class="string">'3.4'</span></span><br><span class="line">services:</span><br><span class="line">  openldap:</span><br><span class="line">    image: osixia/openldap:1.3.0</span><br><span class="line">    network_mode: <span class="string">"host"</span></span><br><span class="line">    container_name: openldap</span><br><span class="line">    restart: always</span><br><span class="line">    volumes:</span><br><span class="line">      - /data/server/openldap/database:/var/lib/ldap</span><br><span class="line">      - /data/server/openldap/slapd.d:/etc/ldap/slapd.d</span><br><span class="line">    environment:</span><br><span class="line">      - LDAP_ORGANISATION=<span class="variable">$&#123;DC&#125;</span></span><br><span class="line">      - LDAP_DOMAIN=<span class="variable">$&#123;DOMAIN&#125;</span></span><br><span class="line">      - LDAP_ADMIN_PASSWORD=<span class="variable">$&#123;LDAP_ADMIN_PASSWD&#125;</span></span><br><span class="line">  phpldapadmin:</span><br><span class="line">    image: osixia/phpldapadmin:latest</span><br><span class="line">    network_mode: <span class="string">"host"</span></span><br><span class="line">    container_name: phpldapadmin</span><br><span class="line">    environment:</span><br><span class="line">      PHPLDAPADMIN_LDAP_HOSTS: <span class="string">"<span class="variable">$&#123;LDAP_HOST&#125;</span>"</span></span><br><span class="line">      PHPLDAPADMIN_HTTPS: <span class="string">"false"</span></span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">docker-compose up -d</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">init_config</span></span> () &#123;</span><br><span class="line"><span class="comment">## 创建基础组</span></span><br><span class="line">cat &gt; base.ldif &lt;&lt; EOF</span><br><span class="line">dn: <span class="variable">$&#123;DN&#125;</span></span><br><span class="line">objectClass: top</span><br><span class="line">objectClass: dcObject</span><br><span class="line">objectclass: organization</span><br><span class="line">o: <span class="variable">$&#123;DOMAIN&#125;</span></span><br><span class="line">dc: <span class="variable">$&#123;DC&#125;</span></span><br><span class="line"></span><br><span class="line">dn: cn=<span class="variable">$&#123;LDAP_ADMIN_USER&#125;</span>,<span class="variable">$&#123;DN&#125;</span></span><br><span class="line">objectClass: organizationalRole</span><br><span class="line">cn: <span class="variable">$&#123;LDAP_ADMIN_USER&#125;</span></span><br><span class="line">description: Directory <span class="variable">$&#123;LDAP_ADMIN_USER&#125;</span></span><br><span class="line"></span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">ldapadd -x -h <span class="variable">$&#123;LDAP_HOST&#125;</span>  -p <span class="variable">$&#123;LDAP_PORT&#125;</span> -D cn=<span class="variable">$&#123;LDAP_ADMIN_USER&#125;</span>,<span class="variable">$&#123;DN&#125;</span> -w <span class="variable">$&#123;LDAP_ADMIN_PASSWD&#125;</span> -f base.ldif</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">ldapsearch -LLL -w <span class="string">"<span class="variable">$&#123;LDAP_ADMIN_PASSWD&#125;</span>"</span> -x -D <span class="string">"cn=<span class="variable">$&#123;LDAP_ADMIN_USER&#125;</span>,<span class="variable">$&#123;DN&#125;</span>"</span> -h <span class="variable">$&#123;LDAP_HOST&#125;</span>  -p <span class="variable">$&#123;LDAP_PORT&#125;</span> -b <span class="string">"<span class="variable">$&#123;DN&#125;</span>"</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">## 创建组织结构</span></span><br><span class="line">cat &gt; ou.ldif &lt;&lt; EOF</span><br><span class="line"></span><br><span class="line">dn: ou=People,<span class="variable">$&#123;DN&#125;</span></span><br><span class="line">objectClass: organizationalUnit</span><br><span class="line">ou: People</span><br><span class="line"></span><br><span class="line">dn: ou=Group,<span class="variable">$&#123;DN&#125;</span></span><br><span class="line">objectClass: organizationalUnit</span><br><span class="line">ou: Group</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">ldapadd -x -h <span class="variable">$&#123;LDAP_HOST&#125;</span>  -p <span class="variable">$&#123;LDAP_PORT&#125;</span>  -D cn=<span class="variable">$&#123;LDAP_ADMIN_USER&#125;</span>,<span class="variable">$&#123;DN&#125;</span> -w <span class="variable">$&#123;LDAP_ADMIN_PASSWD&#125;</span> -f ou.ldif</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">ldapsearch -LLL -w <span class="string">"<span class="variable">$&#123;LDAP_ADMIN_PASSWD&#125;</span>"</span> -x -D <span class="string">"cn=<span class="variable">$&#123;LDAP_ADMIN_USER&#125;</span>,<span class="variable">$&#123;DN&#125;</span>"</span> -h <span class="variable">$&#123;LDAP_HOST&#125;</span>  -p <span class="variable">$&#123;LDAP_PORT&#125;</span> -b <span class="string">"<span class="variable">$&#123;DN&#125;</span>"</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">ldapsearch -LLL -w <span class="string">"<span class="variable">$&#123;LDAP_ADMIN_PASSWD&#125;</span>"</span> -x -D <span class="string">"cn=<span class="variable">$&#123;LDAP_ADMIN_USER&#125;</span>,<span class="variable">$&#123;DN&#125;</span>"</span> -h <span class="variable">$&#123;LDAP_HOST&#125;</span>  -p <span class="variable">$&#123;LDAP_PORT&#125;</span> -b <span class="string">"<span class="variable">$&#123;DN&#125;</span>"</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">## 配置组织结构</span></span><br><span class="line">cat &gt; user_group.ldif &lt;&lt; EOF</span><br><span class="line">dn: cn=baibu,ou=Group,<span class="variable">$&#123;DN&#125;</span></span><br><span class="line">cn: baibu</span><br><span class="line">objectClass: groupOfUniqueNames</span><br><span class="line">objectClass: top</span><br><span class="line">ou: group</span><br><span class="line">uniqueMember: </span><br><span class="line"></span><br><span class="line">dn: cn=quanbu,ou=Group,<span class="variable">$&#123;DN&#125;</span></span><br><span class="line">cn: quanbu</span><br><span class="line">objectClass: groupOfUniqueNames</span><br><span class="line">objectClass: top</span><br><span class="line">ou: group</span><br><span class="line">uniqueMember:</span><br><span class="line"></span><br><span class="line">dn: cn=budadang,ou=Group,<span class="variable">$&#123;DN&#125;</span></span><br><span class="line">cn: budadang</span><br><span class="line">objectClass: groupOfUniqueNames</span><br><span class="line">objectClass: top</span><br><span class="line">ou: group</span><br><span class="line">uniqueMember:</span><br><span class="line"></span><br><span class="line">dn: cn=finance,ou=Group,<span class="variable">$&#123;DN&#125;</span></span><br><span class="line">cn: finance</span><br><span class="line">objectClass: groupOfUniqueNames</span><br><span class="line">objectClass: top</span><br><span class="line">ou: group</span><br><span class="line">uniqueMember:</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">ldapadd -x  -h <span class="variable">$&#123;LDAP_HOST&#125;</span>  -p <span class="variable">$&#123;LDAP_PORT&#125;</span>  -D cn=<span class="variable">$&#123;LDAP_ADMIN_USER&#125;</span>,<span class="variable">$&#123;DN&#125;</span> -w <span class="variable">$&#123;LDAP_ADMIN_PASSWD&#125;</span> -f user_group.ldif</span><br><span class="line">ldapsearch -LLL -x -H ldap:/// -D <span class="string">"cn=<span class="variable">$&#123;LDAP_ADMIN_USER&#125;</span>,<span class="variable">$&#123;DN&#125;</span>"</span> -b <span class="string">"<span class="variable">$&#123;DN&#125;</span>"</span> <span class="string">"(ou=*)"</span> -w <span class="variable">$&#123;LDAP_ADMIN_PASSWD&#125;</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">add_user</span></span> () &#123;</span><br><span class="line"><span class="comment">## 新增用户</span></span><br><span class="line">cat &lt;&lt; EOF | ldapadd -x  -h <span class="variable">$&#123;LDAP_HOST&#125;</span>  -p <span class="variable">$&#123;LDAP_PORT&#125;</span>  -D cn=<span class="variable">$&#123;LDAP_ADMIN_USER&#125;</span>,<span class="variable">$&#123;DN&#125;</span> -w <span class="variable">$&#123;LDAP_ADMIN_PASSWD&#125;</span></span><br><span class="line">dn: uid=<span class="variable">$1</span>,ou=People,<span class="variable">$&#123;DN&#125;</span></span><br><span class="line">uid: <span class="variable">$1</span></span><br><span class="line">cn: <span class="variable">$1</span></span><br><span class="line">sn: <span class="variable">$1</span></span><br><span class="line">givenName: <span class="variable">$1</span></span><br><span class="line">displayName: <span class="variable">$1</span></span><br><span class="line">objectClass: posixAccount</span><br><span class="line">objectClass: top</span><br><span class="line">objectClass: person</span><br><span class="line">objectClass: shadowAccount</span><br><span class="line">objectClass: inetOrgPerson</span><br><span class="line">uidNumber: 1009</span><br><span class="line">gidNumber: 1009</span><br><span class="line">gecos: System Manager</span><br><span class="line">loginShell: /bin/bash</span><br><span class="line">homeDirectory: /home/<span class="variable">$1</span></span><br><span class="line">userPassword: <span class="variable">$1</span></span><br><span class="line">shadowLastChange: 17654</span><br><span class="line">shadowMin: 0</span><br><span class="line">shadowMax: 99999</span><br><span class="line">shadowWarning: 7</span><br><span class="line">shadowExpire: -1</span><br><span class="line">employeeNumber: 18002</span><br><span class="line">homePhone: 020-xxxxxxxx</span><br><span class="line">mobile: 152xxxxxxxxx</span><br><span class="line">mail: <span class="variable">$1</span>@<span class="variable">$&#123;DOMAIN&#125;</span></span><br><span class="line">postalAddress: Guangzhou</span><br><span class="line">initials: Test</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">ldapsearch -x -h <span class="variable">$&#123;LDAP_HOST&#125;</span> -p <span class="variable">$&#123;LDAP_PORT&#125;</span> -b <span class="string">"<span class="variable">$&#123;DN&#125;</span>"</span> -D <span class="string">"cn=<span class="variable">$&#123;LDAP_ADMIN_USER&#125;</span>,<span class="variable">$&#123;DN&#125;</span>"</span> -w <span class="variable">$&#123;LDAP_ADMIN_PASSWD&#125;</span> <span class="string">"uid=<span class="variable">$1</span>"</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">add_user_to_group</span></span> () &#123;</span><br><span class="line">cat &lt;&lt; EOF |ldapmodify -x -h <span class="variable">$&#123;LDAP_HOST&#125;</span> -p <span class="variable">$&#123;LDAP_PORT&#125;</span> -D <span class="string">"cn=admin,<span class="variable">$&#123;DN&#125;</span>"</span> -w <span class="variable">$&#123;LDAP_ADMIN_PASSWD&#125;</span></span><br><span class="line">dn: cn=<span class="variable">$2</span>,ou=Group,<span class="variable">$&#123;DN&#125;</span></span><br><span class="line">changetype: modify</span><br><span class="line">add: uniqueMember</span><br><span class="line">uniqueMember: uid=<span class="variable">$1</span>,ou=People,<span class="variable">$&#123;DN&#125;</span></span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">ldapsearch -LLL -x  -h <span class="variable">$&#123;LDAP_HOST&#125;</span> -p <span class="variable">$&#123;LDAP_PORT&#125;</span> -D <span class="string">"cn=admin,<span class="variable">$&#123;DN&#125;</span>"</span> -w <span class="variable">$&#123;LDAP_ADMIN_PASSWD&#125;</span> -b <span class="string">"<span class="variable">$&#123;DN&#125;</span>"</span> <span class="string">"(ou=*)"</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">install</span><br><span class="line">init_config</span><br><span class="line"><span class="comment">## 添加用户</span></span><br><span class="line"><span class="comment">#add_user $1</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## 添加用户到组</span></span><br><span class="line"><span class="comment">#add_user_to_group $1 $2</span></span><br></pre></td></tr></table></figure>
+<p>卸载重装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#停止openldap</span></span><br><span class="line"></span><br><span class="line">systemctl stop slapd</span><br><span class="line">systemctl <span class="built_in">disable</span> slapd</span><br><span class="line"></span><br><span class="line"><span class="comment">#卸载</span></span><br><span class="line">yum -y remove openldap-servers openldap-clients</span><br><span class="line"></span><br><span class="line"><span class="comment">#删除残留文件</span></span><br><span class="line"></span><br><span class="line">rm -rf /var/lib/ldap</span><br><span class="line"></span><br><span class="line"><span class="comment">##删除ldap用户</span></span><br><span class="line">userdel ldap</span><br><span class="line"></span><br><span class="line"><span class="comment">#删除openldap目录</span></span><br><span class="line">rm -rf /etc/openldap</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">mkdir -p /etc/openldap/certs</span><br><span class="line">bash /usr/libexec/openldap/create-certdb.sh</span><br><span class="line"></span><br><span class="line">yum -y install openldap compat-openldap openldap-clients openldap-servers openldap-servers-sql openldap-devel</span><br><span class="line">bash /usr/libexec/openldap/generate-server-cert.sh </span><br><span class="line">cp /usr/share/openldap-servers/DB_CONFIG.example /var/lib/ldap/DB_CONFIG</span><br><span class="line">chown ldap. /var/lib/ldap/DB_CONFIG</span><br><span class="line">systemctl <span class="built_in">enable</span> --now slapd</span><br><span class="line"></span><br><span class="line">RootPW=`slappasswd -h &#123;SSHA&#125; -s kbsonlong`</span><br><span class="line"></span><br><span class="line">cat &lt;&lt; EOF | ldapadd -Y EXTERNAL -H ldapi:/// </span><br><span class="line">dn: olcDatabase=&#123;0&#125;config,cn=config</span><br><span class="line">changetype: modify</span><br><span class="line">add: olcRootPW</span><br><span class="line">olcRootPW: <span class="variable">$&#123;RootPW&#125;</span></span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">ldapadd -Y EXTERNAL -H ldapi:/// -D <span class="string">"cn=config"</span> -f /etc/openldap/schema/cosine.ldif</span><br><span class="line">ldapadd -Y EXTERNAL -H ldapi:/// -D <span class="string">"cn=config"</span> -f /etc/openldap/schema/nis.ldif</span><br><span class="line">ldapadd -Y EXTERNAL -H ldapi:/// -D <span class="string">"cn=config"</span> -f /etc/openldap/schema/collective.ldif</span><br><span class="line">ldapadd -Y EXTERNAL -H ldapi:/// -D <span class="string">"cn=config"</span> -f /etc/openldap/schema/corba.ldif</span><br><span class="line">ldapadd -Y EXTERNAL -H ldapi:/// -D <span class="string">"cn=config"</span> -f /etc/openldap/schema/core.ldif</span><br><span class="line">ldapadd -Y EXTERNAL -H ldapi:/// -D <span class="string">"cn=config"</span> -f /etc/openldap/schema/duaconf.ldif</span><br><span class="line">ldapadd -Y EXTERNAL -H ldapi:/// -D <span class="string">"cn=config"</span> -f /etc/openldap/schema/dyngroup.ldif</span><br><span class="line">ldapadd -Y EXTERNAL -H ldapi:/// -D <span class="string">"cn=config"</span> -f /etc/openldap/schema/inetorgperson.ldif</span><br><span class="line">ldapadd -Y EXTERNAL -H ldapi:/// -D <span class="string">"cn=config"</span> -f /etc/openldap/schema/java.ldif</span><br><span class="line">ldapadd -Y EXTERNAL -H ldapi:/// -D <span class="string">"cn=config"</span> -f /etc/openldap/schema/misc.ldif</span><br><span class="line">ldapadd -Y EXTERNAL -H ldapi:/// -D <span class="string">"cn=config"</span> -f /etc/openldap/schema/openldap.ldif</span><br><span class="line">ldapadd -Y EXTERNAL -H ldapi:/// -D <span class="string">"cn=config"</span> -f /etc/openldap/schema/pmi.ldif</span><br><span class="line">ldapadd -Y EXTERNAL -H ldapi:/// -D <span class="string">"cn=config"</span> -f /etc/openldap/schema/ppolicy.ldif</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">cat &lt;&lt; EOF | ldapmodify -Y EXTERNAL -H ldapi:/// </span><br><span class="line">dn: olcDatabase=&#123;1&#125;monitor,cn=config</span><br><span class="line">changetype: modify</span><br><span class="line">replace: olcAccess</span><br><span class="line">olcAccess: &#123;0&#125;to * by dn.base=<span class="string">"gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth"</span></span><br><span class="line">  <span class="built_in">read</span> by dn.base=<span class="string">"cn=admin,dc=baibu,dc=la"</span> <span class="built_in">read</span> by * none</span><br><span class="line"></span><br><span class="line">dn: olcDatabase=&#123;2&#125;hdb,cn=config</span><br><span class="line">changetype: modify</span><br><span class="line">replace: olcSuffix</span><br><span class="line">olcSuffix: dc=baibu,dc=la</span><br><span class="line"></span><br><span class="line">dn: olcDatabase=&#123;2&#125;hdb,cn=config</span><br><span class="line">changetype: modify</span><br><span class="line">replace: olcRootDN</span><br><span class="line">olcRootDN: cn=admin,dc=baibu,dc=la</span><br><span class="line"></span><br><span class="line">dn: olcDatabase=&#123;2&#125;hdb,cn=config</span><br><span class="line">changetype: modify</span><br><span class="line">add: olcRootPW</span><br><span class="line">olcRootPW: <span class="variable">$&#123;RootPW&#125;</span></span><br><span class="line"></span><br><span class="line">dn: olcDatabase=&#123;2&#125;hdb,cn=config</span><br><span class="line">changetype: modify</span><br><span class="line">add: olcAccess</span><br><span class="line">olcAccess: &#123;0&#125;to attrs=userPassword,shadowLastChange by</span><br><span class="line">  dn=<span class="string">"cn=admin,dc=baibu,dc=la"</span> write by anonymous auth by self write by * none</span><br><span class="line">olcAccess: &#123;1&#125;to dn.base=<span class="string">""</span> by * <span class="built_in">read</span></span><br><span class="line">olcAccess: &#123;2&#125;to * by dn=<span class="string">"cn=admin,dc=badiu,dc=com"</span> write by * <span class="built_in">read</span></span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">cat &lt;&lt; EOF | ldapadd -x -D cn=admin,dc=baibu,dc=la -w kbsonlong</span><br><span class="line">dn: dc=baibu,dc=la</span><br><span class="line">objectClass: top</span><br><span class="line">objectClass: dcObject</span><br><span class="line">objectClass: organization</span><br><span class="line">o: Zhijing Company</span><br><span class="line">dc: baibu</span><br><span class="line"></span><br><span class="line">dn: cn=admin,dc=baibu,dc=la</span><br><span class="line">objectClass: organizationalRole</span><br><span class="line">cn: admin</span><br><span class="line"></span><br><span class="line">dn: ou=People,dc=baibu,dc=la</span><br><span class="line">objectClass: organizationalUnit</span><br><span class="line">ou: People</span><br><span class="line"></span><br><span class="line">dn: ou=Group,dc=baibu,dc=la</span><br><span class="line">objectClass: organizationalRole</span><br><span class="line">cn: Group</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">cat &gt; docker-compose.yml &lt;&lt; EOF</span><br><span class="line">version: <span class="string">'3.4'</span></span><br><span class="line">services:</span><br><span class="line">  phpldapadmin:</span><br><span class="line">    image: osixia/phpldapadmin:latest</span><br><span class="line">    network_mode: <span class="string">"host"</span></span><br><span class="line">    container_name: phpldapadmin</span><br><span class="line">    environment:</span><br><span class="line">      PHPLDAPADMIN_LDAP_HOSTS: <span class="string">"localhost"</span></span><br><span class="line">      PHPLDAPADMIN_HTTPS: <span class="string">"false"</span></span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">docker-compose up -d</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">cat &lt;&lt; EOF | ldapadd -x -D cn=admin,dc=baibu,dc=la -w kbsonlong</span><br><span class="line">dn: uid=tom,ou=People,dc=baibu,dc=la</span><br><span class="line">objectClass: inetOrgPerson</span><br><span class="line">objectClass: posixAccount</span><br><span class="line">objectClass: shadowAccount</span><br><span class="line">uid: tom</span><br><span class="line">cn: tom</span><br><span class="line">sn: tom</span><br><span class="line">userPassword: <span class="variable">$&#123;RootPW&#125;</span></span><br><span class="line">uidNumber: 1100</span><br><span class="line">gidNumber: 1100</span><br><span class="line">homeDirectory: /home/tom</span><br><span class="line"></span><br><span class="line">dn: cn=ops,ou=Group,dc=baibu,dc=la</span><br><span class="line">objectClass: posixGroup</span><br><span class="line">cn: ops</span><br><span class="line">gidNumber: 1100</span><br><span class="line">memberUid: ops</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">ldapsearch -x -b <span class="string">"dc=baibu,dc=la"</span> -H ldap://127.0.0.1</span><br><span class="line"></span><br><span class="line">cat &lt;&lt; EOF | ldapadd -Y EXTERNAL -H ldapi:/// </span><br><span class="line"><span class="comment"># create new</span></span><br><span class="line">dn: cn=module,cn=config</span><br><span class="line">objectClass: olcModuleList</span><br><span class="line">cn: module</span><br><span class="line">olcModulePath: /usr/lib64/openldap</span><br><span class="line">olcModuleLoad: syncprov.la</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">cat &lt;&lt; EOF | ldapadd -Y EXTERNAL -H ldapi:/// </span><br><span class="line"><span class="comment"># create new</span></span><br><span class="line">dn: olcOverlay=syncprov,olcDatabase=&#123;2&#125;hdb,cn=config</span><br><span class="line">objectClass: olcOverlayConfig</span><br><span class="line">objectClass: olcSyncProvConfig</span><br><span class="line">olcOverlay: syncprov</span><br><span class="line">olcSpSessionLog: 100</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+<p>##配置双主集群</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">## master01</span></span><br><span class="line">cat &lt;&lt; EOF | ldapmodify -Y EXTERNAL -H ldapi:/// </span><br><span class="line"><span class="comment"># create new</span></span><br><span class="line">dn: cn=config</span><br><span class="line">changetype: modify</span><br><span class="line">replace: olcServerID</span><br><span class="line"><span class="comment"># specify uniq ID number on each server</span></span><br><span class="line">olcServerID: 0</span><br><span class="line"></span><br><span class="line">dn: olcDatabase=&#123;2&#125;hdb,cn=config</span><br><span class="line">changetype: modify</span><br><span class="line">add: olcSyncRepl</span><br><span class="line">olcSyncRepl: rid=001</span><br><span class="line">  provider=ldap://192.168.18.165:389/</span><br><span class="line">  bindmethod=simple</span><br><span class="line">  binddn=<span class="string">"cn=admin,dc=baibu,dc=la"</span></span><br><span class="line">  credentials=kbsonlong</span><br><span class="line">  searchbase=<span class="string">"dc=baibu,dc=la"</span></span><br><span class="line">  scope=sub</span><br><span class="line">  schemachecking=on</span><br><span class="line">  <span class="built_in">type</span>=refreshAndPersist</span><br><span class="line">  retry=<span class="string">"30 5 300 3"</span></span><br><span class="line">  interval=00:00:05:00</span><br><span class="line">-</span><br><span class="line">add: olcMirrorMode</span><br><span class="line">olcMirrorMode: TRUE</span><br><span class="line"></span><br><span class="line">dn: olcOverlay=syncprov,olcDatabase=&#123;2&#125;hdb,cn=config</span><br><span class="line">changetype: add</span><br><span class="line">objectClass: olcOverlayConfig</span><br><span class="line">objectClass: olcSyncProvConfig</span><br><span class="line">olcOverlay: syncprov</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">## master02</span></span><br><span class="line">cat &lt;&lt; EOF | ldapmodify -Y EXTERNAL -H ldapi:/// </span><br><span class="line"><span class="comment"># create new</span></span><br><span class="line">dn: cn=config</span><br><span class="line">changetype: modify</span><br><span class="line">replace: olcServerID</span><br><span class="line"><span class="comment"># specify uniq ID number on each server</span></span><br><span class="line">olcServerID: 1</span><br><span class="line"></span><br><span class="line">dn: olcDatabase=&#123;2&#125;hdb,cn=config</span><br><span class="line">changetype: modify</span><br><span class="line">add: olcSyncRepl</span><br><span class="line">olcSyncRepl: rid=001</span><br><span class="line">  provider=ldap://192.168.19.68:389/</span><br><span class="line">  bindmethod=simple</span><br><span class="line">  binddn=<span class="string">"cn=admin,dc=baibu,dc=la"</span></span><br><span class="line">  credentials=kbsonlong</span><br><span class="line">  searchbase=<span class="string">"dc=baibu,dc=la"</span></span><br><span class="line">  scope=sub</span><br><span class="line">  schemachecking=on</span><br><span class="line">  <span class="built_in">type</span>=refreshAndPersist</span><br><span class="line">  retry=<span class="string">"30 5 300 3"</span></span><br><span class="line">  interval=00:00:05:00</span><br><span class="line">-</span><br><span class="line">add: olcMirrorMode</span><br><span class="line">olcMirrorMode: TRUE</span><br><span class="line"></span><br><span class="line">dn: olcOverlay=syncprov,olcDatabase=&#123;2&#125;hdb,cn=config</span><br><span class="line">changetype: add</span><br><span class="line">objectClass: olcOverlayConfig</span><br><span class="line">objectClass: olcSyncProvConfig</span><br><span class="line">olcOverlay: syncprov</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">cat &lt;&lt; EOF | ldapadd -x -D cn=admin,dc=baibu,dc=la -w kbsonlong</span><br><span class="line">dn: uid=<span class="built_in">test</span>,ou=People,dc=baibu,dc=la</span><br><span class="line">objectClass: inetOrgPerson</span><br><span class="line">objectClass: posixAccount</span><br><span class="line">objectClass: shadowAccount</span><br><span class="line">uid: <span class="built_in">test</span></span><br><span class="line">cn: <span class="built_in">test</span></span><br><span class="line">sn: <span class="built_in">test</span></span><br><span class="line">userPassword: <span class="variable">$&#123;RootPW&#125;</span></span><br><span class="line">uidNumber: 1100</span><br><span class="line">gidNumber: 1100</span><br><span class="line">homeDirectory: /home/<span class="built_in">test</span></span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">ldapsearch -x -b <span class="string">"dc=baibu,dc=la"</span> -H ldap://192.168.19.68|grep uid=<span class="built_in">test</span></span><br><span class="line"></span><br><span class="line">ldapsearch -x -b <span class="string">"dc=baibu,dc=la"</span> -H ldap://192.168.18.165|grep uid=<span class="built_in">test</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">cat &lt;&lt; EOF | ldapadd -x -D cn=admin,dc=baibu,dc=la -w kbsonlong</span><br><span class="line">dn: uid=zengshenglong,ou=People,dc=baibu,dc=la</span><br><span class="line">objectClass: inetOrgPerson</span><br><span class="line">objectClass: posixAccount</span><br><span class="line">objectClass: shadowAccount</span><br><span class="line">uid: zengshenglong</span><br><span class="line">cn: zengshenglong</span><br><span class="line">sn: zengshenglong</span><br><span class="line">userPassword: <span class="variable">$&#123;RootPW&#125;</span></span><br><span class="line">uidNumber: 1100</span><br><span class="line">gidNumber: 1100</span><br><span class="line">homeDirectory: /home/zengshenglong</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">ldapsearch -x -b <span class="string">"dc=baibu,dc=la"</span> -H ldap://192.168.19.68|grep uid=zengshenglong</span><br><span class="line"></span><br><span class="line">ldapsearch -x -b <span class="string">"dc=baibu,dc=la"</span> -H ldap://192.168.18.165|grep uid=zengshenglong</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cat &gt;&gt; /etc/openldap/ldap.conf &lt;&lt; EOF</span><br><span class="line">BASE   dc=baibu,dc=la</span><br><span class="line">URI    ldap://ldap.baibu.la</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+            
+        </article>
+    </div>
+    
+    <div class="nexmoe-post">
+        <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/openLDAP/OpenLDAP%E5%B1%9E%E6%80%A7/">
+            
+                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 66.66666666666666%;"> 
+                    <img data-src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg" data-sizes="auto" alt="OpenLDAP属性.md" class="lazyload">
+                    <h1>OpenLDAP属性.md</h1>
+                </div>
+            
+        </a>
+
+        <div class="nexmoe-post-meta nexmoe-rainbow">
+            <a><i class="nexmoefont icon-calendar-fill"></i>2020年05月14日</a>
+            <a><i class="nexmoefont icon-areachart"></i>505 字</a>
+            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 2 分钟</a>
+        </div>
+
+        <article>
+            
+                <h1>OpenLDAP 属性</h1>
+<h2 id="属性概述"><a class="header-anchor" href="#属性概述">¶</a>属性概述</h2>
+<p>属性（Attribute）在目录树中主要用于描述条目相关信息，例如用户条目的用途、联系方式、邮件、uid、gid、公司地址等辅助信息。属性由 objectClass 所控制，一个 objectClass 的节点具有一系列 Attribute，Attribute 可以理解为 Linux 系统当中的变量，每个变量都有对应的值，OpenLDAP Attribute 也是对应的值。这些属性的对应值表示每个对象的特点，但有些属性在添加时是必须指定的，有些属性是非必要的（类似于条目更详细的描述）。在目录树中常用的 Attribute 有 uid、sn、giveName、I、objectClass、dc、ou、cn、mail、telephoneNumber、c 等。</p>
+<h2 id="Attribute-详解"><a class="header-anchor" href="#Attribute-详解">¶</a>Attribute 详解</h2>
+<p>目录树中常见的属性及其描述表</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">属性</th>
+<th style="text-align:left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">dn（distinguished name）</td>
+<td style="text-align:left">唯一标示名，类似于 Linux 文件系统中的绝对路径，每个对象都有唯一标示名。例如，uid=dpgdy，ou=People，dc=shileizcc，dc=com</td>
+</tr>
+<tr>
+<td style="text-align:left">rdb（relative dn）</td>
+<td style="text-align:left">通常指相对标示名，类似于 Linux 文件系统中的相对路径。例如，uid=dpgdy</td>
+</tr>
+<tr>
+<td style="text-align:left">uid（user id）</td>
+<td style="text-align:left">通常指一个用户的登入名称。例如，uid=dpgdy，在系统中的 uid 不是一个概念。</td>
+</tr>
+<tr>
+<td style="text-align:left">sn（sur name）</td>
+<td style="text-align:left">通常指一个人的姓氏。例如，sn：Guo</td>
+</tr>
+<tr>
+<td style="text-align:left">giveName</td>
+<td style="text-align:left">通常指一个人的名字。例如，giveName：Guodayong，但不能是姓氏。</td>
+</tr>
+<tr>
+<td style="text-align:left">I</td>
+<td style="text-align:left">通常指一个地方的地名。例如，I：Shanghai</td>
+</tr>
+<tr>
+<td style="text-align:left">objectClass</td>
+<td style="text-align:left">objectClass 是特殊的属性，包含数据存储的方式以及相关属性信息。</td>
+</tr>
+<tr>
+<td style="text-align:left">dc（domain component）</td>
+<td style="text-align:left">通常指定一个域名。例如，dc=example，dc=com</td>
+</tr>
+<tr>
+<td style="text-align:left">ou（organization unit）</td>
+<td style="text-align:left">通常指定一个组织单元的名称。例如，ou=people，dc=example，dc=com</td>
+</tr>
+<tr>
+<td style="text-align:left">cn（common name）</td>
+<td style="text-align:left">通常指一个对象的名称，如果是人，需要使用全名。</td>
+</tr>
+<tr>
+<td style="text-align:left">mail</td>
+<td style="text-align:left">通常指登入账户的邮箱地址，例如，mail：shileizcc@126.com。</td>
+</tr>
+<tr>
+<td style="text-align:left">telephoneNameber</td>
+<td style="text-align:left">通常指登入账户的手机号码，例如，telephoneNumber：xxxxxxxxxxx</td>
+</tr>
+<tr>
+<td style="text-align:left">c（country）</td>
+<td style="text-align:left">通常指一个二位国家的名称，例如 CN、US 等国家代号。例如，c：CN。</td>
+</tr>
+</tbody>
+</table>
+
+            
+        </article>
+    </div>
     
     <div class="nexmoe-post">
         <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/openLDAP/install/">
@@ -968,421 +1404,6 @@
         </article>
     </div>
     
-    <div class="nexmoe-post">
-        <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/%E7%81%B0%E5%BA%A6%E5%8F%91%E5%B8%83/">
-            
-                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 66.66666666666666%;"> 
-                    <img data-src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg" data-sizes="auto" alt="灰度发布.md" class="lazyload">
-                    <h1>灰度发布.md</h1>
-                </div>
-            
-        </a>
-
-        <div class="nexmoe-post-meta nexmoe-rainbow">
-            <a><i class="nexmoefont icon-calendar-fill"></i>2020年05月14日</a>
-            <a><i class="nexmoefont icon-areachart"></i>1k 字</a>
-            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 4 分钟</a>
-        </div>
-
-        <article>
-            
-                <h2 id="需求-目标"><a class="header-anchor" href="#需求-目标">¶</a>需求(目标)</h2>
-<p>1）做到升级不停服</p>
-<p>2）在正式环境上试用验证，控制影响面</p>
-<h2 id="滚动发布"><a class="header-anchor" href="#滚动发布">¶</a>滚动发布</h2>
-<p>目标：保证集群服务不中断，任一时刻至少保证有一个节点正常提供服务。</p>
-<p>细分实现点：</p>
-<ol>
-<li>
-<p>优雅关闭<br>
-关闭服务时，不再接受新的流量。等现有流量处理完成或等待超时后，再停止服务进程。<br>
-这一点dubbo2.7版本已经包含了，shutdown hook之后会从注册中心去掉，停止进入新流量，等待一段时间后停止。(非kill -9)<br>
-Http的话，可以在网关kong上摘取节点；不摘也可以，有重试机制。</p>
-</li>
-<li>
-<p>优雅开启<br>
-开启服务时，要等所有服务可用，才在注册中心暴露，才正常提供服务，以免服务未正常就有流量进入。<br>
-能进行可用检测，做到一个节点正常了，再起另一个节点。<br>
-检查http是否正常，可以访问心跳接口。 对于dubbo服务，可以使用自带的telnet运维功能，echo status | nc -i 1 localhost 20880。</p>
-</li>
-</ol>
-<p>启动流程图：</p>
-<p><img data-sizes="auto" data-src="http://typora.alongparty.cn/typora_img/20200324142748.png" alt="" class="lazyload"></p>
-<p>jenkins先构建后，jar 复制统一某机器上（有升级包、回滚包)，使用不同脚本进行升级。</p>
-<h2 id="灰度发布"><a class="header-anchor" href="#灰度发布">¶</a>灰度发布</h2>
-<p>目标：系统中存在新旧两种服务，新服务只开启给特定的入口，旧服务正常使用，且不会调用到新服务接口上去。</p>
-<p>细分实现点：</p>
-<ol>
-<li>
-<p>服务分组<br>
-区分新旧提供者provider</p>
-<ul>
-<li>
-<p>应用级别的分组：例如选择节点其中1个标记为灰度节点，进行升级</p>
-</li>
-<li>
-<p>方法级别的分组：服务带版本号，新旧版本同时存在 （比较难控制，不采用)</p>
-</li>
-</ul>
-</li>
-<li>
-<p>服务隔离<br>
-每个应用都选取一个灰度节点，然后灰度节点之间组成一个系统服务；同理非灰度节点也是。两种类似的节点之前不能互相访问。</p>
-<ul>
-<li>
-<p>物理隔离 （多注册中心，预发布环境）</p>
-</li>
-<li>
-<p>规则路由 （调用端获取提供者列表 invokers，然后看本客户端节点是否灰度节点，再进行invoker的选取。)</p>
-</li>
-</ul>
-</li>
-<li>
-<p>API入口选取方式</p>
-<ul>
-<li>
-<p>前端预发布，所以API请求带灰度Header</p>
-</li>
-<li>
-<p>规则路由 （进入http节点后，根据规则，例如userId为xxx的，调用灰度的dubbo服务），最好结合配置中心来动态设置</p>
-</li>
-</ul>
-</li>
-</ol>
-<p>简单点，从应用层面进行分组及隔离，实现手段有 1）借用另一个zookeeper  2）借用Dubbo的标签路由，分别对应下面方案</p>
-<p>方式一：预发布环境</p>
-<p><img data-sizes="auto" data-src="http://typora.alongparty.cn/typora_img/20200324142821.png" alt="" class="lazyload"></p>
-<p>新起一个zookpeeper, 灰度节点连接到zookeeper上。共用生产数据库等配置，在kong网关上做金丝雀测试，按比例进入流量。</p>
-<p>改造要求：需要单独机器（zk等）、kong网关灰度插件定制。</p>
-<p>方式二：正式环境打标签 + 路由选择</p>
-<p><img data-sizes="auto" data-src="http://typora.alongparty.cn/typora_img/20200324142848.png" alt="" class="lazyload"></p>
-<p>dubbo路由标签，可以实行流量隔离。灰度客户端(有标记)优先选择灰度服务提供者调用，没有再降级非灰度的。非灰度客户端仅能访问非灰度服务提供者。</p>
-<p>可以使用这一特点进行灰度发布。</p>
-<p>发布步骤：</p>
-<p>1）给应用打Tag</p>
-<p>java -jar xxx-provider.jar -Ddubbo.provider.tag=PRE 或者 借助 dubbo admin 后台</p>
-<p>2）客户端选择路由。</p>
-<p>​    需要自行实现。大致过程例如：</p>
-<p>前端API都指定Head，标识是灰度访问还是非灰度访问，从而决定调用哪边的dubbo。</p>
-<p>这个标记一直往下传，从页 dubbboA 调用 dubboB 也知道是调用灰度节点还是非灰度的。</p>
-<p>改造需求：实现拦截及标记传递并路由。</p>
-<p>发布不是CICD一次到位，分多次上线，操作上麻烦。但可以在生产上提前验证（合代码、打包、数据库脚本等），灰度验证没问题后，简单执行脚本（前在合代码、构建都不用了)，快速上线。</p>
-
-            
-        </article>
-    </div>
-    
-    <div class="nexmoe-post">
-        <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83SQL%E8%84%9A%E6%9C%AC%E6%89%A7%E8%A1%8C%E8%A7%84%E8%8C%83/">
-            
-                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 66.66666666666666%;"> 
-                    <img data-src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg" data-sizes="auto" alt="生产环境SQL脚本执行规范.md" class="lazyload">
-                    <h1>生产环境SQL脚本执行规范.md</h1>
-                </div>
-            
-        </a>
-
-        <div class="nexmoe-post-meta nexmoe-rainbow">
-            <a><i class="nexmoefont icon-calendar-fill"></i>2020年05月14日</a>
-            <a><i class="nexmoefont icon-areachart"></i>590 字</a>
-            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 2 分钟</a>
-        </div>
-
-        <article>
-            
-                <h1>1 <strong>背景</strong></h1>
-<p>现技术发给运维执行的sql脚本脚本中未带数据的备份命令，现备份的命令由运维去创建，但有些执行命令比较复杂时，运维只能对全表做备份，这种备份在做数据回滚时，无法快速的做更改过的数据回滚，另外也会导致整个执行过程的时间变长，也会浪费数据库的磁盘空间。</p>
-<h1>2 <strong>适用范围</strong></h1>
-<p>1）、所有的业务线</p>
-<p>2）、正式环境、灰度环境、合规化环境</p>
-<h1>3 <strong>目标</strong></h1>
-<p>1）、让备份命令更合理，方便及容易实现数据回滚。</p>
-<p>2）、规避数据库空间被撑爆的情况。</p>
-<p>3）、便于准确无误地定时清理备份的临时表。</p>
-<p>4）、便于知道原脚本的发起人。</p>
-<h1><strong>4 覆盖的范围：</strong></h1>
-<p>日常sql脚本、上线SQL脚本。</p>
-<h1><strong>5 备份库名称：</strong></h1>
-<p>test</p>
-<h1><strong>6 备份表的命名方法：</strong></h1>
-<p>test.tmp_时间[年月日时分]_库名_表名_姓名缩写</p>
-<h1><strong>7 备份命令</strong></h1>
-<p><strong>1）、带where条件的备份命令：</strong></p>
-<p>create table test.tmp_时间[年月日时分]_库名_表名_姓名缩写 like 库名.表名;</p>
-<p>insert into test.tmp_时间[年月日时分]_库名_表名_姓名缩写 select * from 库名.表名 where 条件;</p>
-<p><strong>范例：</strong></p>
-<p>**<img data-sizes="auto" data-src="https://wiki.szzhijing.com/download/attachments/13228007/image2019-12-19_10-42-4.png?version=1&amp;modificationDate=1576723529000&amp;api=v2" alt="img" class="lazyload"><br>
-**</p>
-<p><em><strong>*2）、不带where条件的备份命令（全表备份）：*</strong></em></p>
-<p>create table test.tmp_时间[年月日时分]_库名_表名_姓名缩写 like 库名.表名;</p>
-<p>insert into test.tmp_时间[年月日时分]_库名_表名_姓名缩写 select * from 库名.表名;</p>
-<p><strong>范例：</strong></p>
-<p>**<img data-sizes="auto" data-src="https://wiki.szzhijing.com/download/attachments/13228007/image2019-12-19_10-43-59.png?version=1&amp;modificationDate=1576723645000&amp;api=v2" alt="img" class="lazyload"><br>
-**</p>
-<h1><strong>8 需求邮件的审核标准</strong></h1>
-<p>1）、每条执行的sql脚本需要加上注释，注释内容为执行的原因或影响的业务范围，便于<strong>审核人对SQL脚本影响的范围进行风险评估</strong>。</p>
-<p>2）、<strong>非rename、delete、truncat、drop</strong>的命令，由项目开发负责人审批。</p>
-<p>3）、<strong>delete、truncat、drop</strong>命令，原则上禁止执行，但特殊情况必须执行的，需由技术总负责人审批通过后运维方可执行。</p>
-<p>4）、<strong>rename</strong>类的命令，原则上禁止执行，但特殊情况必须执行，对应项目开发负责人评估过对<strong>原表索引、存储过程、方法、视图</strong>无影响，及技术总负责人审批通过后运维方可执行。</p>
-
-            
-        </article>
-    </div>
-    
-    <div class="nexmoe-post">
-        <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/%E8%B5%84%E6%BA%90%E4%BD%BF%E7%94%A8%E6%A0%87%E5%87%86/">
-            
-                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 66.66666666666666%;"> 
-                    <img data-src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg" data-sizes="auto" alt="资源使用标准.md" class="lazyload">
-                    <h1>资源使用标准.md</h1>
-                </div>
-            
-        </a>
-
-        <div class="nexmoe-post-meta nexmoe-rainbow">
-            <a><i class="nexmoefont icon-calendar-fill"></i>2020年05月14日</a>
-            <a><i class="nexmoefont icon-areachart"></i>770 字</a>
-            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 3 分钟</a>
-        </div>
-
-        <article>
-            
-                <h1>1 <strong>背景</strong></h1>
-<p>在服务器资源运营过程中，我们需要对现网服务器进行有效的识别，以负载情况为核心依据，将服务器进行分类，从而对不同分类的服务器进行优化运营。</p>
-<h1>2 <strong>适用范围</strong></h1>
-<p>本规范的中涉及的服务器资源是指面向业务的现网服务器资源（不包括OA与dev 环境）,包括物理服务器和虚拟化服务器。</p>
-<p>本规范面向的用户是适用于所有使用该资源的开发或者产品用户。</p>
-<h1>3 <strong>目标</strong></h1>
-<p><strong>本规范达到以下目标：</strong></p>
-<p>\1. 根据服务器负载情况，制定分类标准；</p>
-<p>\2. 定义业务分类标准；</p>
-<h1>4 <strong>技术分类标准</strong></h1>
-<p><strong>1、服务器分为四类：</strong></p>
-<p>空载服务器 level0</p>
-<p>轻载服务器 level1</p>
-<p>正常负载服务器 level2</p>
-<p>高负载服务器 level3</p>
-<p><strong>2、物理服务器和虚拟化服务器采用相同指标标准</strong></p>
-<p><strong>3、常用负载性能指标维度定义</strong></p>
-<ol>
-<li>
-<ol>
-<li><strong>CPU总利用率：cpu%</strong></li>
-</ol>
-</li>
-</ol>
-<p>cpu%= (所有逻辑CPU的利用率之和)/(逻辑CPU个数*100%)；</p>
-<ol>
-<li>
-<ol>
-<li><strong>内存利用率：mem%</strong></li>
-</ol>
-</li>
-</ol>
-<p>mem%= (1- (系统空闲内存总数)/(物理内存总数));</p>
-<p><strong>4、核算周期</strong></p>
-<p>信息整理的时间节点。</p>
-<p><strong>5、核算范围</strong></p>
-<p>信息整理的时间节点。</p>
-<p><strong>6、边界划定</strong></p>
-<p>基于先宽后紧的标准制定原则，初期作下列定义，随着技术水平的不断提升，运维将不断演进本标准，适当提升空载、轻载的边界，并公布周知。</p>
-<table>
-<thead>
-<tr>
-<th>评估项目</th>
-<th>Level=0空载</th>
-<th>Level=1轻载</th>
-<th>Level=2正常</th>
-<th>Level=3高载</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Mem%</td>
-<td>&lt;20%</td>
-<td>[20%,35%)</td>
-<td>[35%,70%]</td>
-<td>(70%,100%]</td>
-</tr>
-<tr>
-<td>disk space%</td>
-<td>&lt;10%</td>
-<td>[10%,20%)</td>
-<td>[20%,70%]</td>
-<td>(70%,100%]</td>
-</tr>
-</tbody>
-</table>
-<p><strong>7.负载综合评定</strong></p>
-<p>根据服务器类型，对相关技术指标维度进行核算，各维度得到Level=0,1,2,3，服务器综合负载 等于 各维度Level的最大值。</p>
-<h1>5 <strong>标准的维护和变更</strong></h1>
-<p>随着技术和业务的发展，运维将定期对本标准进行回顾，合理调整本标准的定义，并发布和公告。</p>
-<table>
-<thead>
-<tr>
-<th>服务说明</th>
-<th>git仓库地址</th>
-<th>服务名</th>
-<th>Jar名</th>
-<th>HTTP网关路由地址(必填)</th>
-<th>中间件资源</th>
-<th>构建方式</th>
-<th>启动参数</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>统一用户管理Dubbo服务</td>
-<td>ssh://git@gitlab.szzhijing.com:22222/quanbu/user-account-center.git</td>
-<td>user-account-center-dubbo</td>
-<td>user-account-center-dubbo.jar</td>
-<td></td>
-<td>redis、MongoDB、RocketMQ、Kafka等</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>统一用户管理Http服务</td>
-<td></td>
-<td>user-account-center-http</td>
-<td>user-account-center-http.jar</td>
-<td>/uac</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<ol>
-<li>gitlab项目名称不允许大写，统一为小写，并且以中划线-连接，不允许下划线_连接；</li>
-<li>服务名称必须以gitlab项目名称作为前缀拓展，不接受与项目无关的名称；</li>
-<li>jar包以服务名称命名，后加.jar结尾；</li>
-<li>http服务必须填写网关路由信息；</li>
-<li>项目依赖所需中间件资源，如redis、MongoDB、RockerMQ、Kafka等，说明所需版本、集群方式，最好能提供预估的并发、tps的，否则按默认标准安装部署；</li>
-<li>构建方式：maven和gradle；</li>
-<li></li>
-</ol>
-
-            
-        </article>
-    </div>
-    
-    <div class="nexmoe-post">
-        <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/%E8%B5%84%E6%BA%90%E7%94%B3%E8%AF%B7%E8%A7%84%E8%8C%83/">
-            
-                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 66.66666666666666%;"> 
-                    <img data-src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg" data-sizes="auto" alt="资源申请规范.md" class="lazyload">
-                    <h1>资源申请规范.md</h1>
-                </div>
-            
-        </a>
-
-        <div class="nexmoe-post-meta nexmoe-rainbow">
-            <a><i class="nexmoefont icon-calendar-fill"></i>2020年05月14日</a>
-            <a><i class="nexmoefont icon-areachart"></i>551 字</a>
-            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 2 分钟</a>
-        </div>
-
-        <article>
-            
-                <h2 id="一、资源申请"><a class="header-anchor" href="#一、资源申请">¶</a>一、资源申请</h2>
-<table>
-<thead>
-<tr>
-<th>服务说明</th>
-<th>git仓库地址</th>
-<th>服务名</th>
-<th>Jar名</th>
-<th>HTTP网关路由地址(必填)</th>
-<th>中间件资源</th>
-<th>构建方式</th>
-<th>启动参数</th>
-<th>项目负责人</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>统一用户管理Dubbo服务</td>
-<td>ssh://git@gitlab.szzhijing.com:22222/quanbu/user-account-center.git</td>
-<td>user-account-center-dubbo</td>
-<td>user-account-center-dubbo.jar</td>
-<td></td>
-<td>redis、MongoDB、RocketMQ、Kafka等</td>
-<td>maven、gradle</td>
-<td></td>
-<td>林浩</td>
-</tr>
-<tr>
-<td>统一用户管理Http服务</td>
-<td></td>
-<td>user-account-center-http</td>
-<td>user-account-center-http.jar</td>
-<td>/uac</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<ol>
-<li>
-<p><strong>gitlab项目名称不允许大写，统一为小写，并且以中横线-连接，不允许下划线_连接；</strong></p>
-</li>
-<li>
-<p><strong>服务名称必须以gitlab项目名称作为前缀拓展，不接受与项目无关的名称；</strong></p>
-</li>
-<li>
-<p><strong>jar包以服务名称命名，后加.jar结尾；</strong></p>
-</li>
-<li>
-<p><strong>http服务必须填写网关路由信息，如果不存在http服务不需要填写；</strong></p>
-</li>
-<li>
-<p><strong>项目负责人必须明确</strong>；</p>
-</li>
-<li>
-<p>项目依赖所需中间件资源，如redis、MongoDB、RockerMQ、Kafka等，说明所需版本、集群方式，最好能提供预估的并发、tps的，否则按默认标准安装部署；</p>
-</li>
-<li>
-<p>构建方式：maven和gradle；</p>
-</li>
-<li>
-<p>是否有特殊启动参数，否则默认配置profile、启动端口、jvm大小，如有除dubbo、http端口外，有其他对外服务的接口不允许私自配置端口，必须在资源申请说明；</p>
-</li>
-<li>
-<p>数据库资源和权限找DBA申请；</p>
-</li>
-</ol>
-<p><strong>注意</strong>：</p>
-<blockquote>
-<p>以上1至5点强制执行，不符合标准将驳回资源申请，重新填写。</p>
-</blockquote>
-<h2 id="二、Jenkins项目命名规范"><a class="header-anchor" href="#二、Jenkins项目命名规范">¶</a>二、Jenkins项目命名规范</h2>
-<p>Jenkins项目命名规范:</p>
-<p><strong>&lt;环境标识&gt;-&lt;Git项目名称&gt;-(服务说明)</strong></p>
-<p>Eg:</p>
-<blockquote>
-<p>dev-user-account-center-(统一用户管理)</p>
-</blockquote>
-<p><strong>注意事项</strong></p>
-<ul>
-<li>
-<p>严禁使用中文括号</p>
-</li>
-<li>
-<p>如果服务说明跟服务名称一致，那就省略服务说明<code>dev-user-account-center</code>即可</p>
-</li>
-</ul>
-<h2 id="三、端口定义"><a class="header-anchor" href="#三、端口定义">¶</a>三、端口定义</h2>
-<p>每次收到新的资源申请时，需要给服务定义相关端口，必须先拉取gitlab仓库中端口使用规范表格，定义好相关端口信息后立即提交到gitlab仓库。最后在操作CMDB数据库，避免端口使用冲突。</p>
-<h2 id="四、主机别名定义"><a class="header-anchor" href="#四、主机别名定义">¶</a>四、主机别名定义</h2>
-<p><strong>现状</strong>：一套服务多个主机别名，比较混乱。</p>
-
-            
-        </article>
-    </div>
-    
 </section>
 
     <nav class="nexmoe-page-nav">
@@ -1398,7 +1419,7 @@ Http的话，可以在网关kong上摘取节点；不摘也可以，有重试机
     <script src="https://cdn.jsdelivr.net/gh/xtaodada/xtaodada.github.io@0.0.2/copy.js"></script>
 
 
-<script src="/js/app.js?v=1589470542576"></script>
+<script src="/js/app.js?v=1589470630913"></script>
   
 
 
