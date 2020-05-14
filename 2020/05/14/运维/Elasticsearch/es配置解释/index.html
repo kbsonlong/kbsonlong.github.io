@@ -22,17 +22,17 @@
     var CONFIG = {"hostname":"kbsonlong.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"3QSL94PCBQ","apiKey":"d2fe765a64df1740fcab93644d3a2677","indexName":"hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="1234## 禁止自动创建action.auto_create_index: false## 动态配置mapperindex.mapper.dynamic: false      123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051input &amp;#123;  bea">
+  <meta name="description" content="1234## 禁止自动创建action.auto_create_index: false## 动态配置mapperindex.mapper.dynamic: false 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051input &amp;#123;  beats &amp;#">
 <meta property="og:type" content="article">
-<meta property="og:title" content="运维&#x2F;Elasticsearch&#x2F;es配置解释">
+<meta property="og:title" content="es配置解释.md">
 <meta property="og:url" content="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/es%E9%85%8D%E7%BD%AE%E8%A7%A3%E9%87%8A/index.html">
 <meta property="og:site_name" content="蜷缩的蜗牛">
-<meta property="og:description" content="1234## 禁止自动创建action.auto_create_index: false## 动态配置mapperindex.mapper.dynamic: false      123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051input &amp;#123;  bea">
+<meta property="og:description" content="1234## 禁止自动创建action.auto_create_index: false## 动态配置mapperindex.mapper.dynamic: false 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051input &amp;#123;  beats &amp;#">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-05-14T13:51:58.934Z">
-<meta property="article:modified_time" content="2020-05-14T13:51:58.934Z">
+<meta property="article:published_time" content="2020-05-14T14:16:06.000Z">
+<meta property="article:modified_time" content="2020-05-14T14:16:06.145Z">
 <meta property="article:author" content="曾胜龙">
-<meta property="article:tag" content="Devops Kubernetes Docker">
+<meta property="article:tag" content="Elasticsearch">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/es%E9%85%8D%E7%BD%AE%E8%A7%A3%E9%87%8A/">
@@ -48,7 +48,7 @@
   };
 </script>
 
-  <title>运维/Elasticsearch/es配置解释 | 蜷缩的蜗牛</title>
+  <title>es配置解释.md | 蜷缩的蜗牛</title>
   
 
 
@@ -214,7 +214,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          运维/Elasticsearch/es配置解释
+          es配置解释.md
         </h1>
 
         <div class="post-meta">
@@ -224,7 +224,16 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-05-14 21:51:58" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:58+08:00">2020-05-14</time>
+              <time title="创建时间：2020-05-14 22:16:06" itemprop="dateCreated datePublished" datetime="2020-05-14T22:16:06+08:00">2020-05-14</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Elasticsearch/" itemprop="url" rel="index"><span itemprop="name">Elasticsearch</span></a>
+                </span>
             </span>
 
           
@@ -246,13 +255,7 @@
 
       
         <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## 禁止自动创建</span></span><br><span class="line">action.auto_create_index: <span class="literal">false</span></span><br><span class="line"><span class="comment">## 动态配置mapper</span></span><br><span class="line">index.mapper.dynamic: <span class="literal">false</span></span><br></pre></td></tr></table></figure>
-
-
-
-
-
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">input &#123;</span><br><span class="line">  beats &#123;</span><br><span class="line">    port =&gt; 25000</span><br><span class="line">    codec =&gt; json</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">filter&#123;</span><br><span class="line"></span><br><span class="line">     ruby &#123;</span><br><span class="line">         code =&gt; <span class="string">"event.set('timestamp', event.get('@timestamp').time.localtime + 8*60*60)"</span></span><br><span class="line">     &#125;</span><br><span class="line">     ruby &#123;</span><br><span class="line">         code =&gt; <span class="string">"event.set('@timestamp',event.get('timestamp'))"</span></span><br><span class="line">     &#125;</span><br><span class="line">     ruby &#123; </span><br><span class="line">       code =&gt; <span class="string">"event.set('@timestamp',event.timestamp.time.localtime)"</span> </span><br><span class="line">   &#125; </span><br><span class="line"></span><br><span class="line">     date &#123;</span><br><span class="line">        match =&gt; [<span class="string">"timestamp"</span>, <span class="string">"yyyy-MM-dd HH:mm:ss.SSS"</span>]</span><br><span class="line">        <span class="comment">#赋值给那个key</span></span><br><span class="line">        target =&gt; <span class="string">"@timestamp"</span></span><br><span class="line">        <span class="comment">#删除不需要的字段</span></span><br><span class="line">        <span class="comment">#remove_field =&gt; ["timestamp"]</span></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="comment">#date &#123;</span></span><br><span class="line">     <span class="comment">#           match =&gt; [ "timestamp","MMM  d HH:mm:ss", "MMM dd HH:mm:ss", "ISO8601"]</span></span><br><span class="line">     <span class="comment">#           target =&gt; "timestamp3"</span></span><br><span class="line">     <span class="comment">#   &#125;</span></span><br><span class="line"></span><br><span class="line">     mutate &#123;</span><br><span class="line">        <span class="comment">#remove_field =&gt; ["message"]</span></span><br><span class="line">        remove_field =&gt; [<span class="string">"source"</span>]</span><br><span class="line">        remove_field =&gt; [<span class="string">"tags"</span>]</span><br><span class="line">        remove_field =&gt; [<span class="string">"beat"</span>]</span><br><span class="line">        remove_field =&gt; [<span class="string">"log"</span>]</span><br><span class="line">        remove_field =&gt; [<span class="string">"input"</span>]</span><br><span class="line">        remove_field =&gt; [<span class="string">"host"</span>]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">output &#123;</span><br><span class="line">  <span class="comment">#elasticsearch &#123;</span></span><br><span class="line">  <span class="comment">#  hosts =&gt; ["192.168.16.148"]</span></span><br><span class="line">  <span class="comment">#  manage_template =&gt; false</span></span><br><span class="line">  <span class="comment">#  index =&gt; "baibu-app-json-%&#123;+YYYY.MM&#125;"</span></span><br><span class="line">  <span class="comment">#&#125;</span></span><br><span class="line">  stdout &#123;</span><br><span class="line">    codec =&gt; rubydebug</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 
     </div>
 
@@ -278,7 +281,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/es%E9%85%8D%E7%BD%AE%E8%A7%A3%E9%87%8A/" title="运维&#x2F;Elasticsearch&#x2F;es配置解释">https://kbsonlong.github.io/2020/05/14/运维/Elasticsearch/es配置解释/</a>
+    <a href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/es%E9%85%8D%E7%BD%AE%E8%A7%A3%E9%87%8A/" title="es配置解释.md">https://kbsonlong.github.io/2020/05/14/运维/Elasticsearch/es配置解释/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -317,6 +320,9 @@
 
 
       <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Elasticsearch/" rel="tag"># Elasticsearch</a>
+          </div>
 
         
 
@@ -324,12 +330,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/es%E7%9B%91%E6%8E%A7/" rel="prev" title="运维/Elasticsearch/es监控">
-      <i class="fa fa-chevron-left"></i> 运维/Elasticsearch/es监控
+    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/%E4%BC%98%E5%8C%96/" rel="prev" title="优化.md">
+      <i class="fa fa-chevron-left"></i> 优化.md
     </a></div>
       <div class="post-nav-item">
-    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/Watcher/" rel="next" title="运维/Elasticsearch/Watcher">
-      运维/Elasticsearch/Watcher <i class="fa fa-chevron-right"></i>
+    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/es%E7%9B%91%E6%8E%A7/" rel="next" title="es监控.md">
+      es监控.md <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -404,20 +410,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">110</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">25</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

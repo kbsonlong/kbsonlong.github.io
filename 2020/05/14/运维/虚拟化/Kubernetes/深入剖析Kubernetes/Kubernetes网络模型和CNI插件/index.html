@@ -22,18 +22,18 @@
     var CONFIG = {"hostname":"kbsonlong.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"3QSL94PCBQ","apiKey":"d2fe765a64df1740fcab93644d3a2677","indexName":"hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Kubernetes容器网络的主要处理方法​        网络插件则在宿主机上创建了一个特殊的设备（UDP 模式创建的是 TUN 设备，VXLAN 模式创建的则是 VTEP 设备），docker0 与这个设备之间，通过 IP 转发（路由表）进行协作。 ​        然后，网络插件真正要做的事情，则是通过某种方法，把不同宿主机上的特殊设备连通，从而达到容器跨主机通信的目的。 ​">
+  <meta name="description" content="¶Kubernetes容器网络的主要处理方法 ​        网络插件则在宿主机上创建了一个特殊的设备（UDP 模式创建的是 TUN 设备，VXLAN 模式创建的则是 VTEP 设备），docker0 与这个设备之间，通过 IP 转发（路由表）进行协作。 ​        然后，网络插件真正要做的事情，则是通过某种方法，把不同宿主机上的特殊设备连通，从而达到容器跨主机通信的目的。 ​">
 <meta property="og:type" content="article">
-<meta property="og:title" content="运维&#x2F;虚拟化&#x2F;Kubernetes&#x2F;深入剖析Kubernetes&#x2F;Kubernetes网络模型和CNI插件">
+<meta property="og:title" content="Kubernetes网络模型和CNI插件.md">
 <meta property="og:url" content="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes/Kubernetes%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E5%92%8CCNI%E6%8F%92%E4%BB%B6/index.html">
 <meta property="og:site_name" content="蜷缩的蜗牛">
-<meta property="og:description" content="Kubernetes容器网络的主要处理方法​        网络插件则在宿主机上创建了一个特殊的设备（UDP 模式创建的是 TUN 设备，VXLAN 模式创建的则是 VTEP 设备），docker0 与这个设备之间，通过 IP 转发（路由表）进行协作。 ​        然后，网络插件真正要做的事情，则是通过某种方法，把不同宿主机上的特殊设备连通，从而达到容器跨主机通信的目的。 ​">
+<meta property="og:description" content="¶Kubernetes容器网络的主要处理方法 ​        网络插件则在宿主机上创建了一个特殊的设备（UDP 模式创建的是 TUN 设备，VXLAN 模式创建的则是 VTEP 设备），docker0 与这个设备之间，通过 IP 转发（路由表）进行协作。 ​        然后，网络插件真正要做的事情，则是通过某种方法，把不同宿主机上的特殊设备连通，从而达到容器跨主机通信的目的。 ​">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://typora.alongparty.cn/typora_img/20200308231116.png">
-<meta property="article:published_time" content="2020-05-14T13:51:57.414Z">
-<meta property="article:modified_time" content="2020-05-14T13:51:57.414Z">
+<meta property="article:published_time" content="2020-05-14T14:16:05.000Z">
+<meta property="article:modified_time" content="2020-05-14T14:16:05.716Z">
 <meta property="article:author" content="曾胜龙">
-<meta property="article:tag" content="Devops Kubernetes Docker">
+<meta property="article:tag" content="深入剖析Kubernetes">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://typora.alongparty.cn/typora_img/20200308231116.png">
 
@@ -50,7 +50,7 @@
   };
 </script>
 
-  <title>运维/虚拟化/Kubernetes/深入剖析Kubernetes/Kubernetes网络模型和CNI插件 | 蜷缩的蜗牛</title>
+  <title>Kubernetes网络模型和CNI插件.md | 蜷缩的蜗牛</title>
   
 
 
@@ -216,7 +216,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          运维/虚拟化/Kubernetes/深入剖析Kubernetes/Kubernetes网络模型和CNI插件
+          Kubernetes网络模型和CNI插件.md
         </h1>
 
         <div class="post-meta">
@@ -226,7 +226,16 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-05-14 21:51:57" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:57+08:00">2020-05-14</time>
+              <time title="创建时间：2020-05-14 22:16:05" itemprop="dateCreated datePublished" datetime="2020-05-14T22:16:05+08:00">2020-05-14</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes/" itemprop="url" rel="index"><span itemprop="name">深入剖析Kubernetes</span></a>
+                </span>
             </span>
 
           
@@ -247,18 +256,17 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h4 id="Kubernetes容器网络的主要处理方法"><a href="#Kubernetes容器网络的主要处理方法" class="headerlink" title="Kubernetes容器网络的主要处理方法"></a>Kubernetes容器网络的主要处理方法</h4><p>​        网络插件则在宿主机上创建了一个特殊的设备（UDP 模式创建的是 TUN 设备，VXLAN 模式创建的则是 VTEP 设备），docker0 与这个设备之间，通过 IP 转发（路由表）进行协作。</p>
+        <h4 id="Kubernetes容器网络的主要处理方法"><a class="header-anchor" href="#Kubernetes容器网络的主要处理方法">¶</a>Kubernetes容器网络的主要处理方法</h4>
+<p>​        网络插件则在宿主机上创建了一个特殊的设备（UDP 模式创建的是 TUN 设备，VXLAN 模式创建的则是 VTEP 设备），docker0 与这个设备之间，通过 IP 转发（路由表）进行协作。</p>
 <p>​        然后，网络插件真正要做的事情，则是通过某种方法，把不同宿主机上的特殊设备连通，从而达到容器跨主机通信的目的。</p>
 <p>​        实际上，上面这个流程，也正是 Kubernetes 对容器网络的主要处理方法。只不过，Kubernetes 是通过一个叫作 CNI 的接口，维护了一个单独的网桥来代替 docker0。这个网桥的名字就叫作：CNI 网桥，它在宿主机上的设备名称默认是：cni0。</p>
 <p>​        以 Flannel 的 VXLAN 模式为例，在 Kubernetes 环境里，它的工作方式跟我们在上一篇文章中讲解的没有任何不同。只不过，docker0 网桥被替换成了 CNI 网桥而已，如下所示：</p>
 <p><img src="http://typora.alongparty.cn/typora_img/20200308231116.png" alt=""></p>
 <p>在这里，Kubernetes 为 Flannel 分配的子网范围是 10.244.0.0/16。这个参数可以在部署的时候指定，比如：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ kubeadm init --pod-network-cidr=10.244.0.0/16</span><br></pre></td></tr></table></figure>
-
 <p>​        也可以在部署完成后，通过修改 kube-controller-manager 的配置文件来指定。这时候，假设 Infra-container-1 要访问 Infra-container-2（也就是 Pod-1 要访问 Pod-2），这个 IP 包的源地址就是 10.244.0.2，目的 IP 地址是 10.244.1.3。而此时，Infra-container-1 里的 eth0 设备，同样是以 Veth Pair 的方式连接在 Node 1 的 cni0 网桥上。所以这个 IP 包就会经过 cni0 网桥出现在宿主机上。</p>
 <p>​        此时，Node 1 上的路由表，如下所示：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在Node 1上</span></span><br><span class="line">$ route -n</span><br><span class="line">Kernel IP routing table</span><br><span class="line">Destination     Gateway         Genmask         Flags Metric Ref    Use Iface</span><br><span class="line">...</span><br><span class="line">10.244.0.0      0.0.0.0         255.255.255.0   U     0      0        0 cni0</span><br><span class="line">10.244.1.0      10.244.1.0      255.255.255.0   UG    0      0        0 flannel.1</span><br><span class="line">172.17.0.0      0.0.0.0         255.255.0.0     U     0      0        0 docker0</span><br></pre></td></tr></table></figure>
-
 <p>因为我们的 IP 包的目的 IP 地址是 10.244.1.3，所以它只能匹配到第二条规则，也就是 10.244.1.0 对应的这条路由规则。</p>
 <p>可以看到，这条规则指定了本机的 flannel.1 设备进行处理。并且，flannel.1 在处理完后，要将 IP 包转发到的网关（Gateway），正是“隧道”另一端的 VTEP 设备，也就是 Node 2 的 flannel.1 设备。所以，接下来的流程，就跟上一篇文章中介绍过的 Flannel VXLAN 模式完全一样了。</p>
 <p>需要注意的是，<strong>CNI 网桥只是接管所有 CNI 插件负责的、即 Kubernetes 创建的容器（Pod）</strong>。而此时，如果你用 docker run 单独启动一个容器，那么 Docker 项目还是会把这个容器连接到 docker0 网桥上。所以这个容器的 IP 地址，一定是属于 docker0 网桥的 172.17.0.0/16 网段。</p>
@@ -267,17 +275,18 @@
 <li>一方面，Kubernetes 项目并没有使用 Docker 的网络模型（CNM），所以它并不希望、也不具备配置 docker0 网桥的能力；</li>
 <li>另一方面，这还与 Kubernetes 如何配置 Pod，也就是 Infra 容器的 Network Namespace 密切相关。</li>
 </ul>
-<p>CNI 的设计思想，就是：<strong><em>Kubernetes 在启动 Infra 容器之后，就可以直接调用 CNI 网络插件，为这个 Infra 容器的 Network Namespace，配置符合预期的网络栈。</em></strong></p>
-<h4 id="网络栈的配置工作是如何完成的？"><a href="#网络栈的配置工作是如何完成的？" class="headerlink" title="网络栈的配置工作是如何完成的？"></a>网络栈的配置工作是如何完成的？</h4><p>在部署 Kubernetes 的时候，有一个步骤是安装 kubernetes-cni 包，它的目的就是在宿主机上安装 <strong>CNI 插件所需的基础可执行文件</strong>。</p>
+<p>CNI 的设计思想，就是：<em><strong>Kubernetes 在启动 Infra 容器之后，就可以直接调用 CNI 网络插件，为这个 Infra 容器的 Network Namespace，配置符合预期的网络栈。</strong></em></p>
+<h4 id="网络栈的配置工作是如何完成的？"><a class="header-anchor" href="#网络栈的配置工作是如何完成的？">¶</a>网络栈的配置工作是如何完成的？</h4>
+<p>在部署 Kubernetes 的时候，有一个步骤是安装 kubernetes-cni 包，它的目的就是在宿主机上安装 <strong>CNI 插件所需的基础可执行文件</strong>。</p>
 <p>在安装完成后，可以在宿主机的 /opt/cni/bin 目录下看到它们，如下所示：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ll /opt/cni/bin/</span></span><br><span class="line">总用量 36132</span><br><span class="line">-rwxr-xr-x 1 root root 2973336 3月  26 2019 bridge</span><br><span class="line">-rwxr-xr-x 1 root root 7598064 3月  26 2019 dhcp</span><br><span class="line">-rwxr-xr-x 1 root root 2110208 3月  26 2019 flannel</span><br><span class="line">-rwxr-xr-x 1 root root 2288536 3月  26 2019 host-device</span><br><span class="line">-rwxr-xr-x 1 root root 2238208 3月  26 2019 host-local</span><br><span class="line">-rwxr-xr-x 1 root root 2621472 3月  26 2019 ipvlan</span><br><span class="line">-rwxr-xr-x 1 root root 2257808 3月  26 2019 loopback</span><br><span class="line">-rwxr-xr-x 1 root root 2650160 3月  26 2019 macvlan</span><br><span class="line">-rwxr-xr-x 1 root root 2613864 3月  26 2019 portmap</span><br><span class="line">-rwxr-xr-x 1 root root 2946664 3月  26 2019 ptp</span><br><span class="line">-rwxr-xr-x 1 root root 1951880 3月  26 2019 sample</span><br><span class="line">-rwxr-xr-x 1 root root 2103456 3月  26 2019 tuning</span><br><span class="line">-rwxr-xr-x 1 root root 2617328 3月  26 2019 vlan</span><br></pre></td></tr></table></figure>
-
-
-
 <p>这些 CNI 的基础可执行文件，按照功能可以分为三类：</p>
-<h5 id="第一类，叫作-Main-插件，它是用来创建具体网络设备的二进制文件"><a href="#第一类，叫作-Main-插件，它是用来创建具体网络设备的二进制文件" class="headerlink" title="第一类，叫作 Main 插件，它是用来创建具体网络设备的二进制文件"></a>第一类，叫作 Main 插件，它是用来创建具体网络设备的二进制文件</h5><p>比如，bridge（网桥设备）、ipvlan、loopback（lo 设备）、macvlan、ptp（Veth Pair 设备），以及 vlan。</p>
-<h5 id="第二类，叫作-IPAM（IP-Address-Management）插件，它是负责分配-IP-地址的二进制文件"><a href="#第二类，叫作-IPAM（IP-Address-Management）插件，它是负责分配-IP-地址的二进制文件" class="headerlink" title="第二类，叫作 IPAM（IP Address Management）插件，它是负责分配 IP 地址的二进制文件"></a>第二类，叫作 IPAM（IP Address Management）插件，它是负责分配 IP 地址的二进制文件</h5><p>比如，dhcp，这个文件会向 DHCP 服务器发起请求；host-local，则会使用预先配置的 IP 地址段来进行分配</p>
-<h5 id="第三类，是由-CNI-社区维护的内置-CNI-插件"><a href="#第三类，是由-CNI-社区维护的内置-CNI-插件" class="headerlink" title="第三类，是由 CNI 社区维护的内置 CNI 插件"></a>第三类，是由 CNI 社区维护的内置 CNI 插件</h5><p>比如：flannel，就是专门为 Flannel 项目提供的 CNI 插件；tuning，是一个通过 sysctl 调整网络设备参数的二进制文件；portmap，是一个通过 iptables 配置端口映射的二进制文件；bandwidth，是一个使用 Token Bucket Filter (TBF) 来进行限流的二进制文件。</p>
+<h5 id="第一类，叫作-Main-插件，它是用来创建具体网络设备的二进制文件"><a class="header-anchor" href="#第一类，叫作-Main-插件，它是用来创建具体网络设备的二进制文件">¶</a>第一类，叫作 Main 插件，它是用来创建具体网络设备的二进制文件</h5>
+<p>比如，bridge（网桥设备）、ipvlan、loopback（lo 设备）、macvlan、ptp（Veth Pair 设备），以及 vlan。</p>
+<h5 id="第二类，叫作-IPAM（IP-Address-Management）插件，它是负责分配-IP-地址的二进制文件"><a class="header-anchor" href="#第二类，叫作-IPAM（IP-Address-Management）插件，它是负责分配-IP-地址的二进制文件">¶</a>第二类，叫作 IPAM（IP Address Management）插件，它是负责分配 IP 地址的二进制文件</h5>
+<p>比如，dhcp，这个文件会向 DHCP 服务器发起请求；host-local，则会使用预先配置的 IP 地址段来进行分配</p>
+<h5 id="第三类，是由-CNI-社区维护的内置-CNI-插件"><a class="header-anchor" href="#第三类，是由-CNI-社区维护的内置-CNI-插件">¶</a>第三类，是由 CNI 社区维护的内置 CNI 插件</h5>
+<p>比如：flannel，就是专门为 Flannel 项目提供的 CNI 插件；tuning，是一个通过 sysctl 调整网络设备参数的二进制文件；portmap，是一个通过 iptables 配置端口映射的二进制文件；bandwidth，是一个使用 Token Bucket Filter (TBF) 来进行限流的二进制文件。</p>
 
     </div>
 
@@ -303,7 +312,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes/Kubernetes%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E5%92%8CCNI%E6%8F%92%E4%BB%B6/" title="运维&#x2F;虚拟化&#x2F;Kubernetes&#x2F;深入剖析Kubernetes&#x2F;Kubernetes网络模型和CNI插件">https://kbsonlong.github.io/2020/05/14/运维/虚拟化/Kubernetes/深入剖析Kubernetes/Kubernetes网络模型和CNI插件/</a>
+    <a href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes/Kubernetes%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E5%92%8CCNI%E6%8F%92%E4%BB%B6/" title="Kubernetes网络模型和CNI插件.md">https://kbsonlong.github.io/2020/05/14/运维/虚拟化/Kubernetes/深入剖析Kubernetes/Kubernetes网络模型和CNI插件/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -342,6 +351,9 @@
 
 
       <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes/" rel="tag"># 深入剖析Kubernetes</a>
+          </div>
 
         
 
@@ -349,12 +361,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86/" rel="prev" title="运维/虚拟化/Kubernetes/问题处理">
-      <i class="fa fa-chevron-left"></i> 运维/虚拟化/Kubernetes/问题处理
+    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes/Pod/" rel="prev" title="Pod.md">
+      <i class="fa fa-chevron-left"></i> Pod.md
     </a></div>
       <div class="post-nav-item">
-    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E4%BA%91%E5%8E%9F%E7%94%9F%E5%85%AC%E5%BC%80%E8%AF%BE/01%20%E4%BB%80%E4%B9%88%E6%98%AF%E5%8E%9F%E7%94%9F/" rel="next" title="运维/虚拟化/Kubernetes/云原生公开课/01 什么是原生">
-      运维/虚拟化/Kubernetes/云原生公开课/01 什么是原生 <i class="fa fa-chevron-right"></i>
+    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/k8s%E5%AE%89%E8%A3%85%E5%AE%9E%E6%88%98/uninstall/" rel="next" title="uninstall.md">
+      uninstall.md <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -430,20 +442,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">110</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">25</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

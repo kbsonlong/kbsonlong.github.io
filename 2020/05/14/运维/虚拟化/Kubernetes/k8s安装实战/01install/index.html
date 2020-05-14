@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"kbsonlong.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"3QSL94PCBQ","apiKey":"d2fe765a64df1740fcab93644d3a2677","indexName":"hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="¶1、系统初始化设置 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162636465666768697071727374757677787980818283848586878889909192939495969798yu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="01install.md">
+<meta property="og:url" content="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/k8s%E5%AE%89%E8%A3%85%E5%AE%9E%E6%88%98/01install/index.html">
+<meta property="og:site_name" content="蜷缩的蜗牛">
+<meta property="og:description" content="¶1、系统初始化设置 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162636465666768697071727374757677787980818283848586878889909192939495969798yu">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://typora.alongparty.cn/typora_img/20200205001519.png">
+<meta property="article:published_time" content="2020-05-14T14:16:05.000Z">
+<meta property="article:modified_time" content="2020-05-14T14:16:05.620Z">
+<meta property="article:author" content="曾胜龙">
+<meta property="article:tag" content="k8s安装实战">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://typora.alongparty.cn/typora_img/20200205001519.png">
+
+<link rel="canonical" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/k8s%E5%AE%89%E8%A3%85%E5%AE%9E%E6%88%98/01install/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>01install.md | 蜷缩的蜗牛</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="蜷缩的蜗牛" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">蜷缩的蜗牛</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">运维笔记</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/kbsonlong" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/k8s%E5%AE%89%E8%A3%85%E5%AE%9E%E6%88%98/01install/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          01install.md
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 22:16:05" itemprop="dateCreated datePublished" datetime="2020-05-14T22:16:05+08:00">2020-05-14</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/k8s%E5%AE%89%E8%A3%85%E5%AE%9E%E6%88%98/" itemprop="url" rel="index"><span itemprop="name">k8s安装实战</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h4 id="1、系统初始化设置"><a class="header-anchor" href="#1、系统初始化设置">¶</a>1、系统初始化设置</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br></pre></td><td class="code"><pre><span class="line">yum install -y epel-release</span><br><span class="line">yum install -y conntrack ntpdate ntp ipvsadm nfs-utils ipset jq iptables curl sysstat libseccomp wget</span><br><span class="line"></span><br><span class="line"><span class="comment">## 关闭防火墙</span></span><br><span class="line">systemctl stop firewalld</span><br><span class="line">systemctl <span class="built_in">disable</span> firewalld</span><br><span class="line">iptables -F &amp;&amp; iptables -X &amp;&amp; iptables -F -t nat &amp;&amp; iptables -X -t nat</span><br><span class="line">iptables -P FORWARD ACCEPT</span><br><span class="line"></span><br><span class="line"><span class="comment">## 禁用swap</span></span><br><span class="line">swapoff -a</span><br><span class="line">sed -i <span class="string">'/ swap / s/^\(.*\)$/#\1/g'</span> /etc/fstab</span><br><span class="line"></span><br><span class="line">setenforce 0</span><br><span class="line">sed -i <span class="string">'s/^SELINUX=.*/SELINUX=disabled/'</span> /etc/selinux/config</span><br><span class="line"></span><br><span class="line">systemctl stop dnsmasq</span><br><span class="line">systemctl <span class="built_in">disable</span> dnsmasq</span><br><span class="line"></span><br><span class="line"><span class="comment">## 加载ipvs模块</span></span><br><span class="line">mkdir -p  /etc/sysconfig/modules/</span><br><span class="line">cat &gt; /etc/sysconfig/modules/ipvs.modules &lt;&lt;EOF</span><br><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line">modprobe -- ip_vs</span><br><span class="line">modprobe -- ip_vs_rr</span><br><span class="line">modprobe -- ip_vs_wrr</span><br><span class="line">modprobe -- ip_vs_sh</span><br><span class="line">modprobe -- nf_conntrack_ipv4</span><br><span class="line">EOF</span><br><span class="line">chmod 755 /etc/sysconfig/modules/ipvs.modules &amp;&amp; bash /etc/sysconfig/modules/ipvs.modules &amp;&amp; lsmod | grep -e ip_vs -e nf_conntrack_ipv4</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">## 内核配置</span></span><br><span class="line">cat &gt; kubernetes.conf &lt;&lt;EOF</span><br><span class="line">net.bridge.bridge-nf-call-iptables=1</span><br><span class="line">net.bridge.bridge-nf-call-ip6tables=1</span><br><span class="line">net.ipv4.ip_forward=1</span><br><span class="line">net.ipv4.tcp_tw_recycle=0</span><br><span class="line">vm.swappiness=0 <span class="comment"># 禁止使用 swap 空间，只有当系统 OOM 时才允许使用它</span></span><br><span class="line">vm.overcommit_memory=1 <span class="comment"># 不检查物理内存是否够用</span></span><br><span class="line">vm.panic_on_oom=0 <span class="comment"># 开启 OOM</span></span><br><span class="line">fs.inotify.max_user_instances=8192</span><br><span class="line">fs.inotify.max_user_watches=1048576</span><br><span class="line">fs.file-max=52706963</span><br><span class="line">fs.nr_open=52706963</span><br><span class="line">net.ipv6.conf.all.disable_ipv6=1</span><br><span class="line">net.netfilter.nf_conntrack_max=2310720</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">cp kubernetes.conf  /etc/sysctl.d/kubernetes.conf</span><br><span class="line">sysctl -p /etc/sysctl.d/kubernetes.conf</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 调整系统 TimeZone</span></span><br><span class="line">timedatectl <span class="built_in">set</span>-timezone Asia/Shanghai</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将当前的 UTC 时间写入硬件时钟</span></span><br><span class="line">timedatectl <span class="built_in">set</span>-local-rtc 0</span><br><span class="line"></span><br><span class="line"><span class="comment"># 重启依赖于系统时间的服务</span></span><br><span class="line">systemctl restart rsyslog </span><br><span class="line">systemctl restart crond</span><br><span class="line"></span><br><span class="line">systemctl stop postfix &amp;&amp; systemctl <span class="built_in">disable</span> postfix</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 持久化保存日志的目录</span></span><br><span class="line">mkdir /var/<span class="built_in">log</span>/journal </span><br><span class="line">mkdir /etc/systemd/journald.conf.d</span><br><span class="line">cat &gt; /etc/systemd/journald.conf.d/99-prophet.conf &lt;&lt;EOF</span><br><span class="line">[Journal]</span><br><span class="line"><span class="comment"># 持久化保存到磁盘</span></span><br><span class="line">Storage=persistent</span><br><span class="line"></span><br><span class="line"><span class="comment"># 压缩历史日志</span></span><br><span class="line">Compress=yes</span><br><span class="line"></span><br><span class="line">SyncIntervalSec=5m</span><br><span class="line">RateLimitInterval=30s</span><br><span class="line">RateLimitBurst=1000</span><br><span class="line"></span><br><span class="line"><span class="comment"># 最大占用空间 10G</span></span><br><span class="line">SystemMaxUse=10G</span><br><span class="line"></span><br><span class="line"><span class="comment"># 单日志文件最大 200M</span></span><br><span class="line">SystemMaxFileSize=200M</span><br><span class="line"></span><br><span class="line"><span class="comment"># 日志保存时间 2 周</span></span><br><span class="line">MaxRetentionSec=2week</span><br><span class="line"></span><br><span class="line"><span class="comment"># 不将日志转发到 syslog</span></span><br><span class="line">ForwardToSyslog=no</span><br><span class="line">EOF</span><br><span class="line">systemctl restart systemd-journald</span><br><span class="line"></span><br><span class="line"><span class="comment">## 命令补全</span></span><br><span class="line">yum -y install bash-completion</span><br><span class="line"><span class="built_in">source</span> /etc/profile.d/bash_completion.sh</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">cat &lt;&lt; EOF &gt;&gt; /etc/hosts</span><br><span class="line">192.168.19.68 master01</span><br><span class="line">192.168.19.20  lb.baibu.la</span><br><span class="line">192.168.18.165 master02</span><br><span class="line">192.168.19.23 master03</span><br><span class="line">192.168.19.8 node01</span><br><span class="line">192.168.19.202 node02</span><br><span class="line">192.168.18.213 node03</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+<h4 id="2、安装DockerCE"><a class="header-anchor" href="#2、安装DockerCE">¶</a>2、安装DockerCE</h4>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"># 1.卸载旧版本docker</span><br><span class="line">yum remove docker \</span><br><span class="line">            docker-client \</span><br><span class="line">            docker-client-latest \</span><br><span class="line">            docker-common \</span><br><span class="line">            docker-latest \</span><br><span class="line">            docker-latest-logrotate \</span><br><span class="line">            docker-logrotate \</span><br><span class="line">            docker-selinux \</span><br><span class="line">            docker-engine-selinux \</span><br><span class="line">            docker-engine \</span><br><span class="line">            docker \</span><br><span class="line">            docker-ce \</span><br><span class="line">            docker-ee</span><br><span class="line"># 2.安装所需的包</span><br><span class="line"># yum-utils 提供了 yum-config-manager 实用程</span><br><span class="line"># 并且 devicemapper 存储驱动需要 device-mapper-persistent-data 和 lvm2</span><br><span class="line">yum install -y yum-utils device-mapper-persistent-data lvm2</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 3.使用以下命令设置源</span><br><span class="line">#阿里源（建议使用）</span><br><span class="line">yum-config-manager \</span><br><span class="line">--add-repo \</span><br><span class="line">https:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;docker-ce&#x2F;linux&#x2F;centos&#x2F;docker-ce.repo</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 4.或者安装指定版本</span><br><span class="line">yum list docker-ce --showduplicates | sort -r</span><br><span class="line">#yum install -y docker-ce-18.09.7</span><br><span class="line">yum install -y docker-ce</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 5.配置docker</span><br><span class="line">cat &gt; &#x2F;etc&#x2F;docker&#x2F;daemon.json &lt;&lt;EOF</span><br><span class="line">&#123;</span><br><span class="line">  &quot;exec-opts&quot;: [&quot;native.cgroupdriver&#x3D;systemd&quot;],</span><br><span class="line">  &quot;log-driver&quot;: &quot;json-file&quot;,</span><br><span class="line">  &quot;log-opts&quot;: &#123;</span><br><span class="line">    &quot;max-size&quot;: &quot;100m&quot;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;storage-driver&quot;: &quot;overlay2&quot;,</span><br><span class="line">  &quot;registry-mirrors&quot;: [&quot;https:&#x2F;&#x2F;3ksoxp7c.mirror.aliyuncs.com&quot;],</span><br><span class="line">&quot;graph&quot;:&quot;&#x2F;data&#x2F;docker&quot;</span><br><span class="line">&#125;</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">systemctl daemon-reload</span><br><span class="line">systemctl restart docker</span><br></pre></td></tr></table></figure>
+<h4 id="3、安装kubelet-kubeadm-kubectl"><a class="header-anchor" href="#3、安装kubelet-kubeadm-kubectl">¶</a>3、安装kubelet kubeadm kubectl</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## 安装kubelet kubeadm kubectl</span></span><br><span class="line">cat &lt;&lt; EOF &gt; /etc/yum.repos.d/k8s.repo</span><br><span class="line">[kubernetes]</span><br><span class="line">name=Kubernetes Repository</span><br><span class="line">baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64/</span><br><span class="line">gpgcheck=1</span><br><span class="line">gpgkey=https://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg</span><br><span class="line">      https://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">yum install kubeadm-1.16.2  kubectl-1.16.2 kubelet-1.16.2 -y</span><br></pre></td></tr></table></figure>
+<h4 id="4、初始化master"><a class="header-anchor" href="#4、初始化master">¶</a>4、初始化master</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">## 初始化master</span></span><br><span class="line">cat &lt;&lt; EOF &gt; kubeadm-config.yaml</span><br><span class="line">apiVersion: kubeadm.k8s.io/v1beta2</span><br><span class="line">kind: ClusterConfiguration</span><br><span class="line">kubernetesVersion: v1.16.2</span><br><span class="line">apiServer:</span><br><span class="line">  certSANs:</span><br><span class="line">  - master01</span><br><span class="line">  - master02</span><br><span class="line">  - master03</span><br><span class="line">  - 192.168.19.68</span><br><span class="line">  - 192.168.18.165</span><br><span class="line">  - 192.168.19.23</span><br><span class="line">  - 192.168.19.20</span><br><span class="line">controlPlaneEndpoint: <span class="string">"lb.baibu.la:6443"</span></span><br><span class="line">imageRepository: registry.cn-hangzhou.aliyuncs.com/google_containers</span><br><span class="line">etcd:</span><br><span class="line">  <span class="built_in">local</span>:</span><br><span class="line">    dataDir: /data/server/etcd</span><br><span class="line">networking:</span><br><span class="line">  serviceSubnet: <span class="string">"10.96.0.0/16"</span></span><br><span class="line">  podSubnet: <span class="string">"10.244.0.0/16"</span></span><br><span class="line">  dnsDomain: <span class="string">"cluster.local"</span></span><br><span class="line">---</span><br><span class="line">apiVersion: kubeproxy.config.k8s.io/v1alpha1</span><br><span class="line">kind: KubeProxyConfiguration</span><br><span class="line">featureGates:</span><br><span class="line">  SupportIPVSProxyMode: <span class="literal">true</span></span><br><span class="line">mode: ipvs</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">kubeadm init --config=kubeadm-config.yaml --upload-certs &gt; token.log</span><br><span class="line"></span><br><span class="line"><span class="comment"># 配置 kubectl</span></span><br><span class="line">rm -rf /root/.kube/</span><br><span class="line">mkdir /root/.kube/</span><br><span class="line">cp -i /etc/kubernetes/admin.conf /root/.kube/config</span><br><span class="line"></span><br><span class="line"><span class="comment">## 命令补全</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"export KUBECONFIG=/etc/kubernetes/admin.conf"</span> &gt;&gt; ~/.bash_profile</span><br><span class="line"><span class="built_in">source</span> .bash_profile</span><br></pre></td></tr></table></figure>
+<h4 id="5、配置网络插件"><a class="header-anchor" href="#5、配置网络插件">¶</a>5、配置网络插件</h4>
+<p><a href="kube-flannel.md">kube-flannel.yml</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">##配置网络插件</span></span><br><span class="line"></span><br><span class="line">kubectl apply -f kube-flannel.yml</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>添加其他节点之前，需先配置网络插件，否则跨主机pod网络通信可能存在问题</p>
+</blockquote>
+<h4 id="6、添加Master节点"><a class="header-anchor" href="#6、添加Master节点">¶</a>6、添加Master节点</h4>
+<h5 id="6-1、现有master节点获取certificate-key"><a class="header-anchor" href="#6-1、现有master节点获取certificate-key">¶</a>6.1、现有master节点获取certificate key</h5>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@master01 ~]<span class="comment"># kubeadm init phase upload-certs --upload-certs</span></span><br><span class="line">W0204 23:37:24.694443   31486 version.go:101] could not fetch a Kubernetes version from the internet: unable to get URL <span class="string">"https://dl.k8s.io/release/stable-1.txt"</span>: Get https://dl.k8s.io/release/stable-1.txt: net/http: request canceled <span class="keyword">while</span> waiting <span class="keyword">for</span> connection (Client.Timeout exceeded <span class="keyword">while</span> awaiting headers)</span><br><span class="line">W0204 23:37:24.694601   31486 version.go:102] falling back to the <span class="built_in">local</span> client version: v1.16.2</span><br><span class="line">[upload-certs] Storing the certificates <span class="keyword">in</span> Secret <span class="string">"kubeadm-certs"</span> <span class="keyword">in</span> the <span class="string">"kube-system"</span> Namespace</span><br><span class="line">[upload-certs] Using certificate key:</span><br><span class="line">19ccb15e708bf948b733573b22d76def4b2671b7a08529f5c30aaa26bc058c87</span><br></pre></td></tr></table></figure>
+<h5 id="6-2、获取token"><a class="header-anchor" href="#6-2、获取token">¶</a>6.2、获取token</h5>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@master01 ~]<span class="comment"># kubeadm token create --print-join-command</span></span><br><span class="line">kubeadm join lb.baibu.la:6443 --token 59sk3l.m0jx4wndgx51ce24     --discovery-token-ca-cert-hash sha256:147b30f1c937dea4b4d826da51c02cd1063a5f0114c133de57ec530deb080720</span><br></pre></td></tr></table></figure>
+<h5 id="6-3、新增master节点执行"><a class="header-anchor" href="#6-3、新增master节点执行">¶</a>6.3、新增master节点执行</h5>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">kubeadm join lb.baibu.la:6443 --token 59sk3l.m0jx4wndgx51ce24     \</span><br><span class="line">    --discovery-token-ca-cert-hash \</span><br><span class="line">    sha256:147b30f1c937dea4b4d826da51c02cd1063a5f0114c133de57ec530deb080720 \</span><br><span class="line">    --control-plane --certificate-key \</span><br><span class="line">    19ccb15e708bf948b733573b22d76def4b2671b7a08529f5c30aaa26bc058c87  <span class="comment">##对应第一步输出certificate key</span></span><br></pre></td></tr></table></figure>
+<h4 id="7、添加Node节点"><a class="header-anchor" href="#7、添加Node节点">¶</a>7、添加Node节点</h4>
+<h5 id="7-1、master节点输出join命令"><a class="header-anchor" href="#7-1、master节点输出join命令">¶</a>7.1、master节点输出join命令</h5>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># kubeadm token create --print-join-command</span></span><br><span class="line">kubeadm join 192.168.16.148:6443 --token d3313g.st4iyawnowq8qwvv     --discovery-token-ca-cert-hash sha256:492b6ef429888e680f2c30edcb2e2c78aa2c10730b000725f7b60bb26f1ae178</span><br></pre></td></tr></table></figure>
+<h5 id="7-2、node节点"><a class="header-anchor" href="#7-2、node节点">¶</a>7.2、node节点</h5>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubeadm join 192.168.16.148:6443 --token d3313g.st4iyawnowq8qwvv     --discovery-token-ca-cert-hash sha256:492b6ef429888e680f2c30edcb2e2c78aa2c10730b000725f7b60bb26f1ae178</span><br></pre></td></tr></table></figure>
+<h4 id="8、修改NodePort端口范围"><a class="header-anchor" href="#8、修改NodePort端口范围">¶</a>8、修改NodePort端口范围</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sed -i  <span class="string">'/--service-cluster-ip-range/a \ \ \  - --service-node-port-range=1-65535'</span> /etc/kubernetes/manifests/kube-apiserver.yaml</span><br><span class="line">systemctl daemon-reload</span><br><span class="line">systemctl restart kubelet.service</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nohup kubectl proxy --accept-hosts=<span class="string">'.*'</span> --address=<span class="string">'0.0.0.0'</span> --port=8080 &amp;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">[root@master01 server]<span class="comment"># kubectl apply -f https://kuboard.cn/install-script/kuboard.yaml</span></span><br><span class="line">deployment.apps/kuboard created</span><br><span class="line">service/kuboard created</span><br><span class="line">serviceaccount/kuboard-user created</span><br><span class="line">clusterrolebinding.rbac.authorization.k8s.io/kuboard-user created</span><br><span class="line">serviceaccount/kuboard-viewer created</span><br><span class="line">clusterrolebinding.rbac.authorization.k8s.io/kuboard-viewer created</span><br><span class="line">clusterrolebinding.rbac.authorization.k8s.io/kuboard-viewer:kuboard-minimum-role created</span><br><span class="line">clusterrole.rbac.authorization.k8s.io/kuboard-minimum-role created</span><br><span class="line">ingress.extensions/kuboard created</span><br><span class="line">[root@master01 server]<span class="comment"># kubectl apply -f https://addons.kuboard.cn/metrics-server/0.3.6/metrics-server.yaml</span></span><br><span class="line">clusterrole.rbac.authorization.k8s.io/system:aggregated-metrics-reader created</span><br><span class="line">clusterrolebinding.rbac.authorization.k8s.io/metrics-server:system:auth-delegator created</span><br><span class="line">rolebinding.rbac.authorization.k8s.io/metrics-server-auth-reader created</span><br><span class="line">clusterrole.rbac.authorization.k8s.io/system:metrics-server created</span><br><span class="line">clusterrolebinding.rbac.authorization.k8s.io/system:metrics-server created</span><br><span class="line">apiservice.apiregistration.k8s.io/v1beta1.metrics.k8s.io created</span><br><span class="line">serviceaccount/metrics-server created</span><br><span class="line">deployment.apps/metrics-server created</span><br><span class="line">service/metrics-server created</span><br><span class="line">[root@master01 server]<span class="comment"># # 只在 master 节点执行</span></span><br><span class="line">[root@master01 server]<span class="comment"># kubectl apply -f https://kuboard.cn/install-script/v1.17.x/nginx-ingress.yaml</span></span><br><span class="line">namespace/nginx-ingress created</span><br><span class="line">serviceaccount/nginx-ingress created</span><br><span class="line">secret/default-server-secret created</span><br><span class="line">configmap/nginx-config created</span><br><span class="line">clusterrole.rbac.authorization.k8s.io/nginx-ingress created</span><br><span class="line">clusterrolebinding.rbac.authorization.k8s.io/nginx-ingress created</span><br><span class="line">daemonset.apps/nginx-ingress created</span><br><span class="line">[root@master01 server]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+<h4 id="9、安装nginx-ingress"><a class="header-anchor" href="#9、安装nginx-ingress">¶</a>9、安装nginx-ingress</h4>
+<p><a href="nginx-ingress.md">nginx-ingress.yaml</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f nginx-ingress.yaml</span><br></pre></td></tr></table></figure>
+<h4 id="10、安装helm"><a class="header-anchor" href="#10、安装helm">¶</a>10、安装helm</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## 安装helm</span></span><br><span class="line"><span class="comment">#从官网下载最新版本的二进制安装包到本地：https://github.com/kubernetes/helm/releases</span></span><br><span class="line">tar zxf helm-v2.16.1-linux-amd64.tar.gz <span class="comment"># 解压压缩包</span></span><br><span class="line"><span class="comment"># 把 helm 指令放到bin目录下</span></span><br><span class="line">mv linux-amd64/helm /usr/<span class="built_in">local</span>/bin/helm</span><br><span class="line">helm <span class="built_in">help</span> <span class="comment"># 验证</span></span><br><span class="line"></span><br><span class="line">helm init --client-only --stable-repo-url https://aliacs-app-catalog.oss-cn-hangzhou.aliyuncs.com/charts/</span><br><span class="line">helm repo add incubator https://aliacs-app-catalog.oss-cn-hangzhou.aliyuncs.com/charts-incubator/</span><br><span class="line">helm repo update</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建服务端</span></span><br><span class="line">helm init --service-account tiller --upgrade -i registry.cn-hangzhou.aliyuncs.com/google_containers/tiller:v2.16.1  --stable-repo-url https://kubernetes.oss-cn-hangzhou.aliyuncs.com/charts</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 创建TLS认证服务端，参考地址：https://github.com/gjmzj/kubeasz/blob/master/docs/guide/helm.md</span></span><br><span class="line">helm init --service-account tiller --upgrade -i registry.cn-hangzhou.aliyuncs.com/google_containers/tiller:v2.16.1 --tiller-tls-cert /etc/kubernetes/ssl/tiller001.pem --tiller-tls-key /etc/kubernetes/ssl/tiller001-key.pem --tls-ca-cert /etc/kubernetes/ssl/ca.pem --tiller-namespace kube-system --stable-repo-url https://kubernetes.oss-cn-hangzhou.aliyuncs.com/charts</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#给 Tiller 授权</span></span><br><span class="line">kubectl create serviceaccount --namespace kube-system tiller</span><br><span class="line">kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller</span><br><span class="line">kubectl patch deploy --namespace kube-system tiller-deploy -p <span class="string">'&#123;"spec":&#123;"template":&#123;"spec":&#123;"serviceAccount":"tiller"&#125;&#125;&#125;&#125;'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">## 验证</span></span><br><span class="line">kubectl -n kube-system get pods|grep tiller</span><br><span class="line">helm version</span><br><span class="line"></span><br><span class="line"> kubectl patch storageclass nfs-storage -p <span class="string">'&#123;"metadata": &#123;"annotations":&#123;"storageclass.kubernetes.io/is-default-class":"true"&#125;&#125;&#125;'</span></span><br><span class="line">kubectl patch storageclass &lt;your-class-name&gt; -p <span class="string">'&#123;"metadata": &#123;"annotations":&#123;"storageclass.beta.kubernetes.io/is-default-class":"true"&#125;&#125;&#125;'</span></span><br></pre></td></tr></table></figure>
+<p><img src="http://typora.alongparty.cn/typora_img/20200205001519.png" alt=""></p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>提示语.</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>曾胜龙
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/k8s%E5%AE%89%E8%A3%85%E5%AE%9E%E6%88%98/01install/" title="01install.md">https://kbsonlong.github.io/2020/05/14/运维/虚拟化/Kubernetes/k8s安装实战/01install/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/images/wechat_channel.jpg">
+            <span class="icon">
+              <i class="fab fa-weixin"></i>
+            </span>
+
+            <span class="label">WeChat</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/k8s%E5%AE%89%E8%A3%85%E5%AE%9E%E6%88%98/" rel="tag"># k8s安装实战</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%95%B0%E6%8D%AE%E5%BA%93/Mongodb/MongoDB%E5%A4%8D%E5%88%B6%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/" rel="prev" title="MongoDB复制集群部署.md">
+      <i class="fa fa-chevron-left"></i> MongoDB复制集群部署.md
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/k8s%E5%AE%89%E8%A3%85%E5%AE%9E%E6%88%98/nginx-ingress/" rel="next" title="nginx-ingress.md">
+      nginx-ingress.md <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1、系统初始化设置"><span class="nav-number">1.</span> <span class="nav-text">1、系统初始化设置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、安装DockerCE"><span class="nav-number">2.</span> <span class="nav-text">2、安装DockerCE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3、安装kubelet-kubeadm-kubectl"><span class="nav-number">3.</span> <span class="nav-text">3、安装kubelet kubeadm kubectl</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4、初始化master"><span class="nav-number">4.</span> <span class="nav-text">4、初始化master</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5、配置网络插件"><span class="nav-number">5.</span> <span class="nav-text">5、配置网络插件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6、添加Master节点"><span class="nav-number">6.</span> <span class="nav-text">6、添加Master节点</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#6-1、现有master节点获取certificate-key"><span class="nav-number">6.1.</span> <span class="nav-text">6.1、现有master节点获取certificate key</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-2、获取token"><span class="nav-number">6.2.</span> <span class="nav-text">6.2、获取token</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-3、新增master节点执行"><span class="nav-number">6.3.</span> <span class="nav-text">6.3、新增master节点执行</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7、添加Node节点"><span class="nav-number">7.</span> <span class="nav-text">7、添加Node节点</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#7-1、master节点输出join命令"><span class="nav-number">7.1.</span> <span class="nav-text">7.1、master节点输出join命令</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#7-2、node节点"><span class="nav-number">7.2.</span> <span class="nav-text">7.2、node节点</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8、修改NodePort端口范围"><span class="nav-number">8.</span> <span class="nav-text">8、修改NodePort端口范围</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#9、安装nginx-ingress"><span class="nav-number">9.</span> <span class="nav-text">9、安装nginx-ingress</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#10、安装helm"><span class="nav-number">10.</span> <span class="nav-text">10、安装helm</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="曾胜龙"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">曾胜龙</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">110</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yourname" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yourname" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank">粤ICP备18122209号 </a>
+      <img src="http://www.beian.gov.cn/portal/download" style="display: inline-block;">
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">曾胜龙</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

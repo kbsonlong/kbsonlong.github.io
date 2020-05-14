@@ -22,17 +22,17 @@
     var CONFIG = {"hostname":"kbsonlong.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"3QSL94PCBQ","apiKey":"d2fe765a64df1740fcab93644d3a2677","indexName":"hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="1、添加阿里镜像12sudo yum install -y yum-utils device-mapper-persistent-data lvm2sudo yum-config-manager --add-repo http:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;docker-ce&#x2F;linux&#x2F;centos&#x2F;docker-ce.repo  2、查看可以安装的 docker 版本123yum">
+  <meta name="description" content="¶1、添加阿里镜像 12sudo yum install -y yum-utils device-mapper-persistent-data lvm2sudo yum-config-manager --add-repo http:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;docker-ce&#x2F;linux&#x2F;centos&#x2F;docker-ce.repo ¶2、查看可以安装的 docker 版本 123y">
 <meta property="og:type" content="article">
-<meta property="og:title" content="运维&#x2F;虚拟化&#x2F;Docker&#x2F;Docker快速安装">
+<meta property="og:title" content="Docker快速安装.md">
 <meta property="og:url" content="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Docker/Docker%E5%BF%AB%E9%80%9F%E5%AE%89%E8%A3%85/index.html">
 <meta property="og:site_name" content="蜷缩的蜗牛">
-<meta property="og:description" content="1、添加阿里镜像12sudo yum install -y yum-utils device-mapper-persistent-data lvm2sudo yum-config-manager --add-repo http:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;docker-ce&#x2F;linux&#x2F;centos&#x2F;docker-ce.repo  2、查看可以安装的 docker 版本123yum">
+<meta property="og:description" content="¶1、添加阿里镜像 12sudo yum install -y yum-utils device-mapper-persistent-data lvm2sudo yum-config-manager --add-repo http:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;docker-ce&#x2F;linux&#x2F;centos&#x2F;docker-ce.repo ¶2、查看可以安装的 docker 版本 123y">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-05-14T13:51:56.813Z">
-<meta property="article:modified_time" content="2020-05-14T13:51:56.813Z">
+<meta property="article:published_time" content="2020-05-14T14:16:05.000Z">
+<meta property="article:modified_time" content="2020-05-14T14:16:05.504Z">
 <meta property="article:author" content="曾胜龙">
-<meta property="article:tag" content="Devops Kubernetes Docker">
+<meta property="article:tag" content="Docker">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Docker/Docker%E5%BF%AB%E9%80%9F%E5%AE%89%E8%A3%85/">
@@ -48,7 +48,7 @@
   };
 </script>
 
-  <title>运维/虚拟化/Docker/Docker快速安装 | 蜷缩的蜗牛</title>
+  <title>Docker快速安装.md | 蜷缩的蜗牛</title>
   
 
 
@@ -214,7 +214,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          运维/虚拟化/Docker/Docker快速安装
+          Docker快速安装.md
         </h1>
 
         <div class="post-meta">
@@ -224,7 +224,16 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-05-14 21:51:56" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:56+08:00">2020-05-14</time>
+              <time title="创建时间：2020-05-14 22:16:05" itemprop="dateCreated datePublished" datetime="2020-05-14T22:16:05+08:00">2020-05-14</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Docker/" itemprop="url" rel="index"><span itemprop="name">Docker</span></a>
+                </span>
             </span>
 
           
@@ -245,17 +254,16 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="1、添加阿里镜像"><a href="#1、添加阿里镜像" class="headerlink" title="1、添加阿里镜像"></a>1、添加阿里镜像</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install -y yum-utils device-mapper-persistent-data lvm2</span><br><span class="line">sudo yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo</span><br></pre></td></tr></table></figure>
+        <h3 id="1、添加阿里镜像"><a class="header-anchor" href="#1、添加阿里镜像">¶</a>1、添加阿里镜像</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install -y yum-utils device-mapper-persistent-data lvm2</span><br><span class="line">sudo yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo</span><br></pre></td></tr></table></figure>
+<h3 id="2、查看可以安装的-docker-版本"><a class="header-anchor" href="#2、查看可以安装的-docker-版本">¶</a>2、查看可以安装的 docker 版本</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yum list docker-ce --showduplicates</span><br><span class="line"><span class="comment">#安装 18.03.1</span></span><br><span class="line">sudo yum install docker-ce-18.03.1.ce</span><br></pre></td></tr></table></figure>
+<h3 id="3、设置-Docker-阿里云加速器"><a class="header-anchor" href="#3、设置-Docker-阿里云加速器">¶</a>3、设置 Docker 阿里云加速器</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir -p /etc/docker</span><br><span class="line">sudo tee /etc/docker/daemon.json &lt;&lt; EOF</span><br><span class="line">&#123;</span><br><span class="line"><span class="string">"registry-mirrors"</span>: [<span class="string">"https://so9gt83b.mirror.aliyuncs.com"</span>],</span><br><span class="line"><span class="string">"graph"</span>:<span class="string">"/data/docker"</span></span><br><span class="line">&#125;</span><br><span class="line">EOF</span><br><span class="line">sudo systemctl daemon-reload</span><br></pre></td></tr></table></figure>
+<h3 id="4、启动-Docker"><a class="header-anchor" href="#4、启动-Docker">¶</a>4、启动 Docker</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">systemctl <span class="built_in">enable</span> docker</span><br><span class="line"></span><br><span class="line">systemctl start docker</span><br></pre></td></tr></table></figure>
+<h3 id=""><a class="header-anchor" href="#">¶</a></h3>
 
-<h3 id="2、查看可以安装的-docker-版本"><a href="#2、查看可以安装的-docker-版本" class="headerlink" title="2、查看可以安装的 docker 版本"></a>2、查看可以安装的 docker 版本</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yum list docker-ce --showduplicates</span><br><span class="line"><span class="comment">#安装 18.03.1</span></span><br><span class="line">sudo yum install docker-ce-18.03.1.ce</span><br></pre></td></tr></table></figure>
-
-<h3 id="3、设置-Docker-阿里云加速器"><a href="#3、设置-Docker-阿里云加速器" class="headerlink" title="3、设置 Docker 阿里云加速器"></a>3、设置 Docker 阿里云加速器</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir -p /etc/docker</span><br><span class="line">sudo tee /etc/docker/daemon.json &lt;&lt; EOF</span><br><span class="line">&#123;</span><br><span class="line"><span class="string">"registry-mirrors"</span>: [<span class="string">"https://so9gt83b.mirror.aliyuncs.com"</span>],</span><br><span class="line"><span class="string">"graph"</span>:<span class="string">"/data/docker"</span></span><br><span class="line">&#125;</span><br><span class="line">EOF</span><br><span class="line">sudo systemctl daemon-reload</span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="4、启动-Docker"><a href="#4、启动-Docker" class="headerlink" title="4、启动 Docker"></a>4、启动 Docker</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">systemctl <span class="built_in">enable</span> docker</span><br><span class="line"></span><br><span class="line">systemctl start docker</span><br></pre></td></tr></table></figure>
-
-<h3 id=""><a href="#" class="headerlink" title=""></a></h3>
     </div>
 
     
@@ -280,7 +288,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Docker/Docker%E5%BF%AB%E9%80%9F%E5%AE%89%E8%A3%85/" title="运维&#x2F;虚拟化&#x2F;Docker&#x2F;Docker快速安装">https://kbsonlong.github.io/2020/05/14/运维/虚拟化/Docker/Docker快速安装/</a>
+    <a href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Docker/Docker%E5%BF%AB%E9%80%9F%E5%AE%89%E8%A3%85/" title="Docker快速安装.md">https://kbsonlong.github.io/2020/05/14/运维/虚拟化/Docker/Docker快速安装/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -319,6 +327,9 @@
 
 
       <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Docker/" rel="tag"># Docker</a>
+          </div>
 
         
 
@@ -326,12 +337,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Docker/Docker%20pg%E4%B8%BB%E4%BB%8E/" rel="prev" title="运维/虚拟化/Docker/Docker pg主从">
-      <i class="fa fa-chevron-left"></i> 运维/虚拟化/Docker/Docker pg主从
+    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Docker/Docker%E8%B5%84%E6%BA%90%E9%99%90%E5%88%B6/" rel="prev" title="Docker资源限制.md">
+      <i class="fa fa-chevron-left"></i> Docker资源限制.md
     </a></div>
       <div class="post-nav-item">
-    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Docker/Docker%E5%AE%89%E8%A3%85Kong/" rel="next" title="运维/虚拟化/Docker/Docker安装Kong">
-      运维/虚拟化/Docker/Docker安装Kong <i class="fa fa-chevron-right"></i>
+    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Docker/Docker%E5%AE%89%E8%A3%85Kong/" rel="next" title="Docker安装Kong.md">
+      Docker安装Kong.md <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -391,7 +402,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、添加阿里镜像"><span class="nav-number">1.</span> <span class="nav-text">1、添加阿里镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、查看可以安装的-docker-版本"><span class="nav-number">2.</span> <span class="nav-text">2、查看可以安装的 docker 版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、设置-Docker-阿里云加速器"><span class="nav-number">3.</span> <span class="nav-text">3、设置 Docker 阿里云加速器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、启动-Docker"><span class="nav-number">4.</span> <span class="nav-text">4、启动 Docker</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#"><span class="nav-number">5.</span> <span class="nav-text"></span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、添加阿里镜像"><span class="nav-number">1.</span> <span class="nav-text">1、添加阿里镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、查看可以安装的-docker-版本"><span class="nav-number">2.</span> <span class="nav-text">2、查看可以安装的 docker 版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、设置-Docker-阿里云加速器"><span class="nav-number">3.</span> <span class="nav-text">3、设置 Docker 阿里云加速器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、启动-Docker"><span class="nav-number">4.</span> <span class="nav-text">4、启动 Docker</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#"><span class="nav-number">5.</span> <span class="nav-text">¶</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -407,20 +418,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">110</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">25</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

@@ -24,15 +24,15 @@
 
   <meta name="description" content="现象: 使用阿里源redis-shake给redis集群同步数据时 错误日志:  Client id&#x3D;7153 addr&#x3D;172.16.4.115:33754 fd&#x3D;13 name&#x3D; age&#x3D;1152 idle&#x3D;1152 flags&#x3D;S db&#x3D;0 sub&#x3D;0 psub&#x3D;0 multi&#x3D;-1 qbuf&#x3D;0 qbuf-free&#x3D;0 obl&#x3D;8362 oll&#x3D;1877 omem&#x3D;70045688 eve">
 <meta property="og:type" content="article">
-<meta property="og:title" content="运维&#x2F;数据库&#x2F;Redis&#x2F;redis数据迁移异常">
+<meta property="og:title" content="redis数据迁移异常.md">
 <meta property="og:url" content="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/redis%E6%95%B0%E6%8D%AE%E8%BF%81%E7%A7%BB%E5%BC%82%E5%B8%B8/index.html">
 <meta property="og:site_name" content="蜷缩的蜗牛">
 <meta property="og:description" content="现象: 使用阿里源redis-shake给redis集群同步数据时 错误日志:  Client id&#x3D;7153 addr&#x3D;172.16.4.115:33754 fd&#x3D;13 name&#x3D; age&#x3D;1152 idle&#x3D;1152 flags&#x3D;S db&#x3D;0 sub&#x3D;0 psub&#x3D;0 multi&#x3D;-1 qbuf&#x3D;0 qbuf-free&#x3D;0 obl&#x3D;8362 oll&#x3D;1877 omem&#x3D;70045688 eve">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-05-14T13:51:56.275Z">
-<meta property="article:modified_time" content="2020-05-14T13:51:56.275Z">
+<meta property="article:published_time" content="2020-05-14T14:16:04.000Z">
+<meta property="article:modified_time" content="2020-05-14T14:16:04.998Z">
 <meta property="article:author" content="曾胜龙">
-<meta property="article:tag" content="Devops Kubernetes Docker">
+<meta property="article:tag" content="Redis">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/redis%E6%95%B0%E6%8D%AE%E8%BF%81%E7%A7%BB%E5%BC%82%E5%B8%B8/">
@@ -48,7 +48,7 @@
   };
 </script>
 
-  <title>运维/数据库/Redis/redis数据迁移异常 | 蜷缩的蜗牛</title>
+  <title>redis数据迁移异常.md | 蜷缩的蜗牛</title>
   
 
 
@@ -214,7 +214,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          运维/数据库/Redis/redis数据迁移异常
+          redis数据迁移异常.md
         </h1>
 
         <div class="post-meta">
@@ -224,7 +224,16 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-05-14 21:51:56" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:56+08:00">2020-05-14</time>
+              <time title="创建时间：2020-05-14 22:16:04" itemprop="dateCreated datePublished" datetime="2020-05-14T22:16:04+08:00">2020-05-14</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+                </span>
             </span>
 
           
@@ -253,7 +262,6 @@
 </blockquote>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">CONFIG GET client-output-buffer-limit</span><br><span class="line"> </span><br><span class="line">config <span class="built_in">set</span> client-output-buffer-limit <span class="string">'slave 2gb 64mb 60'</span></span><br><span class="line"></span><br><span class="line">CONFIG REWRITE</span><br><span class="line"></span><br><span class="line">CONFIG GET client-output-buffer-limit</span><br></pre></td></tr></table></figure>
 
-
     </div>
 
     
@@ -278,7 +286,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/redis%E6%95%B0%E6%8D%AE%E8%BF%81%E7%A7%BB%E5%BC%82%E5%B8%B8/" title="运维&#x2F;数据库&#x2F;Redis&#x2F;redis数据迁移异常">https://kbsonlong.github.io/2020/05/14/运维/数据库/Redis/redis数据迁移异常/</a>
+    <a href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/redis%E6%95%B0%E6%8D%AE%E8%BF%81%E7%A7%BB%E5%BC%82%E5%B8%B8/" title="redis数据迁移异常.md">https://kbsonlong.github.io/2020/05/14/运维/数据库/Redis/redis数据迁移异常/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -317,6 +325,9 @@
 
 
       <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Redis/" rel="tag"># Redis</a>
+          </div>
 
         
 
@@ -324,12 +335,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E7%B3%BB%E7%BB%9F%E5%88%9D%E5%A7%8B%E5%8C%96/openldap%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86/" rel="prev" title="运维/系统初始化/openldap用户管理">
-      <i class="fa fa-chevron-left"></i> 运维/系统初始化/openldap用户管理
+    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/Untitled/" rel="prev" title="运维/Untitled">
+      <i class="fa fa-chevron-left"></i> 运维/Untitled
     </a></div>
       <div class="post-nav-item">
-    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Harbor/" rel="next" title="运维/虚拟化/Harbor">
-      运维/虚拟化/Harbor <i class="fa fa-chevron-right"></i>
+    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%95%B0%E6%8D%AE%E5%BA%93/Mysql/mysql%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98%E6%A6%82%E5%BF%B5/" rel="next" title="mysql性能调优概念.md">
+      mysql性能调优概念.md <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -404,20 +415,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">110</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">25</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

@@ -22,17 +22,17 @@
     var CONFIG = {"hostname":"kbsonlong.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"3QSL94PCBQ","apiKey":"d2fe765a64df1740fcab93644d3a2677","indexName":"hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="1 背景在服务器资源运营过程中，我们需要对现网服务器进行有效的识别，以负载情况为核心依据，将服务器进行分类，从而对不同分类的服务器进行优化运营。 2 适用范围本规范的中涉及的服务器资源是指面向业务的现网服务器资源（不包括OA与dev 环境）,包括物理服务器和虚拟化服务器。 本规范面向的用户是适用于所有使用该资源的开发或者产品用户。 3 目标本规范达到以下目标： \1. 根据服务器负载情况，制定分类">
+  <meta name="description" content="1 背景 在服务器资源运营过程中，我们需要对现网服务器进行有效的识别，以负载情况为核心依据，将服务器进行分类，从而对不同分类的服务器进行优化运营。 2 适用范围 本规范的中涉及的服务器资源是指面向业务的现网服务器资源（不包括OA与dev 环境）,包括物理服务器和虚拟化服务器。 本规范面向的用户是适用于所有使用该资源的开发或者产品用户。 3 目标 本规范达到以下目标： \1. 根据服务器负载情况，制">
 <meta property="og:type" content="article">
-<meta property="og:title" content="运维&#x2F;标准化及流程化&#x2F;资源使用标准">
+<meta property="og:title" content="资源使用标准.md">
 <meta property="og:url" content="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/%E8%B5%84%E6%BA%90%E4%BD%BF%E7%94%A8%E6%A0%87%E5%87%86/index.html">
 <meta property="og:site_name" content="蜷缩的蜗牛">
-<meta property="og:description" content="1 背景在服务器资源运营过程中，我们需要对现网服务器进行有效的识别，以负载情况为核心依据，将服务器进行分类，从而对不同分类的服务器进行优化运营。 2 适用范围本规范的中涉及的服务器资源是指面向业务的现网服务器资源（不包括OA与dev 环境）,包括物理服务器和虚拟化服务器。 本规范面向的用户是适用于所有使用该资源的开发或者产品用户。 3 目标本规范达到以下目标： \1. 根据服务器负载情况，制定分类">
+<meta property="og:description" content="1 背景 在服务器资源运营过程中，我们需要对现网服务器进行有效的识别，以负载情况为核心依据，将服务器进行分类，从而对不同分类的服务器进行优化运营。 2 适用范围 本规范的中涉及的服务器资源是指面向业务的现网服务器资源（不包括OA与dev 环境）,包括物理服务器和虚拟化服务器。 本规范面向的用户是适用于所有使用该资源的开发或者产品用户。 3 目标 本规范达到以下目标： \1. 根据服务器负载情况，制">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-05-14T13:51:55.659Z">
-<meta property="article:modified_time" content="2020-05-14T13:51:55.659Z">
+<meta property="article:published_time" content="2020-05-14T14:16:05.000Z">
+<meta property="article:modified_time" content="2020-05-14T14:16:05.200Z">
 <meta property="article:author" content="曾胜龙">
-<meta property="article:tag" content="Devops Kubernetes Docker">
+<meta property="article:tag" content="标准化及流程化">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/%E8%B5%84%E6%BA%90%E4%BD%BF%E7%94%A8%E6%A0%87%E5%87%86/">
@@ -48,7 +48,7 @@
   };
 </script>
 
-  <title>运维/标准化及流程化/资源使用标准 | 蜷缩的蜗牛</title>
+  <title>资源使用标准.md | 蜷缩的蜗牛</title>
   
 
 
@@ -214,7 +214,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          运维/标准化及流程化/资源使用标准
+          资源使用标准.md
         </h1>
 
         <div class="post-meta">
@@ -224,7 +224,16 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-05-14 21:51:55" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:55+08:00">2020-05-14</time>
+              <time title="创建时间：2020-05-14 22:16:05" itemprop="dateCreated datePublished" datetime="2020-05-14T22:16:05+08:00">2020-05-14</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/" itemprop="url" rel="index"><span itemprop="name">标准化及流程化</span></a>
+                </span>
             </span>
 
           
@@ -245,13 +254,17 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="1-背景"><a href="#1-背景" class="headerlink" title="1 背景"></a>1 <strong>背景</strong></h1><p>在服务器资源运营过程中，我们需要对现网服务器进行有效的识别，以负载情况为核心依据，将服务器进行分类，从而对不同分类的服务器进行优化运营。</p>
-<h1 id="2-适用范围"><a href="#2-适用范围" class="headerlink" title="2 适用范围"></a>2 <strong>适用范围</strong></h1><p>本规范的中涉及的服务器资源是指面向业务的现网服务器资源（不包括OA与dev 环境）,包括物理服务器和虚拟化服务器。</p>
+        <h1>1 <strong>背景</strong></h1>
+<p>在服务器资源运营过程中，我们需要对现网服务器进行有效的识别，以负载情况为核心依据，将服务器进行分类，从而对不同分类的服务器进行优化运营。</p>
+<h1>2 <strong>适用范围</strong></h1>
+<p>本规范的中涉及的服务器资源是指面向业务的现网服务器资源（不包括OA与dev 环境）,包括物理服务器和虚拟化服务器。</p>
 <p>本规范面向的用户是适用于所有使用该资源的开发或者产品用户。</p>
-<h1 id="3-目标"><a href="#3-目标" class="headerlink" title="3 目标"></a>3 <strong>目标</strong></h1><p><strong>本规范达到以下目标：</strong></p>
+<h1>3 <strong>目标</strong></h1>
+<p><strong>本规范达到以下目标：</strong></p>
 <p>\1. 根据服务器负载情况，制定分类标准；</p>
 <p>\2. 定义业务分类标准；</p>
-<h1 id="4-技术分类标准"><a href="#4-技术分类标准" class="headerlink" title="4 技术分类标准"></a>4 <strong>技术分类标准</strong></h1><p><strong>1、服务器分为四类：</strong></p>
+<h1>4 <strong>技术分类标准</strong></h1>
+<p><strong>1、服务器分为四类：</strong></p>
 <p>空载服务器 level0</p>
 <p>轻载服务器 level1</p>
 <p>正常负载服务器 level2</p>
@@ -259,14 +272,16 @@
 <p><strong>2、物理服务器和虚拟化服务器采用相同指标标准</strong></p>
 <p><strong>3、常用负载性能指标维度定义</strong></p>
 <ol>
-<li><ol>
+<li>
+<ol>
 <li><strong>CPU总利用率：cpu%</strong></li>
 </ol>
 </li>
 </ol>
 <p>cpu%= (所有逻辑CPU的利用率之和)/(逻辑CPU个数*100%)；</p>
 <ol>
-<li><ol>
+<li>
+<ol>
 <li><strong>内存利用率：mem%</strong></li>
 </ol>
 </li>
@@ -288,7 +303,8 @@
 <th>Level=3高载</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>Mem%</td>
 <td>&lt;20%</td>
 <td>[20%,35%)</td>
@@ -302,10 +318,12 @@
 <td>[20%,70%]</td>
 <td>(70%,100%]</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <p><strong>7.负载综合评定</strong></p>
 <p>根据服务器类型，对相关技术指标维度进行核算，各维度得到Level=0,1,2,3，服务器综合负载 等于 各维度Level的最大值。</p>
-<h1 id="5-标准的维护和变更"><a href="#5-标准的维护和变更" class="headerlink" title="5 标准的维护和变更"></a>5 <strong>标准的维护和变更</strong></h1><p>随着技术和业务的发展，运维将定期对本标准进行回顾，合理调整本标准的定义，并发布和公告。</p>
+<h1>5 <strong>标准的维护和变更</strong></h1>
+<p>随着技术和业务的发展，运维将定期对本标准进行回顾，合理调整本标准的定义，并发布和公告。</p>
 <table>
 <thead>
 <tr>
@@ -319,7 +337,8 @@
 <th>启动参数</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>统一用户管理Dubbo服务</td>
 <td>ssh://git@gitlab.szzhijing.com:22222/quanbu/user-account-center.git</td>
 <td>user-account-center-dubbo</td>
@@ -339,7 +358,8 @@
 <td></td>
 <td></td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <ol>
 <li>gitlab项目名称不允许大写，统一为小写，并且以中划线-连接，不允许下划线_连接；</li>
 <li>服务名称必须以gitlab项目名称作为前缀拓展，不接受与项目无关的名称；</li>
@@ -374,7 +394,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/%E8%B5%84%E6%BA%90%E4%BD%BF%E7%94%A8%E6%A0%87%E5%87%86/" title="运维&#x2F;标准化及流程化&#x2F;资源使用标准">https://kbsonlong.github.io/2020/05/14/运维/标准化及流程化/资源使用标准/</a>
+    <a href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/%E8%B5%84%E6%BA%90%E4%BD%BF%E7%94%A8%E6%A0%87%E5%87%86/" title="资源使用标准.md">https://kbsonlong.github.io/2020/05/14/运维/标准化及流程化/资源使用标准/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -413,6 +433,9 @@
 
 
       <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/" rel="tag"># 标准化及流程化</a>
+          </div>
 
         
 
@@ -420,12 +443,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/%E8%B5%84%E6%BA%90%E7%94%B3%E8%AF%B7%E8%A7%84%E8%8C%83/" rel="prev" title="运维/标准化及流程化/资源申请规范">
-      <i class="fa fa-chevron-left"></i> 运维/标准化及流程化/资源申请规范
+    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/%E8%B5%84%E6%BA%90%E7%94%B3%E8%AF%B7%E8%A7%84%E8%8C%83/" rel="prev" title="资源申请规范.md">
+      <i class="fa fa-chevron-left"></i> 资源申请规范.md
     </a></div>
       <div class="post-nav-item">
-    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/CICD/" rel="next" title="运维/标准化及流程化/CICD">
-      运维/标准化及流程化/CICD <i class="fa fa-chevron-right"></i>
+    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83SQL%E8%84%9A%E6%9C%AC%E6%89%A7%E8%A1%8C%E8%A7%84%E8%8C%83/" rel="next" title="生产环境SQL脚本执行规范.md">
+      生产环境SQL脚本执行规范.md <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -485,7 +508,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-背景"><span class="nav-number">1.</span> <span class="nav-text">1 背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-适用范围"><span class="nav-number">2.</span> <span class="nav-text">2 适用范围</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-目标"><span class="nav-number">3.</span> <span class="nav-text">3 目标</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-技术分类标准"><span class="nav-number">4.</span> <span class="nav-text">4 技术分类标准</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-标准的维护和变更"><span class="nav-number">5.</span> <span class="nav-text">5 标准的维护和变更</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#"><span class="nav-number">1.</span> <span class="nav-text">1 背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#"><span class="nav-number">2.</span> <span class="nav-text">2 适用范围</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#"><span class="nav-number">3.</span> <span class="nav-text">3 目标</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#"><span class="nav-number">4.</span> <span class="nav-text">4 技术分类标准</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#"><span class="nav-number">5.</span> <span class="nav-text">5 标准的维护和变更</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -501,20 +524,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">110</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">25</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

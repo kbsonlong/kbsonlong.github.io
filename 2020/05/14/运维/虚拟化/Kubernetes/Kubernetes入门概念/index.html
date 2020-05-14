@@ -24,15 +24,15 @@
 
   <meta name="description" content="Kubernetes是Google开源的容器集群管理系统，是Google多年⼤规模容器管理技术Borg的开源版本，主要功能包括:  基于容器的应用部署、维护和滚动升级 负载均衡和服务发现 跨机器和跨地区的集群调度 自动伸缩 无状态服务和有状态服务 广泛的Volume支持 插件机制保证扩展性  Kubernetes发展非常迅速，已经成为容器编排领域的领导者，接下来我们将讲解Kubernetes中涉及">
 <meta property="og:type" content="article">
-<meta property="og:title" content="运维&#x2F;虚拟化&#x2F;Kubernetes&#x2F;Kubernetes入门概念">
+<meta property="og:title" content="Kubernetes入门概念.md">
 <meta property="og:url" content="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/Kubernetes%E5%85%A5%E9%97%A8%E6%A6%82%E5%BF%B5/index.html">
 <meta property="og:site_name" content="蜷缩的蜗牛">
 <meta property="og:description" content="Kubernetes是Google开源的容器集群管理系统，是Google多年⼤规模容器管理技术Borg的开源版本，主要功能包括:  基于容器的应用部署、维护和滚动升级 负载均衡和服务发现 跨机器和跨地区的集群调度 自动伸缩 无状态服务和有状态服务 广泛的Volume支持 插件机制保证扩展性  Kubernetes发展非常迅速，已经成为容器编排领域的领导者，接下来我们将讲解Kubernetes中涉及">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-05-14T13:51:58.124Z">
-<meta property="article:modified_time" content="2020-05-14T13:51:58.124Z">
+<meta property="article:published_time" content="2020-05-14T14:16:05.000Z">
+<meta property="article:modified_time" content="2020-05-14T14:16:05.826Z">
 <meta property="article:author" content="曾胜龙">
-<meta property="article:tag" content="Devops Kubernetes Docker">
+<meta property="article:tag" content="Kubernetes">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/Kubernetes%E5%85%A5%E9%97%A8%E6%A6%82%E5%BF%B5/">
@@ -48,7 +48,7 @@
   };
 </script>
 
-  <title>运维/虚拟化/Kubernetes/Kubernetes入门概念 | 蜷缩的蜗牛</title>
+  <title>Kubernetes入门概念.md | 蜷缩的蜗牛</title>
   
 
 
@@ -214,7 +214,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          运维/虚拟化/Kubernetes/Kubernetes入门概念
+          Kubernetes入门概念.md
         </h1>
 
         <div class="post-meta">
@@ -224,7 +224,16 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-05-14 21:51:58" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:58+08:00">2020-05-14</time>
+              <time title="创建时间：2020-05-14 22:16:05" itemprop="dateCreated datePublished" datetime="2020-05-14T22:16:05+08:00">2020-05-14</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Kubernetes/" itemprop="url" rel="index"><span itemprop="name">Kubernetes</span></a>
+                </span>
             </span>
 
           
@@ -256,7 +265,8 @@
 <li>插件机制保证扩展性</li>
 </ul>
 <p>Kubernetes发展非常迅速，已经成为容器编排领域的领导者，接下来我们将讲解Kubernetes中涉及到的一些主要概念。</p>
-<h4 id="1、Pod"><a href="#1、Pod" class="headerlink" title="1、Pod"></a><strong>1、Pod</strong></h4><p>Pod是一组紧密关联的容器集合，支持多个容器在一个Pod中共享网络和文件系统，可以通过进程间通信和文件共享这种简单高效的方式完成服务，是Kubernetes调度的基本单位。Pod的设计理念是每个Pod都有一个唯一的IP。</p>
+<h4 id="1、Pod"><a class="header-anchor" href="#1、Pod">¶</a><strong>1、Pod</strong></h4>
+<p>Pod是一组紧密关联的容器集合，支持多个容器在一个Pod中共享网络和文件系统，可以通过进程间通信和文件共享这种简单高效的方式完成服务，是Kubernetes调度的基本单位。Pod的设计理念是每个Pod都有一个唯一的IP。</p>
 <p>Pod具有如下特征：</p>
 <ul>
 <li>包含多个共享IPC、Network和UTC namespace的容器，可直接通过localhost通信</li>
@@ -270,10 +280,10 @@
 <li>Init container在所有容器运行之前执行，常用来初始化配置</li>
 <li>容器生命周期钩子函数，用于监听容器生命周期的特定事件，并在事件发生时执行已注册的回调函数，支持两种钩子函数：postStart和preStop，前者是在容器启动后执行，后者是在容器停止前执行</li>
 </ul>
-<h4 id="2、Namespace"><a href="#2、Namespace" class="headerlink" title="2、Namespace"></a><strong>2、Namespace</strong></h4><p>Namespace（命名空间）是对一组资源和对象的抽象集合，比如可以用来将系统内部的对象划分为不同的项目组或者用户组。常见的pod、service、replicaSet和deployment等都是属于某一个namespace的(默认是default)，而node, persistentVolumes等则不属于任何namespace。</p>
+<h4 id="2、Namespace"><a class="header-anchor" href="#2、Namespace">¶</a><strong>2、Namespace</strong></h4>
+<p>Namespace（命名空间）是对一组资源和对象的抽象集合，比如可以用来将系统内部的对象划分为不同的项目组或者用户组。常见的pod、service、replicaSet和deployment等都是属于某一个namespace的(默认是default)，而node, persistentVolumes等则不属于任何namespace。</p>
 <p>常用namespace操作：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查询所有namespace</span></span><br><span class="line">kubectl get namespace</span><br><span class="line"><span class="comment">#创建namespace</span></span><br><span class="line">kubectl create namespacens &lt;name&gt;</span><br><span class="line"><span class="comment">#删除namespace</span></span><br><span class="line">kubectl deleten amespacens &lt;name&gt;</span><br></pre></td></tr></table></figure>
-
 <p>删除命名空间时，需注意以下几点：</p>
 <ol>
 <li>删除一个namespace会自动删除所有属于该namespace的资源。</li>
@@ -281,13 +291,12 @@
 <li>PersistentVolumes是不属于任何namespace的，但PersistentVolumeClaim是属于某个特定namespace的。</li>
 <li>Events是否属于namespace取决于产生events的对象。</li>
 </ol>
-<h4 id="3、Node"><a href="#3、Node" class="headerlink" title="3、Node"></a><strong>3、Node</strong></h4><p>Node是Pod真正运行的主机，可以是物理机也可以是虚拟机。Node本质上不是Kubernetes来创建的， Kubernetes只是管理Node上的资源。为了管理Pod，每个Node节点上至少需要运行container runtime（Docker）、kubelet和kube-proxy服务。</p>
+<h4 id="3、Node"><a class="header-anchor" href="#3、Node">¶</a><strong>3、Node</strong></h4>
+<p>Node是Pod真正运行的主机，可以是物理机也可以是虚拟机。Node本质上不是Kubernetes来创建的， Kubernetes只是管理Node上的资源。为了管理Pod，每个Node节点上至少需要运行container runtime（Docker）、kubelet和kube-proxy服务。</p>
 <p>常用node操作：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#查询所有node</span></span><br><span class="line">kubectl get nodes</span><br><span class="line"></span><br><span class="line"><span class="comment">#将node标志为不可调度</span></span><br><span class="line">kubectl cordon <span class="variable">$nodename</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 将node标志为可调度</span></span><br><span class="line">kubectl uncordon <span class="variable">$nodename</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h5 id="taint-污点"><a href="#taint-污点" class="headerlink" title="taint(污点)"></a>taint(污点)</h5><p>使用kubectl taint命令可以给某个Node节点设置污点，Node被设置上污点之后就和Pod之间存在了一种相斥的关系，可以让Node拒绝Pod的调度执行，甚至将Node已经存在的Pod驱逐出去。每个污点的组成：key=value:effect，当前taint effect支持如下三个选项：</p>
+<h5 id="taint-污点"><a class="header-anchor" href="#taint-污点">¶</a>taint(污点)</h5>
+<p>使用kubectl taint命令可以给某个Node节点设置污点，Node被设置上污点之后就和Pod之间存在了一种相斥的关系，可以让Node拒绝Pod的调度执行，甚至将Node已经存在的Pod驱逐出去。每个污点的组成：key=value:effect，当前taint effect支持如下三个选项：</p>
 <ul>
 <li>NoSchedule：表示k8s将不会将Pod调度到具有该污点的Node上</li>
 <li>PreferNoSchedule：表示k8s将尽量避免将Pod调度到具有该污点的Node上</li>
@@ -295,11 +304,10 @@
 </ul>
 <p>常用命令如下：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># node0设置不可调度污点</span></span><br><span class="line">- kubectl taint node node0 key1=value1:NoShedule</span><br><span class="line"><span class="comment"># 将node0上key值为key1的污点移除</span></span><br><span class="line">- kubectl taint node node0 key-</span><br><span class="line"><span class="comment"># 为kube-master节点设置不可调度污点</span></span><br><span class="line">- kubectl taint node node1 node-role.kubernetes.io/master=:NoSchedule</span><br><span class="line"><span class="comment"># 为kube-master节点设置尽量不可调度污点</span></span><br><span class="line">- kubectl taint node node1 node-role.kubernetes.io/master=PreferNoSchedule</span><br></pre></td></tr></table></figure>
-
-
-
-<h5 id="容忍-Tolerations"><a href="#容忍-Tolerations" class="headerlink" title="容忍(Tolerations)"></a>容忍(Tolerations)</h5><p>设置了污点的Node将根据taint的effect：NoSchedule、PreferNoSchedule、NoExecute和Pod之间产生互斥的关系，Pod将在一定程度上不会被调度到Node上。 但我们可以在Pod上设置容忍(Toleration)，意思是设置了容忍的Pod将可以容忍污点的存在，可以被调度到存在污点的Node上。</p>
-<h4 id="4、Service"><a href="#4、Service" class="headerlink" title="4、Service"></a><strong>4、Service</strong></h4><p><a href="http://docs.kubernetes.org.cn/703.html" target="_blank" rel="noopener">Service</a>是对一组提供相同功能的Pods的抽象，并为他们提供一个统一的入口，借助 Service 应用可以方便的实现服务发现与负载均衡，并实现应用的零宕机升级。Service通过标签(label)来选取后端Pod，一般配合ReplicaSet或者Deployment来保证后端容器的正常运行。</p>
+<h5 id="容忍-Tolerations"><a class="header-anchor" href="#容忍-Tolerations">¶</a>容忍(Tolerations)</h5>
+<p>设置了污点的Node将根据taint的effect：NoSchedule、PreferNoSchedule、NoExecute和Pod之间产生互斥的关系，Pod将在一定程度上不会被调度到Node上。 但我们可以在Pod上设置容忍(Toleration)，意思是设置了容忍的Pod将可以容忍污点的存在，可以被调度到存在污点的Node上。</p>
+<h4 id="4、Service"><a class="header-anchor" href="#4、Service">¶</a><strong>4、Service</strong></h4>
+<p><a href="http://docs.kubernetes.org.cn/703.html" target="_blank" rel="noopener">Service</a>是对一组提供相同功能的Pods的抽象，并为他们提供一个统一的入口，借助 Service 应用可以方便的实现服务发现与负载均衡，并实现应用的零宕机升级。Service通过标签(label)来选取后端Pod，一般配合ReplicaSet或者Deployment来保证后端容器的正常运行。</p>
 <p>service 有如下四种类型，默认是ClusterIP：</p>
 <ul>
 <li>ClusterIP: 默认类型，自动分配一个仅集群内部可以访问的虚拟IP</li>
@@ -308,7 +316,8 @@
 <li>ExternalName: 将服务通过DNS CNAME记录方式转发到指定的域名</li>
 </ul>
 <p>另外，也可以将已有的服务以Service的形式加入到Kubernetes集群中来，只需要在创建 Service 的时候不指定Label selector，而是在Service创建好后手动为其添加endpoint。</p>
-<h4 id="5、Volume-存储卷"><a href="#5、Volume-存储卷" class="headerlink" title="5、Volume 存储卷"></a><strong>5、Volume 存储卷</strong></h4><p>默认情况下容器的数据是非持久化的，容器消亡以后数据也会跟着丢失，所以Docker提供了<a href="http://docs.kubernetes.org.cn/429.html" target="_blank" rel="noopener">Volume</a>机制以便将数据持久化存储。Kubernetes提供了更强大的Volume机制和插件，解决了容器数据持久化以及容器间共享数据的问题。</p>
+<h4 id="5、Volume-存储卷"><a class="header-anchor" href="#5、Volume-存储卷">¶</a><strong>5、Volume 存储卷</strong></h4>
+<p>默认情况下容器的数据是非持久化的，容器消亡以后数据也会跟着丢失，所以Docker提供了<a href="http://docs.kubernetes.org.cn/429.html" target="_blank" rel="noopener">Volume</a>机制以便将数据持久化存储。Kubernetes提供了更强大的Volume机制和插件，解决了容器数据持久化以及容器间共享数据的问题。</p>
 <p>Kubernetes存储卷的生命周期与Pod绑定</p>
 <ul>
 <li>容器挂掉后Kubelet再次重启容器时，Volume的数据依然还在</li>
@@ -326,7 +335,8 @@
 <li>persistentVolumeClaim：用于将持久化存储（PersistentVolume）挂载到Pod中</li>
 <li>…</li>
 </ul>
-<h4 id="6、PersistentVolume-PV-持久化存储卷"><a href="#6、PersistentVolume-PV-持久化存储卷" class="headerlink" title="6、PersistentVolume(PV) 持久化存储卷"></a>6、PersistentVolume(PV) 持久化存储卷</h4><p>PersistentVolume(PV)是集群之中的一块网络存储。跟 Node 一样，也是集群的资源。PersistentVolume (PV)和PersistentVolumeClaim (PVC)提供了方便的持久化卷: PV提供网络存储资源，而PVC请求存储资源并将其挂载到Pod中。</p>
+<h4 id="6、PersistentVolume-PV-持久化存储卷"><a class="header-anchor" href="#6、PersistentVolume-PV-持久化存储卷">¶</a>6、PersistentVolume(PV) 持久化存储卷</h4>
+<p>PersistentVolume(PV)是集群之中的一块网络存储。跟 Node 一样，也是集群的资源。PersistentVolume (PV)和PersistentVolumeClaim (PVC)提供了方便的持久化卷: PV提供网络存储资源，而PVC请求存储资源并将其挂载到Pod中。</p>
 <p>PV的访问模式(accessModes)有三种:</p>
 <ul>
 <li>ReadWriteOnce(RWO):是最基本的方式，可读可写，但只支持被单个Pod挂载。</li>
@@ -340,7 +350,8 @@
 <li>Recycle，删除数据，即 rm -rf /thevolume/* (只有NFS和HostPath支持)</li>
 <li>Delete，删除存储资源</li>
 </ul>
-<h4 id="7、Deployment-无状态应用"><a href="#7、Deployment-无状态应用" class="headerlink" title="7、Deployment 无状态应用"></a><strong>7、<a href="http://docs.kubernetes.org.cn/317.html" target="_blank" rel="noopener">Deployment</a> 无状态应用</strong></h4><p>一般情况下我们不需要手动创建Pod实例，而是采用更高一层的抽象或定义来管理Pod，针对无状态类型的应用，Kubernetes使用Deloyment的Controller对象与之对应。其典型的应用场景包括：</p>
+<h4 id="7、Deployment-无状态应用"><a class="header-anchor" href="#7、Deployment-无状态应用">¶</a><strong>7、<a href="http://docs.kubernetes.org.cn/317.html" target="_blank" rel="noopener">Deployment</a> 无状态应用</strong></h4>
+<p>一般情况下我们不需要手动创建Pod实例，而是采用更高一层的抽象或定义来管理Pod，针对无状态类型的应用，Kubernetes使用Deloyment的Controller对象与之对应。其典型的应用场景包括：</p>
 <ul>
 <li>定义Deployment来创建Pod和ReplicaSet</li>
 <li>滚动升级和回滚应用</li>
@@ -373,7 +384,8 @@
 <li>使用Deployment来创建ReplicaSet。ReplicaSet在后台创建pod，检查启动状态，看它是成功还是失败。</li>
 <li>当执行更新操作时，会创建一个新的ReplicaSet，Deployment会按照控制的速率将pod从旧的ReplicaSet移 动到新的ReplicaSet中</li>
 </ul>
-<h4 id="8、StatefulSet-有状态应用"><a href="#8、StatefulSet-有状态应用" class="headerlink" title="8、StatefulSet 有状态应用"></a><strong>8、<a href="http://docs.kubernetes.org.cn/443.html" target="_blank" rel="noopener">StatefulSet</a> 有状态应用</strong></h4><p>Deployments和ReplicaSets是为无状态服务设计的，那么StatefulSet则是为了有状态服务而设计，其应用场景包括：</p>
+<h4 id="8、StatefulSet-有状态应用"><a class="header-anchor" href="#8、StatefulSet-有状态应用">¶</a><strong>8、<a href="http://docs.kubernetes.org.cn/443.html" target="_blank" rel="noopener">StatefulSet</a> 有状态应用</strong></h4>
+<p>Deployments和ReplicaSets是为无状态服务设计的，那么StatefulSet则是为了有状态服务而设计，其应用场景包括：</p>
 <ul>
 <li>稳定的持久化存储，即Pod重新调度后还是能访问到相同的持久化数据，基于PVC来实现</li>
 <li>稳定的网络标志，即Pod重新调度后其PodName和HostName不变，基于Headless Service(即没有Cluster IP的Service)来实现</li>
@@ -385,7 +397,8 @@
 <li>OnDelete:当 .spec.template更新时，并不立即删除旧的Pod，而是等待用户手动删除这些旧Pod后自动创建新Pod。这是默认的更新策略，兼容v1.6版本的行为</li>
 <li>RollingUpdate:当 .spec.template 更新时，自动删除旧的Pod并创建新Pod替换。在更新时这些Pod是按逆序的方式进行，依次删除、创建并等待Pod变成Ready状态才进行下一个Pod的更新。</li>
 </ul>
-<h4 id="9、DaemonSet-守护进程集"><a href="#9、DaemonSet-守护进程集" class="headerlink" title="9、DaemonSet 守护进程集"></a><strong>9、DaemonSet 守护进程集</strong></h4><p>DaemonSet保证在特定或所有Node节点上都运行一个Pod实例，常用来部署一些集群的日志采集、监控或者其他系统管理应用。典型的应用包括:</p>
+<h4 id="9、DaemonSet-守护进程集"><a class="header-anchor" href="#9、DaemonSet-守护进程集">¶</a><strong>9、DaemonSet 守护进程集</strong></h4>
+<p>DaemonSet保证在特定或所有Node节点上都运行一个Pod实例，常用来部署一些集群的日志采集、监控或者其他系统管理应用。典型的应用包括:</p>
 <ul>
 <li>日志收集，比如fluentd，logstash等</li>
 <li>系统监控，比如Prometheus Node Exporter，collectd等</li>
@@ -403,7 +416,8 @@
 <li>OnDelete: 默认策略，更新模板后，只有手动删除了旧的Pod后才会创建新的Pod</li>
 <li>RollingUpdate: 更新DaemonSet模版后，自动删除旧的Pod并创建新的Pod</li>
 </ul>
-<h4 id="10、Ingress"><a href="#10、Ingress" class="headerlink" title="10、Ingress"></a><strong>10、<a href="https://www.kubernetes.org.cn/1885.html" target="_blank" rel="noopener">Ingress</a></strong></h4><p>Kubernetes中的负载均衡我们主要用到了以下两种机制：</p>
+<h4 id="10、Ingress"><a class="header-anchor" href="#10、Ingress">¶</a><strong>10、<a href="https://www.kubernetes.org.cn/1885.html" target="_blank" rel="noopener">Ingress</a></strong></h4>
+<p>Kubernetes中的负载均衡我们主要用到了以下两种机制：</p>
 <ul>
 <li>Service：使用Service提供集群内部的负载均衡，Kube-proxy负责将service请求负载均衡到后端的Pod中</li>
 <li>Ingress Controller：使用Ingress提供集群外部的负载均衡</li>
@@ -416,11 +430,14 @@
 <li>Kong</li>
 <li>Openresty</li>
 </ul>
-<h4 id="11、Job-amp-CronJob-任务和定时任务"><a href="#11、Job-amp-CronJob-任务和定时任务" class="headerlink" title="11、Job &amp; CronJob 任务和定时任务"></a><strong>11、Job &amp; CronJob 任务和定时任务</strong></h4><p>Job负责批量处理短暂的一次性任务 (short lived&gt;CronJob即定时任务，就类似于Linux系统的crontab，在指定的时间周期运行指定的任务。</p>
-<h4 id="12、HPA（Horizontal-Pod-Autoscaling）-水平伸缩"><a href="#12、HPA（Horizontal-Pod-Autoscaling）-水平伸缩" class="headerlink" title="12、HPA（Horizontal Pod Autoscaling） 水平伸缩"></a><strong>12、HPA（Horizontal Pod Autoscaling） 水平伸缩</strong></h4><p>Horizontal Pod Autoscaling可以根据CPU、内存使用率或应用自定义metrics自动扩展Pod数量 (支持replication controller、deployment和replica set)。</p>
+<h4 id="11、Job-CronJob-任务和定时任务"><a class="header-anchor" href="#11、Job-CronJob-任务和定时任务">¶</a><strong>11、Job &amp; CronJob 任务和定时任务</strong></h4>
+<p>Job负责批量处理短暂的一次性任务 (short lived&gt;CronJob即定时任务，就类似于Linux系统的crontab，在指定的时间周期运行指定的任务。</p>
+<h4 id="12、HPA（Horizontal-Pod-Autoscaling）-水平伸缩"><a class="header-anchor" href="#12、HPA（Horizontal-Pod-Autoscaling）-水平伸缩">¶</a><strong>12、HPA（Horizontal Pod Autoscaling） 水平伸缩</strong></h4>
+<p>Horizontal Pod Autoscaling可以根据CPU、内存使用率或应用自定义metrics自动扩展Pod数量 (支持replication controller、deployment和replica set)。</p>
 <ul>
 <li>控制管理器默认每隔30s查询metrics的资源使用情况(可以通过 –horizontal-pod-autoscaler-sync-period 修改)</li>
-<li>支持三种metrics类型<ul>
+<li>支持三种metrics类型
+<ul>
 <li>预定义metrics(比如Pod的CPU)以利用率的方式计算</li>
 <li>自定义的Pod metrics，以原始值(raw value)的方式计算</li>
 <li>自定义的object metrics</li>
@@ -430,33 +447,40 @@
 <li>支持多metrics</li>
 </ul>
 <p>可以通过如下命令创建HPA：kubectl autoscale deployment php-apache–cpu-percent=50–min=1–max=10</p>
-<h4 id="13、Service-Account"><a href="#13、Service-Account" class="headerlink" title="13、Service Account"></a><strong>13、Service Account</strong></h4><p>Service account是为了方便Pod里面的进程调用Kubernetes API或其他外部服务而设计的</p>
+<h4 id="13、Service-Account"><a class="header-anchor" href="#13、Service-Account">¶</a><strong>13、Service Account</strong></h4>
+<p>Service account是为了方便Pod里面的进程调用Kubernetes API或其他外部服务而设计的</p>
 <p><strong>授权</strong></p>
 <p>Service Account为服务提供了一种方便的认证机制，但它不关心授权的问题。可以配合RBAC(Role Based Access Control)来为Service Account鉴权，通过定义Role、RoleBinding、ClusterRole、ClusterRoleBinding来对sa进行授权。</p>
-<h4 id="14、Secret-密钥"><a href="#14、Secret-密钥" class="headerlink" title="14、Secret 密钥"></a><strong>14、Secret 密钥</strong></h4><p>Sercert-密钥解决了密码、token、密钥等敏感数据的配置问题，而不需要把这些敏感数据暴露到镜像或者Pod Spec中。Secret可以以Volume或者环境变量的方式使用。有如下三种类型：</p>
+<h4 id="14、Secret-密钥"><a class="header-anchor" href="#14、Secret-密钥">¶</a><strong>14、Secret 密钥</strong></h4>
+<p>Sercert-密钥解决了密码、token、密钥等敏感数据的配置问题，而不需要把这些敏感数据暴露到镜像或者Pod Spec中。Secret可以以Volume或者环境变量的方式使用。有如下三种类型：</p>
 <ul>
 <li>Service Account:用来访问Kubernetes API，由Kubernetes自动创建，并且会自动挂载到Pod的 /run/secrets/kubernetes.io/serviceaccount 目录中;</li>
 <li>Opaque:base64编码格式的Secret，用来存储密码、密钥等;</li>
-<li>kubernetes.io/dockerconfigjson: 用来存储私有docker registry的认证信息。</li>
+<li><a href="http://kubernetes.io/dockerconfigjson:" target="_blank" rel="noopener">kubernetes.io/dockerconfigjson:</a> 用来存储私有docker registry的认证信息。</li>
 </ul>
-<h4 id="15、ConfigMap-配置中心"><a href="#15、ConfigMap-配置中心" class="headerlink" title="15、ConfigMap 配置中心"></a><strong>15、ConfigMap 配置中心</strong></h4><p>ConfigMap用于保存配置数据的键值对，可以用来保存单个属性，也可以用来保存配置文件。ConfigMap跟secret很类似，但它可以更方便地处理不包含敏感信息的字符串。ConfigMap可以通过三种方式在Pod中使用，三种分别方式为:设置环境变量、设置容器命令行参数以及在Volume中直接挂载文件或目录。</p>
+<h4 id="15、ConfigMap-配置中心"><a class="header-anchor" href="#15、ConfigMap-配置中心">¶</a><strong>15、ConfigMap 配置中心</strong></h4>
+<p>ConfigMap用于保存配置数据的键值对，可以用来保存单个属性，也可以用来保存配置文件。ConfigMap跟secret很类似，但它可以更方便地处理不包含敏感信息的字符串。ConfigMap可以通过三种方式在Pod中使用，三种分别方式为:设置环境变量、设置容器命令行参数以及在Volume中直接挂载文件或目录。</p>
 <p>可以使用 kubectl create configmap从文件、目录或者key-value字符串创建等创建 ConfigMap。也可以通过 kubectl create-f value.yaml 创建。</p>
-<h4 id="16、Resource-Quotas-资源配额"><a href="#16、Resource-Quotas-资源配额" class="headerlink" title="16、Resource Quotas 资源配额"></a><strong>16、Resource Quotas 资源配额</strong></h4><p>资源配额(Resource Quotas)是用来限制用户资源用量的一种机制。</p>
+<h4 id="16、Resource-Quotas-资源配额"><a class="header-anchor" href="#16、Resource-Quotas-资源配额">¶</a><strong>16、Resource Quotas 资源配额</strong></h4>
+<p>资源配额(Resource Quotas)是用来限制用户资源用量的一种机制。</p>
 <p>资源配额有如下类型：</p>
 <ul>
-<li>计算资源，包括cpu和memory<ul>
+<li>计算资源，包括cpu和memory
+<ul>
 <li>cpu, limits.cpu, requests.cpu</li>
 <li>memory, limits.memory, requests.memory</li>
 </ul>
 </li>
-<li>存储资源，包括存储资源的总量以及指定storage class的总量<ul>
+<li>存储资源，包括存储资源的总量以及指定storage class的总量
+<ul>
 <li>requests.storage:存储资源总量，如500Gi</li>
 <li>persistentvolumeclaims:pvc的个数</li>
-<li>storageclass.storage.k8s.io/requests.storage</li>
-<li>storageclass.storage.k8s.io/persistentvolumeclaims</li>
+<li><a href="http://storageclass.storage.k8s.io/requests.storage" target="_blank" rel="noopener">storageclass.storage.k8s.io/requests.storage</a></li>
+<li><a href="http://storageclass.storage.k8s.io/persistentvolumeclaims" target="_blank" rel="noopener">storageclass.storage.k8s.io/persistentvolumeclaims</a></li>
 </ul>
 </li>
-<li>对象数，即可创建的对象的个数<ul>
+<li>对象数，即可创建的对象的个数
+<ul>
 <li>pods, replicationcontrollers, configmaps, secrets</li>
 <li>resourcequotas, persistentvolumeclaims</li>
 <li>services, services.loadbalancers, services.nodeports</li>
@@ -494,7 +518,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/Kubernetes%E5%85%A5%E9%97%A8%E6%A6%82%E5%BF%B5/" title="运维&#x2F;虚拟化&#x2F;Kubernetes&#x2F;Kubernetes入门概念">https://kbsonlong.github.io/2020/05/14/运维/虚拟化/Kubernetes/Kubernetes入门概念/</a>
+    <a href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/Kubernetes%E5%85%A5%E9%97%A8%E6%A6%82%E5%BF%B5/" title="Kubernetes入门概念.md">https://kbsonlong.github.io/2020/05/14/运维/虚拟化/Kubernetes/Kubernetes入门概念/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -533,6 +557,9 @@
 
 
       <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Kubernetes/" rel="tag"># Kubernetes</a>
+          </div>
 
         
 
@@ -540,12 +567,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/Kubernetes%E4%BB%8B%E7%BB%8D/" rel="prev" title="运维/虚拟化/Kubernetes/Kubernetes介绍">
-      <i class="fa fa-chevron-left"></i> 运维/虚拟化/Kubernetes/Kubernetes介绍
+    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/Kubernetes%E5%88%9B%E5%BB%BA%E5%8F%AA%E8%AF%BB%E7%94%A8%E6%88%B7/" rel="prev" title="Kubernetes创建只读用户.md">
+      <i class="fa fa-chevron-left"></i> Kubernetes创建只读用户.md
     </a></div>
       <div class="post-nav-item">
-    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/Kubernetes%E7%BB%84%E4%BB%B6/" rel="next" title="运维/虚拟化/Kubernetes/Kubernetes组件">
-      运维/虚拟化/Kubernetes/Kubernetes组件 <i class="fa fa-chevron-right"></i>
+    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/Kubernetes%E4%BB%8B%E7%BB%8D/" rel="next" title="Kubernetes介绍.md">
+      Kubernetes介绍.md <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -605,7 +632,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1、Pod"><span class="nav-number">1.</span> <span class="nav-text">1、Pod</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、Namespace"><span class="nav-number">2.</span> <span class="nav-text">2、Namespace</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3、Node"><span class="nav-number">3.</span> <span class="nav-text">3、Node</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#taint-污点"><span class="nav-number">3.1.</span> <span class="nav-text">taint(污点)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#容忍-Tolerations"><span class="nav-number">3.2.</span> <span class="nav-text">容忍(Tolerations)</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4、Service"><span class="nav-number">4.</span> <span class="nav-text">4、Service</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5、Volume-存储卷"><span class="nav-number">5.</span> <span class="nav-text">5、Volume 存储卷</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6、PersistentVolume-PV-持久化存储卷"><span class="nav-number">6.</span> <span class="nav-text">6、PersistentVolume(PV) 持久化存储卷</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7、Deployment-无状态应用"><span class="nav-number">7.</span> <span class="nav-text">7、Deployment 无状态应用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8、StatefulSet-有状态应用"><span class="nav-number">8.</span> <span class="nav-text">8、StatefulSet 有状态应用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#9、DaemonSet-守护进程集"><span class="nav-number">9.</span> <span class="nav-text">9、DaemonSet 守护进程集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#10、Ingress"><span class="nav-number">10.</span> <span class="nav-text">10、Ingress</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#11、Job-amp-CronJob-任务和定时任务"><span class="nav-number">11.</span> <span class="nav-text">11、Job &amp; CronJob 任务和定时任务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#12、HPA（Horizontal-Pod-Autoscaling）-水平伸缩"><span class="nav-number">12.</span> <span class="nav-text">12、HPA（Horizontal Pod Autoscaling） 水平伸缩</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#13、Service-Account"><span class="nav-number">13.</span> <span class="nav-text">13、Service Account</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#14、Secret-密钥"><span class="nav-number">14.</span> <span class="nav-text">14、Secret 密钥</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#15、ConfigMap-配置中心"><span class="nav-number">15.</span> <span class="nav-text">15、ConfigMap 配置中心</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#16、Resource-Quotas-资源配额"><span class="nav-number">16.</span> <span class="nav-text">16、Resource Quotas 资源配额</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1、Pod"><span class="nav-number">1.</span> <span class="nav-text">1、Pod</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、Namespace"><span class="nav-number">2.</span> <span class="nav-text">2、Namespace</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3、Node"><span class="nav-number">3.</span> <span class="nav-text">3、Node</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#taint-污点"><span class="nav-number">3.1.</span> <span class="nav-text">taint(污点)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#容忍-Tolerations"><span class="nav-number">3.2.</span> <span class="nav-text">容忍(Tolerations)</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4、Service"><span class="nav-number">4.</span> <span class="nav-text">4、Service</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5、Volume-存储卷"><span class="nav-number">5.</span> <span class="nav-text">5、Volume 存储卷</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6、PersistentVolume-PV-持久化存储卷"><span class="nav-number">6.</span> <span class="nav-text">6、PersistentVolume(PV) 持久化存储卷</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7、Deployment-无状态应用"><span class="nav-number">7.</span> <span class="nav-text">7、Deployment 无状态应用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8、StatefulSet-有状态应用"><span class="nav-number">8.</span> <span class="nav-text">8、StatefulSet 有状态应用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#9、DaemonSet-守护进程集"><span class="nav-number">9.</span> <span class="nav-text">9、DaemonSet 守护进程集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#10、Ingress"><span class="nav-number">10.</span> <span class="nav-text">10、Ingress</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#11、Job-CronJob-任务和定时任务"><span class="nav-number">11.</span> <span class="nav-text">11、Job &amp; CronJob 任务和定时任务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#12、HPA（Horizontal-Pod-Autoscaling）-水平伸缩"><span class="nav-number">12.</span> <span class="nav-text">12、HPA（Horizontal Pod Autoscaling） 水平伸缩</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#13、Service-Account"><span class="nav-number">13.</span> <span class="nav-text">13、Service Account</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#14、Secret-密钥"><span class="nav-number">14.</span> <span class="nav-text">14、Secret 密钥</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#15、ConfigMap-配置中心"><span class="nav-number">15.</span> <span class="nav-text">15、ConfigMap 配置中心</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#16、Resource-Quotas-资源配额"><span class="nav-number">16.</span> <span class="nav-text">16、Resource Quotas 资源配额</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -621,20 +648,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">110</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">25</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

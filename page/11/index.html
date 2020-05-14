@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"kbsonlong.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"3QSL94PCBQ","apiKey":"d2fe765a64df1740fcab93644d3a2677","indexName":"hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta property="og:type" content="website">
+<meta property="og:title" content="蜷缩的蜗牛">
+<meta property="og:url" content="https://kbsonlong.github.io/page/11/index.html">
+<meta property="og:site_name" content="蜷缩的蜗牛">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="曾胜龙">
+<meta property="article:tag" content="Devops Kubernetes Docker">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://kbsonlong.github.io/page/11/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : true,
+    isPost : false,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>蜷缩的蜗牛</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="蜷缩的蜗牛" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">蜷缩的蜗牛</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">运维笔记</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/kbsonlong" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content index posts-expand">
+            
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/Prometheus/01%20%E9%85%8D%E7%BD%AE%E7%83%AD%E5%8A%A0%E8%BD%BD/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/Prometheus/01%20%E9%85%8D%E7%BD%AE%E7%83%AD%E5%8A%A0%E8%BD%BD/" class="post-title-link" itemprop="url">运维/Prometheus/01 配置热加载</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:59" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:59+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<p>从 2.0 开始，hot reload 功能是默认关闭的，如需开启，需要在启动 Prometheus 的时候，添加 <code>--web.enable-lifecycle</code> 参数。</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -XPOST http://localhost:9090/-/reload</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes%20Service%E7%BD%91%E7%BB%9C%E8%BF%BD%E8%B8%AA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes%20Service%E7%BD%91%E7%BB%9C%E8%BF%BD%E8%B8%AA/" class="post-title-link" itemprop="url">运维/虚拟化/Kubernetes Service网络追踪</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:58" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:58+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>节点信息</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># kubectl get node -o wide</span></span><br><span class="line">NAME       STATUS   ROLES    AGE   VERSION   INTERNAL-IP      EXTERNAL-IP   OS-IMAGE                KERNEL-VERSION          CONTAINER-RUNTIME</span><br><span class="line">master01   Ready    master   15d   v1.17.3   192.168.19.68    &lt;none&gt;        CentOS Linux 7 (Core)   3.10.0-957.el7.x86_64   docker://19.3.6</span><br><span class="line">master02   Ready    master   16d   v1.17.3   192.168.18.165   &lt;none&gt;        CentOS Linux 7 (Core)   3.10.0-957.el7.x86_64   docker://19.3.6</span><br><span class="line">master03   Ready    master   16d   v1.17.3   192.168.19.23    &lt;none&gt;        CentOS Linux 7 (Core)   3.10.0-957.el7.x86_64   docker://19.3.6</span><br><span class="line">node01     Ready    &lt;none&gt;   16d   v1.17.3   192.168.19.8     &lt;none&gt;        CentOS Linux 7 (Core)   3.10.0-957.el7.x86_64   docker://19.3.6</span><br><span class="line">node02     Ready    &lt;none&gt;   16d   v1.17.3   192.168.19.202   &lt;none&gt;        CentOS Linux 7 (Core)   3.10.0-957.el7.x86_64   docker://19.3.6</span><br><span class="line">node03     Ready    &lt;none&gt;   46h   v1.17.3   192.168.18.213   &lt;none&gt;        CentOS Linux 7 (Core)   3.10.0-957.el7.x86_64   docker://19.3.6</span><br><span class="line">node06     Ready    &lt;none&gt;   15d   v1.17.3   192.168.16.186   &lt;none&gt;        CentOS Linux 7 (Core)   3.10.0-957.el7.x86_64   docker://19.3.6</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h4 id="Service详细"><a href="#Service详细" class="headerlink" title="Service详细"></a>Service详细</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># kubectl -n qa-quanbu describe svc test-eureka-server</span></span><br><span class="line">Name:                     <span class="built_in">test</span>-eureka-server</span><br><span class="line">Namespace:                qa-quanbu</span><br><span class="line">Labels:                   k8s.eip.work/env=qa</span><br><span class="line">                          k8s.eip.work/group=quanbu</span><br><span class="line">                          k8s.eip.work/layer=svc</span><br><span class="line">                          k8s.eip.work/name=eureka-server</span><br><span class="line">Annotations:              field.cattle.io/ipAddresses: null</span><br><span class="line">                          field.cattle.io/publicEndpoints:</span><br><span class="line">                            [&#123;<span class="string">"addresses"</span>:[<span class="string">"192.168.16.186"</span>],<span class="string">"port"</span>:50001,<span class="string">"protocol"</span>:<span class="string">"TCP"</span>,<span class="string">"serviceName"</span>:<span class="string">"qa-quanbu:test-eureka-server"</span>,<span class="string">"allNodes"</span>:<span class="literal">true</span>&#125;]</span><br><span class="line">                          field.cattle.io/targetDnsRecordIds: null</span><br><span class="line">                          field.cattle.io/targetWorkloadIds: null</span><br><span class="line">                          kubectl.kubernetes.io/last-applied-configuration:</span><br><span class="line">                            &#123;<span class="string">"apiVersion"</span>:<span class="string">"v1"</span>,<span class="string">"kind"</span>:<span class="string">"Service"</span>,<span class="string">"metadata"</span>:&#123;<span class="string">"annotations"</span>:&#123;&#125;,<span class="string">"labels"</span>:&#123;<span class="string">"k8s.eip.work/env"</span>:<span class="string">"qa"</span>,<span class="string">"k8s.eip.work/group"</span>:<span class="string">"quanbu"</span>,<span class="string">"k8s.eip....</span></span><br><span class="line"><span class="string">Selector:                 k8s.eip.work/env=qa,k8s.eip.work/group=quanbu,k8s.eip.work/layer=svc,k8s.eip.work/name=eureka-server</span></span><br><span class="line"><span class="string">Type:                     NodePort</span></span><br><span class="line"><span class="string">IP:                       10.96.57.35</span></span><br><span class="line"><span class="string">Port:                     5001  5001/TCP</span></span><br><span class="line"><span class="string">TargetPort:               5001/TCP</span></span><br><span class="line"><span class="string">NodePort:                 5001  50001/TCP</span></span><br><span class="line"><span class="string">Endpoints:                10.244.2.243:5001</span></span><br><span class="line"><span class="string">Session Affinity:         None</span></span><br><span class="line"><span class="string">External Traffic Policy:  Cluster</span></span><br><span class="line"><span class="string">Events:                   &lt;none&gt;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>可以通过Service的信息看到publicEndpoints是在<code>node06</code>(192.168.16.186)上</p>
+</blockquote>
+<p>往node06发起请求</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@node02 ~]<span class="comment"># curl -o /dev/null -s -w "time_connect: %&#123;time_connect&#125;\ntime_starttransfer: %&#123;time_starttransfer&#125;\ntime_total: %&#123;time_total&#125;\n" http://192.168.16.186:50001</span></span><br><span class="line">time_connect: 0.004</span><br><span class="line">time_starttransfer: 0.043</span><br><span class="line">time_total: 0.044</span><br><span class="line">[root@node02 ~]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>node02上抓包信息</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">[root@node02 ~]<span class="comment"># tcpdump port 50001</span></span><br><span class="line">tcpdump: verbose output suppressed, use -v or -vv <span class="keyword">for</span> full protocol decode</span><br><span class="line">listening on eth0, link-type EN10MB (Ethernet), capture size 262144 bytes</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">17:54:02.163817 IP node02.36688 &gt; node06.50001: Flags [S], seq 3700482889, win 29200, options [mss 1460,sackOK,TS val 1450209399 ecr 0,nop,wscale 7], length 0</span><br><span class="line">17:54:02.167172 IP node06.50001 &gt; node02.36688: Flags [S.], seq 4144170268, ack 3700482890, win 27960, options [mss 1410,sackOK,TS val 1450215433 ecr 1450209399,nop,wscale 7], length 0</span><br><span class="line">17:54:02.167225 IP node02.36688 &gt; node06.50001: Flags [.], ack 1, win 229, options [nop,nop,TS val 1450209402 ecr 1450215433], length 0</span><br><span class="line">17:54:02.167366 IP node02.36688 &gt; node06.50001: Flags [P.], seq 1:85, ack 1, win 229, options [nop,nop,TS val 1450209402 ecr 1450215433], length 84</span><br><span class="line">17:54:02.170426 IP node06.50001 &gt; node02.36688: Flags [.], ack 85, win 219, options [nop,nop,TS val 1450215436 ecr 1450209402], length 0</span><br><span class="line">17:54:02.206272 IP node06.50001 &gt; node02.36688: Flags [.], seq 1:6991, ack 85, win 219, options [nop,nop,TS val 1450215471 ecr 1450209402], length 6990</span><br><span class="line">17:54:02.206324 IP node02.36688 &gt; node06.50001: Flags [.], ack 6991, win 338, options [nop,nop,TS val 1450209441 ecr 1450215471], length 0</span><br><span class="line">17:54:02.206336 IP node06.50001 &gt; node02.36688: Flags [.], ack 85, win 219, options [nop,nop,TS val 1450215471 ecr 1450209402], length 0</span><br><span class="line">17:54:02.206343 IP node06.50001 &gt; node02.36688: Flags [P.], seq 6991:8193, ack 85, win 219, options [nop,nop,TS val 1450215472 ecr 1450209402], length 1202</span><br><span class="line">17:54:02.206351 IP node02.36688 &gt; node06.50001: Flags [.], ack 8193, win 360, options [nop,nop,TS val 1450209441 ecr 1450215472], length 0</span><br><span class="line">17:54:02.206731 IP node06.50001 &gt; node02.36688: Flags [.], seq 8193:13785, ack 85, win 219, options [nop,nop,TS val 1450215472 ecr 1450209402], length 5592</span><br><span class="line">17:54:02.206751 IP node02.36688 &gt; node06.50001: Flags [.], ack 13785, win 447, options [nop,nop,TS val 1450209441 ecr 1450215472], length 0</span><br><span class="line">17:54:02.206767 IP node06.50001 &gt; node02.36688: Flags [.], ack 85, win 219, options [nop,nop,TS val 1450215472 ecr 1450209402], length 0</span><br><span class="line">17:54:02.207198 IP node06.50001 &gt; node02.36688: Flags [.], seq 13785:20775, ack 85, win 219, options [nop,nop,TS val 1450215472 ecr 1450209441], length 6990</span><br><span class="line">17:54:02.207235 IP node02.36688 &gt; node06.50001: Flags [.], ack 20775, win 556, options [nop,nop,TS val 1450209442 ecr 1450215472], length 0</span><br><span class="line">17:54:02.207252 IP node06.50001 &gt; node02.36688: Flags [.], seq 20775:22173, ack 85, win 219, options [nop,nop,TS val 1450215472 ecr 1450209441], length 1398</span><br><span class="line">17:54:02.207264 IP node02.36688 &gt; node06.50001: Flags [.], ack 22173, win 578, options [nop,nop,TS val 1450209442 ecr 1450215472], length 0</span><br><span class="line">17:54:02.207286 IP node06.50001 &gt; node02.36688: Flags [.], ack 85, win 219, options [nop,nop,TS val 1450215472 ecr 1450209441], length 0</span><br><span class="line">17:54:02.207390 IP node06.50001 &gt; node02.36688: Flags [.], seq 22173:23571, ack 85, win 219, options [nop,nop,TS val 1450215472 ecr 1450209441], length 1398</span><br><span class="line">17:54:02.207403 IP node02.36688 &gt; node06.50001: Flags [.], ack 23571, win 600, options [nop,nop,TS val 1450209442 ecr 1450215472], length 0</span><br><span class="line">17:54:02.207417 IP node06.50001 &gt; node02.36688: Flags [P.], seq 23571:24422, ack 85, win 219, options [nop,nop,TS val 1450215473 ecr 1450209441], length 851</span><br><span class="line">17:54:02.207428 IP node02.36688 &gt; node06.50001: Flags [.], ack 24422, win 622, options [nop,nop,TS val 1450209442 ecr 1450215473], length 0</span><br><span class="line">17:54:02.207453 IP node06.50001 &gt; node02.36688: Flags [P.], seq 24422:24427, ack 85, win 219, options [nop,nop,TS val 1450215473 ecr 1450209441], length 5</span><br><span class="line">17:54:02.207461 IP node02.36688 &gt; node06.50001: Flags [.], ack 24427, win 622, options [nop,nop,TS val 1450209442 ecr 1450215473], length 0</span><br><span class="line">17:54:02.207604 IP node02.36688 &gt; node06.50001: Flags [F.], seq 85, ack 24427, win 622, options [nop,nop,TS val 1450209442 ecr 1450215473], length 0</span><br><span class="line">17:54:02.210200 IP node06.50001 &gt; node02.36688: Flags [F.], seq 24427, ack 86, win 219, options [nop,nop,TS val 1450215476 ecr 1450209442], length 0</span><br><span class="line">17:54:02.210247 IP node02.36688 &gt; node06.50001: Flags [.], ack 24428, win 622, options [nop,nop,TS val 1450209445 ecr 1450215476], length 0</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>从抓包信息可以看到由node02的36688端口向node06的50001端口发起tcp连接</p>
+</blockquote>
+<p>往master02节点发起请求</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># tcpdump port 50001</span></span><br><span class="line"></span><br><span class="line">tcpdump: verbose output suppressed, use -v or -vv <span class="keyword">for</span> full protocol decode</span><br><span class="line">listening on eth0, link-type EN10MB (Ethernet), capture size 262144 bytes</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">19:59:51.928683 IP node02.48324 &gt; master02.50001: Flags [S], seq 153890559, win 29200, options [mss 1460,sackOK,TS val 1457759163 ecr 0,nop,wscale 7], length 0</span><br><span class="line">19:59:52.928840 IP node02.48324 &gt; master02.50001: Flags [S], seq 153890559, win 29200, options [mss 1460,sackOK,TS val 1457760164 ecr 0,nop,wscale 7], length 0</span><br><span class="line">19:59:54.932819 IP node02.48324 &gt; master02.50001: Flags [S], seq 153890559, win 29200, options [mss 1460,sackOK,TS val 1457762168 ecr 0,nop,wscale 7], length 0</span><br><span class="line">19:59:58.941800 IP node02.48324 &gt; master02.50001: Flags [S], seq 153890559, win 29200, options [mss 1460,sackOK,TS val 1457766177 ecr 0,nop,wscale 7], length 0</span><br><span class="line">20:00:06.972852 IP node02.48324 &gt; master02.50001: Flags [S], seq 153890559, win 29200, options [mss 1460,sackOK,TS val 1457774208 ecr 0,nop,wscale 7], length 0</span><br><span class="line">20:00:23.004869 IP node02.48324 &gt; master02.50001: Flags [S], seq 153890559, win 29200, options [mss 1460,sackOK,TS val 1457790240 ecr 0,nop,wscale 7], length 0</span><br><span class="line">20:00:55.100833 IP node02.48324 &gt; master02.50001: Flags [S], seq 153890559, win 29200, options [mss 1460,sackOK,TS val 1457822336 ecr 0,nop,wscale 7], length 0</span><br><span class="line">20:00:55.101798 IP master02.50001 &gt; node02.48324: Flags [S.], seq 1564618017, ack 153890560, win 27960, options [mss 1410,sackOK,TS val 1457828368 ecr 1457822336,nop,wscale 7], length 0</span><br><span class="line">20:00:55.101851 IP node02.48324 &gt; master02.50001: Flags [.], ack 1, win 229, options [nop,nop,TS val 1457822337 ecr 1457828368], length 0</span><br><span class="line">20:00:55.101960 IP node02.48324 &gt; master02.50001: Flags [P.], seq 1:79, ack 1, win 229, options [nop,nop,TS val 1457822337 ecr 1457828368], length 78</span><br><span class="line">20:00:55.102410 IP master02.50001 &gt; node02.48324: Flags [.], ack 79, win 219, options [nop,nop,TS val 1457828369 ecr 1457822337], length 0</span><br><span class="line">20:00:55.132871 IP master02.50001 &gt; node02.48324: Flags [P.], seq 1:8193, ack 79, win 219, options [nop,nop,TS val 1457828399 ecr 1457822337], length 8192</span><br><span class="line">20:00:55.132921 IP node02.48324 &gt; master02.50001: Flags [.], ack 8193, win 357, options [nop,nop,TS val 1457822368 ecr 1457828399], length 0</span><br><span class="line">20:00:55.133043 IP master02.50001 &gt; node02.48324: Flags [.], seq 8193:13785, ack 79, win 219, options [nop,nop,TS val 1457828399 ecr 1457822337], length 5592</span><br><span class="line">20:00:55.133066 IP node02.48324 &gt; master02.50001: Flags [.], ack 13785, win 444, options [nop,nop,TS val 1457822368 ecr 1457828399], length 0</span><br><span class="line">20:00:55.133492 IP master02.50001 &gt; node02.48324: Flags [.], seq 13785:15183, ack 79, win 219, options [nop,nop,TS val 1457828400 ecr 1457822368], length 1398</span><br><span class="line">20:00:55.133541 IP node02.48324 &gt; master02.50001: Flags [.], ack 15183, win 466, options [nop,nop,TS val 1457822368 ecr 1457828400], length 0</span><br><span class="line">20:00:55.133557 IP master02.50001 &gt; node02.48324: Flags [P.], seq 15183:26727, ack 79, win 219, options [nop,nop,TS val 1457828400 ecr 1457822368], length 11544</span><br><span class="line">20:00:55.133575 IP node02.48324 &gt; master02.50001: Flags [.], ack 26727, win 646, options [nop,nop,TS val 1457822368 ecr 1457828400], length 0</span><br><span class="line">20:00:55.134217 IP master02.50001 &gt; node02.48324: Flags [P.], seq 26727:26732, ack 79, win 219, options [nop,nop,TS val 1457828400 ecr 1457822368], length 5</span><br><span class="line">20:00:55.134241 IP node02.48324 &gt; master02.50001: Flags [.], ack 26732, win 646, options [nop,nop,TS val 1457822369 ecr 1457828400], length 0</span><br><span class="line">20:00:55.134454 IP node02.48324 &gt; master02.50001: Flags [F.], seq 79, ack 26732, win 646, options [nop,nop,TS val 1457822369 ecr 1457828400], length 0</span><br><span class="line">20:00:55.135573 IP master02.50001 &gt; node02.48324: Flags [F.], seq 26732, ack 80, win 219, options [nop,nop,TS val 1457828402 ecr 1457822369], length 0</span><br><span class="line">20:00:55.135620 IP node02.48324 &gt; master02.50001: Flags [.], ack 26733, win 646, options [nop,nop,TS val 1457822370 ecr 1457828402], length 0</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/Kubernetes%E5%AF%B9%E8%B1%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/Kubernetes%E5%AF%B9%E8%B1%A1/" class="post-title-link" itemprop="url">运维/虚拟化/Kubernetes/Kubernetes对象</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:57" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:57+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E4%BA%91%E5%8E%9F%E7%94%9F%E5%85%AC%E5%BC%80%E8%AF%BE/04%20Pod%E5%92%8C%E5%AE%B9%E5%99%A8%E8%AE%BE%E8%AE%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E4%BA%91%E5%8E%9F%E7%94%9F%E5%85%AC%E5%BC%80%E8%AF%BE/04%20Pod%E5%92%8C%E5%AE%B9%E5%99%A8%E8%AE%BE%E8%AE%A1/" class="post-title-link" itemprop="url">运维/虚拟化/Kubernetes/云原生公开课/04 Pod和容器设计</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:57" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:57+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>![image-20191229220000549](/Users/zengshenglong/Library/Application Support/typora-user-images/image-20191229220000549.png)</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E4%BA%91%E5%8E%9F%E7%94%9F%E5%85%AC%E5%BC%80%E8%AF%BE/03%20Kubernetes/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E4%BA%91%E5%8E%9F%E7%94%9F%E5%85%AC%E5%BC%80%E8%AF%BE/03%20Kubernetes/" class="post-title-link" itemprop="url">运维/虚拟化/Kubernetes/云原生公开课/03 Kubernetes</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:57" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:57+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>![image-20191229215332815](/Users/zengshenglong/Library/Application Support/typora-user-images/image-20191229215332815.png)</p>
+<p>![image-20191229215404811](/Users/zengshenglong/Library/Application Support/typora-user-images/image-20191229215404811.png)</p>
+<p>![image-20191229215438747](/Users/zengshenglong/Library/Application Support/typora-user-images/image-20191229215438747.png)</p>
+<p>![image-20191229215508301](/Users/zengshenglong/Library/Application Support/typora-user-images/image-20191229215508301.png)</p>
+<p>![image-20191229215534022](/Users/zengshenglong/Library/Application Support/typora-user-images/image-20191229215534022.png)</p>
+<p>![image-20191229215611396](/Users/zengshenglong/Library/Application Support/typora-user-images/image-20191229215611396.png)</p>
+<p>![image-20191229215627860](/Users/zengshenglong/Library/Application Support/typora-user-images/image-20191229215627860.png)</p>
+<p>![image-20191229215642577](/Users/zengshenglong/Library/Application Support/typora-user-images/image-20191229215642577.png)</p>
+<p>![image-20191229215703319](/Users/zengshenglong/Library/Application Support/typora-user-images/image-20191229215703319.png)</p>
+<p>![image-20191229215723550](/Users/zengshenglong/Library/Application Support/typora-user-images/image-20191229215723550.png)</p>
+<p>![image-20191229215735900](/Users/zengshenglong/Library/Application Support/typora-user-images/image-20191229215735900.png)</p>
+<p>![image-20191229215803960](/Users/zengshenglong/Library/Application Support/typora-user-images/image-20191229215803960.png)</p>
+<p>![image-20191229215828738](/Users/zengshenglong/Library/Application Support/typora-user-images/image-20191229215828738.png)</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E4%BA%91%E5%8E%9F%E7%94%9F%E5%85%AC%E5%BC%80%E8%AF%BE/01%20%E4%BB%80%E4%B9%88%E6%98%AF%E5%8E%9F%E7%94%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E4%BA%91%E5%8E%9F%E7%94%9F%E5%85%AC%E5%BC%80%E8%AF%BE/01%20%E4%BB%80%E4%B9%88%E6%98%AF%E5%8E%9F%E7%94%9F/" class="post-title-link" itemprop="url">运维/虚拟化/Kubernetes/云原生公开课/01 什么是原生</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:57" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:57+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><img src="http://typora.alongparty.cn/typora_img/20200101190604.png" alt=""></p>
+<p>![image-20191229212846687](/Users/zengshenglong/Library/Application Support/typora-user-images/image-20191229212846687.png)</p>
+<p>![image-20191229213240966](/Users/zengshenglong/Library/Application Support/typora-user-images/image-20191229213240966.png)</p>
+<p>![image-20191229213455862](/Users/zengshenglong/Library/Application Support/typora-user-images/image-20191229213455862.png)</p>
+<p>![image-20191229214027629](/Users/zengshenglong/Library/Application Support/typora-user-images/image-20191229214027629.png)</p>
+<p>![image-20191229214152726](/Users/zengshenglong/Library/Application Support/typora-user-images/image-20191229214152726.png)</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E5%90%8D%E8%AF%8D%E8%A7%A3%E9%87%8A/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E5%90%8D%E8%AF%8D%E8%A7%A3%E9%87%8A/" class="post-title-link" itemprop="url">运维/虚拟化/Kubernetes/名词解释</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:57" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:57+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Docker/Docker%20pg%E4%B8%BB%E4%BB%8E/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Docker/Docker%20pg%E4%B8%BB%E4%BB%8E/" class="post-title-link" itemprop="url">运维/虚拟化/Docker/Docker pg主从</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:56" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:56+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="启动pg主库"><a href="#启动pg主库" class="headerlink" title="启动pg主库"></a>启动pg主库</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /data/server/postgresql/&#123;data,archivedir_master,archivedir&#125;</span><br><span class="line">chown 999.999 /data/server/postgresql -R</span><br><span class="line"></span><br><span class="line">docker run -d --network=host\</span><br><span class="line">           --name kong-database \</span><br><span class="line">           -e <span class="string">"POSTGRES_USER=kong"</span> \</span><br><span class="line">           -e <span class="string">"POSTGRES_DB=kong"</span> \</span><br><span class="line">           -e TZ=<span class="string">"Asia/Shanghai"</span> \</span><br><span class="line">           -v /data/server/postgresql/data:/var/lib/postgresql/data \</span><br><span class="line">           -v /data/server/postgresql/archivedir:/var/lib/postgresql/archivedir \</span><br><span class="line">           -v /data/server/postgresql/archivedir_master:/var/lib/postgresql/archivedir_master            postgres:11</span><br><span class="line"></span><br><span class="line">sleep 5</span><br><span class="line">docker <span class="built_in">exec</span> -ti     kong-database psql -U kong -h 172.16.4.72 -c <span class="string">"alter role kong  with password 'kong';"</span></span><br><span class="line"></span><br><span class="line">sed -i <span class="string">'s/host all all all trust/host all all all md5/g'</span> /data/server/postgresql/data/pg_hba.conf</span><br><span class="line"></span><br><span class="line">docker restart kong-database</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="创建同步用户"><a href="#创建同步用户" class="headerlink" title="创建同步用户"></a>创建同步用户</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CREATE ROLE replicator login replication password <span class="string">'123456'</span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="修改主库配置"><a href="#修改主库配置" class="headerlink" title="修改主库配置"></a>修改主库配置</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">wal_level= logical</span><br><span class="line">max_wal_senders = 10   <span class="comment"># at least the number of standby</span></span><br><span class="line">archive_mode = on</span><br><span class="line">archive_command =  <span class="string">'test ! -f /var/lib/postgresql/archivedir/%f &amp;&amp; cp %p /var/lib/postgresql/archivedir/%f'</span></span><br><span class="line">synchronous_standby_names = <span class="string">''</span>   <span class="comment">#standby application name, in recover.conf</span></span><br><span class="line">hot_standby=on</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="从库同步数据"><a href="#从库同步数据" class="headerlink" title="从库同步数据"></a>从库同步数据</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker run -ti --rm --net=host </span><br><span class="line">           -v /data/server/postgresql/data:/var/lib/postgresql/data \</span><br><span class="line">           postgres:11  pg_basebackup -h 172.16.4.72 -U replicator \</span><br><span class="line">           -D /var/lib/postgresql/data -X stream -P</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="配置恢复文件"><a href="#配置恢复文件" class="headerlink" title="配置恢复文件"></a>配置恢复文件</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">cat &lt;&lt; EOF &gt; /data/server/postgresql/recovery.conf</span><br><span class="line">standby_mode=on</span><br><span class="line">restore_command = <span class="string">'cp /var/lib/postgresql/archivedir_master/%f %p'</span></span><br><span class="line">primary_conninfo=<span class="string">'host=qb-qa-pg-kong port=5432 user=replicator password=123456'</span></span><br><span class="line">archive_cleanup_command =<span class="string">'pg_archivecleanup /var/lib/postgresql/archivedir_master %r'</span></span><br><span class="line">recovery_target_timeline = <span class="string">'latest'</span></span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">cp /data/server/postgresql/recovery.conf /data/server/postgresql/data</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="启动从库"><a href="#启动从库" class="headerlink" title="启动从库"></a>启动从库</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">docker run -d --network=host\</span><br><span class="line">           --name kong-database \</span><br><span class="line">           -e <span class="string">"POSTGRES_USER=kong"</span> \</span><br><span class="line">           -e <span class="string">"POSTGRES_DB=kong"</span> \</span><br><span class="line">           -e TZ=<span class="string">"Asia/Shanghai"</span> \</span><br><span class="line">           -v /data/server/postgresql/data:/var/lib/postgresql/data \</span><br><span class="line">           -v /data/server/postgresql/archivedir:/var/lib/postgresql/archivedir \</span><br><span class="line">           -v /data/server/postgresql/archivedir_master:/var/lib/postgresql/archivedir_master            postgres:11</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="主库查看同步状态"><a href="#主库查看同步状态" class="headerlink" title="主库查看同步状态"></a>主库查看同步状态</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">root@quanbu-qa-rocketmq-55:/<span class="comment"># psql -h 172.16.4.72 -U kong</span></span><br><span class="line">Password <span class="keyword">for</span> user kong:</span><br><span class="line">psql (11.6 (Debian 11.6-1.pgdg90+1))</span><br><span class="line">Type <span class="string">"help"</span> <span class="keyword">for</span> <span class="built_in">help</span>.</span><br><span class="line"></span><br><span class="line">kong=<span class="comment"># select client_addr,sync_state from pg_stat_replication;</span></span><br><span class="line"> client_addr | sync_state</span><br><span class="line">-------------+------------</span><br><span class="line"> 172.16.4.71 | async</span><br><span class="line">(1 row)</span><br><span class="line"></span><br><span class="line">kong=<span class="comment">#</span></span><br><span class="line">kong=<span class="comment">#</span></span><br><span class="line">[root@quanbu-qa-rocketmq-55 postgresql]<span class="comment"># ps -ef |grep post</span></span><br><span class="line">systemd+  6433  6415  0 14:08 ?        00:00:00 postgres</span><br><span class="line">systemd+  6471  6433  0 14:08 ?        00:00:00 postgres: checkpointer</span><br><span class="line">systemd+  6472  6433  0 14:08 ?        00:00:00 postgres: background writer</span><br><span class="line">systemd+  6473  6433  0 14:08 ?        00:00:00 postgres: walwriter</span><br><span class="line">systemd+  6474  6433  0 14:08 ?        00:00:00 postgres: autovacuum launcher</span><br><span class="line">systemd+  6475  6433  0 14:08 ?        00:00:00 postgres: archiver   last was 00000001000000000000000A.00000028.backup</span><br><span class="line">systemd+  6476  6433  0 14:08 ?        00:00:00 postgres: stats collector</span><br><span class="line">systemd+  6477  6433  0 14:08 ?        00:00:00 postgres: logical replication launcher</span><br><span class="line">systemd+  6488  6433  0 14:09 ?        00:00:00 postgres: kong kong 172.16.4.71(53866) idle</span><br><span class="line">systemd+  7486  6433  0 14:20 ?        00:00:00 postgres: walsender replicator 172.16.4.71(54016) streaming 0/B002C40</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/CICD/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/CICD/" class="post-title-link" itemprop="url">运维/标准化及流程化/CICD</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:55" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:55+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E5%88%A9%E7%94%A8Prometheus%E6%89%93%E9%80%A0%E9%AB%98%E9%80%BC%E6%A0%BC%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E5%88%A9%E7%94%A8Prometheus%E6%89%93%E9%80%A0%E9%AB%98%E9%80%BC%E6%A0%BC%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F/" class="post-title-link" itemprop="url">利用Prometheus打造高逼格监控系统</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-05-14 02:24:21 / 修改时间：08:04:43" itemprop="dateCreated datePublished" datetime="2020-05-14T02:24:21+08:00">2020-05-14</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index"><span itemprop="name">监控系统</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>​        近几年来，持续集成、微服务的影响范围不断扩大，Docker微服务架构，已渐渐成为服务器架构的主流。但是在微服务、持续集成的作用下，将会产生成百上千的服务组件；而每个服务组件容器的生命周期管理工作日渐突出。为了提高对容器生命周期、使用内存、Cpu、负载等等指标刻不容缓，尽可能的细化每一个服务使用资源，提高整体资源利用率。传统开源监控系统如Nagios、Zabbix等，虽然这些监控系统支持自定义监控，但是做到如此精细化的监控每个容器相信整个过程会很麻烦。而与此同时Prometheus横空出世，简直是天降奇兵，展现出强大的优势。</p>
+<h3 id="Prometheus的优势"><a href="#Prometheus的优势" class="headerlink" title="Prometheus的优势"></a>Prometheus的优势</h3><h5 id="易于管理"><a href="#易于管理" class="headerlink" title="易于管理"></a>易于管理</h5><p>动态发现服务从而实现动态监控目标，支持consul服务注册、DNS、Kubernetes、监听文件自动发现等方式</p>
+<h5 id="强大的数据模型"><a href="#强大的数据模型" class="headerlink" title="强大的数据模型"></a>强大的数据模型</h5><h5 id="可扩展"><a href="#可扩展" class="headerlink" title="可扩展"></a>可扩展</h5><p>可以在每个数据中心、每个团队运行独立的Prometheus Sevrer。Prometheus对于联邦集群的支持，可以让多个Prometheus实例产生一个逻辑集群，当单实例Prometheus Server处理的任务量过大时，通过使用功能分区(sharding)+联邦集群(federation)可以对其进行扩展。</p>
+<h5 id="易于集成"><a href="#易于集成" class="headerlink" title="易于集成"></a>易于集成</h5><p>目前支持大量客户端SDK：Java、Jmx、Python、Go、Ruby、.Net、Node.js等等，同时社区提供大量第三方实现的监控数据采集。</p>
+<h5 id="可视化"><a href="#可视化" class="headerlink" title="可视化"></a>可视化</h5><h5 id="开放性"><a href="#开放性" class="headerlink" title="开放性"></a>开放性</h5><h3 id="Prometheus核心组件"><a href="#Prometheus核心组件" class="headerlink" title="Prometheus核心组件"></a>Prometheus核心组件</h3><h4 id=""><a href="#" class="headerlink" title=""></a><img src="http://typora.alongparty.cn/typora_img/20200115231528.png" alt="架构图"></h4><h4 id="Prometheus-Server"><a href="#Prometheus-Server" class="headerlink" title="Prometheus Server"></a>Prometheus Server</h4><p>Prometheus Server是Prometheus组件中的核心部分，负责实现对监控数据的获取，存储以及查询。 Prometheus Server可以通过静态配置管理监控目标，也可以配合使用Service Discovery的方式动态管理监控目标，并从这些监控目标中获取数据。其次Prometheus Server需要对采集到的监控数据进行存储，Prometheus Server本身就是一个时序数据库，将采集到的监控数据按照时间序列的方式存储在本地磁盘当中。最后Prometheus Server对外提供了自定义的PromQL语言，实现对数据的查询以及分析。</p>
+<h4 id="Exporters"><a href="#Exporters" class="headerlink" title="Exporters"></a>Exporters</h4><p>Exporter将监控数据采集的端点通过HTTP服务的形式暴露给Prometheus Server，Prometheus Server通过访问该Exporter提供的Endpoint端点，即可获取到需要采集的监控数据</p>
+<h4 id="Alertmanager"><a href="#Alertmanager" class="headerlink" title="Alertmanager"></a>Alertmanager</h4><p>在Prometheus Server中支持基于PromQL创建告警规则，如果满足PromQL定义的规则，则会产生一条告警，而告警的后续处理流程则由AlertManager进行管理。在AlertManager中我们可以与邮件，Slack等等内置的通知方式进行集成，也可以通过Webhook自定义告警处理方式。AlertManager即Prometheus体系中的告警处理中心。</p>
+<h4 id="Pushgateway"><a href="#Pushgateway" class="headerlink" title="Pushgateway"></a>Pushgateway</h4><p>由于Prometheus数据采集基于Pull模型进行设计，因此在网络环境的配置上必须要让Prometheus Server能够直接与Exporter进行通信。 当这种网络需求无法直接满足时，就可以利用PushGateway来进行中转。可以通过PushGateway将内部网络的监控数据主动Push到Gateway当中。而Prometheus Server则可以采用同样Pull的方式从PushGateway中获取到监控数据。</p>
+<h3 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h3><p>Prometheus支持本地存储很远程存储，其本身内置了一个基于本地存储的时间序列数据库，本地存储设计可以减少其自身运维和管理的复杂度，同时能够满足大部分用户监控规模的需求，但是本地存储也意味着Prometheus不适合保存大量历史数据(一般Prometheus推荐只保留几周或者几个月的数据)。最后本地存储也导致Prometheus无法进行弹性扩展。</p>
+<p>为了保持Prometheus的简单性，Prometheus并没有尝试在自身中解决以上问题，而是通过定义两个标准接口(remote_write/remote_read)，让用户可以基于这两个接口对接将数据保存到任意第三方的存储服务中，这种方式在Promthues中称为Remote Storage。</p>
+<ul>
+<li>目前Prometheus社区也提供了部分对于第三方数据库的Remote Storage支持：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>存储服务</th>
+<th>支持模式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>AppOptics</td>
+<td>write</td>
+</tr>
+<tr>
+<td>Chronix</td>
+<td>write</td>
+</tr>
+<tr>
+<td>Cortex:</td>
+<td>read/write</td>
+</tr>
+<tr>
+<td>CrateDB</td>
+<td>read/write</td>
+</tr>
+<tr>
+<td>Gnocchi</td>
+<td>write</td>
+</tr>
+<tr>
+<td>Graphite</td>
+<td>write</td>
+</tr>
+<tr>
+<td>InfluxDB</td>
+<td>read/write</td>
+</tr>
+<tr>
+<td>OpenTSDB</td>
+<td>write</td>
+</tr>
+<tr>
+<td><a href="https://github.com/infonova/prometheusbeat" target="_blank" rel="noopener">Elasticsearch</a></td>
+<td>write</td>
+</tr>
+<tr>
+<td><a href="https://github.com/wavefrontHQ/prometheus-storage-adapter" target="_blank" rel="noopener">Wavefront</a></td>
+<td>write</td>
+</tr>
+<tr>
+<td><a href="https://github.com/Telefonica/prometheus-kafka-adapter" target="_blank" rel="noopener">Kafka</a></td>
+<td>write</td>
+</tr>
+<tr>
+<td>PostgreSQL/TimescaleDB:</td>
+<td>read/write</td>
+</tr>
+<tr>
+<td>SignalFx</td>
+<td>write</td>
+</tr>
+</tbody></table>
+<p>还有很多就不一一列举，更多内容可以查看<a href="https://prometheus.io/docs/operating/integrations/#remote-endpoints-and-storage" target="_blank" rel="noopener">官网</a>。本文选用Influxdb来存储Prometheus监控数据，即可支持读也支持写。</p>
+<h4 id="启动Influxdb存储Prometheus监控数据"><a href="#启动Influxdb存储Prometheus监控数据" class="headerlink" title="启动Influxdb存储Prometheus监控数据"></a>启动Influxdb存储Prometheus监控数据</h4><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">cat</span> <span class="string">&lt;&lt;</span> <span class="string">EOF</span> <span class="string">&gt;</span> <span class="string">/data/server/influxd/influxdb.conf</span></span><br><span class="line"><span class="string">reporting-disabled</span> <span class="string">=</span> <span class="literal">true</span></span><br><span class="line"><span class="string">bind-address</span> <span class="string">=</span> <span class="string">"0.0.0.0:8088"</span></span><br><span class="line"></span><br><span class="line"><span class="string">[meta]</span></span><br><span class="line">  <span class="string">dir</span> <span class="string">=</span> <span class="string">"/var/lib/influxdb/meta"</span></span><br><span class="line">  <span class="string">retention-autocreate</span> <span class="string">=</span> <span class="literal">true</span></span><br><span class="line">  <span class="string">logging-enabled</span> <span class="string">=</span> <span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="string">[data]</span></span><br><span class="line">  <span class="string">dir</span> <span class="string">=</span> <span class="string">"/var/lib/influxdb/data"</span></span><br><span class="line">  <span class="string">index-version</span> <span class="string">=</span> <span class="string">"inmem"</span></span><br><span class="line">  <span class="string">wal-dir</span> <span class="string">=</span> <span class="string">"/var/lib/influxdb/wal"</span></span><br><span class="line">  <span class="string">wal-fsync-delay</span> <span class="string">=</span> <span class="string">"0s"</span></span><br><span class="line">  <span class="string">validate-keys</span> <span class="string">=</span> <span class="literal">false</span></span><br><span class="line">  <span class="string">query-log-enabled</span> <span class="string">=</span> <span class="literal">true</span></span><br><span class="line">  <span class="string">cache-max-memory-size</span> <span class="string">=</span> <span class="number">1073741824</span></span><br><span class="line">  <span class="string">cache-snapshot-memory-size</span> <span class="string">=</span> <span class="number">26214400</span></span><br><span class="line">  <span class="string">cache-snapshot-write-cold-duration</span> <span class="string">=</span> <span class="string">"10m0s"</span></span><br><span class="line">  <span class="string">compact-full-write-cold-duration</span> <span class="string">=</span> <span class="string">"4h0m0s"</span></span><br><span class="line">  <span class="string">compact-throughput</span> <span class="string">=</span> <span class="number">50331648</span></span><br><span class="line">  <span class="string">compact-throughput-burst</span> <span class="string">=</span> <span class="number">50331648</span></span><br><span class="line">  <span class="string">max-series-per-database</span> <span class="string">=</span> <span class="number">1000000</span></span><br><span class="line">  <span class="string">max-values-per-tag</span> <span class="string">=</span> <span class="number">100000</span></span><br><span class="line">  <span class="string">max-concurrent-compactions</span> <span class="string">=</span> <span class="number">0</span></span><br><span class="line">  <span class="string">max-index-log-file-size</span> <span class="string">=</span> <span class="number">1048576</span></span><br><span class="line">  <span class="string">series-id-set-cache-size</span> <span class="string">=</span> <span class="number">100</span></span><br><span class="line">  <span class="string">trace-logging-enabled</span> <span class="string">=</span> <span class="literal">false</span></span><br><span class="line">  <span class="string">tsm-use-madv-willneed</span> <span class="string">=</span> <span class="literal">false</span></span><br><span class="line"></span><br><span class="line"><span class="string">[coordinator]</span></span><br><span class="line">  <span class="string">write-timeout</span> <span class="string">=</span> <span class="string">"10s"</span></span><br><span class="line">  <span class="string">max-concurrent-queries</span> <span class="string">=</span> <span class="number">0</span></span><br><span class="line">  <span class="string">query-timeout</span> <span class="string">=</span> <span class="string">"0s"</span></span><br><span class="line">  <span class="string">log-queries-after</span> <span class="string">=</span> <span class="string">"0s"</span></span><br><span class="line">  <span class="string">max-select-point</span> <span class="string">=</span> <span class="number">0</span></span><br><span class="line">  <span class="string">max-select-series</span> <span class="string">=</span> <span class="number">0</span></span><br><span class="line">  <span class="string">max-select-buckets</span> <span class="string">=</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="string">[retention]</span></span><br><span class="line">  <span class="string">enabled</span> <span class="string">=</span> <span class="literal">true</span></span><br><span class="line">  <span class="string">check-interval</span> <span class="string">=</span> <span class="string">"30m0s"</span></span><br><span class="line"></span><br><span class="line"><span class="string">[shard-precreation]</span></span><br><span class="line">  <span class="string">enabled</span> <span class="string">=</span> <span class="literal">true</span></span><br><span class="line">  <span class="string">check-interval</span> <span class="string">=</span> <span class="string">"10m0s"</span></span><br><span class="line">  <span class="string">advance-period</span> <span class="string">=</span> <span class="string">"30m0s"</span></span><br><span class="line"></span><br><span class="line"><span class="string">[monitor]</span></span><br><span class="line">  <span class="string">store-enabled</span> <span class="string">=</span> <span class="literal">true</span></span><br><span class="line">  <span class="string">store-database</span> <span class="string">=</span> <span class="string">"_internal"</span></span><br><span class="line">  <span class="string">store-interval</span> <span class="string">=</span> <span class="string">"10s"</span></span><br><span class="line"></span><br><span class="line"><span class="string">[subscriber]</span></span><br><span class="line">  <span class="string">enabled</span> <span class="string">=</span> <span class="literal">true</span></span><br><span class="line">  <span class="string">http-timeout</span> <span class="string">=</span> <span class="string">"30s"</span></span><br><span class="line">  <span class="string">insecure-skip-verify</span> <span class="string">=</span> <span class="literal">false</span></span><br><span class="line">  <span class="string">ca-certs</span> <span class="string">=</span> <span class="string">""</span></span><br><span class="line">  <span class="string">write-concurrency</span> <span class="string">=</span> <span class="number">40</span></span><br><span class="line">  <span class="string">write-buffer-size</span> <span class="string">=</span> <span class="number">1000</span></span><br><span class="line"></span><br><span class="line"><span class="string">[http]</span></span><br><span class="line">  <span class="string">enabled</span> <span class="string">=</span> <span class="literal">true</span></span><br><span class="line">  <span class="string">bind-address</span> <span class="string">=</span> <span class="string">":8086"</span></span><br><span class="line">  <span class="string">auth-enabled</span> <span class="string">=</span> <span class="literal">false</span></span><br><span class="line">  <span class="string">log-enabled</span> <span class="string">=</span> <span class="literal">true</span></span><br><span class="line">  <span class="string">suppress-write-log</span> <span class="string">=</span> <span class="literal">false</span></span><br><span class="line">  <span class="string">write-tracing</span> <span class="string">=</span> <span class="literal">false</span></span><br><span class="line">  <span class="string">flux-enabled</span> <span class="string">=</span> <span class="literal">false</span></span><br><span class="line">  <span class="string">flux-log-enabled</span> <span class="string">=</span> <span class="literal">false</span></span><br><span class="line">  <span class="string">pprof-enabled</span> <span class="string">=</span> <span class="literal">true</span></span><br><span class="line">  <span class="string">debug-pprof-enabled</span> <span class="string">=</span> <span class="literal">false</span></span><br><span class="line">  <span class="string">https-enabled</span> <span class="string">=</span> <span class="literal">false</span></span><br><span class="line">  <span class="string">https-certificate</span> <span class="string">=</span> <span class="string">"/etc/ssl/influxdb.pem"</span></span><br><span class="line">  <span class="string">https-private-key</span> <span class="string">=</span> <span class="string">""</span></span><br><span class="line">  <span class="string">max-row-limit</span> <span class="string">=</span> <span class="number">0</span></span><br><span class="line">  <span class="string">max-connection-limit</span> <span class="string">=</span> <span class="number">0</span></span><br><span class="line">  <span class="string">shared-secret</span> <span class="string">=</span> <span class="string">""</span></span><br><span class="line">  <span class="string">realm</span> <span class="string">=</span> <span class="string">"InfluxDB"</span></span><br><span class="line">  <span class="string">unix-socket-enabled</span> <span class="string">=</span> <span class="literal">false</span></span><br><span class="line">  <span class="string">unix-socket-permissions</span> <span class="string">=</span> <span class="string">"0777"</span></span><br><span class="line">  <span class="string">bind-socket</span> <span class="string">=</span> <span class="string">"/var/run/influxdb.sock"</span></span><br><span class="line">  <span class="string">max-body-size</span> <span class="string">=</span> <span class="number">25000000</span></span><br><span class="line">  <span class="string">access-log-path</span> <span class="string">=</span> <span class="string">""</span></span><br><span class="line">  <span class="string">max-concurrent-write-limit</span> <span class="string">=</span> <span class="number">0</span></span><br><span class="line">  <span class="string">max-enqueued-write-limit</span> <span class="string">=</span> <span class="number">0</span></span><br><span class="line">  <span class="string">enqueued-write-timeout</span> <span class="string">=</span> <span class="number">30000000000</span></span><br><span class="line"></span><br><span class="line"><span class="string">[logging]</span></span><br><span class="line">  <span class="string">format</span> <span class="string">=</span> <span class="string">"auto"</span></span><br><span class="line">  <span class="string">level</span> <span class="string">=</span> <span class="string">"info"</span></span><br><span class="line">  <span class="string">suppress-logo</span> <span class="string">=</span> <span class="literal">false</span></span><br><span class="line"></span><br><span class="line"><span class="string">[[graphite]]</span></span><br><span class="line">  <span class="string">enabled</span> <span class="string">=</span> <span class="literal">false</span></span><br><span class="line">  <span class="string">bind-address</span> <span class="string">=</span> <span class="string">":2003"</span></span><br><span class="line">  <span class="string">database</span> <span class="string">=</span> <span class="string">"graphite"</span></span><br><span class="line">  <span class="string">retention-policy</span> <span class="string">=</span> <span class="string">""</span></span><br><span class="line">  <span class="string">protocol</span> <span class="string">=</span> <span class="string">"tcp"</span></span><br><span class="line">  <span class="string">batch-size</span> <span class="string">=</span> <span class="number">5000</span></span><br><span class="line">  <span class="string">batch-pending</span> <span class="string">=</span> <span class="number">10</span></span><br><span class="line">  <span class="string">batch-timeout</span> <span class="string">=</span> <span class="string">"1s"</span></span><br><span class="line">  <span class="string">consistency-level</span> <span class="string">=</span> <span class="string">"one"</span></span><br><span class="line">  <span class="string">separator</span> <span class="string">=</span> <span class="string">"."</span></span><br><span class="line">  <span class="string">udp-read-buffer</span> <span class="string">=</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="string">[[collectd]]</span></span><br><span class="line">  <span class="string">enabled</span> <span class="string">=</span> <span class="literal">false</span></span><br><span class="line">  <span class="string">bind-address</span> <span class="string">=</span> <span class="string">":25826"</span></span><br><span class="line">  <span class="string">database</span> <span class="string">=</span> <span class="string">"collectd"</span></span><br><span class="line">  <span class="string">retention-policy</span> <span class="string">=</span> <span class="string">""</span></span><br><span class="line">  <span class="string">batch-size</span> <span class="string">=</span> <span class="number">5000</span></span><br><span class="line">  <span class="string">batch-pending</span> <span class="string">=</span> <span class="number">10</span></span><br><span class="line">  <span class="string">batch-timeout</span> <span class="string">=</span> <span class="string">"10s"</span></span><br><span class="line">  <span class="string">read-buffer</span> <span class="string">=</span> <span class="number">0</span></span><br><span class="line">  <span class="string">typesdb</span> <span class="string">=</span> <span class="string">"/usr/share/collectd/types.db"</span></span><br><span class="line">  <span class="string">security-level</span> <span class="string">=</span> <span class="string">"none"</span></span><br><span class="line">  <span class="string">auth-file</span> <span class="string">=</span> <span class="string">"/etc/collectd/auth_file"</span></span><br><span class="line">  <span class="string">parse-multivalue-plugin</span> <span class="string">=</span> <span class="string">"split"</span></span><br><span class="line"></span><br><span class="line"><span class="string">[[opentsdb]]</span></span><br><span class="line">  <span class="string">enabled</span> <span class="string">=</span> <span class="literal">false</span></span><br><span class="line">  <span class="string">bind-address</span> <span class="string">=</span> <span class="string">":4242"</span></span><br><span class="line">  <span class="string">database</span> <span class="string">=</span> <span class="string">"opentsdb"</span></span><br><span class="line">  <span class="string">retention-policy</span> <span class="string">=</span> <span class="string">""</span></span><br><span class="line">  <span class="string">consistency-level</span> <span class="string">=</span> <span class="string">"one"</span></span><br><span class="line">  <span class="string">tls-enabled</span> <span class="string">=</span> <span class="literal">false</span></span><br><span class="line">  <span class="string">certificate</span> <span class="string">=</span> <span class="string">"/etc/ssl/influxdb.pem"</span></span><br><span class="line">  <span class="string">batch-size</span> <span class="string">=</span> <span class="number">1000</span></span><br><span class="line">  <span class="string">batch-pending</span> <span class="string">=</span> <span class="number">5</span></span><br><span class="line">  <span class="string">batch-timeout</span> <span class="string">=</span> <span class="string">"1s"</span></span><br><span class="line">  <span class="string">log-point-errors</span> <span class="string">=</span> <span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="string">[[udp]]</span></span><br><span class="line">  <span class="string">enabled</span> <span class="string">=</span> <span class="literal">false</span></span><br><span class="line">  <span class="string">bind-address</span> <span class="string">=</span> <span class="string">":8089"</span></span><br><span class="line">  <span class="string">database</span> <span class="string">=</span> <span class="string">"udp"</span></span><br><span class="line">  <span class="string">retention-policy</span> <span class="string">=</span> <span class="string">""</span></span><br><span class="line">  <span class="string">batch-size</span> <span class="string">=</span> <span class="number">5000</span></span><br><span class="line">  <span class="string">batch-pending</span> <span class="string">=</span> <span class="number">10</span></span><br><span class="line">  <span class="string">read-buffer</span> <span class="string">=</span> <span class="number">0</span></span><br><span class="line">  <span class="string">batch-timeout</span> <span class="string">=</span> <span class="string">"1s"</span></span><br><span class="line">  <span class="string">precision</span> <span class="string">=</span> <span class="string">""</span></span><br><span class="line"></span><br><span class="line"><span class="string">[continuous_queries]</span></span><br><span class="line">  <span class="string">log-enabled</span> <span class="string">=</span> <span class="literal">true</span></span><br><span class="line">  <span class="string">enabled</span> <span class="string">=</span> <span class="literal">true</span></span><br><span class="line">  <span class="string">query-stats-enabled</span> <span class="string">=</span> <span class="literal">false</span></span><br><span class="line">  <span class="string">run-interval</span> <span class="string">=</span> <span class="string">"1s"</span></span><br><span class="line"></span><br><span class="line"><span class="string">[tls]</span></span><br><span class="line">  <span class="string">min-version</span> <span class="string">=</span> <span class="string">""</span></span><br><span class="line">  <span class="string">max-version</span> <span class="string">=</span> <span class="string">""</span></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">docker run --net=host -d --restart=always   --name influxdb  \</span><br><span class="line">       -e TZ=<span class="string">"Asia/Shanghai"</span>      \</span><br><span class="line">       -v /data/server/influxd/influxdb.conf:/etc/influxdb/influxdb.conf:ro       \</span><br><span class="line">       -v /data/server/influxd/meta:/var/lib/influxdb/meta       \</span><br><span class="line">       -v /data/server/influxd/data:/var/lib/influxdb/data       \</span><br><span class="line">       influxdb -config /etc/influxdb/influxdb.conf</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="启动自动发现服务"><a href="#启动自动发现服务" class="headerlink" title="启动自动发现服务"></a>启动自动发现服务</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker run -d --net=host \</span><br><span class="line">           -v /data/server/consul:/consul/data \</span><br><span class="line">           -e CONSUL_BIND_INTERFACE=<span class="string">'eth0'</span> \</span><br><span class="line">           --name=consul consul agent -server \</span><br><span class="line">           -bootstrap -ui -client=<span class="string">'0.0.0.0'</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h4 id="部署Prometheus-Server"><a href="#部署Prometheus-Server" class="headerlink" title="部署Prometheus Server"></a>部署Prometheus Server</h4><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br></pre></td><td class="code"><pre><span class="line"> <span class="string">cat</span> <span class="string">/data/server/prometheus/prometheus.yml</span></span><br><span class="line"><span class="comment"># my global config</span></span><br><span class="line"><span class="attr">global:</span></span><br><span class="line">  <span class="attr">scrape_interval:</span>     <span class="string">15s</span> <span class="comment"># Set the scrape interval to every 15 seconds. Default is every 1 minute.</span></span><br><span class="line">  <span class="attr">evaluation_interval:</span> <span class="string">15s</span> <span class="comment"># Evaluate rules every 15 seconds. The default is every 1 minute.</span></span><br><span class="line">  <span class="comment"># scrape_timeout is set to the global default (10s).</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Alertmanager configuration</span></span><br><span class="line"><span class="attr">alerting:</span></span><br><span class="line">  <span class="attr">alertmanagers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">static_configs:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">targets:</span></span><br><span class="line">       <span class="bullet">-</span> <span class="number">192.168</span><span class="number">.16</span><span class="number">.148</span><span class="string">:9093</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="attr">remote_write:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">url:</span> <span class="string">"http://192.168.16.148:8086/api/v1/prom/write?db=prometheus"</span></span><br><span class="line"></span><br><span class="line"><span class="attr">remote_read:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">url:</span> <span class="string">"http://192.168.16.148:8086/api/v1/prom/read?db=prometheus"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Load rules once and periodically evaluate them according to the global 'evaluation_interval'.</span></span><br><span class="line"><span class="attr">rule_files:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">/etc/prometheus/rules/*.rules</span></span><br><span class="line">  <span class="comment"># - "first_rules.yml"</span></span><br><span class="line">  <span class="comment"># - "second_rules.yml"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># A scrape configuration containing exactly one endpoint to scrape:</span></span><br><span class="line"><span class="comment"># Here it's Prometheus itself.</span></span><br><span class="line"><span class="attr">scrape_configs:</span></span><br><span class="line">  <span class="comment"># The job name is added as a label `job=&lt;job_name&gt;` to any timeseries scraped from this config.</span></span><br><span class="line">    <span class="comment"># metrics_path defaults to '/metrics'</span></span><br><span class="line">    <span class="comment"># scheme defaults to 'http'.</span></span><br><span class="line"></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">'consul-kong-exporter'</span></span><br><span class="line">    <span class="attr">consul_sd_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">server:</span> <span class="string">'192.168.16.148:8500'</span></span><br><span class="line">        <span class="attr">services:</span> <span class="string">[]</span></span><br><span class="line">    <span class="attr">relabel_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">source_labels:</span> <span class="string">[__meta_consul_tags]</span></span><br><span class="line">        <span class="attr">regex:</span> <span class="string">.*kong.*</span></span><br><span class="line">        <span class="attr">action:</span> <span class="string">keep</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">regex:</span> <span class="string">__meta_consul_service_metadata_(.+)</span></span><br><span class="line">        <span class="attr">action:</span> <span class="string">labelmap</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">'consul-elasticsearch-exporter'</span></span><br><span class="line">    <span class="attr">metrics_path:</span> <span class="string">/_prometheus/metrics</span></span><br><span class="line">    <span class="attr">consul_sd_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">server:</span> <span class="string">'192.168.16.148:8500'</span></span><br><span class="line">        <span class="attr">services:</span> <span class="string">[]</span></span><br><span class="line">    <span class="attr">relabel_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">source_labels:</span> <span class="string">[__meta_consul_tags]</span></span><br><span class="line">        <span class="attr">regex:</span> <span class="string">.*elasticsearch.*</span></span><br><span class="line">        <span class="attr">action:</span> <span class="string">keep</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">regex:</span> <span class="string">__meta_consul_service_metadata_(.+)</span></span><br><span class="line">        <span class="attr">action:</span> <span class="string">labelmap</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">'cadvisor'</span></span><br><span class="line">    <span class="attr">consul_sd_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">server:</span> <span class="string">'192.168.16.148:8500'</span></span><br><span class="line">        <span class="attr">services:</span> <span class="string">[]</span></span><br><span class="line">    <span class="attr">relabel_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">source_labels:</span> <span class="string">[__meta_consul_tags]</span></span><br><span class="line">        <span class="attr">regex:</span> <span class="string">.*cadvisor.*</span></span><br><span class="line">        <span class="attr">action:</span> <span class="string">keep</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">regex:</span> <span class="string">__meta_consul_service_metadata_(.+)</span></span><br><span class="line">        <span class="attr">action:</span> <span class="string">labelmap</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">'node-exporter'</span></span><br><span class="line">    <span class="attr">consul_sd_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">server:</span> <span class="string">'192.168.16.148:8500'</span></span><br><span class="line">        <span class="attr">services:</span> <span class="string">[]</span></span><br><span class="line">    <span class="attr">relabel_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">source_labels:</span> <span class="string">[__meta_consul_tags]</span></span><br><span class="line">        <span class="attr">regex:</span> <span class="string">.*node-exporter.*</span></span><br><span class="line">        <span class="attr">action:</span> <span class="string">keep</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">regex:</span> <span class="string">__meta_consul_service_metadata_(.+)</span></span><br><span class="line">        <span class="attr">action:</span> <span class="string">labelmap</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">'rocketmq'</span></span><br><span class="line">    <span class="attr">consul_sd_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">server:</span> <span class="string">'192.168.16.148:8500'</span></span><br><span class="line">        <span class="attr">services:</span> <span class="string">[]</span></span><br><span class="line">    <span class="attr">relabel_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">source_labels:</span> <span class="string">[__meta_consul_tags]</span></span><br><span class="line">        <span class="attr">regex:</span> <span class="string">.*rocketmq.*</span></span><br><span class="line">        <span class="attr">action:</span> <span class="string">keep</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">regex:</span> <span class="string">__meta_consul_service_metadata_(.+)</span></span><br><span class="line">        <span class="attr">action:</span> <span class="string">labelmap</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">'kafka'</span></span><br><span class="line">    <span class="attr">consul_sd_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">server:</span> <span class="string">'192.168.16.148:8500'</span></span><br><span class="line">        <span class="attr">services:</span> <span class="string">[]</span></span><br><span class="line">    <span class="attr">relabel_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">source_labels:</span> <span class="string">[__meta_consul_tags]</span></span><br><span class="line">        <span class="attr">regex:</span> <span class="string">.*kafka.*</span></span><br><span class="line">        <span class="attr">action:</span> <span class="string">keep</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">regex:</span> <span class="string">__meta_consul_service_metadata_(.+)</span></span><br><span class="line">        <span class="attr">action:</span> <span class="string">labelmap</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">'zookeeper'</span></span><br><span class="line">    <span class="attr">consul_sd_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">server:</span> <span class="string">'192.168.16.148:8500'</span></span><br><span class="line">        <span class="attr">services:</span> <span class="string">[]</span></span><br><span class="line">    <span class="attr">relabel_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">source_labels:</span> <span class="string">[__meta_consul_tags]</span></span><br><span class="line">        <span class="attr">regex:</span> <span class="string">.*zookeeper.*</span></span><br><span class="line">        <span class="attr">action:</span> <span class="string">keep</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">regex:</span> <span class="string">__meta_consul_service_metadata_(.+)</span></span><br><span class="line">        <span class="attr">action:</span> <span class="string">labelmap</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">'mongodb'</span></span><br><span class="line">    <span class="attr">consul_sd_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">server:</span> <span class="string">'192.168.16.148:8500'</span></span><br><span class="line">        <span class="attr">services:</span> <span class="string">[]</span></span><br><span class="line">    <span class="attr">relabel_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">source_labels:</span> <span class="string">[__meta_consul_tags]</span></span><br><span class="line">        <span class="attr">regex:</span> <span class="string">.*mongodb.*</span></span><br><span class="line">        <span class="attr">action:</span> <span class="string">keep</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">regex:</span> <span class="string">__meta_consul_service_metadata_(.+)</span></span><br><span class="line">        <span class="attr">action:</span> <span class="string">labelmap</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">'mysql'</span></span><br><span class="line">    <span class="attr">consul_sd_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">server:</span> <span class="string">'192.168.16.148:8500'</span></span><br><span class="line">        <span class="attr">services:</span> <span class="string">[]</span></span><br><span class="line">    <span class="attr">relabel_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">source_labels:</span> <span class="string">[__meta_consul_tags]</span></span><br><span class="line">        <span class="attr">regex:</span> <span class="string">.*mysql.*</span></span><br><span class="line">        <span class="attr">action:</span> <span class="string">keep</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">regex:</span> <span class="string">__meta_consul_service_metadata_(.+)</span></span><br><span class="line">        <span class="attr">action:</span> <span class="string">labelmap</span></span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">docker run -d --net=host --name prometheus --restart=always \</span><br><span class="line">       --<span class="built_in">log</span>-driver json-file --<span class="built_in">log</span>-opt max-size=10m --<span class="built_in">log</span>-opt max-file=7 \</span><br><span class="line">       -v /data/server/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml \</span><br><span class="line">       -v /data/server/prometheus/rules:/etc/prometheus/rules prom/prometheus \</span><br><span class="line">       --config.file=/etc/prometheus/prometheus.yml \</span><br><span class="line">       --storage.tsdb.path=/prometheus \</span><br><span class="line">       --web.console.libraries=/usr/share/prometheus/console_libraries \</span><br><span class="line">       --web.console.templates=/usr/share/prometheus/consoles \</span><br><span class="line">       --web.enable-lifecycle</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="部署Exporter"><a href="#部署Exporter" class="headerlink" title="部署Exporter"></a>部署Exporter</h3><h4 id="启动cadvisor监控容器资源"><a href="#启动cadvisor监控容器资源" class="headerlink" title="启动cadvisor监控容器资源"></a>启动cadvisor监控容器资源</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">docker run -e TZ=<span class="string">"Asia/Shanghai"</span> \</span><br><span class="line">  -d --net=host --restart=always   \</span><br><span class="line">  --<span class="built_in">log</span>-driver json-file --<span class="built_in">log</span>-opt max-size=10m --<span class="built_in">log</span>-opt max-file=7 \</span><br><span class="line">  --volume=/:/rootfs:ro \</span><br><span class="line">  --volume=/var/run:/var/run:ro \</span><br><span class="line">  --volume=/sys:/sys:ro \</span><br><span class="line">  --volume=/var/lib/docker/:/var/lib/docker:ro \</span><br><span class="line">  --volume=/dev/disk:/dev/disk:ro \</span><br><span class="line">  --detach=<span class="literal">true</span> \</span><br><span class="line">  --name=cadvisor \</span><br><span class="line">  registry.cn-hangzhou.aliyuncs.com/zhijing/cadvisor:latest</span><br></pre></td></tr></table></figure>
+
+<h4 id="将cadvisor服务注册到consul"><a href="#将cadvisor服务注册到consul" class="headerlink" title="将cadvisor服务注册到consul"></a>将cadvisor服务注册到consul</h4><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">cat &lt;&lt; EOF &gt; cadvisor.json</span><br><span class="line">&#123;</span><br><span class="line">  <span class="attr">"ID"</span>: <span class="string">"yumwei-192.168.16.148"</span>,</span><br><span class="line">  <span class="attr">"Name"</span>: <span class="string">"yumwei"</span>,</span><br><span class="line">  <span class="attr">"Tags"</span>: [</span><br><span class="line">    <span class="string">"cadvisor"</span></span><br><span class="line">  ],</span><br><span class="line">  <span class="attr">"Address"</span>: <span class="string">"192.168.16.148"</span>,</span><br><span class="line">  <span class="attr">"Port"</span>: <span class="number">8080</span>,</span><br><span class="line">  <span class="attr">"Meta"</span>: &#123;</span><br><span class="line">    <span class="attr">"service"</span>: <span class="string">"cadvisor"</span>,</span><br><span class="line">    <span class="attr">"team"</span>: <span class="string">"appgroup"</span>,</span><br><span class="line">    <span class="attr">"project"</span>: <span class="string">"yunwei"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"EnableTagOverride"</span>: <span class="literal">false</span>,</span><br><span class="line">  <span class="attr">"Check"</span>: &#123;</span><br><span class="line">    <span class="attr">"HTTP"</span>: <span class="string">"http://192.168.16.148:8080/metrics"</span>,</span><br><span class="line">    <span class="attr">"Interval"</span>: <span class="string">"10s"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"Weights"</span>: &#123;</span><br><span class="line">    <span class="attr">"Passing"</span>: <span class="number">10</span>,</span><br><span class="line">    <span class="attr">"Warning"</span>: <span class="number">1</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">curl --request PUT --data @cadvisor.json http://192.168.16.148:8500/v1/agent/service/register?replace-existing-checks=1</span><br></pre></td></tr></table></figure>
+
+<h3 id="部署AlerterManage"><a href="#部署AlerterManage" class="headerlink" title="部署AlerterManage"></a>部署AlerterManage</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"> cat &lt;&lt; EOF &gt; /data/server/alertmanager/alertmanager.yml</span><br><span class="line">global:</span><br><span class="line">  smtp_smarthost: <span class="string">'smtp.alongparty.cn:25'</span></span><br><span class="line">  smtp_from: <span class="string">'webmaster@alongparty.cn'</span></span><br><span class="line">  smtp_auth_username: <span class="string">'webmaster@alongparty.cn'</span></span><br><span class="line">  smtp_auth_password: <span class="string">'tRpD2fpzE6zp2XQq'</span></span><br><span class="line">  smtp_require_tls: <span class="literal">false</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">templates:</span><br><span class="line">  - <span class="string">'/etc/alertmanager/tempaltes/*.tmpl'</span></span><br><span class="line"></span><br><span class="line">route:</span><br><span class="line">  receiver: <span class="string">'webhook'</span></span><br><span class="line">  <span class="comment"># 分组等待时间</span></span><br><span class="line">  group_wait: 30s</span><br><span class="line">  <span class="comment"># 分组尝试再次发送告警的时间间隔</span></span><br><span class="line">  group_interval: 10m</span><br><span class="line">  <span class="comment"># 分组内发送相同告警的时间间隔</span></span><br><span class="line">  repeat_interval: 30m</span><br><span class="line">  <span class="comment"># 分组参数，以alertname分组</span></span><br><span class="line">  group_by: [alertname]</span><br><span class="line">  <span class="comment"># All alerts that do not match the following child routes</span></span><br><span class="line">  <span class="comment"># will remain at the root node and be dispatched to 'default-receiver'.</span></span><br><span class="line">  routes:</span><br><span class="line">  - receiver: <span class="string">'default-receiver'</span></span><br><span class="line">    group_wait: 10s</span><br><span class="line">    match_re:</span><br><span class="line">      team: yunwei</span><br><span class="line">  - receiver: <span class="string">'bigdata'</span></span><br><span class="line">    group_wait: 10s</span><br><span class="line">    match_re:</span><br><span class="line">      team: bigdata</span><br><span class="line">  - receiver: <span class="string">'mes'</span></span><br><span class="line">    group_wait: 10s</span><br><span class="line">    match_re:</span><br><span class="line">      team: mes</span><br><span class="line">  - receiver: <span class="string">'baibu-dev'</span></span><br><span class="line">    group_wait: 10s</span><br><span class="line">    match_re:</span><br><span class="line">      team: baibu-dev</span><br><span class="line">  - receiver: <span class="string">'zz-mes'</span></span><br><span class="line">    group_wait: 10s</span><br><span class="line">    match_re:</span><br><span class="line">      team: zz-mes</span><br><span class="line">  <span class="comment"># All alerts with service=mysql or service=cassandra</span></span><br><span class="line">  <span class="comment"># are dispatched to the database pager.</span></span><br><span class="line">  <span class="comment"># All alerts with the team=frontend label match this sub-route.</span></span><br><span class="line">  <span class="comment"># They are grouped by product and environment rather than cluster</span></span><br><span class="line">  <span class="comment"># and alertname.</span></span><br><span class="line">receivers:</span><br><span class="line">- name: <span class="string">'default-receiver'</span></span><br><span class="line">  email_configs:</span><br><span class="line">  - to: <span class="string">'bb_ops@alongparty.cn'</span></span><br><span class="line">    html: <span class="string">'&#123;&#123; template "cadvisor.html" . &#125;&#125;'</span></span><br><span class="line">    headers: &#123; Subject: <span class="string">"[&#123;&#123; .CommonLabels.team&#125;&#125;] &#123;&#123; .CommonAnnotations.description &#125;&#125;"</span> &#125;</span><br><span class="line">- name: <span class="string">'webhook'</span></span><br><span class="line">  webhook_configs:</span><br><span class="line">  - send_resolved: <span class="literal">true</span></span><br><span class="line">    http_config: &#123;&#125;</span><br><span class="line">    url: http://10.237.3.50:5000/send</span><br><span class="line">- name: <span class="string">'baibu-dev'</span></span><br><span class="line">  email_configs:</span><br><span class="line">  - to: <span class="string">'bb_ops@alongparty.cn,baibu_dev@alongparty.cn'</span></span><br><span class="line">    html: <span class="string">'&#123;&#123; template "cadvisor.html" . &#125;&#125;'</span></span><br><span class="line">    headers: &#123; Subject: <span class="string">"[&#123;&#123; .CommonLabels.team&#125;&#125;] &#123;&#123; .CommonAnnotations.description &#125;&#125;"</span> &#125;</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"> cat /data/server/alertmanager/tempaltes/cadvisor.tmpl</span><br><span class="line">&#123;&#123; define <span class="string">"cadvisor.html"</span> &#125;&#125;</span><br><span class="line">&lt;table border=<span class="string">"5"</span>&gt;</span><br><span class="line">    &lt;tr&gt;</span><br><span class="line">        &lt;td&gt;报警项&lt;/td&gt;</span><br><span class="line">        &lt;td&gt;状态&lt;/td&gt;</span><br><span class="line">        &lt;td&gt;服务名称&lt;/td&gt;</span><br><span class="line">        &lt;td&gt;服务部署地址&lt;/td&gt;</span><br><span class="line">        &lt;td&gt;描述&lt;/td&gt;</span><br><span class="line">        &lt;td&gt;开始时间&lt;/td&gt;</span><br><span class="line">    &lt;/tr&gt;</span><br><span class="line">    &#123;&#123; range <span class="variable">$i</span>, <span class="variable">$alert</span> := .Alerts &#125;&#125;</span><br><span class="line">        &lt;tr&gt;</span><br><span class="line">            &lt;td&gt;&#123;&#123; index <span class="variable">$alert</span>.Labels <span class="string">"alertname"</span> &#125;&#125;&lt;/td&gt;</span><br><span class="line">            &lt;td&gt;&#123;&#123; <span class="variable">$alert</span>.Status &#125;&#125;&lt;/td&gt;</span><br><span class="line">            &lt;td&gt;&#123;&#123; index <span class="variable">$alert</span>.Labels <span class="string">"name"</span> &#125;&#125;&lt;/td&gt;</span><br><span class="line">            &lt;td&gt;&#123;&#123; index <span class="variable">$alert</span>.Labels <span class="string">"instance"</span> &#125;&#125;&lt;/td&gt;</span><br><span class="line">            &lt;td&gt;&#123;&#123; <span class="variable">$alert</span>.Annotations.description &#125;&#125;&lt;/td&gt;</span><br><span class="line">            &lt;td&gt;&#123;&#123; <span class="variable">$alert</span>.StartsAt &#125;&#125;&lt;/td&gt;</span><br><span class="line">        &lt;/tr&gt;</span><br><span class="line">    &#123;&#123; end &#125;&#125;</span><br><span class="line">&lt;/table&gt;</span><br><span class="line">&#123;&#123; end &#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">docker run -d --net host  \</span><br><span class="line">       -v /data/server/alertmanager:/etc/alertmanager  \</span><br><span class="line">       -v /data/server/alertmanager/data:/alertmanager  \</span><br><span class="line">       --name alertmanager prom/alertmanager  \</span><br><span class="line">       --config.file=<span class="string">"/etc/alertmanager/alertmanager.yml"</span>  \</span><br><span class="line">       --storage.path=/alertmanager</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="可视化-1"><a href="#可视化-1" class="headerlink" title="可视化"></a>可视化</h3><h4 id="grafna配置"><a href="#grafna配置" class="headerlink" title="grafna配置"></a>grafna配置</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br><span class="line">360</span><br><span class="line">361</span><br><span class="line">362</span><br><span class="line">363</span><br><span class="line">364</span><br><span class="line">365</span><br><span class="line">366</span><br><span class="line">367</span><br><span class="line">368</span><br><span class="line">369</span><br><span class="line">370</span><br><span class="line">371</span><br><span class="line">372</span><br><span class="line">373</span><br><span class="line">374</span><br><span class="line">375</span><br><span class="line">376</span><br><span class="line">377</span><br><span class="line">378</span><br><span class="line">379</span><br><span class="line">380</span><br><span class="line">381</span><br><span class="line">382</span><br><span class="line">383</span><br><span class="line">384</span><br><span class="line">385</span><br><span class="line">386</span><br><span class="line">387</span><br><span class="line">388</span><br><span class="line">389</span><br><span class="line">390</span><br><span class="line">391</span><br><span class="line">392</span><br><span class="line">393</span><br><span class="line">394</span><br><span class="line">395</span><br><span class="line">396</span><br><span class="line">397</span><br><span class="line">398</span><br><span class="line">399</span><br><span class="line">400</span><br><span class="line">401</span><br><span class="line">402</span><br><span class="line">403</span><br><span class="line">404</span><br><span class="line">405</span><br><span class="line">406</span><br><span class="line">407</span><br><span class="line">408</span><br><span class="line">409</span><br><span class="line">410</span><br><span class="line">411</span><br><span class="line">412</span><br><span class="line">413</span><br><span class="line">414</span><br><span class="line">415</span><br><span class="line">416</span><br><span class="line">417</span><br><span class="line">418</span><br><span class="line">419</span><br><span class="line">420</span><br><span class="line">421</span><br><span class="line">422</span><br><span class="line">423</span><br><span class="line">424</span><br><span class="line">425</span><br><span class="line">426</span><br><span class="line">427</span><br><span class="line">428</span><br><span class="line">429</span><br><span class="line">430</span><br><span class="line">431</span><br><span class="line">432</span><br><span class="line">433</span><br><span class="line">434</span><br><span class="line">435</span><br><span class="line">436</span><br><span class="line">437</span><br><span class="line">438</span><br><span class="line">439</span><br><span class="line">440</span><br><span class="line">441</span><br><span class="line">442</span><br><span class="line">443</span><br><span class="line">444</span><br><span class="line">445</span><br><span class="line">446</span><br><span class="line">447</span><br><span class="line">448</span><br><span class="line">449</span><br><span class="line">450</span><br><span class="line">451</span><br><span class="line">452</span><br><span class="line">453</span><br><span class="line">454</span><br><span class="line">455</span><br><span class="line">456</span><br></pre></td><td class="code"><pre><span class="line">cat &lt;&lt; EOF &gt;grafana.ini</span><br><span class="line"><span class="comment">##################### Grafana Configuration Example #####################</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Everything has defaults so you only need to uncomment things you want to</span></span><br><span class="line"><span class="comment"># change</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># possible values : production, development</span></span><br><span class="line">;app_mode = production</span><br><span class="line"></span><br><span class="line"><span class="comment"># instance name, defaults to HOSTNAME environment variable value or hostname if HOSTNAME var is empty</span></span><br><span class="line">;instance_name = <span class="variable">$&#123;HOSTNAME&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#################################### Paths ####################################</span></span><br><span class="line">[paths]</span><br><span class="line"><span class="comment"># Path to where grafana can store temp files, sessions, and the sqlite3 db (if that is used)</span></span><br><span class="line">;data = /var/lib/grafana</span><br><span class="line"></span><br><span class="line"><span class="comment"># Directory where grafana can store logs</span></span><br><span class="line">;logs = /var/<span class="built_in">log</span>/grafana</span><br><span class="line"></span><br><span class="line"><span class="comment"># Directory where grafana will automatically scan and look for plugins</span></span><br><span class="line">;plugins = /var/lib/grafana/plugins</span><br><span class="line"></span><br><span class="line"><span class="comment"># folder that contains provisioning config files that grafana will apply on startup and while running.</span></span><br><span class="line">;provisioning = conf/provisioning</span><br><span class="line"></span><br><span class="line"><span class="comment">#################################### Server ####################################</span></span><br><span class="line">[server]</span><br><span class="line"><span class="comment"># Protocol (http, https, socket)</span></span><br><span class="line">protocol = http</span><br><span class="line"></span><br><span class="line"><span class="comment"># The ip address to bind to, empty will bind to all interfaces</span></span><br><span class="line">;http_addr =</span><br><span class="line"></span><br><span class="line"><span class="comment"># The http port  to use</span></span><br><span class="line">http_port = 3000</span><br><span class="line"></span><br><span class="line"><span class="comment"># The public facing domain name used to access grafana from a browser</span></span><br><span class="line">;domain = localhost</span><br><span class="line"></span><br><span class="line"><span class="comment"># Redirect to correct domain if host header does not match domain</span></span><br><span class="line"><span class="comment"># Prevents DNS rebinding attacks</span></span><br><span class="line">;enforce_domain = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The full public facing url you use in browser, used for redirects and emails</span></span><br><span class="line"><span class="comment"># If you use reverse proxy and sub path specify full url (with sub path)</span></span><br><span class="line">;root_url = http://localhost:3000</span><br><span class="line"></span><br><span class="line"><span class="comment"># Log web requests</span></span><br><span class="line">;router_logging = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># the path relative working path</span></span><br><span class="line">;static_root_path = public</span><br><span class="line"></span><br><span class="line"><span class="comment"># enable gzip</span></span><br><span class="line">;enable_gzip = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># https certs &amp; key file</span></span><br><span class="line">;cert_file =</span><br><span class="line">;cert_key =</span><br><span class="line"></span><br><span class="line"><span class="comment"># Unix socket path</span></span><br><span class="line">;socket =</span><br><span class="line"></span><br><span class="line"><span class="comment">#################################### Database ####################################</span></span><br><span class="line">[database]</span><br><span class="line"><span class="comment"># You can configure the database connection by specifying type, host, name, user and password</span></span><br><span class="line"><span class="comment"># as separate properties or as on string using the url properties.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Either "mysql", "postgres" or "sqlite3", it's your choice</span></span><br><span class="line"><span class="built_in">type</span> = mysql</span><br><span class="line">host = 192.168.16.102:3306</span><br><span class="line">name = grafana</span><br><span class="line">user = root</span><br><span class="line"><span class="comment"># If the password contains # or ; you have to wrap it with triple quotes. Ex """#password;"""</span></span><br><span class="line">password =123456</span><br><span class="line"></span><br><span class="line"><span class="comment"># Use either URL or the previous fields to configure the database</span></span><br><span class="line"><span class="comment"># Example: mysql://user:secret@host:port/database</span></span><br><span class="line">;url =</span><br><span class="line"></span><br><span class="line"><span class="comment"># For "postgres" only, either "disable", "require" or "verify-full"</span></span><br><span class="line">;ssl_mode = <span class="built_in">disable</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># For "sqlite3" only, path relative to data_path setting</span></span><br><span class="line">;path = grafana.db</span><br><span class="line"></span><br><span class="line"><span class="comment"># Max idle conn setting default is 2</span></span><br><span class="line">;max_idle_conn = 2</span><br><span class="line"></span><br><span class="line"><span class="comment"># Max conn setting default is 0 (mean not set)</span></span><br><span class="line">;max_open_conn =</span><br><span class="line"></span><br><span class="line"><span class="comment"># Connection Max Lifetime default is 14400 (means 14400 seconds or 4 hours)</span></span><br><span class="line">;conn_max_lifetime = 14400</span><br><span class="line"></span><br><span class="line"><span class="comment"># Set to true to log the sql calls and execution times.</span></span><br><span class="line">log_queries =</span><br><span class="line"></span><br><span class="line"><span class="comment">#################################### Session ####################################</span></span><br><span class="line">[session]</span><br><span class="line"><span class="comment"># Either "memory", "file", "redis", "mysql", "postgres", default is "file"</span></span><br><span class="line">;provider = file</span><br><span class="line"></span><br><span class="line"><span class="comment"># Provider config options</span></span><br><span class="line"><span class="comment"># memory: not have any config yet</span></span><br><span class="line"><span class="comment"># file: session dir path, is relative to grafana data_path</span></span><br><span class="line"><span class="comment"># redis: config like redis server e.g. `addr=127.0.0.1:6379,pool_size=100,db=grafana`</span></span><br><span class="line"><span class="comment"># mysql: go-sql-driver/mysql dsn config string, e.g. `user:password@tcp(127.0.0.1:3306)/database_name`</span></span><br><span class="line"><span class="comment"># postgres: user=a password=b host=localhost port=5432 dbname=c sslmode=disable</span></span><br><span class="line">provider_config = root:123456@tcp(192.168.16.102:3306)/grafana</span><br><span class="line"></span><br><span class="line"><span class="comment"># Session cookie name</span></span><br><span class="line">cookie_name = grafana_sess</span><br><span class="line"></span><br><span class="line"><span class="comment"># If you use session in https only, default is false</span></span><br><span class="line">cookie_secure = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Session life time, default is 86400</span></span><br><span class="line">session_life_time = 86400</span><br><span class="line"></span><br><span class="line"><span class="comment">#################################### Data proxy ###########################</span></span><br><span class="line">[dataproxy]</span><br><span class="line"></span><br><span class="line"><span class="comment"># This enables data proxy logging, default is false</span></span><br><span class="line">;logging = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#################################### Analytics ####################################</span></span><br><span class="line">[analytics]</span><br><span class="line"><span class="comment"># Server reporting, sends usage counters to stats.grafana.org every 24 hours.</span></span><br><span class="line"><span class="comment"># No ip addresses are being tracked, only simple counters to track</span></span><br><span class="line"><span class="comment"># running instances, dashboard and error counts. It is very helpful to us.</span></span><br><span class="line"><span class="comment"># Change this option to false to disable reporting.</span></span><br><span class="line">;reporting_enabled = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Set to false to disable all checks to https://grafana.net</span></span><br><span class="line"><span class="comment"># for new vesions (grafana itself and plugins), check is used</span></span><br><span class="line"><span class="comment"># in some UI views to notify that grafana or plugin update exists</span></span><br><span class="line"><span class="comment"># This option does not cause any auto updates, nor send any information</span></span><br><span class="line"><span class="comment"># only a GET request to http://grafana.com to get latest versions</span></span><br><span class="line">;check_for_updates = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Google Analytics universal tracking code, only enabled if you specify an id here</span></span><br><span class="line">;google_analytics_ua_id =</span><br><span class="line"></span><br><span class="line"><span class="comment">#################################### Security ####################################</span></span><br><span class="line">[security]</span><br><span class="line"><span class="comment"># default admin user, created on startup</span></span><br><span class="line">;admin_user = admin</span><br><span class="line"></span><br><span class="line"><span class="comment"># default admin password, can be changed before first start of grafana,  or in profile settings</span></span><br><span class="line">;admin_password = admin</span><br><span class="line"></span><br><span class="line"><span class="comment"># used for signing</span></span><br><span class="line">;secret_key = SW2YcwTIb9zpOOhoPsMm</span><br><span class="line"></span><br><span class="line"><span class="comment"># Auto-login remember days</span></span><br><span class="line">;login_remember_days = 7</span><br><span class="line">;cookie_username = grafana_user</span><br><span class="line">;cookie_remember_name = grafana_remember</span><br><span class="line"></span><br><span class="line"><span class="comment"># disable gravatar profile images</span></span><br><span class="line">;disable_gravatar = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># data source proxy whitelist (ip_or_domain:port separated by spaces)</span></span><br><span class="line">;data_source_proxy_whitelist =</span><br><span class="line"></span><br><span class="line"><span class="comment"># disable protection against brute force login attempts</span></span><br><span class="line">;disable_brute_force_login_protection = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#################################### Snapshots ###########################</span></span><br><span class="line">[snapshots]</span><br><span class="line"><span class="comment"># snapshot sharing options</span></span><br><span class="line">;external_enabled = <span class="literal">true</span></span><br><span class="line">;external_snapshot_url = https://snapshots-origin.raintank.io</span><br><span class="line">;external_snapshot_name = Publish to snapshot.raintank.io</span><br><span class="line"></span><br><span class="line"><span class="comment"># remove expired snapshot</span></span><br><span class="line">;snapshot_remove_expired = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#################################### Dashboards History ##################</span></span><br><span class="line">[dashboards]</span><br><span class="line"><span class="comment"># Number dashboard versions to keep (per dashboard). Default: 20, Minimum: 1</span></span><br><span class="line">;versions_to_keep = 20</span><br><span class="line"></span><br><span class="line"><span class="comment">#################################### Users ###############################</span></span><br><span class="line">[users]</span><br><span class="line"><span class="comment"># disable user signup / registration</span></span><br><span class="line">;allow_sign_up = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Allow non admin users to create organizations</span></span><br><span class="line">;allow_org_create = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Set to true to automatically assign new users to the default organization (id 1)</span></span><br><span class="line">;auto_assign_org = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Default role new users will be automatically assigned (if disabled above is set to true)</span></span><br><span class="line">;auto_assign_org_role = Viewer</span><br><span class="line"></span><br><span class="line"><span class="comment"># Background text for the user field on the login page</span></span><br><span class="line">;login_hint = email or username</span><br><span class="line"></span><br><span class="line"><span class="comment"># Default UI theme ("dark" or "light")</span></span><br><span class="line">;default_theme = dark</span><br><span class="line"></span><br><span class="line"><span class="comment"># External user management, these options affect the organization users view</span></span><br><span class="line">;external_manage_link_url =</span><br><span class="line">;external_manage_link_name =</span><br><span class="line">;external_manage_info =</span><br><span class="line"></span><br><span class="line"><span class="comment"># Viewers can edit/inspect dashboard settings in the browser. But not save the dashboard.</span></span><br><span class="line">;viewers_can_edit = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">[auth]</span><br><span class="line"><span class="comment"># Set to true to disable (hide) the login form, useful if you use OAuth, defaults to false</span></span><br><span class="line">;disable_login_form = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Set to true to disable the signout link in the side menu. useful if you use auth.proxy, defaults to false</span></span><br><span class="line">;disable_signout_menu = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># URL to redirect the user to after sign out</span></span><br><span class="line">;signout_redirect_url =</span><br><span class="line"></span><br><span class="line"><span class="comment">#################################### Anonymous Auth ##########################</span></span><br><span class="line">[auth.anonymous]</span><br><span class="line"><span class="comment"># enable anonymous access</span></span><br><span class="line">;enabled = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># specify organization name that should be used for unauthenticated users</span></span><br><span class="line">;org_name = Main Org.</span><br><span class="line"></span><br><span class="line"><span class="comment"># specify role for unauthenticated users</span></span><br><span class="line">;org_role = Viewer</span><br><span class="line"></span><br><span class="line"><span class="comment">#################################### Github Auth ##########################</span></span><br><span class="line">[auth.github]</span><br><span class="line">;enabled = <span class="literal">false</span></span><br><span class="line">;allow_sign_up = <span class="literal">true</span></span><br><span class="line">;client_id = some_id</span><br><span class="line">;client_secret = some_secret</span><br><span class="line">;scopes = user:email,<span class="built_in">read</span>:org</span><br><span class="line">;auth_url = https://github.com/login/oauth/authorize</span><br><span class="line">;token_url = https://github.com/login/oauth/access_token</span><br><span class="line">;api_url = https://api.github.com/user</span><br><span class="line">;team_ids =</span><br><span class="line">;allowed_organizations =</span><br><span class="line"></span><br><span class="line"><span class="comment">#################################### Google Auth ##########################</span></span><br><span class="line">[auth.google]</span><br><span class="line">;enabled = <span class="literal">false</span></span><br><span class="line">;allow_sign_up = <span class="literal">true</span></span><br><span class="line">;client_id = some_client_id</span><br><span class="line">;client_secret = some_client_secret</span><br><span class="line">;scopes = https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email</span><br><span class="line">;auth_url = https://accounts.google.com/o/oauth2/auth</span><br><span class="line">;token_url = https://accounts.google.com/o/oauth2/token</span><br><span class="line">;api_url = https://www.googleapis.com/oauth2/v1/userinfo</span><br><span class="line">;allowed_domains =</span><br><span class="line"></span><br><span class="line"><span class="comment">#################################### Generic OAuth ##########################</span></span><br><span class="line">[auth.generic_oauth]</span><br><span class="line">;enabled = <span class="literal">false</span></span><br><span class="line">;name = OAuth</span><br><span class="line">;allow_sign_up = <span class="literal">true</span></span><br><span class="line">;client_id = some_id</span><br><span class="line">;client_secret = some_secret</span><br><span class="line">;scopes = user:email,<span class="built_in">read</span>:org</span><br><span class="line">;auth_url = https://foo.bar/login/oauth/authorize</span><br><span class="line">;token_url = https://foo.bar/login/oauth/access_token</span><br><span class="line">;api_url = https://foo.bar/user</span><br><span class="line">;team_ids =</span><br><span class="line">;allowed_organizations =</span><br><span class="line"></span><br><span class="line"><span class="comment">#################################### Grafana.com Auth ####################</span></span><br><span class="line">[auth.grafana_com]</span><br><span class="line">;enabled = <span class="literal">false</span></span><br><span class="line">;allow_sign_up = <span class="literal">true</span></span><br><span class="line">;client_id = some_id</span><br><span class="line">;client_secret = some_secret</span><br><span class="line">;scopes = user:email</span><br><span class="line">;allowed_organizations =</span><br><span class="line"></span><br><span class="line"><span class="comment">#################################### Auth Proxy ##########################</span></span><br><span class="line">[auth.proxy]</span><br><span class="line">;enabled = <span class="literal">false</span></span><br><span class="line">;header_name = X-WEBAUTH-USER</span><br><span class="line">;header_property = username</span><br><span class="line">;auto_sign_up = <span class="literal">true</span></span><br><span class="line">;ldap_sync_ttl = 60</span><br><span class="line">;whitelist = 192.168.1.1, 192.168.2.1</span><br><span class="line"></span><br><span class="line"><span class="comment">#################################### Basic Auth ##########################</span></span><br><span class="line">[auth.basic]</span><br><span class="line">;enabled = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#################################### Auth LDAP ##########################</span></span><br><span class="line">[auth.ldap]</span><br><span class="line">;enabled = <span class="literal">false</span></span><br><span class="line">;config_file = /etc/grafana/ldap.toml</span><br><span class="line">;allow_sign_up = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#################################### SMTP / Emailing ##########################</span></span><br><span class="line">[smtp]</span><br><span class="line">;enabled = <span class="literal">false</span></span><br><span class="line">;host = localhost:25</span><br><span class="line">;user =</span><br><span class="line"><span class="comment"># If the password contains # or ; you have to wrap it with trippel quotes. Ex """#password;"""</span></span><br><span class="line">;password =</span><br><span class="line">;cert_file =</span><br><span class="line">;key_file =</span><br><span class="line">;skip_verify = <span class="literal">false</span></span><br><span class="line">;from_address = admin@grafana.localhost</span><br><span class="line">;from_name = Grafana</span><br><span class="line"><span class="comment"># EHLO identity in SMTP dialog (defaults to instance_name)</span></span><br><span class="line">;ehlo_identity = dashboard.example.com</span><br><span class="line"></span><br><span class="line">[emails]</span><br><span class="line">;welcome_email_on_sign_up = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#################################### Logging ##########################</span></span><br><span class="line">[<span class="built_in">log</span>]</span><br><span class="line"><span class="comment"># Either "console", "file", "syslog". Default is console and  file</span></span><br><span class="line"><span class="comment"># Use space to separate multiple modes, e.g. "console file"</span></span><br><span class="line">;mode = console file</span><br><span class="line"></span><br><span class="line"><span class="comment"># Either "debug", "info", "warn", "error", "critical", default is "info"</span></span><br><span class="line">;level = info</span><br><span class="line"></span><br><span class="line"><span class="comment"># optional settings to set different levels for specific loggers. Ex filters = sqlstore:debug</span></span><br><span class="line">;filters =</span><br><span class="line"></span><br><span class="line"><span class="comment"># For "console" mode only</span></span><br><span class="line">[log.console]</span><br><span class="line">;level =</span><br><span class="line"></span><br><span class="line"><span class="comment"># log line format, valid options are text, console and json</span></span><br><span class="line">;format = console</span><br><span class="line"></span><br><span class="line"><span class="comment"># For "file" mode only</span></span><br><span class="line">[log.file]</span><br><span class="line">;level =</span><br><span class="line"></span><br><span class="line"><span class="comment"># log line format, valid options are text, console and json</span></span><br><span class="line">;format = text</span><br><span class="line"></span><br><span class="line"><span class="comment"># This enables automated log rotate(switch of following options), default is true</span></span><br><span class="line">;log_rotate = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Max line number of single file, default is 1000000</span></span><br><span class="line">;max_lines = 1000000</span><br><span class="line"></span><br><span class="line"><span class="comment"># Max size shift of single file, default is 28 means 1 &lt;&lt; 28, 256MB</span></span><br><span class="line">;max_size_shift = 28</span><br><span class="line"></span><br><span class="line"><span class="comment"># Segment log daily, default is true</span></span><br><span class="line">;daily_rotate = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Expired days of log file(delete after max days), default is 7</span></span><br><span class="line">;max_days = 7</span><br><span class="line"></span><br><span class="line">[log.syslog]</span><br><span class="line">;level =</span><br><span class="line"></span><br><span class="line"><span class="comment"># log line format, valid options are text, console and json</span></span><br><span class="line">;format = text</span><br><span class="line"></span><br><span class="line"><span class="comment"># Syslog network type and address. This can be udp, tcp, or unix. If left blank, the default unix endpoints will be used.</span></span><br><span class="line">;network =</span><br><span class="line">;address =</span><br><span class="line"></span><br><span class="line"><span class="comment"># Syslog facility. user, daemon and local0 through local7 are valid.</span></span><br><span class="line">;facility =</span><br><span class="line"></span><br><span class="line"><span class="comment"># Syslog tag. By default, the process' argv[0] is used.</span></span><br><span class="line">;tag =</span><br><span class="line"></span><br><span class="line"><span class="comment">#################################### Alerting ############################</span></span><br><span class="line">[alerting]</span><br><span class="line"><span class="comment"># Disable alerting engine &amp; UI features</span></span><br><span class="line">;enabled = <span class="literal">true</span></span><br><span class="line"><span class="comment"># Makes it possible to turn off alert rule execution but alerting UI is visible</span></span><br><span class="line">;execute_alerts = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#################################### Explore #############################</span></span><br><span class="line">[explore]</span><br><span class="line"><span class="comment"># Enable the Explore section</span></span><br><span class="line">;enabled = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#################################### Internal Grafana Metrics ##########################</span></span><br><span class="line"><span class="comment"># Metrics available at HTTP API Url /metrics</span></span><br><span class="line">[metrics]</span><br><span class="line"><span class="comment"># Disable / Enable internal metrics</span></span><br><span class="line">;enabled           = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Publish interval</span></span><br><span class="line">;interval_seconds  = 10</span><br><span class="line"></span><br><span class="line"><span class="comment"># Send internal metrics to Graphite</span></span><br><span class="line">[metrics.graphite]</span><br><span class="line"><span class="comment"># Enable by setting the address setting (ex localhost:2003)</span></span><br><span class="line">;address =</span><br><span class="line">;prefix = prod.grafana.%(instance_name)s.</span><br><span class="line"></span><br><span class="line"><span class="comment">#################################### Distributed tracing ############</span></span><br><span class="line">[tracing.jaeger]</span><br><span class="line"><span class="comment"># Enable by setting the address sending traces to jaeger (ex localhost:6831)</span></span><br><span class="line">;address = localhost:6831</span><br><span class="line"><span class="comment"># Tag that will always be included in when creating new spans. ex (tag1:value1,tag2:value2)</span></span><br><span class="line">;always_included_tag = tag1:value1</span><br><span class="line"><span class="comment"># Type specifies the type of the sampler: const, probabilistic, rateLimiting, or remote</span></span><br><span class="line">;sampler_type = const</span><br><span class="line"><span class="comment"># jaeger samplerconfig param</span></span><br><span class="line"><span class="comment"># for "const" sampler, 0 or 1 for always false/true respectively</span></span><br><span class="line"><span class="comment"># for "probabilistic" sampler, a probability between 0 and 1</span></span><br><span class="line"><span class="comment"># for "rateLimiting" sampler, the number of spans per second</span></span><br><span class="line"><span class="comment"># for "remote" sampler, param is the same as for "probabilistic"</span></span><br><span class="line"><span class="comment"># and indicates the initial sampling rate before the actual one</span></span><br><span class="line"><span class="comment"># is received from the mothership</span></span><br><span class="line">;sampler_param = 1</span><br><span class="line"></span><br><span class="line"><span class="comment">#################################### Grafana.com integration  ##########################</span></span><br><span class="line"><span class="comment"># Url used to to import dashboards directly from Grafana.com</span></span><br><span class="line">[grafana_com]</span><br><span class="line">;url = https://grafana.com</span><br><span class="line"></span><br><span class="line"><span class="comment">#################################### External image storage ##########################</span></span><br><span class="line">[external_image_storage]</span><br><span class="line"><span class="comment"># Used for uploading images to public servers so they can be included in slack/email messages.</span></span><br><span class="line"><span class="comment"># you can choose between (s3, webdav, gcs, azure_blob, local)</span></span><br><span class="line">;provider =</span><br><span class="line"></span><br><span class="line">[external_image_storage.s3]</span><br><span class="line">;bucket =</span><br><span class="line">;region =</span><br><span class="line">;path =</span><br><span class="line">;access_key =</span><br><span class="line">;secret_key =</span><br><span class="line"></span><br><span class="line">[external_image_storage.webdav]</span><br><span class="line">;url =</span><br><span class="line">;public_url =</span><br><span class="line">;username =</span><br><span class="line">;password =</span><br><span class="line"></span><br><span class="line">[external_image_storage.gcs]</span><br><span class="line">;key_file =</span><br><span class="line">;bucket =</span><br><span class="line">;path =</span><br><span class="line"></span><br><span class="line">[external_image_storage.azure_blob]</span><br><span class="line">;account_name =</span><br><span class="line">;account_key =</span><br><span class="line">;container_name =</span><br><span class="line"></span><br><span class="line">[external_image_storage.local]</span><br><span class="line"><span class="comment"># does not require any configuration</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="修改配置，使用mysql数据库"><a href="#修改配置，使用mysql数据库" class="headerlink" title="修改配置，使用mysql数据库"></a>修改配置，使用mysql数据库</h4><blockquote>
+<p>[database]<br>type = mysql<br>host = 192.168.16.102:3306<br>name = grafana<br>user = root<br>password =123456<br>log_queries =<br>[session]<br>provider_config = root:123456@tcp(192.168.16.102:3306)/grafana<br>cookie_name = grafana_sess<br>cookie_secure = false<br>session_life_time = 86400</p>
+</blockquote>
+<h4 id="配置ldap认证"><a href="#配置ldap认证" class="headerlink" title="配置ldap认证"></a>配置ldap认证</h4><blockquote>
+<p>[auth.ldap]<br>enabled = true<br>config_file = /etc/grafana/ldap.toml</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"> cat &lt;&lt; EOF &gt; ldap.toml</span><br><span class="line">[[servers]]</span><br><span class="line">host = <span class="string">"ldap.alongparty.cn"</span></span><br><span class="line">port = 389</span><br><span class="line"><span class="comment">#root_ca_cert = /path/to/certificate.crt //证书没设置</span></span><br><span class="line"><span class="comment"># Search user bind dn</span></span><br><span class="line">bind_dn = <span class="string">'cn=admin,dc=baibu,dc=la'</span></span><br><span class="line"><span class="comment"># Search user bind password</span></span><br><span class="line">bind_password = <span class="string">"kbsonlong"</span></span><br><span class="line"><span class="comment"># uid登录</span></span><br><span class="line">search_filter = <span class="string">"(uid=%s)"</span></span><br><span class="line"><span class="comment">#search_filter = "(mail=%s)" //邮箱登录 chenchen.ming@qq.com</span></span><br><span class="line">search_base_dns = [<span class="string">'ou=People,dc=baibu,dc=la'</span>]</span><br><span class="line">group_search_filter = <span class="string">"(&amp;(objectClass=posixGroup)(memberUid=%s))"</span></span><br><span class="line"><span class="comment">#group_search_base_dns = ["ou=Groups,dc=baibu,dc=la"]</span></span><br><span class="line"><span class="comment">#group_search_filter_user_attribute = "uid"</span></span><br><span class="line">[servers.attributes]</span><br><span class="line">name = <span class="string">"cn"</span></span><br><span class="line">surname = <span class="string">"sn"</span></span><br><span class="line">username = <span class="string">"cn"</span></span><br><span class="line">email =  <span class="string">"mail"</span></span><br><span class="line">member_of = <span class="string">"memberOf"</span></span><br><span class="line"><span class="comment"># 运维组</span></span><br><span class="line">[[servers.group_mappings]]</span><br><span class="line">group_dn = <span class="string">"cn=yunweizu,ou=Group,dc=baibu,dc=la"</span></span><br><span class="line">org_role = <span class="string">"Admin"</span></span><br><span class="line">grafana_admin = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">[[servers.group_mappings]]</span><br><span class="line"><span class="comment"># 所有人都是该org的viewer</span></span><br><span class="line">group_dn = <span class="string">"*"</span></span><br><span class="line">org_role = <span class="string">"Viewer"</span></span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="启动grafna服务"><a href="#启动grafna服务" class="headerlink" title="启动grafna服务"></a>启动grafna服务</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">docker run -d --name grafana  --net=host --restart=always \</span><br><span class="line">       --<span class="built_in">log</span>-driver json-file --<span class="built_in">log</span>-opt max-size=10m --<span class="built_in">log</span>-opt max-file=7\</span><br><span class="line">       -e TZ=<span class="string">"Asia/Shanghai"</span>        \</span><br><span class="line">       -e <span class="string">"GF_SERVER_ROOT_URL=http://grafana.server.name"</span>        \</span><br><span class="line">       -e <span class="string">"GF_SECURITY_ADMIN_PASSWORD=newpwd"</span>        \</span><br><span class="line">       -v <span class="string">"/data/server/grafana/data:/var/lib/grafana"</span>        \</span><br><span class="line">       -v <span class="string">"/data/server/grafana/logs:/var/log/grafana"</span>        \</span><br><span class="line">       -v <span class="string">"/data/server/grafana/grafana.ini:/etc/grafana/grafana.ini"</span>        \</span><br><span class="line">       -v <span class="string">"/data/server/grafana/ldap.toml:/etc/grafana/ldap.toml"</span>        \</span><br><span class="line">       grafana/grafana grafana</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="http://typora.alongparty.cn/typora_img/20200115235622.png" alt=""></p>
+<p><img src="http://typora.alongparty.cn/typora_img/20200115235808.png" alt=""></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/page/10/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><span class="page-number current">11</span>
+  </nav>
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="曾胜龙"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">曾胜龙</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">110</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yourname" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yourname" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank">粤ICP备18122209号 </a>
+      <img src="http://www.beian.gov.cn/portal/download" style="display: inline-block;">
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">曾胜龙</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

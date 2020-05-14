@@ -24,15 +24,15 @@
 
   <meta name="description" content="12345docker run -d --net&#x3D;host --name es_exporter \           justwatch&#x2F;elasticsearch_exporter \           --es.all --es.cluster_settings \           --es.indices --es.indices_settings \           --es">
 <meta property="og:type" content="article">
-<meta property="og:title" content="运维&#x2F;Elasticsearch&#x2F;es监控">
+<meta property="og:title" content="es监控.md">
 <meta property="og:url" content="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/es%E7%9B%91%E6%8E%A7/index.html">
 <meta property="og:site_name" content="蜷缩的蜗牛">
 <meta property="og:description" content="12345docker run -d --net&#x3D;host --name es_exporter \           justwatch&#x2F;elasticsearch_exporter \           --es.all --es.cluster_settings \           --es.indices --es.indices_settings \           --es">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-05-14T13:51:58.923Z">
-<meta property="article:modified_time" content="2020-05-14T13:51:58.923Z">
+<meta property="article:published_time" content="2020-05-14T14:16:06.000Z">
+<meta property="article:modified_time" content="2020-05-14T14:16:06.078Z">
 <meta property="article:author" content="曾胜龙">
-<meta property="article:tag" content="Devops Kubernetes Docker">
+<meta property="article:tag" content="Elasticsearch">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/es%E7%9B%91%E6%8E%A7/">
@@ -48,7 +48,7 @@
   };
 </script>
 
-  <title>运维/Elasticsearch/es监控 | 蜷缩的蜗牛</title>
+  <title>es监控.md | 蜷缩的蜗牛</title>
   
 
 
@@ -214,7 +214,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          运维/Elasticsearch/es监控
+          es监控.md
         </h1>
 
         <div class="post-meta">
@@ -224,7 +224,16 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-05-14 21:51:58" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:58+08:00">2020-05-14</time>
+              <time title="创建时间：2020-05-14 22:16:06" itemprop="dateCreated datePublished" datetime="2020-05-14T22:16:06+08:00">2020-05-14</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Elasticsearch/" itemprop="url" rel="index"><span itemprop="name">Elasticsearch</span></a>
+                </span>
             </span>
 
           
@@ -246,15 +255,8 @@
 
       
         <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker run -d --net=host --name es_exporter \</span><br><span class="line">           justwatch/elasticsearch_exporter \</span><br><span class="line">           --es.all --es.cluster_settings \</span><br><span class="line">           --es.indices --es.indices_settings \</span><br><span class="line">           --es.shards</span><br></pre></td></tr></table></figure>
-
-
-
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"--es.uri==192.168.16.148:9200 --es.all=true --es.cluster_settings=true --es.indices=true --es.indices_settings=true --es.shards=true"</span></span><br></pre></td></tr></table></figure>
-
-
-
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">vim consul-es.json</span><br><span class="line">&#123;</span><br><span class="line">  <span class="attr">"ID"</span>: <span class="string">"baibu-es"</span>,</span><br><span class="line">  <span class="attr">"Name"</span>: <span class="string">"baibu-es"</span>,</span><br><span class="line">  <span class="attr">"Tags"</span>: [</span><br><span class="line">    <span class="string">"elasticsearch"</span></span><br><span class="line">  ],</span><br><span class="line">  <span class="attr">"Address"</span>: <span class="string">"192.168.16.148"</span>,</span><br><span class="line">  <span class="attr">"Port"</span>: <span class="number">9114</span>,</span><br><span class="line">  <span class="attr">"Meta"</span>: &#123;</span><br><span class="line">    <span class="attr">"service"</span>: <span class="string">"elasticsearch"</span>,</span><br><span class="line">    <span class="attr">"team"</span>: <span class="string">"appgroup"</span>,</span><br><span class="line">    <span class="attr">"project"</span>: <span class="string">"bigdata"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"EnableTagOverride"</span>: <span class="literal">false</span>,</span><br><span class="line">  <span class="attr">"Check"</span>: &#123;</span><br><span class="line">    <span class="attr">"HTTP"</span>: <span class="string">"http://192.168.16.148:9114/metrics"</span>,</span><br><span class="line">    <span class="attr">"Interval"</span>: <span class="string">"10s"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"Weights"</span>: &#123;</span><br><span class="line">    <span class="attr">"Passing"</span>: <span class="number">10</span>,</span><br><span class="line">    <span class="attr">"Warning"</span>: <span class="number">1</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p><a href="https://blog.csdn.net/qq_25934401/article/details/84977549" target="_blank" rel="noopener">prometheus 监控之 elasticsearch</a></p>
 <p><a href="https://www.cnblogs.com/xuliang666/p/11211920.html" target="_blank" rel="noopener">Prometheus监控ES</a></p>
 <p><a href="https://blog.csdn.net/aixiaoyang168/article/details/103022342" target="_blank" rel="noopener">Prometheus 通过 consul 实现自动服务发现</a></p>
@@ -284,7 +286,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/es%E7%9B%91%E6%8E%A7/" title="运维&#x2F;Elasticsearch&#x2F;es监控">https://kbsonlong.github.io/2020/05/14/运维/Elasticsearch/es监控/</a>
+    <a href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/es%E7%9B%91%E6%8E%A7/" title="es监控.md">https://kbsonlong.github.io/2020/05/14/运维/Elasticsearch/es监控/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -323,6 +325,9 @@
 
 
       <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Elasticsearch/" rel="tag"># Elasticsearch</a>
+          </div>
 
         
 
@@ -330,12 +335,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/ES%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E7%AE%A1%E7%90%86/" rel="prev" title="运维/Elasticsearch/ES生命周期管理">
-      <i class="fa fa-chevron-left"></i> 运维/Elasticsearch/ES生命周期管理
+    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/es%E9%85%8D%E7%BD%AE%E8%A7%A3%E9%87%8A/" rel="prev" title="es配置解释.md">
+      <i class="fa fa-chevron-left"></i> es配置解释.md
     </a></div>
       <div class="post-nav-item">
-    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/es%E9%85%8D%E7%BD%AE%E8%A7%A3%E9%87%8A/" rel="next" title="运维/Elasticsearch/es配置解释">
-      运维/Elasticsearch/es配置解释 <i class="fa fa-chevron-right"></i>
+    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/es7.x/" rel="next" title="es7.x.md">
+      es7.x.md <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -410,20 +415,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">110</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">25</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

@@ -24,7 +24,7 @@
 
   <meta name="description" content="前面讲了KVM CPU(http:&#x2F;&#x2F;blog.csdn.net&#x2F;dylloveyou&#x2F;article&#x2F;details&#x2F;71169463)、内存(http:&#x2F;&#x2F;blog.csdn.net&#x2F;dylloveyou&#x2F;article&#x2F;details&#x2F;71338378)的优化，下面接着第三块的内容，KVM磁盘性能方面的调优。磁盘IO我们可以从以下四个方面去着手优化：  磁盘类型选择 缓存模式选择 AIO 异">
 <meta property="og:type" content="article">
-<meta property="og:title" content="运维&#x2F;虚拟化&#x2F;KVM&#x2F;调优&#x2F;KVM总结-KVM性能优化之磁盘IO优化">
+<meta property="og:title" content="KVM总结-KVM性能优化之磁盘IO优化.md">
 <meta property="og:url" content="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/KVM/%E8%B0%83%E4%BC%98/KVM%E6%80%BB%E7%BB%93-KVM%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B9%8B%E7%A3%81%E7%9B%98IO%E4%BC%98%E5%8C%96/index.html">
 <meta property="og:site_name" content="蜷缩的蜗牛">
 <meta property="og:description" content="前面讲了KVM CPU(http:&#x2F;&#x2F;blog.csdn.net&#x2F;dylloveyou&#x2F;article&#x2F;details&#x2F;71169463)、内存(http:&#x2F;&#x2F;blog.csdn.net&#x2F;dylloveyou&#x2F;article&#x2F;details&#x2F;71338378)的优化，下面接着第三块的内容，KVM磁盘性能方面的调优。磁盘IO我们可以从以下四个方面去着手优化：  磁盘类型选择 缓存模式选择 AIO 异">
@@ -33,10 +33,10 @@
 <meta property="og:image" content="https://img-blog.csdn.net/20170510111755671?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="https://img-blog.csdn.net/20170510111622436?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="https://img-blog.csdn.net/20170510112016249?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-<meta property="article:published_time" content="2020-05-14T13:51:58.722Z">
-<meta property="article:modified_time" content="2020-05-14T13:51:58.722Z">
+<meta property="article:published_time" content="2020-05-14T14:16:05.000Z">
+<meta property="article:modified_time" content="2020-05-14T14:16:05.972Z">
 <meta property="article:author" content="曾胜龙">
-<meta property="article:tag" content="Devops Kubernetes Docker">
+<meta property="article:tag" content="调优">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://img-blog.csdn.net/20170510111507950?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 
@@ -53,7 +53,7 @@
   };
 </script>
 
-  <title>运维/虚拟化/KVM/调优/KVM总结-KVM性能优化之磁盘IO优化 | 蜷缩的蜗牛</title>
+  <title>KVM总结-KVM性能优化之磁盘IO优化.md | 蜷缩的蜗牛</title>
   
 
 
@@ -219,7 +219,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          运维/虚拟化/KVM/调优/KVM总结-KVM性能优化之磁盘IO优化
+          KVM总结-KVM性能优化之磁盘IO优化.md
         </h1>
 
         <div class="post-meta">
@@ -229,7 +229,16 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-05-14 21:51:58" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:58+08:00">2020-05-14</time>
+              <time title="创建时间：2020-05-14 22:16:05" itemprop="dateCreated datePublished" datetime="2020-05-14T22:16:05+08:00">2020-05-14</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%B0%83%E4%BC%98/" itemprop="url" rel="index"><span itemprop="name">调优</span></a>
+                </span>
             </span>
 
           
@@ -250,42 +259,57 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>前面讲了KVM CPU(<a href="http://blog.csdn.net/dylloveyou/article/details/71169463)、内存(http://blog.csdn.net/dylloveyou/article/details/71338378)的优化，下面接着第三块的内容，KVM磁盘性能方面的调优。磁盘IO我们可以从以下四个方面去着手优化：" target="_blank" rel="noopener">http://blog.csdn.net/dylloveyou/article/details/71169463)、内存(http://blog.csdn.net/dylloveyou/article/details/71338378)的优化，下面接着第三块的内容，KVM磁盘性能方面的调优。磁盘IO我们可以从以下四个方面去着手优化：</a></p>
+        <p>前面讲了KVM CPU(<a href="http://blog.csdn.net/dylloveyou/article/details/71169463" target="_blank" rel="noopener">http://blog.csdn.net/dylloveyou/article/details/71169463</a>)、内存(<a href="http://blog.csdn.net/dylloveyou/article/details/71338378" target="_blank" rel="noopener">http://blog.csdn.net/dylloveyou/article/details/71338378</a>)的优化，下面接着第三块的内容，KVM磁盘性能方面的调优。磁盘IO我们可以从以下四个方面去着手优化：</p>
 <ol>
 <li>磁盘类型选择</li>
 <li>缓存模式选择</li>
 <li>AIO 异步读写方式选择</li>
 <li>磁盘IO调度器选择</li>
 </ol>
-<h2 id="磁盘类型选择"><a href="#磁盘类型选择" class="headerlink" title="磁盘类型选择"></a>磁盘类型选择</h2><p>磁盘方面，建议是用Virtio模式，在CentOS7.1 中，磁盘的类型有IDE 、SATA 以及virtio 三种。磁盘这块也有完全虚拟化和半虚拟化之分。virtio它就是半虚拟化的，最初是由澳大利亚的一个天才级程序员Rusty Russell编写，是一个在hypervisor之上的抽象API接口，它让客户机知道自己运行在虚拟化环境中，从而与hypervisor一起根据 virtio 标准协作，因此，virtio能让客户机中达到更好的性能（特别是I/O性能）。</p>
-<p>关于使用virtio的测试数据，如下图所示，virtio模式的读写能力远高于IDE的：<br><img src="https://img-blog.csdn.net/20170510111507950?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<h2 id="磁盘类型选择"><a class="header-anchor" href="#磁盘类型选择">¶</a>磁盘类型选择</h2>
+<p>磁盘方面，建议是用Virtio模式，在CentOS7.1 中，磁盘的类型有IDE 、SATA 以及virtio 三种。磁盘这块也有完全虚拟化和半虚拟化之分。virtio它就是半虚拟化的，最初是由澳大利亚的一个天才级程序员Rusty Russell编写，是一个在hypervisor之上的抽象API接口，它让客户机知道自己运行在虚拟化环境中，从而与hypervisor一起根据 virtio 标准协作，因此，virtio能让客户机中达到更好的性能（特别是I/O性能）。</p>
+<p>关于使用virtio的测试数据，如下图所示，virtio模式的读写能力远高于IDE的：<br>
+<img src="https://img-blog.csdn.net/20170510111507950?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
 <p>图上淡紫色的数据条是virtio的数据，红色的是IDE的，性能几乎是相差很大。</p>
 <p>所以大家在选择磁盘模式的时候，注意选择virtio模式，特别是在云环境里，你制作的虚拟机模版，最好选择virtio模式。</p>
-<h2 id="缓存模式选择"><a href="#缓存模式选择" class="headerlink" title="缓存模式选择"></a>缓存模式选择</h2><p>目前KVM这块支持5种磁盘缓存模式，writethrough、writeback、none、directsync或者unsafe。一般用到的就是前面3种，后面两种几乎不会使用。</p>
+<h2 id="缓存模式选择"><a class="header-anchor" href="#缓存模式选择">¶</a>缓存模式选择</h2>
+<p>目前KVM这块支持5种磁盘缓存模式，writethrough、writeback、none、directsync或者unsafe。一般用到的就是前面3种，后面两种几乎不会使用。</p>
 <ul>
 <li>writethrough：（直写模式）数据直接写入磁盘里，不使用缓存；在数据更新时，同时写入缓存Cache和后端存储。此模式的优点是操作简单；缺点是因为数据修改需要同时写入存储，数据写入速度较慢。</li>
 <li>writeback：（回写模式）在数据更新时只写入缓存Cache。只在数据被替换出缓存时，被修改的缓存数据才会被写到后端存储。此模式的优点是数据写入速度快，因为不需要写存储；缺点是一旦更新后的数据未被写入存储时出现系统掉电的情况，数据将无法找回。</li>
-<li>none：这种模式作用在Guest OS Pagecache和Physical Disk<br>Cache中，相当于虚拟机能直接访问宿主机的磁盘，性能不错！</li>
+<li>none：这种模式作用在Guest OS Pagecache和Physical Disk<br>
+Cache中，相当于虚拟机能直接访问宿主机的磁盘，性能不错！</li>
 </ul>
-<p><img src="https://img-blog.csdn.net/20170510111755671?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"><br>从图中可以看到，writeback采用了guest和host两层的page cache，也就是说同一个文件会存在两份cache，这是没有必要的，none和writethrough都会绕过host层的page cache。</p>
+<p><img src="https://img-blog.csdn.net/20170510111755671?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"><br>
+从图中可以看到，writeback采用了guest和host两层的page cache，也就是说同一个文件会存在两份cache，这是没有必要的，none和writethrough都会绕过host层的page cache。</p>
 <p>低于QEMU-KVM 1.2 的版本kvm默认的cache方式是writethrouh，这种方式是最安全的，不会造成数据的不一致性，但是性能也是最差的。</p>
-<p>总的来说，这三种模式，从安全和性能两角度分析，效果如下：<br><strong>性能上： writeback &gt; none &gt; writethrough</strong><br><strong>安全上 ：writeback &lt; none &lt; writethrough</strong><br>关于这三种模式的测试结果，如下图所示：<br><img src="https://img-blog.csdn.net/20170510111622436?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"><br>其中淡紫色的是 none模式，我们发现它的性能数据几乎很平均，所以选择它是最合适的方式，既安全稳定性能又不错。设置的方法也很简单，直接在XML里定义：</p>
+<p>总的来说，这三种模式，从安全和性能两角度分析，效果如下：<br>
+<strong>性能上： writeback &gt; none &gt; writethrough</strong><br>
+<strong>安全上 ：writeback &lt; none &lt; writethrough</strong><br>
+关于这三种模式的测试结果，如下图所示：<br>
+<img src="https://img-blog.csdn.net/20170510111622436?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"><br>
+其中淡紫色的是 none模式，我们发现它的性能数据几乎很平均，所以选择它是最合适的方式，既安全稳定性能又不错。设置的方法也很简单，直接在XML里定义：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;driver name&#x3D;&#39;qemu&#39; type&#x3D;&#39;qcow2&#39; cache&#x3D;&#39;none&#39;&#x2F;&gt; 1</span><br></pre></td></tr></table></figure>
-
-<p>加上<code>cache=&#39;none&#39;</code>即可</p>
+<p>加上<code>cache='none'</code>即可</p>
 <p>综合数据的安全性和性能，建议选择none模式，注意CentOS下默认是none。</p>
-<h2 id="AIO-异步读写方式选择"><a href="#AIO-异步读写方式选择" class="headerlink" title="AIO 异步读写方式选择"></a>AIO 异步读写方式选择</h2><p>aio 这块分为两种，一种是native方式，还有一种是thread方式。</p>
+<h2 id="AIO-异步读写方式选择"><a class="header-anchor" href="#AIO-异步读写方式选择">¶</a>AIO 异步读写方式选择</h2>
+<p>aio 这块分为两种，一种是native方式，还有一种是thread方式。</p>
 <p>Linux系统上异步IO常见的有两种实现，一种是kernel native AIO，另外一种是threaded aio: user space AIO emulated by posix thread workers。</p>
 <p>Kernel native AIO : Kernel的原生态异步IO实现。</p>
 <p>Threaded aio : linux用户空间异步IO的实现，其实它不是真正的异步IO，是通过启动一定数量的 blocking IO线程来模拟异步IO。这种实现有不少缺点，毕竟有不少线程开销，还在改进中。</p>
-<p>因此，我们KVM里选择AIO这块选择Kernel的原生态的native更好。<br>开启方式是：</p>
+<p>因此，我们KVM里选择AIO这块选择Kernel的原生态的native更好。<br>
+开启方式是：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;driver name&#x3D;&#39;qemu&#39; type&#x3D;&#39;qcow2&#39; cache&#x3D;&#39;none&#39; aio&#x3D;&#39;native&#39;&#x2F;&gt;1</span><br></pre></td></tr></table></figure>
-
-<h2 id="磁盘IO调度器选择"><a href="#磁盘IO调度器选择" class="headerlink" title="磁盘IO调度器选择"></a>磁盘IO调度器选择</h2><p>目前Linux 磁盘IO调度主要有3种，NOOP ，Deadline ，CFQ 。</p>
+<h2 id="磁盘IO调度器选择"><a class="header-anchor" href="#磁盘IO调度器选择">¶</a>磁盘IO调度器选择</h2>
+<p>目前Linux 磁盘IO调度主要有3种，NOOP ，Deadline ，CFQ 。</p>
 <p>Deadline I/O scheduler ：用过期时间来排序io操作顺序，保证先出现的io请求有最短的延迟时间，相对于写操作，给读操作更优先的级别，是比较好的一个调度模式。特别适合于读取较多的环境(比如数据库,Oracle 10G 之类)。</p>
 <p>NOOP (elevator=noop)： 这个调度模式会把所有的数据请求直接合并到一个简单的队列里。在有些SAN 环境下，这个选择可能是最好选择。适用于随机存取设备, 不适合有机械结构的存储器。因为没有优化顺序，会增加额外的寻道时间。属于最简单的一个调度模式，无视io操作优先级和复杂性，执行完一个再执行一个，如果读写操作繁多的话，就会造成效率降低。</p>
 <p>CFQ I/O scheduler：完全公平队列，是anticipatory模式的替代品，没有过多的做预测性调度，而是根据给定的进程io优先级，直接来分配操作的顺序。这个模式在linux上表现良好，但也许并不是最适合android的io调度模式，太强调均衡，而降低了连续读写数据的性能。适用于有大量进程的多用户系统。</p>
-<p>Linux默认是deadline，我们可以通过命令 <code>cat /sys/block/sd*/queue/scheduler</code> 查看：<br><img src="https://img-blog.csdn.net/20170510112016249?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"><br>如果要更改模式，我们就用：<br>格式：<code>echo {SCHEDULER-NAME} &gt; /sys/block/{DEVICE-NAME}/queue/scheduler</code><br>例：<code>echo cfq &gt; /sys/block/sda/queue/scheduler</code> 改成cfq模式</p>
+<p>Linux默认是deadline，我们可以通过命令 <code>cat /sys/block/sd*/queue/scheduler</code> 查看：<br>
+<img src="https://img-blog.csdn.net/20170510112016249?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"><br>
+如果要更改模式，我们就用：<br>
+格式：<code>echo {SCHEDULER-NAME} &gt; /sys/block/{DEVICE-NAME}/queue/scheduler</code><br>
+例：<code>echo cfq &gt; /sys/block/sda/queue/scheduler</code> 改成cfq模式</p>
 <p>这三种调度方式，得具体看你的虚拟机跑的应用去选择，一般的是选择CFQ模式。</p>
 
     </div>
@@ -312,7 +336,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/KVM/%E8%B0%83%E4%BC%98/KVM%E6%80%BB%E7%BB%93-KVM%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B9%8B%E7%A3%81%E7%9B%98IO%E4%BC%98%E5%8C%96/" title="运维&#x2F;虚拟化&#x2F;KVM&#x2F;调优&#x2F;KVM总结-KVM性能优化之磁盘IO优化">https://kbsonlong.github.io/2020/05/14/运维/虚拟化/KVM/调优/KVM总结-KVM性能优化之磁盘IO优化/</a>
+    <a href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/KVM/%E8%B0%83%E4%BC%98/KVM%E6%80%BB%E7%BB%93-KVM%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B9%8B%E7%A3%81%E7%9B%98IO%E4%BC%98%E5%8C%96/" title="KVM总结-KVM性能优化之磁盘IO优化.md">https://kbsonlong.github.io/2020/05/14/运维/虚拟化/KVM/调优/KVM总结-KVM性能优化之磁盘IO优化/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -351,6 +375,9 @@
 
 
       <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%B0%83%E4%BC%98/" rel="tag"># 调优</a>
+          </div>
 
         
 
@@ -358,12 +385,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/%E6%97%A5%E5%BF%97%E5%91%8A%E8%AD%A6/" rel="prev" title="运维/Elasticsearch/日志告警">
-      <i class="fa fa-chevron-left"></i> 运维/Elasticsearch/日志告警
+    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/k8s%E5%AE%89%E8%A3%85%E5%AE%9E%E6%88%98/base_setting/" rel="prev" title="base_setting.md">
+      <i class="fa fa-chevron-left"></i> base_setting.md
     </a></div>
       <div class="post-nav-item">
-    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/%E4%BC%98%E5%8C%96/" rel="next" title="运维/Elasticsearch/优化">
-      运维/Elasticsearch/优化 <i class="fa fa-chevron-right"></i>
+    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/KVM/%E8%B0%83%E4%BC%98/KVM%E6%80%BB%E7%BB%93-KVM%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B9%8B%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" rel="next" title="KVM总结-KVM性能优化之内存优化.md">
+      KVM总结-KVM性能优化之内存优化.md <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -439,20 +466,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">110</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">25</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

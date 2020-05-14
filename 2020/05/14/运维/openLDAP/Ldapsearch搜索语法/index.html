@@ -22,17 +22,17 @@
     var CONFIG = {"hostname":"kbsonlong.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"3QSL94PCBQ","apiKey":"d2fe765a64df1740fcab93644d3a2677","indexName":"hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="一、基本操作    连接 连接操作作用于应用程序与LDAP服务器之间的连接和断开。    查询 查询操作通常指的是搜索search和比较compare。也就是利用属性值查找相应条目。   更改 包括add&#x2F;delete&#x2F;modify&#x2F;modifyDN   二、搜索参数   （这里只介绍一下搜索参数的搜索层次，为下文做铺垫）    base 表示把基准DN作为搜索对象。例如：cn&#x3D;yanzong,o">
+  <meta name="description" content="一、基本操作    连接 连接操作作用于应用程序与LDAP服务器之间的连接和断开。     查询 查询操作通常指的是搜索search和比较compare。也就是利用属性值查找相应条目。   更改 包括add&#x2F;delete&#x2F;modify&#x2F;modifyDN    二、搜索参数 （这里只介绍一下搜索参数的搜索层次，为下文做铺垫）    base 表示把基准DN作为搜索对象。例如：cn&#x3D;yanzong,o">
 <meta property="og:type" content="article">
-<meta property="og:title" content="运维&#x2F;openLDAP&#x2F;Ldapsearch搜索语法">
+<meta property="og:title" content="Ldapsearch搜索语法.md">
 <meta property="og:url" content="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/openLDAP/Ldapsearch%E6%90%9C%E7%B4%A2%E8%AF%AD%E6%B3%95/index.html">
 <meta property="og:site_name" content="蜷缩的蜗牛">
-<meta property="og:description" content="一、基本操作    连接 连接操作作用于应用程序与LDAP服务器之间的连接和断开。    查询 查询操作通常指的是搜索search和比较compare。也就是利用属性值查找相应条目。   更改 包括add&#x2F;delete&#x2F;modify&#x2F;modifyDN   二、搜索参数   （这里只介绍一下搜索参数的搜索层次，为下文做铺垫）    base 表示把基准DN作为搜索对象。例如：cn&#x3D;yanzong,o">
+<meta property="og:description" content="一、基本操作    连接 连接操作作用于应用程序与LDAP服务器之间的连接和断开。     查询 查询操作通常指的是搜索search和比较compare。也就是利用属性值查找相应条目。   更改 包括add&#x2F;delete&#x2F;modify&#x2F;modifyDN    二、搜索参数 （这里只介绍一下搜索参数的搜索层次，为下文做铺垫）    base 表示把基准DN作为搜索对象。例如：cn&#x3D;yanzong,o">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-05-14T13:51:59.587Z">
-<meta property="article:modified_time" content="2020-05-14T13:51:59.587Z">
+<meta property="article:published_time" content="2020-05-14T14:16:05.000Z">
+<meta property="article:modified_time" content="2020-05-14T14:16:05.340Z">
 <meta property="article:author" content="曾胜龙">
-<meta property="article:tag" content="Devops Kubernetes Docker">
+<meta property="article:tag" content="openLDAP">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/openLDAP/Ldapsearch%E6%90%9C%E7%B4%A2%E8%AF%AD%E6%B3%95/">
@@ -48,7 +48,7 @@
   };
 </script>
 
-  <title>运维/openLDAP/Ldapsearch搜索语法 | 蜷缩的蜗牛</title>
+  <title>Ldapsearch搜索语法.md | 蜷缩的蜗牛</title>
   
 
 
@@ -214,7 +214,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          运维/openLDAP/Ldapsearch搜索语法
+          Ldapsearch搜索语法.md
         </h1>
 
         <div class="post-meta">
@@ -224,7 +224,16 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-05-14 21:51:59" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:59+08:00">2020-05-14</time>
+              <time title="创建时间：2020-05-14 22:16:05" itemprop="dateCreated datePublished" datetime="2020-05-14T22:16:05+08:00">2020-05-14</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/openLDAP/" itemprop="url" rel="index"><span itemprop="name">openLDAP</span></a>
+                </span>
             </span>
 
           
@@ -253,7 +262,8 @@
 <th>连接操作作用于应用程序与LDAP服务器之间的连接和断开。</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>查询</td>
 <td>查询操作通常指的是搜索search和比较compare。也就是利用属性值查找相应条目。</td>
 </tr>
@@ -261,9 +271,10 @@
 <td>更改</td>
 <td>包括add/delete/modify/modifyDN</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <p><strong>二、搜索参数</strong></p>
-<p>  （这里只介绍一下搜索参数的搜索层次，为下文做铺垫）</p>
+<p>（这里只介绍一下搜索参数的搜索层次，为下文做铺垫）</p>
 <table>
 <thead>
 <tr>
@@ -271,7 +282,8 @@
 <th>表示把基准DN作为搜索对象。例如：cn=yanzong,ou=Ops,dc=shuyun,dc=com 的基准DN是dc=shuyun,dc=com</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>one</td>
 <td>表示把基准DN的第一层作为搜索对象，如上个例子中的ou=Ops为搜索对象。</td>
 </tr>
@@ -279,7 +291,8 @@
 <td>sub</td>
 <td>表示把基准DN及以下的整棵树都作为搜索对象。</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <p><strong>三、ldapsearch 参数表</strong></p>
 <table>
 <thead>
@@ -288,7 +301,8 @@
 <th>用途</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>-a deref</td>
 <td>指定别名反向引用。请输入 never、always、search 或 find。如果不使用此参数，缺省为 never。</td>
 </tr>
@@ -298,7 +312,7 @@
 </tr>
 <tr>
 <td>-b base dn</td>
-<td>指定用作搜索起始点的专有名称。使用引号来指定该值，如：”ou=Ops,dc=shuyun,dc=com”.如果要搜索的服务器需要指定搜索起点，则必须使用此参数。否则此参数是可选的。也可以同时使用 -b 和 -s 来确定搜索范围。没有 –s，-b 就会搜索指定为起始点的项以及该项的所有子项。</td>
+<td>指定用作搜索起始点的专有名称。使用引号来指定该值，如：“ou=Ops,dc=shuyun,dc=com”.如果要搜索的服务器需要指定搜索起点，则必须使用此参数。否则此参数是可选的。也可以同时使用 -b 和 -s 来确定搜索范围。没有 –s，-b 就会搜索指定为起始点的项以及该项的所有子项。</td>
 </tr>
 <tr>
 <td>-B</td>
@@ -306,7 +320,7 @@
 </tr>
 <tr>
 <td>-D bind dn</td>
-<td>指定服务器用于验证您的专有名称。名称必须与目录中的项相符，并且必须拥有搜索目录所需的权限。请使用引号来指定该名称，例如：”cn=Manager,dc=shuyun,dc=com”。如果不使用此参数，则与服务器的连接是匿名的。如果服务器不允许匿名连接，则必须使用 -D。除了 -D，还必须使用 -w 参数来指定与专有名称相关联的口令。</td>
+<td>指定服务器用于验证您的专有名称。名称必须与目录中的项相符，并且必须拥有搜索目录所需的权限。请使用引号来指定该名称，例如：“cn=Manager,dc=shuyun,dc=com”。如果不使用此参数，则与服务器的连接是匿名的。如果服务器不允许匿名连接，则必须使用 -D。除了 -D，还必须使用 -w 参数来指定与专有名称相关联的口令。</td>
 </tr>
 <tr>
 <td>-f file</td>
@@ -318,13 +332,14 @@
 </tr>
 <tr>
 <td>-h host name</td>
-<td>指定要连接的服务器主机名，如 -h ldap.shuyun.com。</td>
+<td>指定要连接的服务器主机名，如 -h <a href="http://ldap.shuyun.com" target="_blank" rel="noopener">ldap.shuyun.com</a>。</td>
 </tr>
 <tr>
 <td>-l timelimit</td>
 <td>指定完成搜索的时间限制（秒）。如果没有指定此参数或指定的限制为 0，那么搜索就没有时间限制。但是，ldapsearch 的等待时间决不会超过服务器上设置的搜索时间限制。</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <table>
 <thead>
 <tr>
@@ -332,7 +347,8 @@
 <th>指定以 LDIF 格式输出。LDIF 格式使用冒号 (:) 而不是等号 (=) 作为属性描述符。LDIF 对一次性添加或修改大量目录项很有帮助。例如，可以将输出内容引入兼容 LDAP 的目录中。</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>-M</td>
 <td>将参考对象作为普通项进行管理，以使 ldapsearch 可返回参考项本身的属性，而不是所参考的项的属性。</td>
 </tr>
@@ -368,7 +384,8 @@
 <td>-v</td>
 <td>指定 ldapsearch 以详尽模式运行。</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <table>
 <thead>
 <tr>
@@ -376,11 +393,13 @@
 <th>指定与 -D 参数一起使用的与专有名称关联的口令。</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>x</td>
 <td>与 -S 一起使用时可指定 LDAP 服务器在将结果返回之前就对它们进行排序。如果使用 -S 而不使用 –x，ldapsearch 将对结果排序。</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <p>四、匹配语法</p>
 <table>
 <thead>
@@ -390,7 +409,8 @@
 <th>例子</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>=</td>
 <td>查找所包含的属性值与指定值相同的项</td>
 <td>“cn=yanzong”</td>
@@ -433,15 +453,11 @@
 <tr>
 <td>= <string>*<string></td>
 <td>查找所包含的属性值与指定值相同的项(模糊匹配)</td>
-<td>“cn=y<em>zong” “cn=yan</em>“</td>
+<td>“cn=y<em>zong&quot; &quot;cn=yan</em>”</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">必须使用搜索过滤器指定要搜索的属性。搜索过滤器的语法为：</span><br><span class="line">        <span class="string">"&lt;attribute&gt; &lt;operator&gt; &lt;value&gt;"</span></span><br><span class="line">例如，下面的搜索过滤器可以找到所有的特定项，只要该项中以 Smith 作为 sn（别称）属性的值：</span><br><span class="line">        <span class="string">"sn=Smith"</span></span><br><span class="line">可以在搜索过滤器中指定存储在目录中的任意属性。以下是用来搜索个人项的公用属性：</span><br><span class="line">        cn -- 个人的公用名称</span><br><span class="line">        sn -- 个人的姓</span><br><span class="line">        telephonenumber -- 个人的电话号码</span><br><span class="line">        l -- 个人的地理位置</span><br><span class="line">如果这里不是太清楚可以参考：http://407711169.blog.51cto.com/6616996/1439623 </span><br><span class="line">可以在 ldapsearch 命令行中指定搜索过滤器，或在文件中指定它们，并使用 lsearch 参数 -f 引用此文件。如果使用文件，请在单独的行中指定每个搜索过滤器。</span><br><span class="line">请注意：如果 LDAP 目录（如 Domino LDAP 目录）支持语言标记，则可在搜索过滤器中包含它们。例如：</span><br><span class="line">        <span class="string">"givenName;lang-fr=Etienne"</span></span><br><span class="line">使用布尔运算符的多个搜索过滤器</span><br><span class="line">您可以使用多个搜索过滤器以及布尔运算符。使用下列语法：</span><br><span class="line">        <span class="string">"(operator(filter)(filter))"</span></span><br><span class="line">例如，使用下面的搜索过滤器查找别称为 Browning、位置为 Dallas 的项。</span><br><span class="line">        <span class="string">"(&amp;(sn=Browning)(l=Dallas))"</span></span><br><span class="line">布尔运算符可以嵌套。例如，使用下面的搜索过滤器在邮件网络域 MDN 中查找 surname 为 caneel 或 givenname 为 alfred 的项：</span><br><span class="line">        <span class="string">"(&amp;(maildomain=MDN)(|(sn=caneel)(givenname=alfred)))"</span></span><br></pre></td></tr></table></figure>
-
-
-
-
-
 <p><strong>五、使用 ldapsearch 的样例</strong></p>
 <table>
 <thead>
@@ -450,59 +466,63 @@
 <th>命令</th>
 </tr>
 </thead>
-<tbody><tr>
-<td>使用端口 389 的主机 ldap.acme.com 上的所有项，并返回所有属性和值同上，但仅返回属性名称</td>
-<td>ldapsearch -h ldap.acme.com “objectClass=*”ldapsearch -A -h ldap.acme.com” objectClass=*”</td>
+<tbody>
+<tr>
+<td>使用端口 389 的主机 <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a> 上的所有项，并返回所有属性和值同上，但仅返回属性名称</td>
+<td>ldapsearch -h <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a> “objectClass=<em>“ldapsearch -A -h <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a>” objectClass=</em>”</td>
 </tr>
 <tr>
-<td>使用端口 389 的主机 ldap.acme.com 上的所有项，并且反向引用找到的所有别名</td>
-<td>ldapsearch -a always -h ldap.acme.com “objectClass=*”</td>
+<td>使用端口 389 的主机 <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a> 上的所有项，并且反向引用找到的所有别名</td>
+<td>ldapsearch -a always -h <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a> “objectClass=*”</td>
 </tr>
 <tr>
-<td>使用端口 389 的主机 ldap.acme.com 上的所有项，并返回 mail、cn、sn 和 givenname 等属性</td>
-<td>ldapsearch -h ldap.acme.com “objectClass=*” mail cn sn givenname</td>
+<td>使用端口 389 的主机 <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a> 上的所有项，并返回 mail、cn、sn 和 givenname 等属性</td>
+<td>ldapsearch -h <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a> “objectClass=*” mail cn sn givenname</td>
 </tr>
 <tr>
-<td>在使用端口 389 的主机 ldap.acme.com 上，在 ”ou=West，o=Acme，c=US” 基准下搜索 (cn=Mike*)，并返回所有属性和值</td>
-<td>ldapsearch -b “ou=West,o=Acme,c=US” -h ldap.acme.com “(cn=Mike*)”</td>
+<td>在使用端口 389 的主机 <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a> 上，在 ”ou=West，o=Acme，c=US” 基准下搜索 (cn=Mike*)，并返回所有属性和值</td>
+<td>ldapsearch -b “ou=West,o=Acme,c=US” -h <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a> “(cn=Mike*)”</td>
 </tr>
 <tr>
-<td>使用端口 389 的主机 ldap.acme.com 上的一个级别，并返回所有属性和值同上，但限制基准的范围</td>
-<td>ldapsearch -s onelevel -h ldap.acme.com “objectClass=*”ldapsearch -s base -h ldap.acme.com “objectClass=*”</td>
+<td>使用端口 389 的主机 <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a> 上的一个级别，并返回所有属性和值同上，但限制基准的范围</td>
+<td>ldapsearch -s onelevel -h <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a> “objectClass=<em>&quot;ldapsearch -s base -h <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a> &quot;objectClass=</em>”</td>
 </tr>
 <tr>
-<td>使用端口 389 的主机 ldap.acme.com 上的所有项，并返回所有的属性和值；搜索时间限制为五秒</td>
-<td>ldapsearch -l 5 -h ldap.acme.com “objectClass=*”</td>
+<td>使用端口 389 的主机 <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a> 上的所有项，并返回所有的属性和值；搜索时间限制为五秒</td>
+<td>ldapsearch -l 5 -h <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a> “objectClass=*”</td>
 </tr>
 <tr>
-<td>使用端口 389 的主机 ldap.acme.com 上的所有项，并返回所有的属性和值；大小限制为五</td>
-<td>ldapsearch -z 5 -h ldap.acme.com “objectClass=*”</td>
+<td>使用端口 389 的主机 <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a> 上的所有项，并返回所有的属性和值；大小限制为五</td>
+<td>ldapsearch -z 5 -h <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a> “objectClass=*”</td>
 </tr>
 <tr>
-<td>使用端口 389 的主机 ldap.acme.com 上的所有项，捆绑为：用户“cn=John Doe,o=Acme”，口令“password”，并以 LDIF 格式返回所有的属性和值</td>
-<td>ldapsearch -h ldap.acme.com -D “cn=john doe,o=acme” -w password -L “objectClass=*”</td>
+<td>使用端口 389 的主机 <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a> 上的所有项，捆绑为：用户“cn=John Doe,o=Acme”，口令“password”，并以 LDIF 格式返回所有的属性和值</td>
+<td>ldapsearch -h <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a> -D “cn=john doe,o=acme” -w password -L “objectClass=*”</td>
 </tr>
 <tr>
-<td>使用端口 389 的主机 ldap.acme.com。对“cn=John Doe,o=Acme”项，返回其允许匿名查看的所有属性</td>
-<td>ldapsearch -h ldap.acme.com” -s base -b “cn=john doe,o=acme” objectClass=*”</td>
+<td>使用端口 389 的主机 <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a>。对“cn=John Doe,o=Acme”项，返回其允许匿名查看的所有属性</td>
+<td>ldapsearch -h <a href="http://ldap.acme.com" target="_blank" rel="noopener">ldap.acme.com</a>&quot; -s base -b “cn=john doe,o=acme” objectClass=*&quot;</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <table>
 <thead>
 <tr>
-<th>配置为在端口 391 上侦听 LDAP 请求的另一台主机 bluepages.ibm.com 上的所有项</th>
-<th>ldapsearch -h bluepages.ibm.com -p 391 “objectClass=*”</th>
+<th>配置为在端口 391 上侦听 LDAP 请求的另一台主机 <a href="http://bluepages.ibm.com" target="_blank" rel="noopener">bluepages.ibm.com</a> 上的所有项</th>
+<th>ldapsearch -h <a href="http://bluepages.ibm.com" target="_blank" rel="noopener">bluepages.ibm.com</a> -p 391 “objectClass=*”</th>
 </tr>
 </thead>
-<tbody><tr>
-<td>端口 391 上的 bluepages.ibm.com。对还有与 OR 过滤器中任意一个属性相匹配的属性的任何“个人”对象类型进行子树搜索（缺省），从组织“o=ibm”开始。超时值为 300 秒，返回的最大项数设为 1000。且仅返回 DN（缺省）和 CN（这是 Web 应用程序的公用过滤器）。</td>
-<td>ldapsearch -h bluepages.ibm.com -p 391 -b “o=ibm” -l 300 -z 1000 “(&amp;(objectclass=Person)(|(cn=jerry seinfeld<em>)(givenname=jerry seinfeld</em>)(sn=jerry seinfeld<em>)(mail=jerry seinfeld</em>)))” cn</td>
+<tbody>
+<tr>
+<td>端口 391 上的 <a href="http://bluepages.ibm.com" target="_blank" rel="noopener">bluepages.ibm.com</a>。对还有与 OR 过滤器中任意一个属性相匹配的属性的任何“个人”对象类型进行子树搜索（缺省），从组织“o=ibm”开始。超时值为 300 秒，返回的最大项数设为 1000。且仅返回 DN（缺省）和 CN（这是 Web 应用程序的公用过滤器）。</td>
+<td>ldapsearch -h <a href="http://bluepages.ibm.com" target="_blank" rel="noopener">bluepages.ibm.com</a> -p 391 -b “o=ibm” -l 300 -z 1000 “(&amp;(objectclass=Person)(|(cn=jerry seinfeld*)(givenname=jerry seinfeld*)(sn=jerry seinfeld*)(mail=jerry seinfeld*)))” cn</td>
 </tr>
 <tr>
-<td>端口 391 上的 bluepages.ibm.com。以基准项“cn=HR Group,ou=Asia,o=IBM”为起始，时间限制为 300 秒，查询此项的所有成员。（Web 应用程序中用以确定群组成员的另一个公用过滤器）。</td>
-<td>ldapsearch -h bluepages.ibm.com -p 391 -b “cn=HR Group,ou=Asia,o=IBM” -s base -l 300 “(objectclass=*)” member</td>
+<td>端口 391 上的 <a href="http://bluepages.ibm.com" target="_blank" rel="noopener">bluepages.ibm.com</a>。以基准项“cn=HR Group,ou=Asia,o=IBM”为起始，时间限制为 300 秒，查询此项的所有成员。（Web 应用程序中用以确定群组成员的另一个公用过滤器）。</td>
+<td>ldapsearch -h <a href="http://bluepages.ibm.com" target="_blank" rel="noopener">bluepages.ibm.com</a> -p 391 -b “cn=HR Group,ou=Asia,o=IBM” -s base -l 300 “(objectclass=*)” member</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 
     </div>
 
@@ -528,7 +548,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/openLDAP/Ldapsearch%E6%90%9C%E7%B4%A2%E8%AF%AD%E6%B3%95/" title="运维&#x2F;openLDAP&#x2F;Ldapsearch搜索语法">https://kbsonlong.github.io/2020/05/14/运维/openLDAP/Ldapsearch搜索语法/</a>
+    <a href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/openLDAP/Ldapsearch%E6%90%9C%E7%B4%A2%E8%AF%AD%E6%B3%95/" title="Ldapsearch搜索语法.md">https://kbsonlong.github.io/2020/05/14/运维/openLDAP/Ldapsearch搜索语法/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -567,6 +587,9 @@
 
 
       <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/openLDAP/" rel="tag"># openLDAP</a>
+          </div>
 
         
 
@@ -574,12 +597,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/openLDAP/install/" rel="prev" title="运维/openLDAP/install">
-      <i class="fa fa-chevron-left"></i> 运维/openLDAP/install
+    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/openLDAP/OpenLDAP/" rel="prev" title="OpenLDAP.md">
+      <i class="fa fa-chevron-left"></i> OpenLDAP.md
     </a></div>
       <div class="post-nav-item">
-    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/openLDAP/OpenLDAP/" rel="next" title="运维/openLDAP/OpenLDAP">
-      运维/openLDAP/OpenLDAP <i class="fa fa-chevron-right"></i>
+    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/nacos/nacos%E9%83%A8%E7%BD%B2/" rel="next" title="nacos部署.md">
+      nacos部署.md <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -654,20 +677,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">110</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">25</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
