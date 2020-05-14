@@ -1,0 +1,1446 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"kbsonlong.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"3QSL94PCBQ","apiKey":"d2fe765a64df1740fcab93644d3a2677","indexName":"hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta property="og:type" content="website">
+<meta property="og:title" content="蜷缩的蜗牛">
+<meta property="og:url" content="https://kbsonlong.github.io/page/9/index.html">
+<meta property="og:site_name" content="蜷缩的蜗牛">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="曾胜龙">
+<meta property="article:tag" content="Devops Kubernetes Docker">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://kbsonlong.github.io/page/9/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : true,
+    isPost : false,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>蜷缩的蜗牛</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="蜷缩的蜗牛" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">蜷缩的蜗牛</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">运维笔记</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/kbsonlong" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content index posts-expand">
+            
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%95%B0%E6%8D%AE%E5%BA%93/Mysql/mysql/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%95%B0%E6%8D%AE%E5%BA%93/Mysql/mysql/" class="post-title-link" itemprop="url">运维/数据库/Mysql/mysql</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:56" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:56+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><a href="https://blog.csdn.net/zhizhuodewo6/article/details/86064981" target="_blank" rel="noopener">mysql-EXPLAIN</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%95%B0%E6%8D%AE%E5%BA%93/Mongodb/Mongodb%E5%BC%80%E5%90%AF%E7%94%A8%E6%88%B7%E8%AE%A4%E8%AF%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%95%B0%E6%8D%AE%E5%BA%93/Mongodb/Mongodb%E5%BC%80%E5%90%AF%E7%94%A8%E6%88%B7%E8%AE%A4%E8%AF%81/" class="post-title-link" itemprop="url">运维/数据库/Mongodb/Mongodb开启用户认证</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:56" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:56+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>关于mongodb分片集群搭建可参考小蜗牛之前一篇文章《<a href="https://seam.alongparty.cn/blog/article/mongodbfen-pian-ji-qun/" target="_blank" rel="noopener">MongoDB分片集群</a>》</p>
+<h2 id="开启MongoDB认证"><a href="#开启MongoDB认证" class="headerlink" title="开启MongoDB认证"></a>开启MongoDB认证</h2><p>在开启mongo认证前先来了解一下mongodb内置的角色和权限：</p>
+<h3 id="mongodb内置角色"><a href="#mongodb内置角色" class="headerlink" title="mongodb内置角色"></a>mongodb内置角色</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">1. 数据库用户角色：read、readWrite;  </span><br><span class="line">2. 数据库管理角色：dbAdmin、dbOwner、userAdmin；       </span><br><span class="line">3. 集群管理角色：clusterAdmin、clusterManager、clusterMonitor、hostManager；</span><br><span class="line">4. 备份恢复角色：backup、restore；</span><br><span class="line">5. 所有数据库角色：readAnyDatabase、readWriteAnyDatabase、userAdminAnyDatabase、dbAdminAnyDatabase</span><br><span class="line">6. 超级用户角色：root  </span><br><span class="line">&#x2F;&#x2F; 这里还有几个角色间接或直接提供了系统超级用户的访问（dbOwner 、userAdmin、userAdminAnyDatabase）</span><br><span class="line">7. 内部角色：__system</span><br></pre></td></tr></table></figure>
+<h3 id="mongodb内置权限"><a href="#mongodb内置权限" class="headerlink" title="mongodb内置权限"></a>mongodb内置权限</h3><ul>
+<li>read:允许用户读取指定数据库 </li>
+<li>readWrite:允许用户读写指定数据库 </li>
+<li>dbAdmin：允许用户在指定数据库中执行管理函数，如索引创建、删除，查看统计或访问system.profile </li>
+<li>userAdmin：允许用户向system.users集合写入，可以找指定数据库里创建、删除和管理用户 </li>
+<li>clusterAdmin：只在admin数据库中可用，赋予用户所有分片和复制集相关函数的管理权限。 </li>
+<li>readAnyDatabase：只在admin数据库中可用，赋予用户所有数据库的读权限 </li>
+<li>readWriteAnyDatabase：只在admin数据库中可用，赋予用户所有数据库的读写权限 </li>
+<li>userAdminAnyDatabase：只在admin数据库中可用，赋予用户所有数据库的userAdmin权限 </li>
+<li>dbAdminAnyDatabase：只在admin数据库中可用，赋予用户所有数据库的dbAdmin权限。 </li>
+<li>root：只在admin数据库中可用。超级账号，超级权限</li>
+</ul>
+<h3 id="创建第一个用户"><a href="#创建第一个用户" class="headerlink" title="创建第一个用户"></a>创建第一个用户</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; use admin</span><br><span class="line">&gt; db.createUser(&#123;user:&quot;admin&quot;,pwd:&quot;KXc8lM9BIl9su3rUK3WwqL5Snd74Q7&quot;,roles:[&#123;role:&quot;userAdminAnyDatabase&quot;,db:&quot;admin&quot;&#125;]&#125;)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>MongoDB规定，创建的第一个用户一定要是在admin数据库、并且角色是userAdminAnyDatabase。</p>
+</blockquote>
+<h3 id="创建集群管理用户"><a href="#创建集群管理用户" class="headerlink" title="创建集群管理用户"></a>创建集群管理用户</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; use admin</span><br><span class="line">&gt; db.createUser(&#123;user:&quot;clusterAdmin&quot;,pwd:&quot;KXc8lM9BIl9su3rUK3WwqL5Snd74Q7&quot;,roles:[&#123;role:&quot;clusterAdmin&quot;,db:&quot;admin&quot;&#125;]&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="创建超级管理用户"><a href="#创建超级管理用户" class="headerlink" title="创建超级管理用户"></a>创建超级管理用户</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&gt; db.createUser(&#123;user:&quot;root&quot;,pwd:&quot;KXc8lM9BIl9su3rUK3WwqL5Snd74Q7&quot;,roles:[&#123;role:&quot;root&quot;,db:&quot;admin&quot;&#125;]&#125;)</span><br><span class="line">Successfully added user: &#123;</span><br><span class="line">	&quot;user&quot; : &quot;root&quot;,</span><br><span class="line">	&quot;roles&quot; : [</span><br><span class="line">		&#123;</span><br><span class="line">			&quot;role&quot; : &quot;root&quot;,</span><br><span class="line">			&quot;db&quot; : &quot;admin&quot;</span><br><span class="line">		&#125;</span><br><span class="line">	]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置集群之间节点认证"><a href="#配置集群之间节点认证" class="headerlink" title="配置集群之间节点认证"></a>配置集群之间节点认证</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">openssl rand -base64 756 &gt; &#x2F;data&#x2F;server&#x2F;mongo&#x2F;config&#x2F;energy-rc.key </span><br><span class="line"></span><br><span class="line">chmod 400 &#x2F;data&#x2F;server&#x2F;mongo&#x2F;config&#x2F;energy-rc.key</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>将energy-rc.key 秘钥文件分发至所有集群节点，需要注意秘钥权限</p>
+</blockquote>
+<h3 id="开启集群节点之间认证"><a href="#开启集群节点之间认证" class="headerlink" title="开启集群节点之间认证"></a>开启集群节点之间认证</h3><blockquote>
+<p>配置节点(config)和分片节点(shard)添加如下配置</p>
+</blockquote>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">security:</span></span><br><span class="line"> <span class="attr">clusterAuthMode:</span> <span class="string">keyFile</span></span><br><span class="line"> <span class="attr">keyFile:</span> <span class="string">/etc/mongo/config/energy-rc.key</span></span><br><span class="line"> <span class="attr">authorization:</span> <span class="string">enabled</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>路由节点添加如下配置</p>
+</blockquote>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">security:</span></span><br><span class="line"> <span class="attr">keyFile:</span> <span class="string">/data/server/mongodb/mongos/conf/energy-rc.key</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="所有节点重启mongo服务"><a href="#所有节点重启mongo服务" class="headerlink" title="所有节点重启mongo服务"></a>所有节点重启mongo服务</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker restart mongo</span><br></pre></td></tr></table></figure>
+
+<h3 id="查看集群状态"><a href="#查看集群状态" class="headerlink" title="查看集群状态"></a>查看集群状态</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br></pre></td><td class="code"><pre><span class="line"># docker exec -ti mongo mongo</span><br><span class="line">MongoDB shell version v4.0.8</span><br><span class="line">connecting to: mongodb:&#x2F;&#x2F;127.0.0.1:27017&#x2F;?gssapiServiceName&#x3D;mongodb</span><br><span class="line">Implicit session: session &#123; &quot;id&quot; : UUID(&quot;a75a8f12-7683-4562-9124-5e0101685947&quot;) &#125;</span><br><span class="line">MongoDB server version: 4.0.8</span><br><span class="line">hg-mes:PRIMARY&gt; </span><br><span class="line">hg-mes:PRIMARY&gt; use admin</span><br><span class="line">switched to db admin</span><br><span class="line">hg-mes:PRIMARY&gt; db.auth(&quot;root&quot;,&quot;KXc8lM9BIl9su3rUK3WwqL5Snd74Q7&quot;)</span><br><span class="line">1</span><br><span class="line">hg-mes:PRIMARY&gt; rs.status()</span><br><span class="line">&#123;</span><br><span class="line">	&quot;set&quot; : &quot;hg-mes&quot;,</span><br><span class="line">	&quot;date&quot; : ISODate(&quot;2019-09-05T06:22:37.678Z&quot;),</span><br><span class="line">	&quot;myState&quot; : 1,</span><br><span class="line">	&quot;term&quot; : NumberLong(15),</span><br><span class="line">	&quot;syncingTo&quot; : &quot;&quot;,</span><br><span class="line">	&quot;syncSourceHost&quot; : &quot;&quot;,</span><br><span class="line">	&quot;syncSourceId&quot; : -1,</span><br><span class="line">	&quot;heartbeatIntervalMillis&quot; : NumberLong(2000),</span><br><span class="line">	&quot;optimes&quot; : &#123;</span><br><span class="line">		&quot;lastCommittedOpTime&quot; : &#123;</span><br><span class="line">			&quot;ts&quot; : Timestamp(1567664552, 1),</span><br><span class="line">			&quot;t&quot; : NumberLong(15)</span><br><span class="line">		&#125;,</span><br><span class="line">		&quot;readConcernMajorityOpTime&quot; : &#123;</span><br><span class="line">			&quot;ts&quot; : Timestamp(1567664552, 1),</span><br><span class="line">			&quot;t&quot; : NumberLong(15)</span><br><span class="line">		&#125;,</span><br><span class="line">		&quot;appliedOpTime&quot; : &#123;</span><br><span class="line">			&quot;ts&quot; : Timestamp(1567664552, 1),</span><br><span class="line">			&quot;t&quot; : NumberLong(15)</span><br><span class="line">		&#125;,</span><br><span class="line">		&quot;durableOpTime&quot; : &#123;</span><br><span class="line">			&quot;ts&quot; : Timestamp(1567664552, 1),</span><br><span class="line">			&quot;t&quot; : NumberLong(15)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;,</span><br><span class="line">	&quot;lastStableCheckpointTimestamp&quot; : Timestamp(1567664502, 1),</span><br><span class="line">	&quot;members&quot; : [</span><br><span class="line">		&#123;</span><br><span class="line">			&quot;_id&quot; : 0,</span><br><span class="line">			&quot;name&quot; : &quot;192.168.17.101:27017&quot;,</span><br><span class="line">			&quot;health&quot; : 1,</span><br><span class="line">			&quot;state&quot; : 2,</span><br><span class="line">			&quot;stateStr&quot; : &quot;SECONDARY&quot;,</span><br><span class="line">			&quot;uptime&quot; : 9106,</span><br><span class="line">			&quot;optime&quot; : &#123;</span><br><span class="line">				&quot;ts&quot; : Timestamp(1567664552, 1),</span><br><span class="line">				&quot;t&quot; : NumberLong(15)</span><br><span class="line">			&#125;,</span><br><span class="line">			&quot;optimeDurable&quot; : &#123;</span><br><span class="line">				&quot;ts&quot; : Timestamp(1567664552, 1),</span><br><span class="line">				&quot;t&quot; : NumberLong(15)</span><br><span class="line">			&#125;,</span><br><span class="line">			&quot;optimeDate&quot; : ISODate(&quot;2019-09-05T06:22:32Z&quot;),</span><br><span class="line">			&quot;optimeDurableDate&quot; : ISODate(&quot;2019-09-05T06:22:32Z&quot;),</span><br><span class="line">			&quot;lastHeartbeat&quot; : ISODate(&quot;2019-09-05T06:22:35.806Z&quot;),</span><br><span class="line">			&quot;lastHeartbeatRecv&quot; : ISODate(&quot;2019-09-05T06:22:35.806Z&quot;),</span><br><span class="line">			&quot;pingMs&quot; : NumberLong(0),</span><br><span class="line">			&quot;lastHeartbeatMessage&quot; : &quot;&quot;,</span><br><span class="line">			&quot;syncingTo&quot; : &quot;192.168.17.103:27017&quot;,</span><br><span class="line">			&quot;syncSourceHost&quot; : &quot;192.168.17.103:27017&quot;,</span><br><span class="line">			&quot;syncSourceId&quot; : 1,</span><br><span class="line">			&quot;infoMessage&quot; : &quot;&quot;,</span><br><span class="line">			&quot;configVersion&quot; : 1</span><br><span class="line">		&#125;,</span><br><span class="line">		&#123;</span><br><span class="line">			&quot;_id&quot; : 1,</span><br><span class="line">			&quot;name&quot; : &quot;192.168.17.103:27017&quot;,</span><br><span class="line">			&quot;health&quot; : 1,</span><br><span class="line">			&quot;state&quot; : 1,</span><br><span class="line">			&quot;stateStr&quot; : &quot;PRIMARY&quot;,</span><br><span class="line">			&quot;uptime&quot; : 9112,</span><br><span class="line">			&quot;optime&quot; : &#123;</span><br><span class="line">				&quot;ts&quot; : Timestamp(1567664552, 1),</span><br><span class="line">				&quot;t&quot; : NumberLong(15)</span><br><span class="line">			&#125;,</span><br><span class="line">			&quot;optimeDate&quot; : ISODate(&quot;2019-09-05T06:22:32Z&quot;),</span><br><span class="line">			&quot;syncingTo&quot; : &quot;&quot;,</span><br><span class="line">			&quot;syncSourceHost&quot; : &quot;&quot;,</span><br><span class="line">			&quot;syncSourceId&quot; : -1,</span><br><span class="line">			&quot;infoMessage&quot; : &quot;&quot;,</span><br><span class="line">			&quot;electionTime&quot; : Timestamp(1567655461, 1),</span><br><span class="line">			&quot;electionDate&quot; : ISODate(&quot;2019-09-05T03:51:01Z&quot;),</span><br><span class="line">			&quot;configVersion&quot; : 1,</span><br><span class="line">			&quot;self&quot; : true,</span><br><span class="line">			&quot;lastHeartbeatMessage&quot; : &quot;&quot;</span><br><span class="line">		&#125;</span><br><span class="line">	],</span><br><span class="line">	&quot;ok&quot; : 1,</span><br><span class="line">	&quot;operationTime&quot; : Timestamp(1567664552, 1),</span><br><span class="line">	&quot;$clusterTime&quot; : &#123;</span><br><span class="line">		&quot;clusterTime&quot; : Timestamp(1567664552, 1),</span><br><span class="line">		&quot;signature&quot; : &#123;</span><br><span class="line">			&quot;hash&quot; : BinData(0,&quot;csNwbaP&#x2F;JQu01D5VOs3IU5cdidY&#x3D;&quot;),</span><br><span class="line">			&quot;keyId&quot; : NumberLong(&quot;6733014307732193281&quot;)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">hg-mes:PRIMARY&gt;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="创建数据库和普通用户"><a href="#创建数据库和普通用户" class="headerlink" title="创建数据库和普通用户"></a>创建数据库和普通用户</h2><blockquote>
+<p>以下操作必须先认证超级管理用户</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">hg-mes:PRIMARY&gt; use qb_analysis</span><br><span class="line">switched to db qb_analysis</span><br><span class="line">hg-mes:PRIMARY&gt; db</span><br><span class="line">qb_analysis</span><br><span class="line">hg-mes:PRIMARY&gt;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>创建数据库，不插入数据，数据库不会保存</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.movie.insert(&#123;&quot;name&quot;:&quot;aaa&quot;&#125;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="创建某个数据库管理用户"><a href="#创建某个数据库管理用户" class="headerlink" title="创建某个数据库管理用户"></a>创建某个数据库管理用户</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">use mydb</span><br><span class="line">db.createUser(&#123;user: &#39;myuser&#39;,pwd: &#39;mypass&#39;,roles: [ &#123; role: &quot;readWrite&quot;, db: &quot;mydb&quot; &#125; ]&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>实例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">hg-mes:PRIMARY&gt; db.createUser(&#123;</span><br><span class="line">...     user: &#39;mes&#39;,</span><br><span class="line">...     pwd: &#39;KXc8lM9BIl9su3rUK3WwqL5Snd74Q7&#39;,</span><br><span class="line">...   roles: [ &#123; role: &quot;readWrite&quot;, db: &quot;qb_analysis&quot; &#125; ]</span><br><span class="line">...   &#125;</span><br><span class="line">...   )</span><br><span class="line">Successfully added user: &#123;</span><br><span class="line">	&quot;user&quot; : &quot;mes&quot;,</span><br><span class="line">	&quot;roles&quot; : [</span><br><span class="line">		&#123;</span><br><span class="line">			&quot;role&quot; : &quot;readWrite&quot;,</span><br><span class="line">			&quot;db&quot; : &quot;qb_analysis&quot;</span><br><span class="line">		&#125;</span><br><span class="line">	]</span><br><span class="line">&#125;</span><br><span class="line">hg-mes:PRIMARY&gt; show users</span><br><span class="line">&#123;</span><br><span class="line">	&quot;_id&quot; : &quot;qb_analysis.mes&quot;,</span><br><span class="line">	&quot;user&quot; : &quot;mes&quot;,</span><br><span class="line">	&quot;db&quot; : &quot;qb_analysis&quot;,</span><br><span class="line">	&quot;roles&quot; : [</span><br><span class="line">		&#123;</span><br><span class="line">			&quot;role&quot; : &quot;readWrite&quot;,</span><br><span class="line">			&quot;db&quot; : &quot;qb_analysis&quot;</span><br><span class="line">		&#125;</span><br><span class="line">	],</span><br><span class="line">	&quot;mechanisms&quot; : [</span><br><span class="line">		&quot;SCRAM-SHA-1&quot;,</span><br><span class="line">		&quot;SCRAM-SHA-256&quot;</span><br><span class="line">	]</span><br><span class="line">&#125;</span><br><span class="line">hg-mes:PRIMARY&gt; db.auth(&quot;mes&quot;,&quot;KXc8lM9BIl9su3rUK3WwqL5Snd74Q7&quot;)</span><br><span class="line">1</span><br><span class="line">hg-mes:PRIMARY&gt; db.auth(&quot;root&quot;,&quot;KXc8lM9BIl9su3rUK3WwqL5Snd74Q7&quot;)</span><br><span class="line">Error: Authentication failed.</span><br><span class="line">0</span><br><span class="line">hg-mes:PRIMARY&gt;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>通过show users可以看到mes用户，以及对于角色，此时用mes用户可以认证通过，但是用超级管理员用户root无法认证。这是因为root用户是保存至admin这个数据库</p>
+</blockquote>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%95%B0%E6%8D%AE%E5%BA%93/Mongodb/Mongodb%E9%9B%86%E7%BE%A4%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%95%B0%E6%8D%AE%E5%BA%93/Mongodb/Mongodb%E9%9B%86%E7%BE%A4%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="post-title-link" itemprop="url">运维/数据库/Mongodb/Mongodb集群常用命令</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:56" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:56+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h4 id="创建用户"><a href="#创建用户" class="headerlink" title="创建用户"></a>创建用户</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">use mydb</span><br><span class="line">db.createUser(&#123;user: <span class="string">'aaa'</span>,<span class="built_in">pwd</span>: <span class="string">'aaa123'</span>,roles: [ &#123; role: <span class="string">'read'</span>, db: <span class="string">'mydb'</span> &#125; ]&#125;)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>用户角色、权限可以查看<a href="Mongodb开启用户认证">MongoDB开启用户认证</a></p>
+</blockquote>
+<h4 id="修改用户密码"><a href="#修改用户密码" class="headerlink" title="修改用户密码"></a>修改用户密码</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.changeUserPassword(<span class="string">'aaa'</span>,<span class="string">'bbb'</span>)</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%95%B0%E6%8D%AE%E5%BA%93/Mongodb/MongoDB%E5%A4%8D%E5%88%B6%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%95%B0%E6%8D%AE%E5%BA%93/Mongodb/MongoDB%E5%A4%8D%E5%88%B6%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/" class="post-title-link" itemprop="url">运维/数据库/Mongodb/MongoDB复制集群部署</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:56" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:56+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line">## MongoDB复制集群部署</span><br><span class="line"></span><br><span class="line">### 集群配置</span><br><span class="line">​&#96;&#96;&#96;yaml</span><br><span class="line">mkdir -p &#x2F;data&#x2F;server&#x2F;mongo&#x2F;&#123;config,data,logs&#125;</span><br><span class="line">mkdir &#x2F;data&#x2F;logs&#x2F;mongo -p</span><br><span class="line">chown 999.999 &#x2F;data&#x2F;logs&#x2F;mongo&#x2F; -R</span><br><span class="line">chown 999.999 &#x2F;data&#x2F;server&#x2F;mongo&#x2F; -R</span><br><span class="line"></span><br><span class="line">cat &lt;&lt;EOF&gt;&#x2F;data&#x2F;server&#x2F;mongo&#x2F;config&#x2F;mongod.conf</span><br><span class="line"># mongod.conf</span><br><span class="line"> </span><br><span class="line"># for documentation of all options, see:</span><br><span class="line">#   http:&#x2F;&#x2F;docs.mongodb.org&#x2F;manual&#x2F;reference&#x2F;configuration-options&#x2F;</span><br><span class="line"> </span><br><span class="line"># where to write logging data.</span><br><span class="line">systemLog:</span><br><span class="line">  destination: file</span><br><span class="line">  logAppend: true</span><br><span class="line">  path: &#x2F;etc&#x2F;mongo&#x2F;logs&#x2F;mongod.log</span><br><span class="line"> </span><br><span class="line"># Where and how to store data.</span><br><span class="line">storage:</span><br><span class="line">  dbPath: &#x2F;etc&#x2F;mongo&#x2F;data</span><br><span class="line">  journal:</span><br><span class="line">    enabled: true</span><br><span class="line">#  engine:</span><br><span class="line">#  mmapv1:</span><br><span class="line">#WiredTiger 引擎使用内存的上限，一般建议配置在系统可用内存的60%左右（默认配置）</span><br><span class="line">  wiredTiger:</span><br><span class="line">    engineConfig:</span><br><span class="line">      cacheSizeGB: 10</span><br><span class="line"> </span><br><span class="line"># how the process runs</span><br><span class="line">processManagement:</span><br><span class="line">  fork: false  # fork and run in background</span><br><span class="line">  pidFilePath: &#x2F;etc&#x2F;mongo&#x2F;data&#x2F;mongod.pid  # location of pidfile</span><br><span class="line">  timeZoneInfo: &#x2F;usr&#x2F;share&#x2F;zoneinfo</span><br><span class="line"> </span><br><span class="line"># network interfaces</span><br><span class="line">net:</span><br><span class="line">  port: 27017</span><br><span class="line">  bindIp: 0.0.0.0</span><br><span class="line">  #限制最大的并发连接数量，防止数据库压力过载,默认为100</span><br><span class="line">  maxIncomingConnections: 200</span><br><span class="line"> </span><br><span class="line">setParameter:</span><br><span class="line">    enableLocalhostAuthBypass: false</span><br><span class="line"> </span><br><span class="line">#security:</span><br><span class="line"># clusterAuthMode: keyFile</span><br><span class="line"># keyFile: &#x2F;etc&#x2F;mongo&#x2F;config&#x2F;energy-rc.key</span><br><span class="line"># transitionToAuth: true</span><br><span class="line"># authorization: enabled</span><br><span class="line"> </span><br><span class="line">#operationProfiling:</span><br><span class="line">replication:</span><br><span class="line"> replSetName: hg-mes</span><br><span class="line"> </span><br><span class="line">#sharding:</span><br><span class="line">## Enterprise-Only Options</span><br><span class="line">#auditLog:</span><br><span class="line">#snmp:</span><br><span class="line">EOF</span><br><span class="line">​</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>服务第一次启动时需要将security注释，避免启动失败</p>
+</blockquote>
+<h2 id="运行mongo服务"><a href="#运行mongo服务" class="headerlink" title="运行mongo服务"></a>运行mongo服务</h2><p>​<code>bash
+docker run --name mongo --net=host \
+             -v /data/server/mongo/config:/etc/mongo/config            \
+             -v /data/server/mongo/data:/etc/mongo/data            \
+             -v /data/logs/mongo:/etc/mongo/logs            \
+             -d  mongo:4.0.8 bash -c &quot;mongod --config /etc/mongo/config/mongod.conf&quot;
+​</code></p>
+<h2 id="初始化复制集集群"><a href="#初始化复制集集群" class="headerlink" title="初始化复制集集群"></a>初始化复制集集群</h2><p>​```text<br>docker exec -ti mongo mongo<br>MongoDB shell version v4.0.8<br>connecting to: mongodb://127.0.0.1:27017/?gssapiServiceName=mongodb<br>Implicit session: session { “id” : UUID(“a75a8f12-7683-4562-9124-5e0101685947”) }<br>MongoDB server version: 4.0.8</p>
+<blockquote>
+<p>rs.initiate( {<br>   _id : “hg-mes”,<br>   members: [<br>      { _id: 0, host: “192.168.17.101:27017” },<br>      { _id: 1, host: “192.168.17.103:27017” }<br>   ]<br>})<br>​```</p>
+</blockquote>
+<h2 id="开启MongoDB认证"><a href="#开启MongoDB认证" class="headerlink" title="开启MongoDB认证"></a>开启MongoDB认证</h2><p>在开启mongo认证前先来了解一下mongodb内置的角色和权限：</p>
+<h3 id="mongodb内置角色"><a href="#mongodb内置角色" class="headerlink" title="mongodb内置角色"></a>mongodb内置角色</h3><p>​```text</p>
+<ol>
+<li>数据库用户角色：read、readWrite;  </li>
+<li>数据库管理角色：dbAdmin、dbOwner、userAdmin；       </li>
+<li>集群管理角色：clusterAdmin、clusterManager、clusterMonitor、hostManager；</li>
+<li>备份恢复角色：backup、restore；</li>
+<li>所有数据库角色：readAnyDatabase、readWriteAnyDatabase、userAdminAnyDatabase、dbAdminAnyDatabase</li>
+<li>超级用户角色：root<br>// 这里还有几个角色间接或直接提供了系统超级用户的访问（dbOwner 、userAdmin、userAdminAnyDatabase）</li>
+<li>内部角色：__system<br>​```<h3 id="mongodb内置权限"><a href="#mongodb内置权限" class="headerlink" title="mongodb内置权限"></a>mongodb内置权限</h3></li>
+</ol>
+<ul>
+<li>read:允许用户读取指定数据库 </li>
+<li>readWrite:允许用户读写指定数据库 </li>
+<li>dbAdmin：允许用户在指定数据库中执行管理函数，如索引创建、删除，查看统计或访问system.profile </li>
+<li>userAdmin：允许用户向system.users集合写入，可以找指定数据库里创建、删除和管理用户 </li>
+<li>clusterAdmin：只在admin数据库中可用，赋予用户所有分片和复制集相关函数的管理权限。 </li>
+<li>readAnyDatabase：只在admin数据库中可用，赋予用户所有数据库的读权限 </li>
+<li>readWriteAnyDatabase：只在admin数据库中可用，赋予用户所有数据库的读写权限 </li>
+<li>userAdminAnyDatabase：只在admin数据库中可用，赋予用户所有数据库的userAdmin权限 </li>
+<li>dbAdminAnyDatabase：只在admin数据库中可用，赋予用户所有数据库的dbAdmin权限。 </li>
+<li>root：只在admin数据库中可用。超级账号，超级权限</li>
+</ul>
+<h3 id="创建第一个用户"><a href="#创建第一个用户" class="headerlink" title="创建第一个用户"></a>创建第一个用户</h3><p>​```text</p>
+<blockquote>
+<p>use admin<br>db.createUser({user:”admin”,pwd:”KXc8lM9BIl9su3rUK3WwqL5Snd74Q7”,roles:[{role:”userAdminAnyDatabase”,db:”admin”}]})<br>​```<br>MongoDB规定，创建的第一个用户一定要是在admin数据库、并且角色是userAdminAnyDatabase。</p>
+</blockquote>
+<h3 id="创建集群管理用户"><a href="#创建集群管理用户" class="headerlink" title="创建集群管理用户"></a>创建集群管理用户</h3><p>​```text</p>
+<blockquote>
+<p>use admin<br>db.createUser({user:”clusterAdmin”,pwd:”KXc8lM9BIl9su3rUK3WwqL5Snd74Q7”,roles:[{role:”clusterAdmin”,db:”admin”}]}<br>​```</p>
+</blockquote>
+<h3 id="创建超级管理用户"><a href="#创建超级管理用户" class="headerlink" title="创建超级管理用户"></a>创建超级管理用户</h3><p>​```text</p>
+<blockquote>
+<p>db.createUser({user:”root”,pwd:”KXc8lM9BIl9su3rUK3WwqL5Snd74Q7”,roles:[{role:”root”,db:”admin”}]})<br>Successfully added user: {<br>   “user” : “root”,<br>   “roles” : [<br>      {<br>         “role” : “root”,<br>         “db” : “admin”<br>      }<br>   ]<br>}</p>
+</blockquote>
+<p>​```</p>
+<h3 id="配置复制集群之间节点认证"><a href="#配置复制集群之间节点认证" class="headerlink" title="配置复制集群之间节点认证"></a>配置复制集群之间节点认证</h3><p>​```text<br>openssl rand -base64 756 &gt; /data/server/mongo/config/energy-rc.key </p>
+<p>chmod 400 /data/server/mongo/config/energy-rc.key<br>​```</p>
+<blockquote>
+<p>将energy-rc.key 秘钥文件分发至所有集群节点，需要注意秘钥权限</p>
+</blockquote>
+<h3 id="开启集群节点之间认证"><a href="#开启集群节点之间认证" class="headerlink" title="开启集群节点之间认证"></a>开启集群节点之间认证</h3><p>​<code>yaml
+security:
+ clusterAuthMode: keyFile
+ keyFile: /etc/mongo/config/energy-rc.key
+ authorization: enabled
+​</code></p>
+<h3 id="所有节点重启mongo服务"><a href="#所有节点重启mongo服务" class="headerlink" title="所有节点重启mongo服务"></a>所有节点重启mongo服务</h3><p>​<code>text
+docker restart mongo
+​</code></p>
+<h3 id="查看集群状态"><a href="#查看集群状态" class="headerlink" title="查看集群状态"></a>查看集群状态</h3><p>​```text</p>
+<h1 id="docker-exec-ti-mongo-mongo"><a href="#docker-exec-ti-mongo-mongo" class="headerlink" title="docker exec -ti mongo mongo"></a>docker exec -ti mongo mongo</h1><p>MongoDB shell version v4.0.8<br>connecting to: mongodb://127.0.0.1:27017/?gssapiServiceName=mongodb<br>Implicit session: session { “id” : UUID(“a75a8f12-7683-4562-9124-5e0101685947”) }<br>MongoDB server version: 4.0.8<br>hg-mes:PRIMARY&gt;<br>hg-mes:PRIMARY&gt; use admin<br>switched to db admin<br>hg-mes:PRIMARY&gt; db.auth(“root”,”KXc8lM9BIl9su3rUK3WwqL5Snd74Q7”)<br>1<br>hg-mes:PRIMARY&gt; rs.status()<br>{<br>   “set” : “hg-mes”,<br>   “date” : ISODate(“2019-09-05T06:22:37.678Z”),<br>   “myState” : 1,<br>   “term” : NumberLong(15),<br>   “syncingTo” : “”,<br>   “syncSourceHost” : “”,<br>   “syncSourceId” : -1,<br>   “heartbeatIntervalMillis” : NumberLong(2000),<br>   “optimes” : {<br>      “lastCommittedOpTime” : {<br>         “ts” : Timestamp(1567664552, 1),<br>         “t” : NumberLong(15)<br>      },<br>      “readConcernMajorityOpTime” : {<br>         “ts” : Timestamp(1567664552, 1),<br>         “t” : NumberLong(15)<br>      },<br>      “appliedOpTime” : {<br>         “ts” : Timestamp(1567664552, 1),<br>         “t” : NumberLong(15)<br>      },<br>      “durableOpTime” : {<br>         “ts” : Timestamp(1567664552, 1),<br>         “t” : NumberLong(15)<br>      }<br>   },<br>   “lastStableCheckpointTimestamp” : Timestamp(1567664502, 1),<br>   “members” : [<br>      {<br>         “_id” : 0,<br>         “name” : “192.168.17.101:27017”,<br>         “health” : 1,<br>         “state” : 2,<br>         “stateStr” : “SECONDARY”,<br>         “uptime” : 9106,<br>         “optime” : {<br>            “ts” : Timestamp(1567664552, 1),<br>            “t” : NumberLong(15)<br>         },<br>         “optimeDurable” : {<br>            “ts” : Timestamp(1567664552, 1),<br>            “t” : NumberLong(15)<br>         },<br>         “optimeDate” : ISODate(“2019-09-05T06:22:32Z”),<br>         “optimeDurableDate” : ISODate(“2019-09-05T06:22:32Z”),<br>         “lastHeartbeat” : ISODate(“2019-09-05T06:22:35.806Z”),<br>         “lastHeartbeatRecv” : ISODate(“2019-09-05T06:22:35.806Z”),<br>         “pingMs” : NumberLong(0),<br>         “lastHeartbeatMessage” : “”,<br>         “syncingTo” : “192.168.17.103:27017”,<br>         “syncSourceHost” : “192.168.17.103:27017”,<br>         “syncSourceId” : 1,<br>         “infoMessage” : “”,<br>         “configVersion” : 1<br>      },<br>      {<br>         “_id” : 1,<br>         “name” : “192.168.17.103:27017”,<br>         “health” : 1,<br>         “state” : 1,<br>         “stateStr” : “PRIMARY”,<br>         “uptime” : 9112,<br>         “optime” : {<br>            “ts” : Timestamp(1567664552, 1),<br>            “t” : NumberLong(15)<br>         },<br>         “optimeDate” : ISODate(“2019-09-05T06:22:32Z”),<br>         “syncingTo” : “”,<br>         “syncSourceHost” : “”,<br>         “syncSourceId” : -1,<br>         “infoMessage” : “”,<br>         “electionTime” : Timestamp(1567655461, 1),<br>         “electionDate” : ISODate(“2019-09-05T03:51:01Z”),<br>         “configVersion” : 1,<br>         “self” : true,<br>         “lastHeartbeatMessage” : “”<br>      }<br>   ],<br>   “ok” : 1,<br>   “operationTime” : Timestamp(1567664552, 1),<br>   “$clusterTime” : {<br>      “clusterTime” : Timestamp(1567664552, 1),<br>      “signature” : {<br>         “hash” : BinData(0,”csNwbaP/JQu01D5VOs3IU5cdidY=”),<br>         “keyId” : NumberLong(“6733014307732193281”)<br>      }<br>   }<br>}<br>hg-mes:PRIMARY&gt; </p>
+<p>​```</p>
+<h2 id="创建数据库和普通用户"><a href="#创建数据库和普通用户" class="headerlink" title="创建数据库和普通用户"></a>创建数据库和普通用户</h2><p>​<code>text
+hg-mes:PRIMARY&gt; use qb_analysis
+switched to db qb_analysis
+hg-mes:PRIMARY&gt; db
+qb_analysis
+hg-mes:PRIMARY&gt;
+​</code></p>
+<blockquote>
+<p>创建数据库，不插入数据，数据库不会保存<br>​<code>text
+db.movie.insert({&quot;name&quot;:&quot;aaa&quot;})
+​</code></p>
+</blockquote>
+<h3 id="创建某个数据库管理用户"><a href="#创建某个数据库管理用户" class="headerlink" title="创建某个数据库管理用户"></a>创建某个数据库管理用户</h3><p>​<code>text
+use mydb
+db.createUser({user: &#39;myuser&#39;,pwd: &#39;mypass&#39;,roles: [ { role: &quot;readWrite&quot;, db: &quot;mydb&quot; } ]})
+​</code></p>
+<p>实例<br>​<code>text
+hg-mes:PRIMARY&gt; db.createUser({
+...     user: &#39;mes&#39;,
+...     pwd: &#39;KXc8lM9BIl9su3rUK3WwqL5Snd74Q7&#39;,
+...   roles: [ { role: &quot;readWrite&quot;, db: &quot;qb_analysis&quot; } ]
+...   }
+...   )
+Successfully added user: {
+   &quot;user&quot; : &quot;mes&quot;,
+   &quot;roles&quot; : [
+      {
+         &quot;role&quot; : &quot;readWrite&quot;,
+         &quot;db&quot; : &quot;qb_analysis&quot;
+      }
+   ]
+}
+hg-mes:PRIMARY&gt; show users
+{
+   &quot;_id&quot; : &quot;qb_analysis.mes&quot;,
+   &quot;user&quot; : &quot;mes&quot;,
+   &quot;db&quot; : &quot;qb_analysis&quot;,
+   &quot;roles&quot; : [
+      {
+         &quot;role&quot; : &quot;readWrite&quot;,
+         &quot;db&quot; : &quot;qb_analysis&quot;
+      }
+   ],
+   &quot;mechanisms&quot; : [
+      &quot;SCRAM-SHA-1&quot;,
+      &quot;SCRAM-SHA-256&quot;
+   ]
+}
+hg-mes:PRIMARY&gt; db.auth(&quot;mes&quot;,&quot;KXc8lM9BIl9su3rUK3WwqL5Snd74Q7&quot;)
+1
+hg-mes:PRIMARY&gt; db.auth(&quot;root&quot;,&quot;KXc8lM9BIl9su3rUK3WwqL5Snd74Q7&quot;)
+Error: Authentication failed.
+0
+hg-mes:PRIMARY&gt;
+​</code></p>
+<blockquote>
+<p>通过show users可以看到mes用户，以及对于角色，此时用mes用户可以认证通过，但是用超级管理员用户root无法认证。这是因为root用户是保存至admin这个数据库</p>
+</blockquote>
+<p>​```text<br>hg-mes:PRIMARY&gt; use admin<br>switched to db admin<br>hg-mes:PRIMARY&gt; show users<br>{<br>   “_id” : “admin.admin”,<br>   “user” : “admin”,<br>   “db” : “admin”,<br>   “roles” : [<br>      {<br>         “role” : “userAdminAnyDatabase”,<br>         “db” : “admin”<br>      }<br>   ],<br>   “mechanisms” : [<br>      “SCRAM-SHA-1”,<br>      “SCRAM-SHA-256”<br>   ]<br>}<br>{<br>   “_id” : “admin.clusterAdmin”,<br>   “user” : “clusterAdmin”,<br>   “db” : “admin”,<br>   “roles” : [<br>      {<br>         “role” : “clusterAdmin”,<br>         “db” : “admin”<br>      }<br>   ],<br>   “mechanisms” : [<br>      “SCRAM-SHA-1”,<br>      “SCRAM-SHA-256”<br>   ]<br>}<br>{<br>   “_id” : “admin.root”,<br>   “user” : “root”,<br>   “db” : “admin”,<br>   “roles” : [<br>      {<br>         “role” : “root”,<br>         “db” : “admin”<br>      }<br>   ],<br>   “mechanisms” : [<br>      “SCRAM-SHA-1”,<br>      “SCRAM-SHA-256”<br>   ]<br>}<br>hg-mes:PRIMARY&gt; </p>
+<p>​```</p>
+<h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><p><a href="https://docs.mongodb.com/v4.0/reference/configuration-options/" target="_blank" rel="noopener">《MongoDB官方配置文档》</a></p>
+<p><a href="http://www.mongoing.com/archives/8781" target="_blank" rel="noopener">MongoDB 如何使用内存？为什么内存满了</a></p>
+<p><a href="https://blog.csdn.net/qingyuanluofeng/article/details/86683566" target="_blank" rel="noopener">mongodb内存使用优化</a></p>
+<p><a href="https://www.cnblogs.com/clsn/p/8244206.html#auto_id_0" target="_blank" rel="noopener">MongoDB的备份与恢复</a></p>
+<p><a href="https://www.jianshu.com/p/fcdc82939dd4" target="_blank" rel="noopener">https://www.jianshu.com/p/fcdc82939dd4</a><br>```</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E7%B3%BB%E7%BB%9F%E5%88%9D%E5%A7%8B%E5%8C%96/filebeat/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E7%B3%BB%E7%BB%9F%E5%88%9D%E5%A7%8B%E5%8C%96/filebeat/" class="post-title-link" itemprop="url">运维/系统初始化/filebeat</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:56" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:56+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /data/server/filebeat/data</span><br><span class="line">chown 1000.1000 /data/server/filebeat/data</span><br><span class="line"></span><br><span class="line">cat &lt;&lt; EOF &gt; /data/server/filebeat/filebeat.yml</span><br><span class="line">filebeat.inputs:</span><br><span class="line">- <span class="built_in">type</span>: <span class="built_in">log</span></span><br><span class="line">  enabled: <span class="literal">true</span></span><br><span class="line">  paths:</span><br><span class="line">    - /data/logs/apps/*/*master*.<span class="built_in">log</span></span><br><span class="line">    <span class="comment">#- c:\programdata\elasticsearch\logs\*</span></span><br><span class="line">  <span class="comment"># Exclude lines. A list of regular expressions to match. It drops the lines that are</span></span><br><span class="line">  <span class="comment"># matching any regular expression from the list.</span></span><br><span class="line">  <span class="comment">#exclude_lines: ['^DBG']</span></span><br><span class="line">  <span class="comment"># Include lines. A list of regular expressions to match. It exports the lines that are</span></span><br><span class="line">  <span class="comment"># matching any regular expression from the list.</span></span><br><span class="line">  <span class="comment">#include_lines: ['^ERR', '^WARN']</span></span><br><span class="line">  <span class="comment"># Exclude files. A list of regular expressions to match. Filebeat drops the files that</span></span><br><span class="line">  <span class="comment"># are matching any regular expression from the list. By default, no files are dropped.</span></span><br><span class="line">  exclude_files: [<span class="string">'.gz$'</span>]</span><br><span class="line">  <span class="comment"># Optional additional fields. These fields can be freely picked</span></span><br><span class="line">  <span class="comment"># to add additional information to the crawled log files for filtering</span></span><br><span class="line">  fields:</span><br><span class="line">      logIndex: springboot</span><br><span class="line">      docType: springboot</span><br><span class="line">  <span class="comment">#  level: debug</span></span><br><span class="line">  <span class="comment">#  review: 1</span></span><br><span class="line">  <span class="comment">### Multiline options</span></span><br><span class="line">  <span class="comment"># Multiline can be used for log messages spanning multiple lines. This is common</span></span><br><span class="line">  <span class="comment"># for Java Stack Traces or C-Line Continuation</span></span><br><span class="line">  <span class="comment"># The regexp Pattern that has to be matched. The example pattern matches all lines starting with [</span></span><br><span class="line">  <span class="comment">#multiline.pattern: ^\[</span></span><br><span class="line">  multiline.pattern: <span class="string">'^[0-9]&#123;4&#125;-[0-9]&#123;2&#125;-[0-9]&#123;2&#125;'</span></span><br><span class="line">  <span class="comment"># Defines if the pattern set under pattern should be negated or not. Default is false.</span></span><br><span class="line">  multiline.negate: <span class="literal">true</span></span><br><span class="line">  <span class="comment"># Match can be set to "after" or "before". It is used to define if lines should be append to a pattern</span></span><br><span class="line">  <span class="comment"># that was (not) matched before or after or as long as a pattern is not matched based on negate.</span></span><br><span class="line">  <span class="comment"># Note: After is the equivalent to previous and before is the equivalent to to next in Logstash</span></span><br><span class="line">  multiline.match: after</span><br><span class="line">filebeat.config.modules:</span><br><span class="line">  <span class="comment"># Glob pattern for configuration loading</span></span><br><span class="line">  path: \<span class="variable">$&#123;path.config&#125;</span>/modules.d/*.yml</span><br><span class="line">  <span class="comment"># Set to true to enable config reloading</span></span><br><span class="line">  reload.enabled: <span class="literal">false</span></span><br><span class="line">  <span class="comment"># Period on which files under path should be checked for changes</span></span><br><span class="line">  <span class="comment">#reload.period: 10s</span></span><br><span class="line">setup.template.settings:</span><br><span class="line">  index.number_of_shards: 3</span><br><span class="line">  <span class="comment">#index.codec: best_compression</span></span><br><span class="line">  <span class="comment">#_source.enabled: false</span></span><br><span class="line">tags: [<span class="string">"spring-log"</span>]</span><br><span class="line">setup.kibana:</span><br><span class="line">  <span class="comment"># Kibana Host</span></span><br><span class="line">  <span class="comment"># Scheme and port can be left out and will be set to the default (http and 5601)</span></span><br><span class="line">  <span class="comment"># In case you specify and additional path, the scheme is required: http://localhost:5601/path</span></span><br><span class="line">  <span class="comment"># IPv6 addresses should always be defined as: https://[2001:db8::1]:5601</span></span><br><span class="line">  <span class="comment">#host: "localhost:5601"</span></span><br><span class="line">  <span class="comment"># Kibana Space ID</span></span><br><span class="line">  <span class="comment"># ID of the Kibana Space into which the dashboards should be loaded. By default,</span></span><br><span class="line">  <span class="comment"># the Default Space will be used.</span></span><br><span class="line">  <span class="comment">#space.id:</span></span><br><span class="line">  <span class="comment"># Array of hosts to connect to.</span></span><br><span class="line">  <span class="comment"># Enabled ilm (beta) to use index lifecycle management instead daily indices.</span></span><br><span class="line">  <span class="comment">#ilm.enabled: false</span></span><br><span class="line">  <span class="comment"># Optional protocol and basic auth credentials.</span></span><br><span class="line">  <span class="comment">#protocol: "https"</span></span><br><span class="line">  <span class="comment">#username: "elastic"</span></span><br><span class="line">  <span class="comment">#password: "changeme"</span></span><br><span class="line">output.logstash:</span><br><span class="line">  <span class="comment"># The Logstash hosts</span></span><br><span class="line">  hosts: [<span class="string">"192.168.16.148:25044"</span>]</span><br><span class="line">  <span class="comment"># Optional SSL. By default is off.</span></span><br><span class="line">  <span class="comment"># List of root certificates for HTTPS server verifications</span></span><br><span class="line">  <span class="comment">#ssl.certificate_authorities: ["/etc/pki/root/ca.pem"]</span></span><br><span class="line">  <span class="comment"># Certificate for SSL client authentication</span></span><br><span class="line">  <span class="comment">#ssl.certificate: "/etc/pki/client/cert.pem"</span></span><br><span class="line">  <span class="comment"># Client Certificate Key</span></span><br><span class="line">  <span class="comment">#ssl.key: "/etc/pki/client/cert.key"</span></span><br><span class="line">processors:</span><br><span class="line">  - add_host_metadata: ~</span><br><span class="line">  - add_cloud_metadata: ~</span><br><span class="line">logging.level: debug</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">docker run -d --net host --name filebeat\</span><br><span class="line">           -v /data/server/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml \</span><br><span class="line">           -v /data/logs:/data/logs  \</span><br><span class="line">           -v /data/server/filebeat/data:/usr/share/filebeat/data \</span><br><span class="line">           -e TZ=<span class="string">"Asia/Shanghai"</span> \</span><br><span class="line">           registry.cn-hangzhou.aliyuncs.com/zhijing/filebeat:6.7.1 &gt;&gt;/dev/null</span><br></pre></td></tr></table></figure>
+
+
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E7%B3%BB%E7%BB%9F%E5%88%9D%E5%A7%8B%E5%8C%96/fail2ban/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E7%B3%BB%E7%BB%9F%E5%88%9D%E5%A7%8B%E5%8C%96/fail2ban/" class="post-title-link" itemprop="url">运维/系统初始化/fail2ban</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:55" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:55+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">yum install epel-release -y</span><br><span class="line">yum install fail2ban -y</span><br><span class="line"></span><br><span class="line">cat &lt;&lt;EOF &gt; /etc/fail2ban/jail.local</span><br><span class="line">[ssh-iptables]</span><br><span class="line">enabled  = <span class="literal">true</span></span><br><span class="line">filter   = sshd</span><br><span class="line">action   = iptables[name=SSH, port=ssh, protocol=tcp]</span><br><span class="line"><span class="comment">#           sendmail-whois[name=SSH, dest=root, sender=fail2ban@example.com]</span></span><br><span class="line">logpath  = /var/<span class="built_in">log</span>/secure</span><br><span class="line">maxretry = 5</span><br><span class="line">bantime = 2592000</span><br><span class="line">findtime = 1800</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">systemctl start fail2ban</span><br><span class="line">systemctl <span class="built_in">enable</span> fail2ban</span><br><span class="line"><span class="comment">## 解禁fail2ban-client set sshd unbanip &lt;ip&gt;</span></span><br><span class="line">fail2ban-client status</span><br><span class="line">fail2ban-client status sshd-iptables</span><br></pre></td></tr></table></figure>
+
+
+
+<p><a href="http://dig.ping.pe/seam.alongparty.cn:A:114.114.114.114" target="_blank" rel="noopener">域名解析检测</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/Gitlab%E3%80%81Jenkins%E3%80%81Grafana%E7%BB%9F%E4%B8%80%E4%BD%BF%E7%94%A8OpenLDAP%E8%AE%A4%E8%AF%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/Gitlab%E3%80%81Jenkins%E3%80%81Grafana%E7%BB%9F%E4%B8%80%E4%BD%BF%E7%94%A8OpenLDAP%E8%AE%A4%E8%AF%81/" class="post-title-link" itemprop="url">运维/标准化及流程化/Gitlab、Jenkins、Grafana统一使用OpenLDAP认证</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:55" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:55+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>Gitlab、Jenkins、Grafana统一使用OpenLDAP认证</p>
+<h3 id="Jenkins配置OpenLDAP统一认证"><a href="#Jenkins配置OpenLDAP统一认证" class="headerlink" title="Jenkins配置OpenLDAP统一认证"></a>Jenkins配置OpenLDAP统一认证</h3><ol>
+<li>全局安全配置 ==&gt; LDAP</li>
+</ol>
+<p><img src="http://typora.alongparty.cn/typora_img/20200319114112.png" alt=""></p>
+<ol start="2">
+<li><p>配置服务器信息</p>
+<blockquote>
+<ul>
+<li><p>Server:  <code>ldap://192.168.19.8:389</code></p>
+</li>
+<li><p>Root DN:  <code>dc=baibu,dc=la</code></p>
+</li>
+<li><p>User search base:  <code>ou=People</code></p>
+</li>
+<li><p>User search filter:  <code>(&amp;(uid={0})(memberof=cn=baibu,ou=Group,dc=baibu,dc=la))</code></p>
+<p><code>(&amp;(uid={0})(|(memberof=cn=baibu,ou=Group,dc=baibu,dc=la)(memberof=cn=yunwei,ou=Group,dc=baibu,dc=la)))</code></p>
+</li>
+<li><p>Group search base: <code>ou=Group</code></p>
+</li>
+<li><p>Group membership:  <code>Search for LDAP groups containing user</code></p>
+</li>
+<li><p>Group membership filter: <code>(&amp;(uid={0}))</code></p>
+</li>
+<li><p>Manager DN: <code>cn=admin,dc=baibu,dc=la</code></p>
+</li>
+<li><p>Manager Password: <code>kbsonlong</code></p>
+</li>
+<li><p>Display Name LDAP attribute: <code>cn</code></p>
+</li>
+<li><p>Email Address LDAP attribute: <code>mail</code></p>
+</li>
+</ul>
+</blockquote>
+<p>注意: 每条业务线的User search filter不同的cn，</p>
+<blockquote>
+<p>百布<strong>baibu</strong></p>
+<p>全布<strong>quanbu</strong></p>
+<p>布搭档<strong>budadang</strong></p>
+<p>金融<strong>finance</strong></p>
+</blockquote>
+</li>
+</ol>
+<ol start="3">
+<li><p>测试配置是否正确</p>
+<p><img src="http://typora.alongparty.cn/typora_img/20200319114959.png" alt=""></p>
+</li>
+</ol>
+<p><img src="http://typora.alongparty.cn/typora_img/20200319115020.png" alt=""></p>
+<h3 id="Gitlab接入OpenLDAP"><a href="#Gitlab接入OpenLDAP" class="headerlink" title="Gitlab接入OpenLDAP"></a>Gitlab接入OpenLDAP</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># vim /etc/gitlab/gitlab.rb</span></span><br><span class="line">      <span class="comment">## ldap认证</span></span><br><span class="line">      gitlab_rails[<span class="string">'ldap_enabled'</span>] = <span class="literal">true</span></span><br><span class="line">      gitlab_rails[<span class="string">'ldap_servers'</span>] = YAML.load &lt;&lt;-<span class="string">'EOS'</span></span><br><span class="line">        main: <span class="comment"># 'main' is the GitLab 'provider ID' of this LDAP server</span></span><br><span class="line">          label: <span class="string">'LDAP'</span></span><br><span class="line">          host: <span class="string">'ldap.baibu.la'</span></span><br><span class="line">          port: 389</span><br><span class="line">          uid: <span class="string">'uid'</span></span><br><span class="line">          method: <span class="string">'plain'</span> <span class="comment"># "tls" or "ssl" or "plain"</span></span><br><span class="line">          bind_dn: <span class="string">'cn=admin,dc=baibu,dc=la'</span></span><br><span class="line">          password: <span class="string">'kbsonlong'</span></span><br><span class="line">          allow_username_or_email_login: <span class="literal">false</span></span><br><span class="line">          base: <span class="string">'ou=People,dc=baibu,dc=la'</span></span><br><span class="line">          user_filter: <span class="string">'(memberof=cn=baibu,ou=Group,dc=baibu,dc=la)'</span></span><br><span class="line">          <span class="comment">## 多组</span></span><br><span class="line">          <span class="comment">#user_filter:  "(|(memberof=cn=baibu,ou=Group,dc=baibu,dc=la)(memberof=cn=yunwei,ou=Group,dc=baibu,dc=la))"</span></span><br><span class="line">          attributes:</span><br><span class="line">            username: [<span class="string">'uid'</span>]</span><br><span class="line">            email:    [<span class="string">'mail'</span>]</span><br><span class="line">            first_name: <span class="string">'sn'</span></span><br><span class="line"></span><br><span class="line">      EOS</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Grafana接入OpenLDAP"><a href="#Grafana接入OpenLDAP" class="headerlink" title="Grafana接入OpenLDAP"></a>Grafana接入OpenLDAP</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># vim /etc/grafana/grafana.ini</span></span><br><span class="line"><span class="comment">#################################### Auth LDAP ##########################</span></span><br><span class="line">[auth.ldap]</span><br><span class="line">enabled = <span class="literal">true</span></span><br><span class="line">config_file = /etc/grafana/ldap.toml</span><br><span class="line">;allow_sign_up = <span class="literal">true</span></span><br><span class="line"><span class="comment"># cat ldap.toml</span></span><br><span class="line">[[servers]]</span><br><span class="line">host = <span class="string">"ldap.baibu.la"</span></span><br><span class="line">port = 389</span><br><span class="line"><span class="comment">#root_ca_cert = /path/to/certificate.crt //证书没设置</span></span><br><span class="line"><span class="comment"># Search user bind dn</span></span><br><span class="line">bind_dn = <span class="string">'cn=admin,dc=baibu,dc=la'</span></span><br><span class="line"><span class="comment"># Search user bind password</span></span><br><span class="line">bind_password = <span class="string">"42zRy3qk"</span></span><br><span class="line"><span class="comment"># uid登录</span></span><br><span class="line">search_filter = <span class="string">"(uid=%s)"</span></span><br><span class="line"><span class="comment">#search_filter = "(mail=%s)" //邮箱登录 chenchen.ming@qq.com</span></span><br><span class="line">search_base_dns = [<span class="string">'ou=People,dc=baibu,dc=la'</span>]</span><br><span class="line">group_search_filter = <span class="string">"(&amp;(objectClass=posixGroup)(memberUid=%s))"</span></span><br><span class="line"><span class="comment">#group_search_base_dns = ["ou=Groups,dc=baibu,dc=la"]</span></span><br><span class="line"><span class="comment">#group_search_filter_user_attribute = "uid"</span></span><br><span class="line">[servers.attributes]</span><br><span class="line">name = <span class="string">"cn"</span></span><br><span class="line">surname = <span class="string">"sn"</span></span><br><span class="line">username = <span class="string">"cn"</span></span><br><span class="line">email =  <span class="string">"mail"</span></span><br><span class="line">member_of = <span class="string">"memberOf"</span></span><br><span class="line"><span class="comment"># 运维组</span></span><br><span class="line">[[servers.group_mappings]]</span><br><span class="line">group_dn = <span class="string">"cn=yunweizu,ou=Group,dc=baibu,dc=la"</span></span><br><span class="line">org_role = <span class="string">"Admin"</span></span><br><span class="line">grafana_admin = <span class="literal">true</span></span><br><span class="line">[[servers.group_mappings]]</span><br><span class="line"><span class="comment"># 所有人都是该org的viewer</span></span><br><span class="line">group_dn = <span class="string">"*"</span></span><br><span class="line">org_role = <span class="string">"Viewer"</span></span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/CICD/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/CICD/" class="post-title-link" itemprop="url">运维/标准化及流程化/CICD</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:55" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:55+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/%E8%B5%84%E6%BA%90%E4%BD%BF%E7%94%A8%E6%A0%87%E5%87%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/%E8%B5%84%E6%BA%90%E4%BD%BF%E7%94%A8%E6%A0%87%E5%87%86/" class="post-title-link" itemprop="url">运维/标准化及流程化/资源使用标准</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:55" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:55+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="1-背景"><a href="#1-背景" class="headerlink" title="1 背景"></a>1 <strong>背景</strong></h1><p>在服务器资源运营过程中，我们需要对现网服务器进行有效的识别，以负载情况为核心依据，将服务器进行分类，从而对不同分类的服务器进行优化运营。</p>
+<h1 id="2-适用范围"><a href="#2-适用范围" class="headerlink" title="2 适用范围"></a>2 <strong>适用范围</strong></h1><p>本规范的中涉及的服务器资源是指面向业务的现网服务器资源（不包括OA与dev 环境）,包括物理服务器和虚拟化服务器。</p>
+<p>本规范面向的用户是适用于所有使用该资源的开发或者产品用户。</p>
+<h1 id="3-目标"><a href="#3-目标" class="headerlink" title="3 目标"></a>3 <strong>目标</strong></h1><p><strong>本规范达到以下目标：</strong></p>
+<p>\1. 根据服务器负载情况，制定分类标准；</p>
+<p>\2. 定义业务分类标准；</p>
+<h1 id="4-技术分类标准"><a href="#4-技术分类标准" class="headerlink" title="4 技术分类标准"></a>4 <strong>技术分类标准</strong></h1><p><strong>1、服务器分为四类：</strong></p>
+<p>空载服务器 level0</p>
+<p>轻载服务器 level1</p>
+<p>正常负载服务器 level2</p>
+<p>高负载服务器 level3</p>
+<p><strong>2、物理服务器和虚拟化服务器采用相同指标标准</strong></p>
+<p><strong>3、常用负载性能指标维度定义</strong></p>
+<ol>
+<li><ol>
+<li><strong>CPU总利用率：cpu%</strong></li>
+</ol>
+</li>
+</ol>
+<p>cpu%= (所有逻辑CPU的利用率之和)/(逻辑CPU个数*100%)；</p>
+<ol>
+<li><ol>
+<li><strong>内存利用率：mem%</strong></li>
+</ol>
+</li>
+</ol>
+<p>mem%= (1- (系统空闲内存总数)/(物理内存总数));</p>
+<p><strong>4、核算周期</strong></p>
+<p>信息整理的时间节点。</p>
+<p><strong>5、核算范围</strong></p>
+<p>信息整理的时间节点。</p>
+<p><strong>6、边界划定</strong></p>
+<p>基于先宽后紧的标准制定原则，初期作下列定义，随着技术水平的不断提升，运维将不断演进本标准，适当提升空载、轻载的边界，并公布周知。</p>
+<table>
+<thead>
+<tr>
+<th>评估项目</th>
+<th>Level=0空载</th>
+<th>Level=1轻载</th>
+<th>Level=2正常</th>
+<th>Level=3高载</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Mem%</td>
+<td>&lt;20%</td>
+<td>[20%,35%)</td>
+<td>[35%,70%]</td>
+<td>(70%,100%]</td>
+</tr>
+<tr>
+<td>disk space%</td>
+<td>&lt;10%</td>
+<td>[10%,20%)</td>
+<td>[20%,70%]</td>
+<td>(70%,100%]</td>
+</tr>
+</tbody></table>
+<p><strong>7.负载综合评定</strong></p>
+<p>根据服务器类型，对相关技术指标维度进行核算，各维度得到Level=0,1,2,3，服务器综合负载 等于 各维度Level的最大值。</p>
+<h1 id="5-标准的维护和变更"><a href="#5-标准的维护和变更" class="headerlink" title="5 标准的维护和变更"></a>5 <strong>标准的维护和变更</strong></h1><p>随着技术和业务的发展，运维将定期对本标准进行回顾，合理调整本标准的定义，并发布和公告。</p>
+<table>
+<thead>
+<tr>
+<th>服务说明</th>
+<th>git仓库地址</th>
+<th>服务名</th>
+<th>Jar名</th>
+<th>HTTP网关路由地址(必填)</th>
+<th>中间件资源</th>
+<th>构建方式</th>
+<th>启动参数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>统一用户管理Dubbo服务</td>
+<td>ssh://git@gitlab.szzhijing.com:22222/quanbu/user-account-center.git</td>
+<td>user-account-center-dubbo</td>
+<td>user-account-center-dubbo.jar</td>
+<td></td>
+<td>redis、MongoDB、RocketMQ、Kafka等</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>统一用户管理Http服务</td>
+<td></td>
+<td>user-account-center-http</td>
+<td>user-account-center-http.jar</td>
+<td>/uac</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<ol>
+<li>gitlab项目名称不允许大写，统一为小写，并且以中划线-连接，不允许下划线_连接；</li>
+<li>服务名称必须以gitlab项目名称作为前缀拓展，不接受与项目无关的名称；</li>
+<li>jar包以服务名称命名，后加.jar结尾；</li>
+<li>http服务必须填写网关路由信息；</li>
+<li>项目依赖所需中间件资源，如redis、MongoDB、RockerMQ、Kafka等，说明所需版本、集群方式，最好能提供预估的并发、tps的，否则按默认标准安装部署；</li>
+<li>构建方式：maven和gradle；</li>
+<li></li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/%E8%B5%84%E6%BA%90%E7%94%B3%E8%AF%B7%E8%A7%84%E8%8C%83/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/%E8%B5%84%E6%BA%90%E7%94%B3%E8%AF%B7%E8%A7%84%E8%8C%83/" class="post-title-link" itemprop="url">运维/标准化及流程化/资源申请规范</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:55" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:55+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="一、资源申请"><a href="#一、资源申请" class="headerlink" title="一、资源申请"></a>一、资源申请</h2><table>
+<thead>
+<tr>
+<th>服务说明</th>
+<th>git仓库地址</th>
+<th>服务名</th>
+<th>Jar名</th>
+<th>HTTP网关路由地址(必填)</th>
+<th>中间件资源</th>
+<th>构建方式</th>
+<th>启动参数</th>
+<th>项目负责人</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>统一用户管理Dubbo服务</td>
+<td>ssh://git@gitlab.szzhijing.com:22222/quanbu/user-account-center.git</td>
+<td>user-account-center-dubbo</td>
+<td>user-account-center-dubbo.jar</td>
+<td></td>
+<td>redis、MongoDB、RocketMQ、Kafka等</td>
+<td>maven、gradle</td>
+<td></td>
+<td>林浩</td>
+</tr>
+<tr>
+<td>统一用户管理Http服务</td>
+<td></td>
+<td>user-account-center-http</td>
+<td>user-account-center-http.jar</td>
+<td>/uac</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<ol>
+<li><p><strong>gitlab项目名称不允许大写，统一为小写，并且以中横线-连接，不允许下划线_连接；</strong></p>
+</li>
+<li><p><strong>服务名称必须以gitlab项目名称作为前缀拓展，不接受与项目无关的名称；</strong></p>
+</li>
+<li><p><strong>jar包以服务名称命名，后加.jar结尾；</strong></p>
+</li>
+<li><p><strong>http服务必须填写网关路由信息，如果不存在http服务不需要填写；</strong></p>
+</li>
+<li><p><strong>项目负责人必须明确</strong>；</p>
+</li>
+<li><p>项目依赖所需中间件资源，如redis、MongoDB、RockerMQ、Kafka等，说明所需版本、集群方式，最好能提供预估的并发、tps的，否则按默认标准安装部署；</p>
+</li>
+<li><p>构建方式：maven和gradle；</p>
+</li>
+<li><p>是否有特殊启动参数，否则默认配置profile、启动端口、jvm大小，如有除dubbo、http端口外，有其他对外服务的接口不允许私自配置端口，必须在资源申请说明；</p>
+</li>
+<li><p>数据库资源和权限找DBA申请；</p>
+</li>
+</ol>
+<p><strong>注意</strong>：</p>
+<blockquote>
+<p>以上1至5点强制执行，不符合标准将驳回资源申请，重新填写。</p>
+</blockquote>
+<h2 id="二、Jenkins项目命名规范"><a href="#二、Jenkins项目命名规范" class="headerlink" title="二、Jenkins项目命名规范"></a>二、Jenkins项目命名规范</h2><p>Jenkins项目命名规范:</p>
+<p><strong>&lt;环境标识&gt;-&lt;Git项目名称&gt;-(服务说明)</strong></p>
+<p>Eg:</p>
+<blockquote>
+<p>dev-user-account-center-(统一用户管理)</p>
+</blockquote>
+<p><strong>注意事项</strong></p>
+<ul>
+<li><p>严禁使用中文括号</p>
+</li>
+<li><p>如果服务说明跟服务名称一致，那就省略服务说明<code>dev-user-account-center</code>即可</p>
+</li>
+</ul>
+<h2 id="三、端口定义"><a href="#三、端口定义" class="headerlink" title="三、端口定义"></a>三、端口定义</h2><p>每次收到新的资源申请时，需要给服务定义相关端口，必须先拉取gitlab仓库中端口使用规范表格，定义好相关端口信息后立即提交到gitlab仓库。最后在操作CMDB数据库，避免端口使用冲突。</p>
+<h2 id="四、主机别名定义"><a href="#四、主机别名定义" class="headerlink" title="四、主机别名定义"></a>四、主机别名定义</h2><p><strong>现状</strong>：一套服务多个主机别名，比较混乱。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/page/8/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/10/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+  </nav>
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="曾胜龙"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">曾胜龙</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yourname" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yourname" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank">粤ICP备18122209号 </a>
+      <img src="http://www.beian.gov.cn/portal/download" style="display: inline-block;">
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">曾胜龙</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"kbsonlong.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"3QSL94PCBQ","apiKey":"d2fe765a64df1740fcab93644d3a2677","indexName":"hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="一、前言安装好了Kong，那么如何使用和管理它呢？Kong附带了一个管理的API接口，我们通过这个API接口来管理所有的API以及其他的资源，这个接口具有最高的权限，所以在生产环境中我们要特别注意这个接口的权限，通常我们不会将这个接口暴露在外网中。 如果Kong是以集群的状态的运行的，那么你只需要将管理API的请求发送到其中的一个节点中，Kong会自动同步信息到其他的节点。Kong默认监听8001">
+<meta property="og:type" content="article">
+<meta property="og:title" content="运维&#x2F;Kong&#x2F;Kong网关API管理">
+<meta property="og:url" content="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/Kong/Kong%E7%BD%91%E5%85%B3API%E7%AE%A1%E7%90%86/index.html">
+<meta property="og:site_name" content="蜷缩的蜗牛">
+<meta property="og:description" content="一、前言安装好了Kong，那么如何使用和管理它呢？Kong附带了一个管理的API接口，我们通过这个API接口来管理所有的API以及其他的资源，这个接口具有最高的权限，所以在生产环境中我们要特别注意这个接口的权限，通常我们不会将这个接口暴露在外网中。 如果Kong是以集群的状态的运行的，那么你只需要将管理API的请求发送到其中的一个节点中，Kong会自动同步信息到其他的节点。Kong默认监听8001">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-05-14T13:51:59.429Z">
+<meta property="article:modified_time" content="2020-05-14T13:51:59.429Z">
+<meta property="article:author" content="曾胜龙">
+<meta property="article:tag" content="Devops Kubernetes Docker">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/Kong/Kong%E7%BD%91%E5%85%B3API%E7%AE%A1%E7%90%86/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>运维/Kong/Kong网关API管理 | 蜷缩的蜗牛</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="蜷缩的蜗牛" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">蜷缩的蜗牛</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">运维笔记</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/kbsonlong" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/Kong/Kong%E7%BD%91%E5%85%B3API%E7%AE%A1%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          运维/Kong/Kong网关API管理
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:59" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:59+08:00">2020-05-14</time>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h2><p>安装好了Kong，那么如何使用和管理它呢？Kong附带了一个管理的API接口，我们通过这个API接口来管理所有的API以及其他的资源，这个接口具有最高的权限，所以在生产环境中我们要特别注意这个接口的权限，通常我们不会将这个接口暴露在外网中。</p>
+<p>如果Kong是以集群的状态的运行的，那么你只需要将管理API的请求发送到其中的一个节点中，Kong会自动同步信息到其他的节点。Kong默认监听<code>8001</code>和<code>8444</code>两个端口用接受管理API的请求，<code>8001</code>为http端口，<code>8444</code>为https端口</p>
+<p>Kong支持<code>application/x-www-form-urlencoded</code>和<code>application/json</code>两种类型，POST的数据我们需要以json的格式发送。</p>
+<p>Kong大概有以下几个管理对象：</p>
+<ul>
+<li>节点信息</li>
+<li>服务</li>
+<li>路由</li>
+<li>消费者</li>
+<li>插件</li>
+<li>证书</li>
+<li>SNI</li>
+<li>上游信息</li>
+<li>目标</li>
+</ul>
+<blockquote>
+<p>在Kong0.13.0版本以前，有API对象，但是从0.13.0之后开始逐步抛弃API对象，使用路由和服务组合来取代API对象，这提高了Kong的灵活性。基于此本文也将不介绍有关API对象的操作</p>
+</blockquote>
+<h2 id="二-节点信息"><a href="#二-节点信息" class="headerlink" title="二 节点信息"></a>二 节点信息</h2><h3 id="1、-查看节点信息"><a href="#1、-查看节点信息" class="headerlink" title="1、 查看节点信息"></a>1、 查看节点信息</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -s http://192.168.16.181:8001 | python -m json.tool</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="2、-查看节点状态"><a href="#2、-查看节点状态" class="headerlink" title="2、 查看节点状态"></a>2、 查看节点状态</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -s http://192.168.16.181:8001/status | python -m json.tool</span><br></pre></td></tr></table></figure>
+
+<p>返回值：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"database"</span>: &#123;</span><br><span class="line">        <span class="attr">"reachable"</span>: <span class="literal">true</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"memory"</span>: &#123;</span><br><span class="line">        <span class="attr">"lua_shared_dicts"</span>: &#123;</span><br><span class="line">            <span class="attr">"kong"</span>: &#123;</span><br><span class="line">                <span class="attr">"allocated_slabs"</span>: <span class="string">"0.04 MiB"</span>,</span><br><span class="line">                <span class="attr">"capacity"</span>: <span class="string">"5.00 MiB"</span></span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="attr">"kong_cluster_events"</span>: &#123;</span><br><span class="line">                <span class="attr">"allocated_slabs"</span>: <span class="string">"0.04 MiB"</span>,</span><br><span class="line">                <span class="attr">"capacity"</span>: <span class="string">"5.00 MiB"</span></span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="attr">"kong_db_cache"</span>: &#123;</span><br><span class="line">                <span class="attr">"allocated_slabs"</span>: <span class="string">"0.76 MiB"</span>,</span><br><span class="line">                <span class="attr">"capacity"</span>: <span class="string">"128.00 MiB"</span></span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="attr">"kong_db_cache_miss"</span>: &#123;</span><br><span class="line">                <span class="attr">"allocated_slabs"</span>: <span class="string">"0.08 MiB"</span>,</span><br><span class="line">                <span class="attr">"capacity"</span>: <span class="string">"12.00 MiB"</span></span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="attr">"kong_healthchecks"</span>: &#123;</span><br><span class="line">                <span class="attr">"allocated_slabs"</span>: <span class="string">"0.04 MiB"</span>,</span><br><span class="line">                <span class="attr">"capacity"</span>: <span class="string">"5.00 MiB"</span></span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="attr">"kong_locks"</span>: &#123;</span><br><span class="line">                <span class="attr">"allocated_slabs"</span>: <span class="string">"0.06 MiB"</span>,</span><br><span class="line">                <span class="attr">"capacity"</span>: <span class="string">"8.00 MiB"</span></span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="attr">"kong_process_events"</span>: &#123;</span><br><span class="line">                <span class="attr">"allocated_slabs"</span>: <span class="string">"0.04 MiB"</span>,</span><br><span class="line">                <span class="attr">"capacity"</span>: <span class="string">"5.00 MiB"</span></span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="attr">"kong_rate_limiting_counters"</span>: &#123;</span><br><span class="line">                <span class="attr">"allocated_slabs"</span>: <span class="string">"0.08 MiB"</span>,</span><br><span class="line">                <span class="attr">"capacity"</span>: <span class="string">"12.00 MiB"</span></span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="attr">"prometheus_metrics"</span>: &#123;</span><br><span class="line">                <span class="attr">"allocated_slabs"</span>: <span class="string">"0.04 MiB"</span>,</span><br><span class="line">                <span class="attr">"capacity"</span>: <span class="string">"5.00 MiB"</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">"workers_lua_vms"</span>: [</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="attr">"http_allocated_gc"</span>: <span class="string">"0.02 MiB"</span>,</span><br><span class="line">                <span class="attr">"pid"</span>: <span class="number">31</span></span><br><span class="line">            &#125;,</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="attr">"http_allocated_gc"</span>: <span class="string">"0.02 MiB"</span>,</span><br><span class="line">                <span class="attr">"pid"</span>: <span class="number">32</span></span><br><span class="line">            &#125;</span><br><span class="line">        ]</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"server"</span>: &#123;</span><br><span class="line">        <span class="attr">"connections_accepted"</span>: <span class="number">137</span>,</span><br><span class="line">        <span class="attr">"connections_active"</span>: <span class="number">1</span>,</span><br><span class="line">        <span class="attr">"connections_handled"</span>: <span class="number">137</span>,</span><br><span class="line">        <span class="attr">"connections_reading"</span>: <span class="number">0</span>,</span><br><span class="line">        <span class="attr">"connections_waiting"</span>: <span class="number">0</span>,</span><br><span class="line">        <span class="attr">"connections_writing"</span>: <span class="number">1</span>,</span><br><span class="line">        <span class="attr">"total_requests"</span>: <span class="number">135</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在返回的数据中，各个值的含义如下：：</p>
+<ul>
+<li>total_requests：客户端请求的总数。</li>
+<li>connections_active：当前活动客户端连接数，包括等待连接。</li>
+<li>connections_accepted：已接受的客户端连接总数。</li>
+<li>connections_handled：已处理连接的总数。通常，参数值与accept相同，除非已达到某些资源限制。</li>
+<li>connections_reading：Kong正在读取请求标头的当前连接数。</li>
+<li>connections_writing：nginx将响应写回客户端的当前连接数。</li>
+<li>connections_waiting：等待请求的当前空闲客户端连接数。</li>
+</ul>
+<h2 id="三-服务"><a href="#三-服务" class="headerlink" title="三 服务"></a>三 服务</h2><p>服务是每一个后端真实接口的抽象，它与路由关联，客户端发起请求，如果路由匹配到了，那么会将这个请求代理到与匹配路由相关联的服务中。</p>
+<h3 id="1、-添加服务"><a href="#1、-添加服务" class="headerlink" title="1、 添加服务"></a>1、 添加服务</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">curl -s -X POST --url http://192.168.16.181:8001/services/ \</span><br><span class="line">-d <span class="string">'name=openapi'</span> \</span><br><span class="line">-d <span class="string">'protocol=http'</span> \</span><br><span class="line">-d <span class="string">'host=open.szzhijing.com'</span> \</span><br><span class="line">|python -m json.tool</span><br></pre></td></tr></table></figure>
+
+<p>返回值：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"client_certificate"</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="attr">"connect_timeout"</span>: <span class="number">60000</span>,</span><br><span class="line">    <span class="attr">"created_at"</span>: <span class="number">1576563301</span>,</span><br><span class="line">    <span class="attr">"host"</span>: <span class="string">"open.szzhijing.com"</span>,</span><br><span class="line">    <span class="attr">"id"</span>: <span class="string">"69e7d68f-f9ea-452c-bd57-fca04b7b4b1a"</span>,</span><br><span class="line">    <span class="attr">"name"</span>: <span class="string">"openapi"</span>,</span><br><span class="line">    <span class="attr">"path"</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="attr">"port"</span>: <span class="number">80</span>,</span><br><span class="line">    <span class="attr">"protocol"</span>: <span class="string">"http"</span>,</span><br><span class="line">    <span class="attr">"read_timeout"</span>: <span class="number">60000</span>,</span><br><span class="line">    <span class="attr">"retries"</span>: <span class="number">5</span>,</span><br><span class="line">    <span class="attr">"tags"</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="attr">"updated_at"</span>: <span class="number">1576563301</span>,</span><br><span class="line">    <span class="attr">"write_timeout"</span>: <span class="number">60000</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>如果在创建服务的时候没有指定<code>name</code>，那么Kong并不会自动创建<code>name</code>，但是会创建UUID形式的<code>ID</code>，Kong在调用、匹配等等的操作都是可以基于这个ID，所以这个ID绝对是全局唯一的。</p>
+<p>在其他的对象管理中，<code>name</code>字段可能是必须的，通常这个name资源也是全局唯一的，即便如此，Kong也会创建<code>ID</code>字段，也可以通过这个ID字段来匹配。</p>
+<p>在服务对象中，能组合起来成为上游服务也是唯一的，也就是说，在一个服务中无法同时存在 <code>http</code>和<code>https</code>，如果上游提供http和https服务，同时也需要Kong代理它们的话，那必须要设置两个服务</p>
+</blockquote>
+<h3 id="2、查询所有服务"><a href="#2、查询所有服务" class="headerlink" title="2、查询所有服务"></a>2、查询所有服务</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -s --url http://192.168.16.181:8001/services/ | python -m json.tool</span><br></pre></td></tr></table></figure>
+
+<p>返回值:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"data"</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"client_certificate"</span>: <span class="literal">null</span>,</span><br><span class="line">            <span class="attr">"connect_timeout"</span>: <span class="number">60000</span>,</span><br><span class="line">            <span class="attr">"created_at"</span>: <span class="number">1576563301</span>,</span><br><span class="line">            <span class="attr">"host"</span>: <span class="string">"open.szzhijing.com"</span>,</span><br><span class="line">            <span class="attr">"id"</span>: <span class="string">"69e7d68f-f9ea-452c-bd57-fca04b7b4b1a"</span>,</span><br><span class="line">            <span class="attr">"name"</span>: <span class="string">"openapi"</span>,</span><br><span class="line">            <span class="attr">"path"</span>: <span class="literal">null</span>,</span><br><span class="line">            <span class="attr">"port"</span>: <span class="number">80</span>,</span><br><span class="line">            <span class="attr">"protocol"</span>: <span class="string">"http"</span>,</span><br><span class="line">            <span class="attr">"read_timeout"</span>: <span class="number">60000</span>,</span><br><span class="line">            <span class="attr">"retries"</span>: <span class="number">5</span>,</span><br><span class="line">            <span class="attr">"tags"</span>: <span class="literal">null</span>,</span><br><span class="line">            <span class="attr">"updated_at"</span>: <span class="number">1576563301</span>,</span><br><span class="line">            <span class="attr">"write_timeout"</span>: <span class="number">60000</span></span><br><span class="line">        &#125;</span><br><span class="line">    ],</span><br><span class="line">    <span class="attr">"next"</span>: <span class="literal">null</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>如果服务数较多，可以加上size参数来限定每一页的数量</p>
+<p>curl -s –url <a href="http://192.168.16.181:8001/services/?size=1" target="_blank" rel="noopener">http://192.168.16.181:8001/services/?size=1</a> | python -m json.tool</p>
+</blockquote>
+<h3 id="3、查询具体服务"><a href="#3、查询具体服务" class="headerlink" title="3、查询具体服务"></a>3、查询具体服务</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -s --url http://192.168.16.181:8001/services/&lt;name|id&gt; | python -m json.tool</span><br></pre></td></tr></table></figure>
+
+<p>示例:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">curl -s --url http://192.168.16.181:8001/services/openapi | python -m json.tool</span><br><span class="line">&#123;</span><br><span class="line">    <span class="attr">"client_certificate"</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="attr">"connect_timeout"</span>: <span class="number">60000</span>,</span><br><span class="line">    <span class="attr">"created_at"</span>: <span class="number">1576563301</span>,</span><br><span class="line">    <span class="attr">"host"</span>: <span class="string">"open.szzhijing.com"</span>,</span><br><span class="line">    <span class="attr">"id"</span>: <span class="string">"69e7d68f-f9ea-452c-bd57-fca04b7b4b1a"</span>,</span><br><span class="line">    <span class="attr">"name"</span>: <span class="string">"openapi"</span>,</span><br><span class="line">    <span class="attr">"path"</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="attr">"port"</span>: <span class="number">80</span>,</span><br><span class="line">    <span class="attr">"protocol"</span>: <span class="string">"http"</span>,</span><br><span class="line">    <span class="attr">"read_timeout"</span>: <span class="number">60000</span>,</span><br><span class="line">    <span class="attr">"retries"</span>: <span class="number">5</span>,</span><br><span class="line">    <span class="attr">"tags"</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="attr">"updated_at"</span>: <span class="number">1576563301</span>,</span><br><span class="line">    <span class="attr">"write_timeout"</span>: <span class="number">60000</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="4、更新服务"><a href="#4、更新服务" class="headerlink" title="4、更新服务"></a>4、更新服务</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">curl -s -X PATCH --url http://192.168.16.181:8001/services/openapi \</span><br><span class="line">-d <span class="string">'name=openapis'</span> \</span><br><span class="line">-d <span class="string">'protocol=https'</span> \</span><br><span class="line">-d <span class="string">'port=443'</span></span><br><span class="line">|python -m json.tool</span><br></pre></td></tr></table></figure>
+
+<p>返回值:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"client_certificate"</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="attr">"connect_timeout"</span>: <span class="number">60000</span>,</span><br><span class="line">    <span class="attr">"created_at"</span>: <span class="number">1576563301</span>,</span><br><span class="line">    <span class="attr">"host"</span>: <span class="string">"open.szzhijing.com"</span>,</span><br><span class="line">    <span class="attr">"id"</span>: <span class="string">"69e7d68f-f9ea-452c-bd57-fca04b7b4b1a"</span>,</span><br><span class="line">    <span class="attr">"name"</span>: <span class="string">"openapis"</span>,</span><br><span class="line">    <span class="attr">"path"</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="attr">"port"</span>: <span class="number">443</span>,</span><br><span class="line">    <span class="attr">"protocol"</span>: <span class="string">"https"</span>,</span><br><span class="line">    <span class="attr">"read_timeout"</span>: <span class="number">60000</span>,</span><br><span class="line">    <span class="attr">"retries"</span>: <span class="number">5</span>,</span><br><span class="line">    <span class="attr">"tags"</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="attr">"updated_at"</span>: <span class="number">1576564309</span>,</span><br><span class="line">    <span class="attr">"write_timeout"</span>: <span class="number">60000</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="5、更新或创建服务"><a href="#5、更新或创建服务" class="headerlink" title="5、更新或创建服务"></a>5、更新或创建服务</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">curl -s -X PUT --url http://192.168.16.181:8001/services/baibu \</span><br><span class="line">-d <span class="string">'name=baidu'</span> \</span><br><span class="line">-d <span class="string">'protocol=https'</span> \</span><br><span class="line">-d <span class="string">'port=443'</span> \</span><br><span class="line">-d <span class="string">'host=www.baibu.la'</span>\</span><br><span class="line">|python -m json.tool</span><br></pre></td></tr></table></figure>
+
+<p>返回值：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"client_certificate"</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="attr">"connect_timeout"</span>: <span class="number">60000</span>,</span><br><span class="line">    <span class="attr">"created_at"</span>: <span class="number">1576564456</span>,</span><br><span class="line">    <span class="attr">"host"</span>: <span class="string">"www.baibu.la"</span>,</span><br><span class="line">    <span class="attr">"id"</span>: <span class="string">"31c5d68a-69b8-48fb-8987-a77a52faa1b7"</span>,</span><br><span class="line">    <span class="attr">"name"</span>: <span class="string">"baibu"</span>,</span><br><span class="line">    <span class="attr">"path"</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="attr">"port"</span>: <span class="number">443</span>,</span><br><span class="line">    <span class="attr">"protocol"</span>: <span class="string">"https"</span>,</span><br><span class="line">    <span class="attr">"read_timeout"</span>: <span class="number">60000</span>,</span><br><span class="line">    <span class="attr">"retries"</span>: <span class="number">5</span>,</span><br><span class="line">    <span class="attr">"tags"</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="attr">"updated_at"</span>: <span class="number">1576564456</span>,</span><br><span class="line">    <span class="attr">"write_timeout"</span>: <span class="number">60000</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="6、删除服务"><a href="#6、删除服务" class="headerlink" title="6、删除服务"></a>6、删除服务</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -s -X DELETE --url http://192.168.16.181:8001/services/baibu</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="四-路由"><a href="#四-路由" class="headerlink" title="四 路由"></a>四 路由</h2><p>路由用来匹配客户端请求的规则，每一个路由都要与一个服务相关联，当一个请求到达Kong的时候，会先给路由匹配，如果匹配成功，那么会将请求转发给服务，服务再去后端请求数据。所以路由是Kong的入口。</p>
+<p>在Kong0.13.0之前的版本有API实体，因为API实体使用用起来并不方便，所以将API实体拆分成路由和服务，这样提供了最大的自由度。</p>
+<p>Kong的一个API实体必须是路由和服务的组合。</p>
+<h3 id="1、添加路由"><a href="#1、添加路由" class="headerlink" title="1、添加路由"></a>1、添加路由</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">curl -s -X POST --url http://192.168.16.181:8001/routes \</span><br><span class="line">-d <span class="string">'protocols=http'</span> \</span><br><span class="line">-d <span class="string">'methods=GET'</span> \</span><br><span class="line">-d <span class="string">'paths=/openapi'</span> \</span><br><span class="line">-d <span class="string">'service.id=69e7d68f-f9ea-452c-bd57-fca04b7b4b1a'</span> | python -m json.tool</span><br></pre></td></tr></table></figure>
+
+<p>Result：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"created_at"</span>: <span class="number">1576564879</span>,</span><br><span class="line">    <span class="attr">"destinations"</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="attr">"headers"</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="attr">"hosts"</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="attr">"https_redirect_status_code"</span>: <span class="number">426</span>,</span><br><span class="line">    <span class="attr">"id"</span>: <span class="string">"785bd812-ceef-41a0-a98a-da65ce3d1bad"</span>,</span><br><span class="line">    <span class="attr">"methods"</span>: [</span><br><span class="line">        <span class="string">"GET"</span></span><br><span class="line">    ],</span><br><span class="line">    <span class="attr">"name"</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="attr">"paths"</span>: [</span><br><span class="line">        <span class="string">"/openapi"</span></span><br><span class="line">    ],</span><br><span class="line">    <span class="attr">"preserve_host"</span>: <span class="literal">false</span>,</span><br><span class="line">    <span class="attr">"protocols"</span>: [</span><br><span class="line">        <span class="string">"http"</span></span><br><span class="line">    ],</span><br><span class="line">    <span class="attr">"regex_priority"</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">"service"</span>: &#123;</span><br><span class="line">        <span class="attr">"id"</span>: <span class="string">"69e7d68f-f9ea-452c-bd57-fca04b7b4b1a"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"snis"</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="attr">"sources"</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="attr">"strip_path"</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">"tags"</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="attr">"updated_at"</span>: <span class="number">1576564879</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="五-消费者-Consumers"><a href="#五-消费者-Consumers" class="headerlink" title="五 消费者(Consumers)"></a>五 消费者(Consumers)</h2><h3 id="1、添加消费者"><a href="#1、添加消费者" class="headerlink" title="1、添加消费者"></a>1、添加消费者</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -s -X POST --url http://192.168.16.181:8001/consumers -d <span class="string">'username=openapi'</span> | python -m json.tool</span><br></pre></td></tr></table></figure>
+
+<p>Result</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"created_at"</span>: <span class="number">1576565245</span>,</span><br><span class="line">    <span class="attr">"custom_id"</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="attr">"id"</span>: <span class="string">"6b120be5-adc4-43da-af5f-04da86c350b4"</span>,</span><br><span class="line">    <span class="attr">"tags"</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="attr">"username"</span>: <span class="string">"openapi"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="六-Upstream"><a href="#六-Upstream" class="headerlink" title="六 Upstream"></a>六 <a href="https://docs.konghq.com/1.4.x/admin-api/#upstream-object" target="_blank" rel="noopener">Upstream</a></h2><h3 id="1、添加Upstream"><a href="#1、添加Upstream" class="headerlink" title="1、添加Upstream"></a>1、添加Upstream</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl -s -X POST --url http://192.168.16.181:8001/upstreams \</span><br><span class="line">-d <span class="string">'name=open.szzhijing.com'</span> |python -m json.tool</span><br></pre></td></tr></table></figure>
+
+<p>Result:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"algorithm"</span>: <span class="string">"round-robin"</span>,</span><br><span class="line">    <span class="attr">"created_at"</span>: <span class="number">1576566289</span>,</span><br><span class="line">    <span class="attr">"hash_fallback"</span>: <span class="string">"none"</span>,</span><br><span class="line">    <span class="attr">"hash_fallback_header"</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="attr">"hash_on"</span>: <span class="string">"none"</span>,</span><br><span class="line">    <span class="attr">"hash_on_cookie"</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="attr">"hash_on_cookie_path"</span>: <span class="string">"/"</span>,</span><br><span class="line">    <span class="attr">"hash_on_header"</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="attr">"healthchecks"</span>: &#123;</span><br><span class="line">        <span class="attr">"active"</span>: &#123;</span><br><span class="line">            <span class="attr">"concurrency"</span>: <span class="number">10</span>,</span><br><span class="line">            <span class="attr">"healthy"</span>: &#123;</span><br><span class="line">                <span class="attr">"http_statuses"</span>: [</span><br><span class="line">                    <span class="number">200</span>,</span><br><span class="line">                    <span class="number">302</span></span><br><span class="line">                ],</span><br><span class="line">                <span class="attr">"interval"</span>: <span class="number">0</span>,</span><br><span class="line">                <span class="attr">"successes"</span>: <span class="number">0</span></span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="attr">"http_path"</span>: <span class="string">"/"</span>,</span><br><span class="line">            <span class="attr">"https_sni"</span>: <span class="literal">null</span>,</span><br><span class="line">            <span class="attr">"https_verify_certificate"</span>: <span class="literal">true</span>,</span><br><span class="line">            <span class="attr">"timeout"</span>: <span class="number">1</span>,</span><br><span class="line">            <span class="attr">"type"</span>: <span class="string">"http"</span>,</span><br><span class="line">            <span class="attr">"unhealthy"</span>: &#123;</span><br><span class="line">                <span class="attr">"http_failures"</span>: <span class="number">0</span>,</span><br><span class="line">                <span class="attr">"http_statuses"</span>: [</span><br><span class="line">                    <span class="number">429</span>,</span><br><span class="line">                    <span class="number">404</span>,</span><br><span class="line">                    <span class="number">500</span>,</span><br><span class="line">                    <span class="number">501</span>,</span><br><span class="line">                    <span class="number">502</span>,</span><br><span class="line">                    <span class="number">503</span>,</span><br><span class="line">                    <span class="number">504</span>,</span><br><span class="line">                    <span class="number">505</span></span><br><span class="line">                ],</span><br><span class="line">                <span class="attr">"interval"</span>: <span class="number">0</span>,</span><br><span class="line">                <span class="attr">"tcp_failures"</span>: <span class="number">0</span>,</span><br><span class="line">                <span class="attr">"timeouts"</span>: <span class="number">0</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">"passive"</span>: &#123;</span><br><span class="line">            <span class="attr">"healthy"</span>: &#123;</span><br><span class="line">                <span class="attr">"http_statuses"</span>: [</span><br><span class="line">                    <span class="number">200</span>,</span><br><span class="line">                    <span class="number">201</span>,</span><br><span class="line">                    <span class="number">202</span>,</span><br><span class="line">                    <span class="number">203</span>,</span><br><span class="line">                    <span class="number">204</span>,</span><br><span class="line">                    <span class="number">205</span>,</span><br><span class="line">                    <span class="number">206</span>,</span><br><span class="line">                    <span class="number">207</span>,</span><br><span class="line">                    <span class="number">208</span>,</span><br><span class="line">                    <span class="number">226</span>,</span><br><span class="line">                    <span class="number">300</span>,</span><br><span class="line">                    <span class="number">301</span>,</span><br><span class="line">                    <span class="number">302</span>,</span><br><span class="line">                    <span class="number">303</span>,</span><br><span class="line">                    <span class="number">304</span>,</span><br><span class="line">                    <span class="number">305</span>,</span><br><span class="line">                    <span class="number">306</span>,</span><br><span class="line">                    <span class="number">307</span>,</span><br><span class="line">                    <span class="number">308</span></span><br><span class="line">                ],</span><br><span class="line">                <span class="attr">"successes"</span>: <span class="number">0</span></span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="attr">"type"</span>: <span class="string">"http"</span>,</span><br><span class="line">            <span class="attr">"unhealthy"</span>: &#123;</span><br><span class="line">                <span class="attr">"http_failures"</span>: <span class="number">0</span>,</span><br><span class="line">                <span class="attr">"http_statuses"</span>: [</span><br><span class="line">                    <span class="number">429</span>,</span><br><span class="line">                    <span class="number">500</span>,</span><br><span class="line">                    <span class="number">503</span></span><br><span class="line">                ],</span><br><span class="line">                <span class="attr">"tcp_failures"</span>: <span class="number">0</span>,</span><br><span class="line">                <span class="attr">"timeouts"</span>: <span class="number">0</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"host_header"</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="attr">"id"</span>: <span class="string">"bdcf59ef-7019-4bc1-91b8-e474afe42eeb"</span>,</span><br><span class="line">    <span class="attr">"name"</span>: <span class="string">"open.szzhijing.com"</span>,</span><br><span class="line">    <span class="attr">"slots"</span>: <span class="number">10000</span>,</span><br><span class="line">    <span class="attr">"tags"</span>: <span class="literal">null</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="七-目标-Target"><a href="#七-目标-Target" class="headerlink" title="七 目标(Target)"></a>七 目标(Target)</h2><h3 id="1、-添加目标"><a href="#1、-添加目标" class="headerlink" title="1、 添加目标"></a>1、 添加目标</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl -s -X POST --url http://192.168.16.181:8001/upstreams/open.szzhijing.com/targets \</span><br><span class="line">-d <span class="string">'target=192.168.16.119:80'</span> | python -m json.tool</span><br></pre></td></tr></table></figure>
+
+<p>Result:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"created_at"</span>: <span class="number">1576566764.999</span>,</span><br><span class="line">    <span class="attr">"id"</span>: <span class="string">"10734594-3067-4d40-abcd-e874abcf4557"</span>,</span><br><span class="line">    <span class="attr">"target"</span>: <span class="string">"192.168.16.119:80"</span>,</span><br><span class="line">    <span class="attr">"upstream"</span>: &#123;</span><br><span class="line">        <span class="attr">"id"</span>: <span class="string">"bdcf59ef-7019-4bc1-91b8-e474afe42eeb"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"weight"</span>: <span class="number">100</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2、查看目标"><a href="#2、查看目标" class="headerlink" title="2、查看目标"></a>2、查看目标</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="3、删除目标"><a href="#3、删除目标" class="headerlink" title="3、删除目标"></a>3、删除目标</h3><h3 id="4、设置目标为健康状态"><a href="#4、设置目标为健康状态" class="headerlink" title="4、设置目标为健康状态"></a>4、设置目标为健康状态</h3><h3 id="5、设置目标为不健康"><a href="#5、设置目标为不健康" class="headerlink" title="5、设置目标为不健康"></a>5、设置目标为不健康</h3><h3 id="6、查看所有目标"><a href="#6、查看所有目标" class="headerlink" title="6、查看所有目标"></a>6、查看所有目标</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -s --url http://192.168.16.181:8001/upstreams/open.szzhijing.com/targets/all|python -m json.tool</span><br></pre></td></tr></table></figure>
+
+<p>Result:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"data"</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"created_at"</span>: <span class="number">1576566764.999</span>,</span><br><span class="line">            <span class="attr">"id"</span>: <span class="string">"10734594-3067-4d40-abcd-e874abcf4557"</span>,</span><br><span class="line">            <span class="attr">"tags"</span>: <span class="literal">null</span>,</span><br><span class="line">            <span class="attr">"target"</span>: <span class="string">"192.168.16.119:80"</span>,</span><br><span class="line">            <span class="attr">"upstream"</span>: &#123;</span><br><span class="line">                <span class="attr">"id"</span>: <span class="string">"bdcf59ef-7019-4bc1-91b8-e474afe42eeb"</span></span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="attr">"weight"</span>: <span class="number">100</span></span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"created_at"</span>: <span class="number">1576567116.333</span>,</span><br><span class="line">            <span class="attr">"id"</span>: <span class="string">"d79f121f-f8b2-4fd7-871c-fd59a5f2fd87"</span>,</span><br><span class="line">            <span class="attr">"tags"</span>: <span class="literal">null</span>,</span><br><span class="line">            <span class="attr">"target"</span>: <span class="string">"192.168.16.119:8000"</span>,</span><br><span class="line">            <span class="attr">"upstream"</span>: &#123;</span><br><span class="line">                <span class="attr">"id"</span>: <span class="string">"bdcf59ef-7019-4bc1-91b8-e474afe42eeb"</span></span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="attr">"weight"</span>: <span class="number">100</span></span><br><span class="line">        &#125;</span><br><span class="line">    ],</span><br><span class="line">    <span class="attr">"next"</span>: <span class="literal">null</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="https://docs.konghq.com/1.4.x/admin-api/" target="_blank" rel="noopener">官网API</a></p>
+<p><a href="https://linuxops.org/blog/kong/admin.html" target="_blank" rel="noopener">Kong API Gateway 管理API详解</a></p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>提示语.</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>曾胜龙
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/Kong/Kong%E7%BD%91%E5%85%B3API%E7%AE%A1%E7%90%86/" title="运维&#x2F;Kong&#x2F;Kong网关API管理">https://kbsonlong.github.io/2020/05/14/运维/Kong/Kong网关API管理/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/images/wechat_channel.jpg">
+            <span class="icon">
+              <i class="fab fa-weixin"></i>
+            </span>
+
+            <span class="label">WeChat</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/gitlab/gitlab%E5%8D%87%E7%BA%A7%E8%BF%81%E7%A7%BB%E6%93%8D%E4%BD%9C/" rel="prev" title="运维/gitlab/gitlab升级迁移操作">
+      <i class="fa fa-chevron-left"></i> 运维/gitlab/gitlab升级迁移操作
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/nacos/nacos%E9%83%A8%E7%BD%B2/" rel="next" title="运维/nacos/nacos部署">
+      运维/nacos/nacos部署 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、前言"><span class="nav-number">1.</span> <span class="nav-text">一、前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二-节点信息"><span class="nav-number">2.</span> <span class="nav-text">二 节点信息</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、-查看节点信息"><span class="nav-number">2.1.</span> <span class="nav-text">1、 查看节点信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、-查看节点状态"><span class="nav-number">2.2.</span> <span class="nav-text">2、 查看节点状态</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三-服务"><span class="nav-number">3.</span> <span class="nav-text">三 服务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、-添加服务"><span class="nav-number">3.1.</span> <span class="nav-text">1、 添加服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、查询所有服务"><span class="nav-number">3.2.</span> <span class="nav-text">2、查询所有服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、查询具体服务"><span class="nav-number">3.3.</span> <span class="nav-text">3、查询具体服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、更新服务"><span class="nav-number">3.4.</span> <span class="nav-text">4、更新服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5、更新或创建服务"><span class="nav-number">3.5.</span> <span class="nav-text">5、更新或创建服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6、删除服务"><span class="nav-number">3.6.</span> <span class="nav-text">6、删除服务</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四-路由"><span class="nav-number">4.</span> <span class="nav-text">四 路由</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、添加路由"><span class="nav-number">4.1.</span> <span class="nav-text">1、添加路由</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五-消费者-Consumers"><span class="nav-number">5.</span> <span class="nav-text">五 消费者(Consumers)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、添加消费者"><span class="nav-number">5.1.</span> <span class="nav-text">1、添加消费者</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#六-Upstream"><span class="nav-number">6.</span> <span class="nav-text">六 Upstream</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、添加Upstream"><span class="nav-number">6.1.</span> <span class="nav-text">1、添加Upstream</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#七-目标-Target"><span class="nav-number">7.</span> <span class="nav-text">七 目标(Target)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、-添加目标"><span class="nav-number">7.1.</span> <span class="nav-text">1、 添加目标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、查看目标"><span class="nav-number">7.2.</span> <span class="nav-text">2、查看目标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、删除目标"><span class="nav-number">7.3.</span> <span class="nav-text">3、删除目标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、设置目标为健康状态"><span class="nav-number">7.4.</span> <span class="nav-text">4、设置目标为健康状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5、设置目标为不健康"><span class="nav-number">7.5.</span> <span class="nav-text">5、设置目标为不健康</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6、查看所有目标"><span class="nav-number">7.6.</span> <span class="nav-text">6、查看所有目标</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">8.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="曾胜龙"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">曾胜龙</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yourname" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yourname" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank">粤ICP备18122209号 </a>
+      <img src="http://www.beian.gov.cn/portal/download" style="display: inline-block;">
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">曾胜龙</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

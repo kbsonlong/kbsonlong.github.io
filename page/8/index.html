@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"kbsonlong.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"3QSL94PCBQ","apiKey":"d2fe765a64df1740fcab93644d3a2677","indexName":"hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta property="og:type" content="website">
+<meta property="og:title" content="蜷缩的蜗牛">
+<meta property="og:url" content="https://kbsonlong.github.io/page/8/index.html">
+<meta property="og:site_name" content="蜷缩的蜗牛">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="曾胜龙">
+<meta property="article:tag" content="Devops Kubernetes Docker">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://kbsonlong.github.io/page/8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : true,
+    isPost : false,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>蜷缩的蜗牛</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="蜷缩的蜗牛" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">蜷缩的蜗牛</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">运维笔记</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/kbsonlong" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content index posts-expand">
+            
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%B6%88%E6%81%AF%E7%B3%BB%E7%BB%9F%E4%B8%AD%E9%97%B4%E4%BB%B6/RocketMQ/Rocketmq%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%B6%88%E6%81%AF%E7%B3%BB%E7%BB%9F%E4%B8%AD%E9%97%B4%E4%BB%B6/RocketMQ/Rocketmq%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/" class="post-title-link" itemprop="url">运维/消息系统中间件/RocketMQ/Rocketmq集群部署</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:56" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:56+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="01-namesrv部署"><a href="#01-namesrv部署" class="headerlink" title="01 namesrv部署"></a>01 namesrv部署</h2><h3 id="1-1-namesrv配置"><a href="#1-1-namesrv配置" class="headerlink" title="1.1 namesrv配置"></a>1.1 namesrv配置</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ROCKETMQ_HOME=/data/server/rocketmq</span><br><span class="line">mkdir -p <span class="variable">$ROCKETMQ_HOME</span>/namesrv</span><br><span class="line">vim <span class="variable">$ROCKETMQ_HOME</span>/namesrv/namesrv.properties</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># 名称：NamesrvConfig.rocketmqHome &lt;String&gt;</span></span><br><span class="line"><span class="comment"># 默认值：(通过 sh mqnamesrv 设置 ROCKETMQ_HOME 环境变量，在源程序中获取环境变量得</span></span><br><span class="line"><span class="comment">#        到的目录)</span></span><br><span class="line"><span class="comment"># 描述：RocketMQ 主目录 </span></span><br><span class="line"><span class="comment"># 建议：不主动配置</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># rocketmqHome = $ROCKETMQ_HOME/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># 名称：NamesrvConfig.kvConfigPath &lt;String&gt;</span></span><br><span class="line"><span class="comment"># 默认值：$user.home/namesrv/kvConfig.json &lt;在源程序中获取用户环境变量后生成&gt;</span></span><br><span class="line"><span class="comment"># 描述：kv 配置文件路径，包含顺序消息主题的配置信息 </span></span><br><span class="line"><span class="comment"># 建议：启用顺序消息时配置</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line">kvConfigPath = <span class="variable">$ROCKETMQ_HOME</span>/namesrv/kvConfig.json</span><br><span class="line"></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># 名称：NamesrvConfig.configStorePath &lt;String&gt;</span></span><br><span class="line"><span class="comment"># 默认值：$user.home/namesrv/namesrv.properties &lt;在源程序中获取用户环境变量后生成&gt;</span></span><br><span class="line"><span class="comment"># 描述：NameServer 配置文件路径</span></span><br><span class="line"><span class="comment"># 建议：启动时通过 -c 指定</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line">configStorePath = <span class="variable">$ROCKETMQ_HOME</span>/namesrv/namesrv.properties</span><br><span class="line"></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># 名称：NamesrvConfig.clusterTest &lt;boolean&gt;</span></span><br><span class="line"><span class="comment"># 默认值：false &lt;在源程序中初始化字段时指定&gt;</span></span><br><span class="line"><span class="comment"># 描述：是否开启集群测试</span></span><br><span class="line"><span class="comment"># 建议：不主动配置</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line">clusterTest = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># 名称：NamesrvConfig.orderMessageEnable &lt;boolean&gt;</span></span><br><span class="line"><span class="comment"># 默认值：false &lt;在源程序中初始化字段时指定&gt;</span></span><br><span class="line"><span class="comment"># 描述：是否支持顺序消息</span></span><br><span class="line"><span class="comment"># 建议：启用顺序消息时配置</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line">orderMessageEnable = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># 名称：NettyServerConfig.listenPort &lt;int&gt;</span></span><br><span class="line"><span class="comment"># 默认值：9876 &lt;在源程序中初始化后单独设置&gt;</span></span><br><span class="line"><span class="comment"># 描述：服务端监听端口</span></span><br><span class="line"><span class="comment"># 建议：不主动配置</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line">listenPort = 9877</span><br><span class="line"></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># 名称：NettyServerConfig.serverWorkerThreads &lt;int&gt;</span></span><br><span class="line"><span class="comment"># 默认值：8 &lt;在源程序中初始化字段时指定&gt;</span></span><br><span class="line"><span class="comment"># 描述：Netty 业务线程池线程个数</span></span><br><span class="line"><span class="comment"># 建议：不主动配置</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line">serverWorkerThreads = 8</span><br><span class="line"></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># 名称：NettyServerConfig.serverCallbackExecutorThreads &lt;int&gt;</span></span><br><span class="line"><span class="comment"># 默认值：0 &lt;在源程序中初始化字段时指定&gt;</span></span><br><span class="line"><span class="comment"># 描述：Netty public 任务线程池线程个数，Netty 网络设计，根据业务类型会创建不同的线程池，比如处理发送消息、消息消费、心跳检测等。如果该业务类型(RequestCode)未注册线程池，则由 public 线程池执行</span></span><br><span class="line"><span class="comment"># 建议：</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line">serverCallbackExecutorThreads = 0</span><br><span class="line"></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># 名称：NettyServerConfig.serverSelectorThreads &lt;int&gt;</span></span><br><span class="line"><span class="comment"># 默认值：3 &lt;在源程序中初始化字段时指定&gt;</span></span><br><span class="line"><span class="comment"># 描述：IO 线程池线程个数，主要是 NameServer、Broker 端解析请求、返回响应的线程个数，这类线程池主要是处理网络请求的，解析请求包，然后转发到各个业务线程池完成具体的业务操作，然后将结果再返回调用方</span></span><br><span class="line"><span class="comment"># 建议：不主动配置</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line">serverSelectorThreads = 3</span><br><span class="line"></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># 名称：NettyServerConfig.serverOnewaySemaphoreValue &lt;int&gt;</span></span><br><span class="line"><span class="comment"># 默认值：256 &lt;在源程序中初始化字段时指定&gt;</span></span><br><span class="line"><span class="comment"># 描述：send oneway 消息请求并发度</span></span><br><span class="line"><span class="comment"># 建议：不主动配置</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line">serverOnewaySemaphoreValue = 256</span><br><span class="line"></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># 名称：NettyServerConfig.serverAsyncSemaphoreValue &lt;int&gt;</span></span><br><span class="line"><span class="comment"># 默认值：64 &lt;在源程序中初始化字段时指定&gt;</span></span><br><span class="line"><span class="comment"># 描述：异步消息发送最大并发度</span></span><br><span class="line"><span class="comment"># 建议：不主动配置</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line">serverAsyncSemaphoreValue = 64</span><br><span class="line"></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># 名称：NettyServerConfig.serverChannelMaxIdleTimeSeconds &lt;int&gt;</span></span><br><span class="line"><span class="comment"># 默认值：120 &lt;在源程序中初始化字段时指定&gt;</span></span><br><span class="line"><span class="comment"># 描述：网络连接最大空闲时间，单位秒，如果连接空闲时间超过该参数设置的值，连接将被关闭</span></span><br><span class="line"><span class="comment"># 建议：不主动配置</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line">serverChannelMaxIdleTimeSeconds = 120</span><br><span class="line"></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># 名称：NettyServerConfig.serverSocketSndBufSize &lt;int&gt;</span></span><br><span class="line"><span class="comment"># 默认值：65535 &lt;在源程序中初始化字段时指定&gt;</span></span><br><span class="line"><span class="comment"># 描述：网络 socket 发送缓存区大小，单位 B，即默认为 64KB</span></span><br><span class="line"><span class="comment"># 建议：不主动配置</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line">serverSocketSndBufSize = 65535</span><br><span class="line"></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># 名称：NettyServerConfig.serverSocketRcvBufSize &lt;int&gt;</span></span><br><span class="line"><span class="comment"># 默认值：65535 &lt;在源程序中初始化字段时指定&gt;</span></span><br><span class="line"><span class="comment"># 描述：网络 socket 接收缓存区大小，单位 B，即默认为 64KB</span></span><br><span class="line"><span class="comment"># 建议：不主动配置</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line">serverSocketRcvBufSize = 65535</span><br><span class="line"></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># 名称：NettyServerConfig.serverPooledByteBufAllocatorEnable &lt;int&gt;</span></span><br><span class="line"><span class="comment"># 默认值：true &lt;在源程序中初始化字段时指定&gt;</span></span><br><span class="line"><span class="comment"># 描述：ByteBuffer 是否开启缓存，建议开启</span></span><br><span class="line"><span class="comment"># 建议：不主动配置</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line">serverPooledByteBufAllocatorEnable = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># 名称：NettyServerConfig.useEpollNativeSelector &lt;int&gt;</span></span><br><span class="line"><span class="comment"># 默认值：false &lt;在源程序中初始化字段时指定&gt;</span></span><br><span class="line"><span class="comment"># 描述：是否启用 Epoll IO 模型</span></span><br><span class="line"><span class="comment"># 建议：Linux 环境开启</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line">useEpollNativeSelector = <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="1-2-查看namesrv启动配置"><a href="#1-2-查看namesrv启动配置" class="headerlink" title="1.2 查看namesrv启动配置"></a>1.2 查看namesrv启动配置</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># sh bin/mqadmin getNamesrvConfig -n 127.0.0.1:9877</span></span><br><span class="line">RocketMQLog:WARN No appenders could be found <span class="keyword">for</span> logger (io.netty.util.internal.PlatformDependent0).</span><br><span class="line">RocketMQLog:WARN Please initialize the logger system properly.</span><br><span class="line">============127.0.0.1:9877============</span><br><span class="line">serverChannelMaxIdleTimeSeconds                   =  120</span><br><span class="line">listenPort                                        =  9877</span><br><span class="line">serverCallbackExecutorThreads                     =  0</span><br><span class="line">serverAsyncSemaphoreValue                         =  64</span><br><span class="line">serverSocketSndBufSize                            =  65535</span><br><span class="line">rocketmqHome                                      =  /data/server/rocketmq-4.5.2</span><br><span class="line">clusterTest                                       =  <span class="literal">false</span></span><br><span class="line">serverSelectorThreads                             =  3</span><br><span class="line">useEpollNativeSelector                            =  <span class="literal">true</span></span><br><span class="line">orderMessageEnable                                =  <span class="literal">false</span></span><br><span class="line">serverPooledByteBufAllocatorEnable                =  <span class="literal">true</span></span><br><span class="line">kvConfigPath                                      =  /data/server/rocketmq-4.5.2/namesrv/kvConfig.json</span><br><span class="line">serverWorkerThreads                               =  8</span><br><span class="line">serverSocketRcvBufSize                            =  65535</span><br><span class="line">productEnvName                                    =  center</span><br><span class="line">serverOnewaySemaphoreValue                        =  256</span><br><span class="line">configStorePath                                   =  /data/server/rocketmq-4.5.2/namesrv/namesrv.properties</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>可以看到启动端口已修改为9877</p>
+</blockquote>
+<h3 id="1-3-namesrv常用操作命令"><a href="#1-3-namesrv常用操作命令" class="headerlink" title="1.3 namesrv常用操作命令"></a>1.3 namesrv常用操作命令</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">[root@mq-master01 ~]<span class="comment"># cd /data/rocketmq/bin</span></span><br><span class="line">[root@mq-master01 bin]<span class="comment">#</span></span><br><span class="line"> </span><br><span class="line">获取所有可用命令：</span><br><span class="line">[root@mq-master01 bin]<span class="comment"># sh mqadmin</span></span><br><span class="line"> </span><br><span class="line">查看帮助：</span><br><span class="line"><span class="comment"># sh mqadmin &lt;command&gt; -h</span></span><br><span class="line">查询Producer的网络连接情况：</span><br><span class="line"><span class="comment"># sh mqadmin producerConnection -n localhost:9876 -g &lt;producer-group&gt; -t &lt;producer-topic&gt;</span></span><br><span class="line">查询Consumer的网络连接情况：</span><br><span class="line"><span class="comment"># sh mqadmin consumerConnection -n localhost:9876 -g &lt;consumer-group&gt;</span></span><br><span class="line">查询Consumer的消费状态：</span><br><span class="line"><span class="comment"># sh mqadmin consumerProgress -n localhost:9876 -g &lt;consumer-group&gt;</span></span><br><span class="line"> </span><br><span class="line">查询消息是否发送成功</span><br><span class="line">获取指定Topic：</span><br><span class="line"><span class="comment"># sh mqadmin topicList -n localhost:9876 | grep &lt;topicName&gt;</span></span><br><span class="line">查看Topic状态：</span><br><span class="line"><span class="comment"># sh mqadmin topicStatus -n localhost:9876 -t &lt;topicName&gt;</span></span><br><span class="line">根据offset获取消息：</span><br><span class="line"><span class="comment"># sh sh mqadmin queryMsgByOffset -n localhost:9876 -b &lt;broker-name&gt; -i &lt;queueId&gt; -o &lt;offset&gt; -t &lt;topicName&gt;</span></span><br><span class="line">根据offsetMsgId查询消息：</span><br><span class="line"><span class="comment"># sh sh mqadmin queryMsgById -n localhost:9876 -i &lt;offsetMsgId&gt;</span></span><br><span class="line"> </span><br><span class="line">查询消息是否被消费成功</span><br><span class="line">查询消息详情：</span><br><span class="line"><span class="comment"># sh mqadmin queryMsgById -i &#123;MsgId&#125; -n &#123;NameServerAddr&#125;</span></span><br><span class="line">查看Consumer Group订阅了哪些TOPIC：</span><br><span class="line"><span class="comment"># sh mqadmin consumerProgress -g &lt;ConsumerGroup&gt; -n &lt;NameServerAddr&gt;</span></span><br><span class="line"> </span><br><span class="line">查询TOPIC被哪些Consumer Group订阅了</span><br><span class="line">没有查询特定TOPIC订阅情况，只能查询所有后再过滤：</span><br><span class="line"><span class="comment"># sh mqadmin statsAll -n &lt;NameServerAddr&gt; | grep &lt;TOPIC&gt;</span></span><br><span class="line">返回结果：<span class="comment">#Topic #Consumer Group #InTPS #OutTPS #InMsg24Hour #OutMsg24Hour</span></span><br><span class="line"> </span><br><span class="line">关闭nameserver和所有的broker:</span><br><span class="line"><span class="comment"># sh mqshutdown namesrv</span></span><br><span class="line"><span class="comment"># sh mqshutdown broker</span></span><br><span class="line"> </span><br><span class="line">查看所有消费组group:</span><br><span class="line"><span class="comment"># sh mqadmin consumerProgress -n localhost:9876</span></span><br><span class="line">查看指定消费组（kevinGroupConsumer）下的所有topic数据堆积情况：</span><br><span class="line"><span class="comment"># sh mqadmin consumerProgress -n localhost:9876 -g kevinGroupConsumer</span></span><br><span class="line">查看所有topic :</span><br><span class="line"><span class="comment"># sh mqadmin topicList -n localhost:9876</span></span><br><span class="line">查看topic信息列表详情统计</span><br><span class="line"><span class="comment"># sh mqadmin topicstatus -n localhost:9876 -t myTopicTest1</span></span><br><span class="line">新增topic</span><br><span class="line"><span class="comment"># sh mqadmin updateTopic –n localhost –c DefaultCluster –t ZTEExample</span></span><br><span class="line">删除topic</span><br><span class="line"><span class="comment"># sh mqadmin deleteTopic –n localhost:9876 –c DefaultCluster –t ZTEExample</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="02-Broker配置"><a href="#02-Broker配置" class="headerlink" title="02 Broker配置"></a>02 Broker配置</h2><h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="https://www.cnblogs.com/kevingrace/p/9015836.html" target="_blank" rel="noopener">RocketMQ 简单梳理 及 集群部署笔记</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%B6%88%E6%81%AF%E7%B3%BB%E7%BB%9F%E4%B8%AD%E9%97%B4%E4%BB%B6/RocketMQ/%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%B6%88%E6%81%AF%E7%B3%BB%E7%BB%9F%E4%B8%AD%E9%97%B4%E4%BB%B6/RocketMQ/%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99/" class="post-title-link" itemprop="url">运维/消息系统中间件/RocketMQ/参考资料</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:56" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:56+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><a href="https://blog.csdn.net/wangjinduo35056/article/details/88351625" target="_blank" rel="noopener">https://blog.csdn.net/wangjinduo35056/article/details/88351625</a></p>
+<p><a href="https://blog.csdn.net/qq_27641935/article/details/106015319" target="_blank" rel="noopener">https://blog.csdn.net/qq_27641935/article/details/106015319</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%B6%88%E6%81%AF%E7%B3%BB%E7%BB%9F%E4%B8%AD%E9%97%B4%E4%BB%B6/Kafka/Kafka%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%B6%88%E6%81%AF%E7%B3%BB%E7%BB%9F%E4%B8%AD%E9%97%B4%E4%BB%B6/Kafka/Kafka%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C/" class="post-title-link" itemprop="url">运维/消息系统中间件/Kafka/Kafka常用操作</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:56" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:56+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="生产者发送消息"><a href="#生产者发送消息" class="headerlink" title="生产者发送消息"></a>生产者发送消息</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="built_in">exec</span> -ti dev-kafka9094 /app/bin/kafka-console-producer.sh --broker-list localhost:9094 --topic my-topic</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="以消费组方式消费消息"><a href="#以消费组方式消费消息" class="headerlink" title="以消费组方式消费消息"></a>以消费组方式消费消息</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="built_in">exec</span> -ti dev-kafka9094 /app/bin/kafka-console-consumer.sh --bootstrap-server localhost:9094 --topic my-topic --from-beginning --group <span class="built_in">test</span>-group</span><br></pre></td></tr></table></figure>
+
+<h2 id="查看所有消费组"><a href="#查看所有消费组" class="headerlink" title="查看所有消费组"></a>查看所有消费组</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/app/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9094 --list</span><br></pre></td></tr></table></figure>
+
+<h2 id="消费组消费情况"><a href="#消费组消费情况" class="headerlink" title="消费组消费情况"></a>消费组消费情况</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/app/bin/kafka-consumer-groups.sh --describe --bootstrap-server localhost:9094 --group <span class="built_in">test</span>-group</span><br></pre></td></tr></table></figure>
+
+<h2 id="删除消费组"><a href="#删除消费组" class="headerlink" title="删除消费组"></a>删除消费组</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/app/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9094 --delete --group <span class="built_in">test</span>-group</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="手动重置消费组offset位置"><a href="#手动重置消费组offset位置" class="headerlink" title="手动重置消费组offset位置"></a>手动重置消费组offset位置</h2><h3 id="更新到当前group最初的offset位置"><a href="#更新到当前group最初的offset位置" class="headerlink" title="更新到当前group最初的offset位置"></a>更新到当前group最初的offset位置</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bin&#x2F;kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group test-group --reset-offsets --all-topics --to-earliest --execute</span><br></pre></td></tr></table></figure>
+
+<h3 id="更新到指定的offset位置"><a href="#更新到指定的offset位置" class="headerlink" title="更新到指定的offset位置"></a>更新到指定的offset位置</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bin&#x2F;kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group test-group --reset-offsets --all-topics --to-offset 500000 --execute</span><br></pre></td></tr></table></figure>
+
+<h3 id="更新到当前offset位置（解决offset的异常）"><a href="#更新到当前offset位置（解决offset的异常）" class="headerlink" title="更新到当前offset位置（解决offset的异常）"></a>更新到当前offset位置（解决offset的异常）</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bin&#x2F;kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group test-group --reset-offsets --all-topics --to-current --execute</span><br></pre></td></tr></table></figure>
+
+<h3 id="更新到最新offset位置"><a href="#更新到最新offset位置" class="headerlink" title="更新到最新offset位置"></a>更新到最新offset位置</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bin/kafka-consumer-groups.sh --bootstrap-server localhost:9094 --group <span class="built_in">test</span>-group --reset-offsets --all-topics --to-latest --execute</span><br></pre></td></tr></table></figure>
+
+<h3 id="offset位置按设置的值进行位移"><a href="#offset位置按设置的值进行位移" class="headerlink" title="offset位置按设置的值进行位移"></a>offset位置按设置的值进行位移</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">bin&#x2F;kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group test-group --reset-offsets --all-topics --shift-by -100000 --execute</span><br></pre></td></tr></table></figure>
+
+<h3 id="offset设置到指定时刻开始"><a href="#offset设置到指定时刻开始" class="headerlink" title="offset设置到指定时刻开始"></a>offset设置到指定时刻开始</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">bin&#x2F;kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group test-group --reset-offsets --all-topics --to-datetime 2017-08-04T14:30:00.000</span><br></pre></td></tr></table></figure>
+<ul>
+<li>–all-topics：为consumer group下所有topic的所有分区调整位移）</li>
+<li>–topic t1 –topic t2：为指定的若干个topic的所有分区调整位移</li>
+<li>–topic t1:0,1,2：为指定的topic分区调整位移</li>
+<li>–to-earliest：把位移调整到分区当前最小位移</li>
+<li>–to-latest：把位移调整到分区当前最新位移</li>
+<li>–to-current：把位移调整到分区当前位移</li>
+<li>–to-offset <offset>： 把位移调整到指定位移处</li>
+<li>–shift-by N： 把位移调整到当前位移 + N处，注意N可以是负数，表示向前移动</li>
+<li>–to-datetime <datetime>：把位移调整到大于给定时间的最早位移处，datetime格式是yyyy-MM-ddTHH:mm:ss.xxx，比如2017-08-04T00:00:00.000</li>
+<li>–by-duration <duration>：把位移调整到距离当前时间指定间隔的位移处，duration格式是PnDTnHnMnS，比如PT0H5M0S</li>
+<li>–from-file <file>：从CSV文件中读取调整策略</li>
+</ul>
+<h2 id="Topic分区-Partition-扩容"><a href="#Topic分区-Partition-扩容" class="headerlink" title="Topic分区(Partition)扩容"></a>Topic分区(Partition)扩容</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/app/bin/kafka-topics.sh --bootstrap-server localhost:9094 -alter --partitions 4 --topic my-topic</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="修改Topic副本数"><a href="#修改Topic副本数" class="headerlink" title="修改Topic副本数"></a>修改Topic副本数</h2><h3 id="查看Topic当前分区情况、副本数"><a href="#查看Topic当前分区情况、副本数" class="headerlink" title="查看Topic当前分区情况、副本数"></a>查看Topic当前分区情况、副本数</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">bash-4.3<span class="comment"># /app/bin/kafka-topics.sh --describe --bootstrap-server localhost:9094 -topic  my-topic                         </span></span><br><span class="line">Topic:my-topic	PartitionCount:4	ReplicationFactor:1	Configs:segment.bytes=1073741824</span><br><span class="line">	Topic: my-topic	Partition: 0	Leader: 156	Replicas: 156	Isr: 156</span><br><span class="line">	Topic: my-topic	Partition: 1	Leader: 155	Replicas: 155	Isr: 155</span><br><span class="line">	Topic: my-topic	Partition: 2	Leader: 156	Replicas: 156	Isr: 156</span><br><span class="line">	Topic: my-topic	Partition: 3	Leader: 155	Replicas: 155	Isr: 155</span><br><span class="line">bash-4.3<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="配置新的分区、副本数策略"><a href="#配置新的分区、副本数策略" class="headerlink" title="配置新的分区、副本数策略"></a>配置新的分区、副本数策略</h3><ul>
+<li>partition: 分区id</li>
+<li>replicas: broker id</li>
+<li>topic: 需要修改的Topic名称</li>
+</ul>
+<p>cat reassignment-json</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"version"</span>: <span class="number">1</span>,</span><br><span class="line">    <span class="attr">"partitions"</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"topic"</span>: <span class="string">"my-topic"</span>,</span><br><span class="line">            <span class="attr">"partition"</span>: <span class="number">0</span>,</span><br><span class="line">            <span class="attr">"replicas"</span>: [</span><br><span class="line">                <span class="number">155</span>,</span><br><span class="line">                <span class="number">156</span></span><br><span class="line">            ]</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"topic"</span>: <span class="string">"my-topic"</span>,</span><br><span class="line">            <span class="attr">"partition"</span>: <span class="number">1</span>,</span><br><span class="line">            <span class="attr">"replicas"</span>: [</span><br><span class="line">                <span class="number">155</span>,</span><br><span class="line">                <span class="number">156</span></span><br><span class="line">            ]</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"topic"</span>: <span class="string">"my-topic"</span>,</span><br><span class="line">            <span class="attr">"partition"</span>: <span class="number">2</span>,</span><br><span class="line">            <span class="attr">"replicas"</span>: [</span><br><span class="line">                <span class="number">155</span>,</span><br><span class="line">                <span class="number">156</span></span><br><span class="line">            ]</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"topic"</span>: <span class="string">"my-topic"</span>,</span><br><span class="line">            <span class="attr">"partition"</span>: <span class="number">3</span>,</span><br><span class="line">            <span class="attr">"replicas"</span>: [</span><br><span class="line">                <span class="number">155</span>,</span><br><span class="line">                <span class="number">156</span></span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="执行迁移策略"><a href="#执行迁移策略" class="headerlink" title="执行迁移策略"></a>执行迁移策略</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">bash-4.3<span class="comment"># /app/bin/kafka-reassign-partitions.sh --zookeeper localhost:2181/dev-kafka --reassignment-json-file ./reassignment-json --execute</span></span><br><span class="line">Current partition replica assignment</span><br><span class="line"></span><br><span class="line">&#123;<span class="string">"version"</span>:1,<span class="string">"partitions"</span>:[&#123;<span class="string">"topic"</span>:<span class="string">"my-topic"</span>,<span class="string">"partition"</span>:0,<span class="string">"replicas"</span>:[156],<span class="string">"log_dirs"</span>:[<span class="string">"any"</span>]&#125;,&#123;<span class="string">"topic"</span>:<span class="string">"my-topic"</span>,<span class="string">"partition"</span>:2,<span class="string">"replicas"</span>:[156],<span class="string">"log_dirs"</span>:[<span class="string">"any"</span>]&#125;,&#123;<span class="string">"topic"</span>:<span class="string">"my-topic"</span>,<span class="string">"partition"</span>:1,<span class="string">"replicas"</span>:[155],<span class="string">"log_dirs"</span>:[<span class="string">"any"</span>]&#125;,&#123;<span class="string">"topic"</span>:<span class="string">"my-topic"</span>,<span class="string">"partition"</span>:3,<span class="string">"replicas"</span>:[155],<span class="string">"log_dirs"</span>:[<span class="string">"any"</span>]&#125;]&#125;</span><br><span class="line"></span><br><span class="line">Save this to use as the --reassignment-json-file option during rollback</span><br><span class="line">Successfully started reassignment of partitions.</span><br><span class="line">bash-4.3<span class="comment"># /app/bin/kafka-topics.sh --describe --bootstrap-server localhost:9094 -topic  my-topic</span></span><br><span class="line">Topic:my-topic	PartitionCount:4	ReplicationFactor:2	Configs:segment.bytes=1073741824</span><br><span class="line">	Topic: my-topic	Partition: 0	Leader: 156	Replicas: 155,156	Isr: 156,155</span><br><span class="line">	Topic: my-topic	Partition: 1	Leader: 155	Replicas: 155,156	Isr: 155,156</span><br><span class="line">	Topic: my-topic	Partition: 2	Leader: 156	Replicas: 155,156	Isr: 156,155</span><br><span class="line">	Topic: my-topic	Partition: 3	Leader: 155	Replicas: 155,156	Isr: 155,156</span><br><span class="line">bash-4.3<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>可以看到副本集已经修改为2.</p>
+</blockquote>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%B6%88%E6%81%AF%E7%B3%BB%E7%BB%9F%E4%B8%AD%E9%97%B4%E4%BB%B6/RabbitMQ/Rabbitmq%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%B6%88%E6%81%AF%E7%B3%BB%E7%BB%9F%E4%B8%AD%E9%97%B4%E4%BB%B6/RabbitMQ/Rabbitmq%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2/" class="post-title-link" itemprop="url">运维/消息系统中间件/RabbitMQ/Rabbitmq快速部署</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:56" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:56+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="创建目录"><a href="#创建目录" class="headerlink" title="创建目录"></a>创建目录</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /data/server/rabbitmq/&#123;data,conf&#125;</span><br><span class="line">mkdir -p /data/logs/rabbitmq/&#123;<span class="built_in">log</span>,tmp&#125;</span><br><span class="line">chown 999.999 /data/server/rabbitmq -R</span><br><span class="line">chown 999.999 /data/logs/rabbitmq -R</span><br></pre></td></tr></table></figure>
+
+<h2 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># cat &lt;&lt; EOF &gt;&gt; /data/server/rabbitmq/conf/rabbitmq.conf</span></span><br><span class="line">loopback_users.guest = <span class="literal">false</span></span><br><span class="line">listeners.tcp.default = 5672</span><br><span class="line">default_pass = rabbitmq123</span><br><span class="line">default_user = root</span><br><span class="line">hipe_compile = <span class="literal">false</span></span><br><span class="line">management.listener.port = 15672</span><br><span class="line">management.listener.ssl = <span class="literal">false</span></span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line"><span class="comment"># cat &lt;&lt; EOF &gt;&gt; /data/server/rabbitmq/conf/enabled_plugins</span></span><br><span class="line">[rabbitmq_management,rabbitmq_tracing].</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="启动容器"><a href="#启动容器" class="headerlink" title="启动容器"></a>启动容器</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">docker run -d --restart=always --net=host --name rabbitmq \</span><br><span class="line">           -v /data/server/rabbitmq/data:/var/lib/rabbitmq \</span><br><span class="line">           -v /data/logs/rabbitmq/<span class="built_in">log</span>:/var/<span class="built_in">log</span>/rabbitmq \</span><br><span class="line">           -v /data/logs/rabbitmq/tmp:/var/tmp/rabbitmq-tracing \</span><br><span class="line">           -v /data/server/rabbitmq/conf:/etc/rabbitmq \</span><br><span class="line">           rabbitmq:3.7.7-management</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p><a href="https://hub.docker.com/_/rabbitmq" target="_blank" rel="noopener">镜像地址</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%B6%88%E6%81%AF%E7%B3%BB%E7%BB%9F%E4%B8%AD%E9%97%B4%E4%BB%B6/Kafka/%E5%AE%89%E8%A3%85/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%B6%88%E6%81%AF%E7%B3%BB%E7%BB%9F%E4%B8%AD%E9%97%B4%E4%BB%B6/Kafka/%E5%AE%89%E8%A3%85/" class="post-title-link" itemprop="url">运维/消息系统中间件/Kafka/安装</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:56" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:56+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br></pre></td><td class="code"><pre><span class="line">安装ZK</span><br><span class="line">sudo docker run -d --restart=always --net=host \</span><br><span class="line">                  --name=zookeeper \</span><br><span class="line">                  --<span class="built_in">log</span>-driver json-file --<span class="built_in">log</span>-opt max-size=10m --<span class="built_in">log</span>-opt max-file=3 \</span><br><span class="line">                  -v /data/server/zookeeper/conf:/conf   \</span><br><span class="line">                  -v /data/server/zookeeper/data:/data \</span><br><span class="line">                  -v /data/server/zookeeper/logs:/datalog \</span><br><span class="line">                  zookeeper</span><br><span class="line">安装kafka集群</span><br><span class="line">cat &lt;&lt; EOF &gt; /data/server/dev-kafka9093/conf/kafka-startup.tmpl</span><br><span class="line">[</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="string">"sh"</span>:<span class="string">"/app/bin/kafka-server-start.sh"</span>,</span><br><span class="line">    <span class="string">"./config/server.properties"</span>:<span class="string">""</span>,</span><br><span class="line">    <span class="string">"--override"</span>:<span class="string">"-Djava.net.preferIPv4Stack=true"</span>,</span><br><span class="line">    <span class="string">"--override"</span>:<span class="string">"delete.topic.enable=true"</span>,</span><br><span class="line">    <span class="string">"--override"</span>:<span class="string">"advertised.host.name=<span class="variable">$&#123;HOSTNAME&#125;</span>"</span>,</span><br><span class="line">    <span class="string">"--override"</span>:<span class="string">"advertised.port=<span class="variable">$&#123;PORT&#125;</span>"</span>,</span><br><span class="line">    <span class="string">"--override"</span>:<span class="string">"zookeeper.connect=172.17.0.8:2181/kafka"</span></span><br><span class="line">  &#125;</span><br><span class="line">]</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">cat &lt;&lt; EOF &gt; /data/server/dev-kafka9093/conf/server.properties.tmpl</span><br><span class="line"><span class="comment"># Licensed to the Apache Software Foundation (ASF) under one or more</span></span><br><span class="line"><span class="comment"># contributor license agreements.  See the NOTICE file distributed with</span></span><br><span class="line"><span class="comment"># this work for additional information regarding copyright ownership.</span></span><br><span class="line"><span class="comment"># The ASF licenses this file to You under the Apache License, Version 2.0</span></span><br><span class="line"><span class="comment"># (the "License"); you may not use this file except in compliance with</span></span><br><span class="line"><span class="comment"># the License.  You may obtain a copy of the License at</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#    http://www.apache.org/licenses/LICENSE-2.0</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Unless required by applicable law or agreed to in writing, software</span></span><br><span class="line"><span class="comment"># distributed under the License is distributed on an "AS IS" BASIS,</span></span><br><span class="line"><span class="comment"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span></span><br><span class="line"><span class="comment"># See the License for the specific language governing permissions and</span></span><br><span class="line"><span class="comment"># limitations under the License.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># see kafka.server.KafkaConfig for additional details and defaults</span></span><br><span class="line"></span><br><span class="line"><span class="comment">############################# Server Basics #############################</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The id of the broker. This must be set to a unique integer for each broker.</span></span><br><span class="line">broker.id=<span class="variable">$&#123;ID&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">############################# Socket Server Settings #############################</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The address the socket server listens on. It will get the value returned from </span></span><br><span class="line"><span class="comment"># java.net.InetAddress.getCanonicalHostName() if not configured.</span></span><br><span class="line"><span class="comment">#   FORMAT:</span></span><br><span class="line"><span class="comment">#     listeners = listener_name://host_name:port</span></span><br><span class="line"><span class="comment">#   EXAMPLE:</span></span><br><span class="line"><span class="comment">#     listeners = PLAINTEXT://your.host.name:9092</span></span><br><span class="line">listeners=PLAINTEXT://:<span class="variable">$&#123;PORT&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Hostname and port the broker will advertise to producers and consumers. If not set, </span></span><br><span class="line"><span class="comment"># it uses the value for "listeners" if configured.  Otherwise, it will use the value</span></span><br><span class="line"><span class="comment"># returned from java.net.InetAddress.getCanonicalHostName().</span></span><br><span class="line">advertised.listeners=PLAINTEXT://:<span class="variable">$&#123;PORT&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Maps listener names to security protocols, the default is for them to be the same. See the config documentation for more details</span></span><br><span class="line"><span class="comment">#listener.security.protocol.map=PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The number of threads that the server uses for receiving requests from the network and sending responses to the network</span></span><br><span class="line">num.network.threads=3</span><br><span class="line"></span><br><span class="line"><span class="comment"># The number of threads that the server uses for processing requests, which may include disk I/O</span></span><br><span class="line">num.io.threads=8</span><br><span class="line"></span><br><span class="line"><span class="comment"># The send buffer (SO_SNDBUF) used by the socket server</span></span><br><span class="line">socket.send.buffer.bytes=102400</span><br><span class="line"></span><br><span class="line"><span class="comment"># The receive buffer (SO_RCVBUF) used by the socket server</span></span><br><span class="line">socket.receive.buffer.bytes=102400</span><br><span class="line"></span><br><span class="line"><span class="comment"># The maximum size of a request that the socket server will accept (protection against OOM)</span></span><br><span class="line">socket.request.max.bytes=104857600</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">############################# Log Basics #############################</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># A comma separated list of directories under which to store log files</span></span><br><span class="line">log.dirs=/tmp/kafka-logs</span><br><span class="line"></span><br><span class="line"><span class="comment"># The default number of log partitions per topic. More partitions allow greater</span></span><br><span class="line"><span class="comment"># parallelism for consumption, but this will also result in more files across</span></span><br><span class="line"><span class="comment"># the brokers.</span></span><br><span class="line">num.partitions=1</span><br><span class="line"></span><br><span class="line"><span class="comment"># The number of threads per data directory to be used for log recovery at startup and flushing at shutdown.</span></span><br><span class="line"><span class="comment"># This value is recommended to be increased for installations with data dirs located in RAID array.</span></span><br><span class="line">num.recovery.threads.per.data.dir=1</span><br><span class="line"></span><br><span class="line"><span class="comment">############################# Internal Topic Settings  #############################</span></span><br><span class="line"><span class="comment"># The replication factor for the group metadata internal topics "__consumer_offsets" and "__transaction_state"</span></span><br><span class="line"><span class="comment"># For anything other than development testing, a value greater than 1 is recommended for to ensure availability such as 3.</span></span><br><span class="line">offsets.topic.replication.factor=1</span><br><span class="line">transaction.state.log.replication.factor=1</span><br><span class="line">transaction.state.log.min.isr=1</span><br><span class="line"></span><br><span class="line"><span class="comment">############################# Log Flush Policy #############################</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Messages are immediately written to the filesystem but by default we only fsync() to sync</span></span><br><span class="line"><span class="comment"># the OS cache lazily. The following configurations control the flush of data to disk.</span></span><br><span class="line"><span class="comment"># There are a few important trade-offs here:</span></span><br><span class="line"><span class="comment">#    1. Durability: Unflushed data may be lost if you are not using replication.</span></span><br><span class="line"><span class="comment">#    2. Latency: Very large flush intervals may lead to latency spikes when the flush does occur as there will be a lot of data to flush.</span></span><br><span class="line"><span class="comment">#    3. Throughput: The flush is generally the most expensive operation, and a small flush interval may lead to excessive seeks.</span></span><br><span class="line"><span class="comment"># The settings below allow one to configure the flush policy to flush data after a period of time or</span></span><br><span class="line"><span class="comment"># every N messages (or both). This can be done globally and overridden on a per-topic basis.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The number of messages to accept before forcing a flush of data to disk</span></span><br><span class="line"><span class="comment">#log.flush.interval.messages=10000</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The maximum amount of time a message can sit in a log before we force a flush</span></span><br><span class="line"><span class="comment">#log.flush.interval.ms=1000</span></span><br><span class="line"></span><br><span class="line"><span class="comment">############################# Log Retention Policy #############################</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The following configurations control the disposal of log segments. The policy can</span></span><br><span class="line"><span class="comment"># be set to delete segments after a period of time, or after a given size has accumulated.</span></span><br><span class="line"><span class="comment"># A segment will be deleted whenever *either* of these criteria are met. Deletion always happens</span></span><br><span class="line"><span class="comment"># from the end of the log.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The minimum age of a log file to be eligible for deletion due to age</span></span><br><span class="line">log.retention.hours=168</span><br><span class="line"></span><br><span class="line"><span class="comment"># A size-based retention policy for logs. Segments are pruned from the log unless the remaining</span></span><br><span class="line"><span class="comment"># segments drop below log.retention.bytes. Functions independently of log.retention.hours.</span></span><br><span class="line"><span class="comment">#log.retention.bytes=1073741824</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The maximum size of a log segment file. When this size is reached a new log segment will be created.</span></span><br><span class="line">log.segment.bytes=1073741824</span><br><span class="line"></span><br><span class="line"><span class="comment"># The interval at which log segments are checked to see if they can be deleted according</span></span><br><span class="line"><span class="comment"># to the retention policies</span></span><br><span class="line">log.retention.check.interval.ms=300000</span><br><span class="line"></span><br><span class="line"><span class="comment">############################# Zookeeper #############################</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Zookeeper connection string (see zookeeper docs for details).</span></span><br><span class="line"><span class="comment"># This is a comma separated host:port pairs, each corresponding to a zk</span></span><br><span class="line"><span class="comment"># server. e.g. "127.0.0.1:3000,127.0.0.1:3001,127.0.0.1:3002".</span></span><br><span class="line"><span class="comment"># You can also append an optional chroot string to the urls to specify the</span></span><br><span class="line"><span class="comment"># root directory for all kafka znodes.</span></span><br><span class="line">zookeeper.connect=172.17.0.8:2181</span><br><span class="line"></span><br><span class="line"><span class="comment"># Timeout in ms for connecting to zookeeper</span></span><br><span class="line">zookeeper.connection.timeout.ms=6000</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">############################# Group Coordinator Settings #############################</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The following configuration specifies the time, in milliseconds, that the GroupCoordinator will delay the initial consumer rebalance.</span></span><br><span class="line"><span class="comment"># The rebalance will be further delayed by the value of group.initial.rebalance.delay.ms as new members join the group, up to a maximum of max.poll.interval.ms.</span></span><br><span class="line"><span class="comment"># The default value for this is 3 seconds.</span></span><br><span class="line"><span class="comment"># We override this to 0 here as it makes for a better out-of-the-box experience for development and testing.</span></span><br><span class="line"><span class="comment"># However, in production environments the default value of 3 seconds is more suitable as this will help to avoid unnecessary, and potentially expensive, rebalances during application startup.</span></span><br><span class="line">group.initial.rebalance.delay.ms=0</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">cat &lt;&lt; EOF &gt; /data/server/qa-kafka9094/docker-compose.yml</span><br><span class="line">version: <span class="string">'2'</span></span><br><span class="line">services:</span><br><span class="line">    mysql:</span><br><span class="line">        network_mode: <span class="string">"host"</span></span><br><span class="line">        container_name: <span class="string">"qa-kafka9094"</span></span><br><span class="line">        environment:</span><br><span class="line">            TZ: <span class="string">"Asia/Shanghai"</span></span><br><span class="line">        image: <span class="string">"registry.cn-hangzhou.aliyuncs.com/zhijing/kafka:2.11-2.2.0"</span></span><br><span class="line">        restart: always</span><br><span class="line">        <span class="built_in">command</span>: /app/bin/kafka-init</span><br><span class="line">        volumes:</span><br><span class="line">            - <span class="string">"/data/server/qa-kafka9094/conf/kafka-startup.json:/config/kafka-startup.json"</span></span><br><span class="line">            - <span class="string">"/data/server/qa-kafka9094/conf/server.properties:/config/server.properties"</span></span><br><span class="line">            - <span class="string">"/data/server/qa-kafka9094/data:/tmp/kafka-logs"</span></span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Harbor/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Harbor/" class="post-title-link" itemprop="url">运维/虚拟化/Harbor</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:56" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:56+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">DOMAIN=baibu.la</span><br><span class="line">HARBOR_ROOT_DIR=/data/server/harbor</span><br><span class="line">HARBOR_VERSION=1.10.1</span><br><span class="line">HARBOR_ADMIN_PASSWORD=kbsonlong</span><br><span class="line"></span><br><span class="line">wget https://github.com/goharbor/harbor/releases/download/v<span class="variable">$&#123;HARBOR_VERSION&#125;</span>/harbor-online-installer-v<span class="variable">$&#123;HARBOR_VERSION&#125;</span>.tgz</span><br><span class="line"></span><br><span class="line">tar zxf harbor-online-installer-v<span class="variable">$&#123;HARBOR_VERSION&#125;</span>.tgz</span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> harbor/</span><br><span class="line">yum install openssl -y</span><br><span class="line">openssl genrsa -out ca.key 4096</span><br><span class="line"></span><br><span class="line">openssl req -x509 -new -nodes -sha512 -days 3650 \</span><br><span class="line"> -subj <span class="string">"/C=CN/ST=Guangdong/L=Guangzhou/O=zhijing/OU=IT/CN=harbor.<span class="variable">$&#123;DOMAIN&#125;</span>"</span> \</span><br><span class="line"> -key ca.key \</span><br><span class="line"> -out ca.crt</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">openssl genrsa -out harbor.<span class="variable">$&#123;DOMAIN&#125;</span>.key 4096</span><br><span class="line"> </span><br><span class="line">openssl req -sha512 -new \</span><br><span class="line">    -subj <span class="string">"/C=CN/ST=Guangdong/L=Guangzhou/O=zhijing/OU=IT/CN=harbor.<span class="variable">$&#123;DOMAIN&#125;</span>"</span> \</span><br><span class="line">    -key harbor.<span class="variable">$&#123;DOMAIN&#125;</span>.key \</span><br><span class="line">    -out harbor.<span class="variable">$&#123;DOMAIN&#125;</span>.csr</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">cat &gt; v3.ext &lt;&lt;-EOF</span><br><span class="line">authorityKeyIdentifier=keyid,issuer</span><br><span class="line">basicConstraints=CA:FALSE</span><br><span class="line">keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment</span><br><span class="line">extendedKeyUsage = serverAuth</span><br><span class="line">subjectAltName = @alt_names</span><br><span class="line"></span><br><span class="line">[alt_names]</span><br><span class="line">DNS.1=harbor.<span class="variable">$&#123;DOMAIN&#125;</span></span><br><span class="line">DNS.2=<span class="variable">$&#123;DOMAIN&#125;</span></span><br><span class="line">DNS.3=`hostname`</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">openssl x509 -req -sha512 -days 3650 \</span><br><span class="line">    -extfile v3.ext \</span><br><span class="line">    -CA ca.crt -CAkey ca.key -CAcreateserial \</span><br><span class="line">    -<span class="keyword">in</span> harbor.<span class="variable">$&#123;DOMAIN&#125;</span>.csr \</span><br><span class="line">    -out harbor.<span class="variable">$&#123;DOMAIN&#125;</span>.crt</span><br><span class="line">    </span><br><span class="line">mkdir -p <span class="variable">$&#123;HARBOR_ROOT_DIR&#125;</span>/cert</span><br><span class="line"></span><br><span class="line">cp harbor.<span class="variable">$&#123;DOMAIN&#125;</span>.crt <span class="variable">$&#123;HARBOR_ROOT_DIR&#125;</span>/cert</span><br><span class="line">cp harbor.<span class="variable">$&#123;DOMAIN&#125;</span>.key <span class="variable">$&#123;HARBOR_ROOT_DIR&#125;</span>/cert</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">##docker配置客户端证书</span></span><br><span class="line">openssl x509 -inform PEM -<span class="keyword">in</span> harbor.<span class="variable">$&#123;DOMAIN&#125;</span>.crt -out harbor.<span class="variable">$&#123;DOMAIN&#125;</span>.cert</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">mkdir -p /etc/docker/certs.d/harbor.<span class="variable">$&#123;DOMAIN&#125;</span>/</span><br><span class="line">cp harbor.<span class="variable">$&#123;DOMAIN&#125;</span>.cert /etc/docker/certs.d/harbor.<span class="variable">$&#123;DOMAIN&#125;</span>/</span><br><span class="line">cp harbor.<span class="variable">$&#123;DOMAIN&#125;</span>.key /etc/docker/certs.d/harbor.<span class="variable">$&#123;DOMAIN&#125;</span>/</span><br><span class="line">cp ca.crt /etc/docker/certs.d/harbor.<span class="variable">$&#123;DOMAIN&#125;</span>/</span><br><span class="line"></span><br><span class="line">systemctl restart docker</span><br><span class="line"></span><br><span class="line">sed -i <span class="string">"s/reg.mydomain.com/harbor.<span class="variable">$&#123;DOMAIN&#125;</span>/g"</span> harbor.yml</span><br><span class="line"></span><br><span class="line">sed -i <span class="string">"s#/your/certificate/path#<span class="variable">$&#123;HARBOR_ROOT_DIR&#125;</span>/cert/harbor.<span class="variable">$&#123;DOMAIN&#125;</span>.crt#g"</span> harbor.yml</span><br><span class="line"></span><br><span class="line">sed -i <span class="string">"s#/your/private/key/path#<span class="variable">$&#123;HARBOR_ROOT_DIR&#125;</span>/cert/harbor.<span class="variable">$&#123;DOMAIN&#125;</span>.key#g"</span> harbor.yml</span><br><span class="line"></span><br><span class="line">sed -i <span class="string">"s#data_volume: /data#data_volume: <span class="variable">$&#123;HARBOR_ROOT_DIR&#125;</span>/data#g"</span> harbor.yml</span><br><span class="line"></span><br><span class="line">sed -i <span class="string">"s/Harbor12345/<span class="variable">$&#123;HARBOR_ADMIN_PASSWORD&#125;</span>/g"</span> harbor.yml</span><br><span class="line"></span><br><span class="line">./prepare</span><br><span class="line"></span><br><span class="line">./install.sh --with-notary --with-clair --with-chartmuseum</span><br></pre></td></tr></table></figure>
+
+
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/redis%E6%95%B0%E6%8D%AE%E8%BF%81%E7%A7%BB%E5%BC%82%E5%B8%B8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/redis%E6%95%B0%E6%8D%AE%E8%BF%81%E7%A7%BB%E5%BC%82%E5%B8%B8/" class="post-title-link" itemprop="url">运维/数据库/Redis/redis数据迁移异常</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:56" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:56+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>现象:</p>
+<p>使用阿里源redis-shake给redis集群同步数据时</p>
+<p>错误日志:</p>
+<blockquote>
+<p>Client id=7153 addr=172.16.4.115:33754 fd=13 name= age=1152 idle=1152 flags=S db=0 sub=0 psub=0 multi=-1 qbuf=0 qbuf-free=0 obl=8362 oll=1877 omem=70045688 events=rw cmd=psync scheduled to be closed ASAP for overcoming of output buffer limits.</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">CONFIG GET client-output-buffer-limit</span><br><span class="line"> </span><br><span class="line">config <span class="built_in">set</span> client-output-buffer-limit <span class="string">'slave 2gb 64mb 60'</span></span><br><span class="line"></span><br><span class="line">CONFIG REWRITE</span><br><span class="line"></span><br><span class="line">CONFIG GET client-output-buffer-limit</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E7%B3%BB%E7%BB%9F%E5%88%9D%E5%A7%8B%E5%8C%96/openldap%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E7%B3%BB%E7%BB%9F%E5%88%9D%E5%A7%8B%E5%8C%96/openldap%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86/" class="post-title-link" itemprop="url">运维/系统初始化/openldap用户管理</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:56" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:56+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h4 id="添加用户"><a href="#添加用户" class="headerlink" title="添加用户"></a>添加用户</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">cat &lt;&lt; EOF &gt; zengshenglong.ldif</span><br><span class="line">dn: uid=zengshenglong,ou=People,dc=baibu,dc=la</span><br><span class="line">uid: zengshenglong</span><br><span class="line">cn: zengshenglong</span><br><span class="line">objectClass: account</span><br><span class="line">objectClass: posixAccount</span><br><span class="line">objectClass: top</span><br><span class="line">objectClass: shadowAccount</span><br><span class="line">shadowMin: 0</span><br><span class="line">shadowMax: 99999</span><br><span class="line">shadowWarning: 7</span><br><span class="line">loginShell: /bin/bash</span><br><span class="line">uidNumber: 3014</span><br><span class="line">gidNumber: 3001</span><br><span class="line">homeDirectory: /home/zengshenglong</span><br><span class="line">gecos: zengshenglong</span><br><span class="line">userPassword:: e1NTSEF9RFFXU2NJbk1RQnBxL3Y3K20rL3U4Q0d3cURJMGsvREI</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">ldapadd -h ldap.baibu.la -p 389 -D <span class="string">'cn=admin,dc=baibu,dc=la'</span> -w kbsonlong -f zengshenglong.ldif</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="查找用户"><a href="#查找用户" class="headerlink" title="查找用户"></a>查找用户</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ldapsearch -x -h ldap.baibu.la -p 389 -b <span class="string">"dc=baibu,dc=la"</span> -D <span class="string">"cn=admin,dc=baibu,dc=la"</span> -w kbsonlong <span class="string">"uid=zengshenglong"</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="重置密码"><a href="#重置密码" class="headerlink" title="重置密码"></a>重置密码</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ldappasswd -x -h ldap.baibu.la -p 389 -D <span class="string">'cn=admin,dc=baibu,dc=la'</span> -w kbsonlong  <span class="string">'uid=zengshenglong,ou=People,dc=baibu,dc=la'</span> -s zengshenglong</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">dn: uid=zengshenglong,ou=People,dc=alongparty,dc=cn</span><br><span class="line">uid: zengshenglong                       // OpenLDAP 的 uid 信息</span><br><span class="line">cn: zengshenglong</span><br><span class="line">sn: zengshenglong</span><br><span class="line">givenName: zengshenglong</span><br><span class="line">displayName: zengshenglong</span><br><span class="line">objectClass: posixAccount</span><br><span class="line">objectClass: top</span><br><span class="line">objectClass: person</span><br><span class="line">objectClass: shadowAccount</span><br><span class="line">objectClass: inetOrgPerson</span><br><span class="line">uidNumber: 1009                  // 账号的 UID</span><br><span class="line">gidNumber: 1009                  // 账号的 GID</span><br><span class="line">gecos: System Manager</span><br><span class="line">loginShell: /bin/bash            // 用户登入的 SHELL</span><br><span class="line">homeDirectory: /home/zengshenglong      // 用户的主目录指定</span><br><span class="line">userPassword: zengshenglong             // 明文密码</span><br><span class="line">shadowLastChange: 17654          // 用户最后一次修改密码的实际，从 1970-01-01 时起</span><br><span class="line">shadowMin: 0                     // 密码将允许修改的天数（0代表任何时间）</span><br><span class="line">shadowMax: 999999                // 系统强制用户修改为新密码的天数（1代表永远不能进行修改）</span><br><span class="line">shadowWarning: 7                 // 密码过期 7 天进行报告</span><br><span class="line">shadowExpire: -1                 // 密码过期后，账号状态</span><br><span class="line">employeeNumber: 18002            // 工号相关信息</span><br><span class="line">homePhone: 020-xxxxxxxx          // 家庭电话</span><br><span class="line">mobile: 136xxxxxxxxx             // 手机信息</span><br><span class="line">mail: alongparty@gmai.com        // 电子邮箱</span><br><span class="line">postalAddress: Guangzhou         // 住址信息</span><br><span class="line">initials: Test</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%95%B0%E6%8D%AE%E5%BA%93/Mysql/mysql%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98%E6%A6%82%E5%BF%B5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%95%B0%E6%8D%AE%E5%BA%93/Mysql/mysql%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98%E6%A6%82%E5%BF%B5/" class="post-title-link" itemprop="url">运维/数据库/Mysql/mysql性能调优概念</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:56" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:56+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><a href="https://www.cnblogs.com/yuqiandoudou/p/4665537.html" target="_blank" rel="noopener">https://www.cnblogs.com/yuqiandoudou/p/4665537.html</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br></pre></td><td class="code"><pre><span class="line">SHOW STATUS;</span><br><span class="line">FLUSH STATUS;</span><br><span class="line"></span><br><span class="line">查看当前连接数 SHOW STATUS LIKE <span class="string">'Thread_%'</span>;</span><br><span class="line">Thread_cached:被缓存的线程的个数</span><br><span class="line">Thread_running：处于激活状态的线程的个数</span><br><span class="line">Thread_connected：当前连接的线程的个数</span><br><span class="line">Thread_created：总共被创建的线程的个数</span><br><span class="line"></span><br><span class="line">Thread cache hits </span><br><span class="line">Thread_connected = SHOW GLOBAL STATUS LIKE Thread_created;</span><br><span class="line">Connections = SHOW GLOBAL STATUS LIKE <span class="string">'Connections'</span>;</span><br><span class="line">TCH=(1 - (Threads_created / Connections)) * 100</span><br><span class="line"></span><br><span class="line">查看活动连接内容</span><br><span class="line">SHOW PROCESSLIST;</span><br><span class="line"></span><br><span class="line">如果 TCH数小于90%,创建连接耗费了时间,增大Thread_cached数量</span><br><span class="line"></span><br><span class="line">QPS （每秒查询处理量）MyISAM 引擎</span><br><span class="line"></span><br><span class="line">Questions = SHOW GLOBAL STATUS LIKE <span class="string">'Questions'</span>;</span><br><span class="line">Uptime = SHOW GLOBAL STATUS LIKE <span class="string">'Uptime'</span>;</span><br><span class="line">QPS=Questions/Uptime </span><br><span class="line"></span><br><span class="line">TPS（每秒传输的事物处理个数），即服务器每秒处理的事务数，如果是InnoDB会显示，没有InnoDB就不会显示。</span><br><span class="line"></span><br><span class="line">Com_commit = SHOW GLOBAL STATUS LIKE <span class="string">'Com_commit'</span>;</span><br><span class="line">Com_rollback = SHOW GLOBAL STATUS LIKE <span class="string">'Com_rollback'</span>;</span><br><span class="line">Uptime = SHOW GLOBAL STATUS LIKE <span class="string">'Uptime'</span>;</span><br><span class="line">TPS=(Com_commit + Com_rollback)/Uptime</span><br><span class="line"></span><br><span class="line">QPS 和 TPS值一定要实时监控,如果接近架构搭建时的测试峰值,愿上帝与你同在</span><br><span class="line"></span><br><span class="line">Read/Writes Ratio</span><br><span class="line">Qcache_hits = SHOW GLOBAL STATUS LIKE <span class="string">'Qcache_hits'</span>;</span><br><span class="line">Com_select = SHOW GLOBAL STATUS LIKE <span class="string">'Com_select'</span>;</span><br><span class="line">Com_insert = SHOW GLOBAL STATUS LIKE <span class="string">'Com_insert'</span>;</span><br><span class="line">Com_update = SHOW GLOBAL STATUS LIKE <span class="string">'Com_update'</span>;</span><br><span class="line">Com_delete = SHOW GLOBAL STATUS LIKE <span class="string">'Com_delete'</span>;</span><br><span class="line">Com_replace = SHOW GLOBAL STATUS LIKE <span class="string">'Com_replace'</span>;</span><br><span class="line">R/W=(Com_select + Qcache_hits) / (Com_insert + Com_update + Com_delete + Com_replace) * 100</span><br><span class="line"></span><br><span class="line">读写比,优化数据库的重要依据,读的多就去优化读,写的多就去优化写</span><br><span class="line"></span><br><span class="line">Slow queries per minute</span><br><span class="line">Slow_queries = SHOW GLOBAL STATUS LIKE <span class="string">'Slow_queries'</span>;</span><br><span class="line">Uptime = SHOW GLOBAL STATUS LIKE <span class="string">'Uptime'</span>;</span><br><span class="line">SQPM=Slow_queries / (Uptime/60)</span><br><span class="line"></span><br><span class="line">Slow queries /Questions Ratio</span><br><span class="line">Slow_queries = SHOW GLOBAL STATUS LIKE <span class="string">'Slow_queries'</span>;</span><br><span class="line">Questions = SHOW GLOBAL STATUS LIKE <span class="string">'Questions'</span>;</span><br><span class="line">S/Q=Slow_queries/Questions </span><br><span class="line"></span><br><span class="line">新版本上线时要着重关注慢查询,让测试去踢开发者的屁股吧</span><br><span class="line"></span><br><span class="line">Full_join per minute</span><br><span class="line">Select_full_join = SHOW GLOBAL STATUS LIKE <span class="string">'Select_full_join'</span>;</span><br><span class="line">Uptime = SHOW GLOBAL STATUS LIKE <span class="string">'Uptime'</span>;</span><br><span class="line">FJPM=Select_full_join / (Uptime/60)</span><br><span class="line"></span><br><span class="line">没有使用索引而造成的full_join,优化索引去吧</span><br><span class="line"></span><br><span class="line">Innodb buffer <span class="built_in">read</span> hits</span><br><span class="line">Innodb_buffer_pool_reads = SHOW GLOBAL STATUS LIKE <span class="string">'Innodb_buffer_pool_reads'</span>;</span><br><span class="line">Innodb_buffer_pool_read_requests = SHOW GLOBAL STATUS LIKE <span class="string">'Innodb_buffer_pool_read_requests'</span>;</span><br><span class="line">IFRH=(1 - Innodb_buffer_pool_reads/Innodb_buffer_pool_read_requests) * 100</span><br><span class="line"></span><br><span class="line">InnoDB Buffer命中率 目标 95%-99%;</span><br><span class="line"></span><br><span class="line">Table Cache</span><br><span class="line">Open_tables= SHOW GLOBAL STATUS LIKE <span class="string">'Open_tables'</span>;</span><br><span class="line">Opened_tables= SHOW GLOBAL STATUS LIKE <span class="string">'Opened_tables'</span>;</span><br><span class="line">table_cache= SHOW GLOBAL STATUS LIKE <span class="string">'table_cache'</span>;</span><br><span class="line"></span><br><span class="line">table_cache应该大于 Open_tables 小于 Opened_tables </span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">Temp tables to Disk ratio</span><br><span class="line"></span><br><span class="line">Created_tmp_tables = show global status like <span class="string">'Created_tmp_tables'</span>;</span><br><span class="line">Created_tmp_disk_tables = show global status like <span class="string">'Created_tmp_disk_tables'</span>;</span><br><span class="line"></span><br><span class="line">TDR=(Created_tmp_disk_tables/Created_tmp_tables)*100</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">SHOW GLOBAL STATUS LIKE <span class="string">'Innodb_row_lock_%'</span>;</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">Innodb_row_lock_current_waits</span><br><span class="line"></span><br><span class="line">The number of row locks currently being waited <span class="keyword">for</span>. Added <span class="keyword">in</span> MySQL 5.0.3.</span><br><span class="line"></span><br><span class="line">Innodb_row_lock_time</span><br><span class="line"></span><br><span class="line">The total time spent <span class="keyword">in</span> acquiring row locks, <span class="keyword">in</span> milliseconds. Added <span class="keyword">in</span> MySQL 5.0.3.</span><br><span class="line"></span><br><span class="line">Innodb_row_lock_time_avg</span><br><span class="line"></span><br><span class="line">The average time to acquire a row lock, <span class="keyword">in</span> milliseconds. Added <span class="keyword">in</span> MySQL 5.0.3.</span><br><span class="line"></span><br><span class="line">Innodb_row_lock_time_max</span><br><span class="line"></span><br><span class="line">The maximum time to acquire a row lock, <span class="keyword">in</span> milliseconds. Added <span class="keyword">in</span> MySQL 5.0.3.</span><br><span class="line"></span><br><span class="line">Innodb_row_lock_waits</span><br><span class="line"></span><br><span class="line">The number of <span class="built_in">times</span> a row lock had to be waited <span class="keyword">for</span>. Added <span class="keyword">in</span> MySQL 5.0.3.</span><br><span class="line"></span><br><span class="line">——————————————————————————————————————————————————</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">1.系统mysql的进程数</span><br><span class="line"></span><br><span class="line">ps -ef | grep <span class="string">"mysql"</span> | grep -v <span class="string">"grep"</span> | wc –l</span><br><span class="line"></span><br><span class="line">2.Slave_running</span><br><span class="line"></span><br><span class="line">mysql &gt; show status like <span class="string">'Slave_running'</span>;</span><br><span class="line"></span><br><span class="line">如果系统有一个从复制服务器，这个值指明了从服务器的健康度</span><br><span class="line"></span><br><span class="line">3.Threads_connected</span><br><span class="line"></span><br><span class="line">mysql &gt; show status like <span class="string">'Threads_connected'</span>;</span><br><span class="line"></span><br><span class="line">当前客户端已连接的数量。这个值会少于预设的值，但你也能监视到这个值较大，这可保证客户端是处在活跃状态。</span><br><span class="line"></span><br><span class="line">4.Threads_running</span><br><span class="line"></span><br><span class="line">mysql &gt; show status like <span class="string">'Threads_running'</span>;</span><br><span class="line"></span><br><span class="line">如果数据库超负荷了，你将会得到一个正在（查询的语句持续）增长的数值。这个值也可以少于预先设定的值。这个值在很短的时间内超过限定值是没问题的。当Threads_running值超过预设值时并且该值在5秒内没有回落时， 要同时监视其他的一些值。</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">5.Aborted_clients</span><br><span class="line"></span><br><span class="line">mysql &gt; show status like <span class="string">'Aborted_clients'</span>;</span><br><span class="line"></span><br><span class="line">客户端被异常中断的数值，即连接到mysql服务器的客户端没有正常地断开或关闭。对于一些应用程序是没有影响的，但对于另一些应用程序可能你要跟踪该值，因为异常中断连接可能表明了一些应用程序有问题。</span><br><span class="line"></span><br><span class="line">6.Questions</span><br><span class="line"></span><br><span class="line">mysql&gt; show status like <span class="string">'Questions'</span>;</span><br><span class="line"></span><br><span class="line">每秒钟获得的查询数量，也可以是全部查询的数量，根据你输入不同的命令会得到你想要的不同的值。</span><br><span class="line"></span><br><span class="line">7.Handler_*</span><br><span class="line"></span><br><span class="line">mysql&gt; show status like <span class="string">'Handler_%'</span>;</span><br><span class="line"></span><br><span class="line">如果你想监视底层（low-level）数据库负载，这些值是值得去跟踪的。</span><br><span class="line"></span><br><span class="line">如果Handler_read_rnd_next值相对于你认为是正常值相差悬殊，可能会告诉你需要优化或索引出问题了。Handler_rollback表明事务被回滚的查询数量。你可能想调查一下原因。</span><br><span class="line"></span><br><span class="line">8.Opened_tables</span><br><span class="line"></span><br><span class="line">mysql&gt; show status like <span class="string">'Opened_tables'</span>;</span><br><span class="line"></span><br><span class="line">表缓存没有命中的数量。如果该值很大，你可能需要增加table_cache的数值。典型地，你可能想要这个值每秒打开的表数量少于1或2。</span><br><span class="line"></span><br><span class="line">9.Select_full_join</span><br><span class="line"></span><br><span class="line">mysql&gt; show status like <span class="string">'Select_full_join'</span>;</span><br><span class="line"></span><br><span class="line">没有主键（key）联合（Join）的执行。该值可能是零。这是捕获开发错误的好方法，因为一些这样的查询可能降低系统的性能。</span><br><span class="line"></span><br><span class="line">10.Select_scan</span><br><span class="line"></span><br><span class="line">mysql&gt; show status like <span class="string">'Select_scan'</span>;</span><br><span class="line"></span><br><span class="line">执行全表搜索查询的数量。在某些情况下是没问题的，但占总查询数量该比值应该是常量（即Select_scan/总查询数量商应该是常数）。如果你发现该值持续增长，说明需要优化，缺乏必要的索引或其他问题。</span><br><span class="line"></span><br><span class="line">11.Slow_queries</span><br><span class="line"></span><br><span class="line">mysql&gt; show status like <span class="string">'Slow_queries'</span>;</span><br><span class="line"></span><br><span class="line">超过该值（--long-query-time）的查询数量，或没有使用索引查询数量。对于全部查询会有小的冲突。如果该值增长，表明系统有性能问题。</span><br><span class="line"></span><br><span class="line">12.Threads_created</span><br><span class="line"></span><br><span class="line">mysql&gt; show status like <span class="string">'Threads_created'</span>;</span><br><span class="line"></span><br><span class="line">该值应该是低的。较高的值可能意味着你需要增加thread_cache的数值，或你遇到了持续增加的连接，表明了潜在的问题。</span><br><span class="line"></span><br><span class="line">13.客户端连接进程数</span><br><span class="line"></span><br><span class="line">shell&gt; mysqladmin processlist</span><br><span class="line"></span><br><span class="line">mysql&gt; show processlist;</span><br><span class="line"></span><br><span class="line">你可以通过使用其他的统计信息得到已连接线程数量和正在运行线程的数量，检查正在运行的查询花了多长时间是一个好主意。如果有一些长时间的查询，管理员可以被通知。你可能也想了解多少个查询是在<span class="string">"Locked"</span>的状态—---该值作为正在运行的查询不被计算在内而是作为非活跃的。一个用户正在等待一个数据库响应。</span><br><span class="line"></span><br><span class="line">14.innodb状态</span><br><span class="line"></span><br><span class="line">mysql&gt; show innodb status;</span><br><span class="line"></span><br><span class="line">该语句产生很多信息，从中你可以得到你感兴趣的。首先你要检查的就是“从最近的XX秒计算出来的每秒的平均负载”。</span><br><span class="line"></span><br><span class="line">(1)Pending normal aio reads: 该值是innodb io请求查询的大小（size）。如果该值大到超过了10—20，你可能有一些瓶颈。</span><br><span class="line"></span><br><span class="line">(2)reads/s, avg bytes/<span class="built_in">read</span>, writes/s, fsyncs/s:这些值是io统计。对于reads/writes大值意味着io子系统正在被装载。适当的值取决于你系统的配置。</span><br><span class="line"></span><br><span class="line">(3)Buffer pool hit rate:这个命中率非常依赖于你的应用程序。当你觉得有问题时请检查你的命中率</span><br><span class="line"></span><br><span class="line">(4)inserts/s, updates/s, deletes/s, reads/s:有一些Innodb的底层操作。你可以用这些值检查你的负载情况查看是否是期待的数值范围。</span><br><span class="line"></span><br><span class="line">15.主机性能状态</span><br><span class="line"></span><br><span class="line">shell&gt; uptime</span><br><span class="line"></span><br><span class="line">16.CPU使用率</span><br><span class="line"></span><br><span class="line">shell&gt; top</span><br><span class="line"></span><br><span class="line">shell&gt; vmstat</span><br><span class="line"></span><br><span class="line">17.磁盘IO</span><br><span class="line"></span><br><span class="line">shell&gt; vmstat</span><br><span class="line"></span><br><span class="line">shell&gt; iostat</span><br><span class="line"></span><br><span class="line">18.swap进出量(内存)</span><br><span class="line"></span><br><span class="line">shell&gt; free</span><br><span class="line"></span><br><span class="line">19.MySQL错误日志</span><br><span class="line"></span><br><span class="line">在服务器正常完成初始化后，什么都不会写到错误日志中，因此任何在该日志中的信息都要引起管理员的注意。</span><br><span class="line">20.InnoDB表空间信息</span><br><span class="line"></span><br><span class="line">InnoDB仅有的危险情况就是表空间填满----日志不会填满。检查的最好方式就是：show table status;你可以用任何InnoDB表来监视InnoDB表的剩余空间。</span><br><span class="line"></span><br><span class="line">21.QPS每秒Query量</span><br><span class="line"></span><br><span class="line">QPS = Questions(or Queries) / seconds</span><br><span class="line"></span><br><span class="line">mysql &gt; show /* global */ status like <span class="string">'Question'</span>;</span><br><span class="line"></span><br><span class="line">22.TPS(每秒事务量)</span><br><span class="line"></span><br><span class="line">TPS = (Com_commit + Com_rollback) / seconds</span><br><span class="line"></span><br><span class="line">mysql &gt; show status like <span class="string">'Com_commit'</span>;</span><br><span class="line"></span><br><span class="line">mysql &gt; show status like <span class="string">'Com_rollback'</span>;</span><br><span class="line"></span><br><span class="line">23.key Buffer 命中率</span><br><span class="line"></span><br><span class="line">key_buffer_read_hits = (1-key_reads / key_read_requests) * 100%</span><br><span class="line"></span><br><span class="line">key_buffer_write_hits = (1-key_writes / key_write_requests) * 100%</span><br><span class="line"></span><br><span class="line">mysql&gt; show status like <span class="string">'Key%'</span>;</span><br><span class="line"></span><br><span class="line">24.InnoDB Buffer命中率</span><br><span class="line"></span><br><span class="line">Innodb_buffer_read_hits = (1 - innodb_buffer_pool_reads / innodb_buffer_pool_read_requests) * 100%</span><br><span class="line"></span><br><span class="line">mysql&gt; show status like <span class="string">'innodb_buffer_pool_read%'</span>;</span><br><span class="line"></span><br><span class="line">25.Query Cache命中率</span><br><span class="line"></span><br><span class="line">Query_cache_hits = (Qcahce_hits / (Qcache_hits + Qcache_inserts )) * 100%;</span><br><span class="line"></span><br><span class="line">mysql&gt; show status like <span class="string">'Qcache%'</span>;</span><br><span class="line"></span><br><span class="line">26.Table Cache状态量</span><br><span class="line"></span><br><span class="line">mysql&gt; show status like <span class="string">'open%'</span>;</span><br><span class="line"></span><br><span class="line">27.Thread Cache 命中率</span><br><span class="line"></span><br><span class="line">Thread_cache_hits = (1 - Threads_created / connections ) * 100%</span><br><span class="line"></span><br><span class="line">mysql&gt; show status like <span class="string">'Thread%'</span>;</span><br><span class="line"></span><br><span class="line">mysql&gt; show status like <span class="string">'Connections'</span>;</span><br><span class="line"></span><br><span class="line">28.锁定状态</span><br><span class="line"></span><br><span class="line">mysql&gt; show status like <span class="string">'%lock%'</span>;</span><br><span class="line"></span><br><span class="line">29.复制延时量</span><br><span class="line"></span><br><span class="line">mysql &gt; show slave status</span><br><span class="line"></span><br><span class="line">30.Tmp Table状况(临时表状况)</span><br><span class="line"></span><br><span class="line">mysql &gt; show status like <span class="string">'Create_tmp%'</span>;</span><br><span class="line"></span><br><span class="line">31.Binlog Cache使用状况</span><br><span class="line"></span><br><span class="line">mysql &gt; show status like <span class="string">'Binlog_cache%'</span>;</span><br><span class="line"></span><br><span class="line">32.Innodb_log_waits量</span><br><span class="line"></span><br><span class="line">mysql &gt; show status like <span class="string">'innodb_log_waits'</span>;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%95%B0%E6%8D%AE%E5%BA%93/Mysql/Mysql%E8%AF%AF%E5%88%A0%E9%99%A4%E6%93%8D%E4%BD%9C%E7%9A%84%E9%98%B5%E7%97%9B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%95%B0%E6%8D%AE%E5%BA%93/Mysql/Mysql%E8%AF%AF%E5%88%A0%E9%99%A4%E6%93%8D%E4%BD%9C%E7%9A%84%E9%98%B5%E7%97%9B/" class="post-title-link" itemprop="url">运维/数据库/Mysql/Mysql误删除操作的阵痛</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:56" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:56+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>下午上班突然业务群里炸锅了…刚刚下的订单怎么不见了…订单详细怎么看不了啦…吧啦吧啦一堆弹窗消息过来了！！就差拿把菜刀飞上二楼技术部，拿去祭天了….<br>原来某数据组同事操作数据时误删除，把订单数据删除了…听到这个消息后，一万个草泥马奔腾而过!! 领导发话尽快恢复丢失数据。</p>
+<p>之前只是听过通过binlog日志恢复mysql删除数据，并没有实际操作过，所以赶紧用度娘、google查资料处理啊。</p>
+<h2 id="binlog三种格式"><a href="#binlog三种格式" class="headerlink" title="binlog三种格式"></a>binlog三种格式</h2><ol>
+<li>Statement：每一条会修改数据的sql都会记录在binlog中。</li>
+</ol>
+<ul>
+<li><p>优点：不需要记录每一行的变化，减少了binlog日志量，节约了IO，提高性能。(相比row能节约多少性能与日志量，这个取决于应用的SQL情况，正常同一条记录修改或者插入row格式所产生的日志量还小于Statement产生的日志量，但是考虑到如果带条件的update操作，以及整表删除，alter表等操作，ROW格式会产生大量日志，因此在考虑是否使用ROW格式日志时应该跟据应用的实际情况，其所产生的日志量会增加多少，以及带来的IO性能问题。)</p>
+</li>
+<li><p>缺点：由于记录的只是执行语句，为了这些语句能在slave上正确运行，因此还必须记录每条语句在执行的时候的一些相关信息，以保证所有语句能在slave得到和在master端执行时候相同的结果。另外mysql 的复制,像一些特定函数功能，slave可与master上要保持一致会有很多相关问题(如sleep()函数， last_insert_id()，以及user-defined functions(udf)会出现问题).</p>
+</li>
+</ul>
+<ol start="2">
+<li>Row:不记录sql语句上下文相关信息，仅保存哪条记录被修改。</li>
+</ol>
+<ul>
+<li><p>优点： binlog中可以不记录执行的sql语句的上下文相关的信息，仅需要记录那一条记录被修改成什么了。所以rowlevel的日志内容会非常清楚的记录下每一行数据修改的细节。而且不会出现某些特定情况下的存储过程，或function，以及trigger的调用和触发无法被正确复制的问题</p>
+</li>
+<li><p>缺点:所有的执行的语句当记录到日志中的时候，都将以每行记录的修改来记录，这样可能会产生大量的日志内容,比如一条update语句，修改多条记录，则binlog中每一条修改都会有记录，这样造成binlog日志量会很大，特别是当执行alter table之类的语句的时候，由于表结构修改，每条记录都发生改变，那么该表每一条记录都会记录到日志中。</p>
+</li>
+</ul>
+<ol start="3">
+<li>Mixedlevel: 是以上两种level的混合使用。</li>
+</ol>
+<ul>
+<li>一般的语句修改使用statment格式保存binlog，如一些函数，statement无法完成主从复制的操作，则采用row格式保存binlog,MySQL会根据执行的每一条具体的sql语句来区分对待记录的日志形式，也就是在Statement和Row之间选择一种.新版本的MySQL中队row level模式也被做了优化，并不是所有的修改都会以row level来记录，像遇到表结构变更的时候就会以statement模式来记录。至于update或者delete等修改数据的语句，还是会记录所有行的变更。</li>
+</ul>
+<h3 id="binlog解析mysqlbinlog"><a href="#binlog解析mysqlbinlog" class="headerlink" title="binlog解析mysqlbinlog"></a>binlog解析<a href="https://dev.mysql.com/doc/refman/5.6/en/mysqlbinlog.html" target="_blank" rel="noopener">mysqlbinlog</a></h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">#查看binlog日志</span></span><br><span class="line">MySQL [seam]&gt; show master status;</span><br><span class="line">+------------------+----------+--------------+------------------+-------------------+</span><br><span class="line">| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB | Executed_Gtid_Set |</span><br><span class="line">+------------------+----------+--------------+------------------+-------------------+</span><br><span class="line">| mysql_bin.000003 |     1088 |              |                  |                   |</span><br><span class="line">+------------------+----------+--------------+------------------+-------------------+</span><br><span class="line">1 row <span class="keyword">in</span> <span class="built_in">set</span> (0.00 sec)</span><br><span class="line"></span><br><span class="line">MySQL [seam]&gt; show master logs;</span><br><span class="line">+------------------+-----------+</span><br><span class="line">| Log_name         | File_size |</span><br><span class="line">+------------------+-----------+</span><br><span class="line">| mysql_bin.000001 |       751 |</span><br><span class="line">| mysql_bin.000002 |    480238 |</span><br><span class="line">| mysql_bin.000003 |      1088 |</span><br><span class="line">+------------------+-----------+</span><br><span class="line">3 rows <span class="keyword">in</span> <span class="built_in">set</span> (0.00 sec)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看binlog日志模式</span></span><br><span class="line">MySQL [seam]&gt;  show global variables like <span class="string">"%binlog_format%"</span>; </span><br><span class="line">+---------------+-------+</span><br><span class="line">| Variable_name | Value |</span><br><span class="line">+---------------+-------+</span><br><span class="line">| binlog_format | ROW   |</span><br><span class="line">+---------------+-------+</span><br><span class="line">1 row <span class="keyword">in</span> <span class="built_in">set</span> (0.00 sec)</span><br><span class="line"></span><br><span class="line">MySQL [seam]&gt;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">shell&gt; mysqlbinlog  -u root -p -h 127.0.0.1  --database=seam --skip-gtids=<span class="literal">true</span>   --base64-output=decode-rows --<span class="built_in">read</span>-from-remote-server -v  mysql-bin.000001  &gt;1.sql</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>–database 指定数据库</li>
+<li>–skip-gtids 跳过gtid</li>
+<li>–base64-output  解析ROW格式</li>
+<li>–read-from-remote-server  从远程服务器读取，需要在mysql服务能查到对应的binlog文件show master logs；默认本地文件</li>
+<li>-v 显示详细，在误操作之后需要恢复数据时，可以通过此选项确定误操作时间点。</li>
+<li>–start-datetime 开始回溯时间点</li>
+<li>–stop-datetime 结束回溯时间点</li>
+<li>–start-position  指定position开始位置</li>
+<li>–stop-position  指定position结束位置</li>
+<li>–stop-never     持续解析binlog日志，默认False，同步至执行命令时最新的binlog位置</li>
+</ul>
+<p>更多详细参数请参考mysqlbinlog –help 或者mysql官网<a href="https://dev.mysql.com/doc/refman/5.6/en/mysqlbinlog.html" target="_blank" rel="noopener">mysqlbinlog</a></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line">root@seam_alongparty_cn:/<span class="comment"># mysqlbinlog -uroot -p -h172.17.0.8 --database=seam --skip-gtids=true --read-from-remote-server  --skip-gtids=true --start-position=479414 --stop-position=479932 -v mysql_bin.000002</span></span><br><span class="line">Enter password: </span><br><span class="line"><span class="comment">/*!50530 SET @@SESSION.PSEUDO_SLAVE_MODE=1*/</span>;</span><br><span class="line"><span class="comment">/*!50003 SET @OLD_COMPLETION_TYPE=@@COMPLETION_TYPE,COMPLETION_TYPE=0*/</span>;</span><br><span class="line">DELIMITER <span class="comment">/*!*/</span>;</span><br><span class="line"><span class="comment"># at 479414</span></span><br><span class="line"><span class="comment">#190927 15:11:21 server id 1  end_log_pos 0 CRC32 0xc416d246 	Start: binlog v 4, server v 5.7.26-log created 190927 15:11:21</span></span><br><span class="line">BINLOG '</span><br><span class="line">mSaOXQ8BAAAAdwAAAAAAAAAAAAQANS43LjI2LWxvZwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span><br><span class="line">AAAAAAAAAAAAAAAAAAAAAAAAEzgNAAgAEgAEBAQEEgAAXwAEGggAAAAICAgCAAAACgoKKioAEjQA</span><br><span class="line">AUbSFsQ=</span><br><span class="line">'<span class="comment">/*!*/</span>;</span><br><span class="line"><span class="comment">/*!50616 SET @@SESSION.GTID_NEXT='AUTOMATIC'*/</span><span class="comment">/*!*/</span>;</span><br><span class="line"><span class="comment"># at 479414</span></span><br><span class="line"><span class="comment"># at 479479</span></span><br><span class="line"><span class="comment">#190929  8:54:47 server id 1  end_log_pos 479551 CRC32 0xc37df1d7 	Query	thread_id=540	exec_time=0	error_code=0</span></span><br><span class="line"><span class="keyword">SET</span> <span class="built_in">TIMESTAMP</span>=<span class="number">1569747287</span><span class="comment">/*!*/</span>;</span><br><span class="line"><span class="keyword">SET</span> @@session.pseudo_thread_id=<span class="number">540</span><span class="comment">/*!*/</span>;</span><br><span class="line"><span class="keyword">SET</span> @@session.foreign_key_checks=<span class="number">1</span>, @@session.sql_auto_is_null=<span class="number">0</span>, @@session.unique_checks=<span class="number">1</span>, @@session.autocommit=<span class="number">1</span><span class="comment">/*!*/</span>;</span><br><span class="line"><span class="keyword">SET</span> @@session.sql_mode=<span class="number">1436549152</span><span class="comment">/*!*/</span>;</span><br><span class="line"><span class="keyword">SET</span> @@session.auto_increment_increment=<span class="number">1</span>, @@session.auto_increment_offset=<span class="number">1</span><span class="comment">/*!*/</span>;</span><br><span class="line"><span class="comment">/*!\C utf8mb4 */</span><span class="comment">/*!*/</span>;</span><br><span class="line"><span class="keyword">SET</span> @@session.character_set_client=<span class="number">224</span>,@@session.collation_connection=<span class="number">224</span>,@@session.collation_server=<span class="number">224</span><span class="comment">/*!*/</span>;</span><br><span class="line"><span class="keyword">SET</span> @@session.lc_time_names=<span class="number">0</span><span class="comment">/*!*/</span>;</span><br><span class="line"><span class="keyword">SET</span> @@session.collation_database=<span class="keyword">DEFAULT</span><span class="comment">/*!*/</span>;</span><br><span class="line"><span class="keyword">BEGIN</span></span><br><span class="line"><span class="comment">/*!*/</span>;</span><br><span class="line"><span class="comment"># at 479551</span></span><br><span class="line"><span class="comment">#190929  8:54:47 server id 1  end_log_pos 479599 CRC32 0xf3b8e9ff 	Table_map: `seam`.`t1` mapped to number 668</span></span><br><span class="line"><span class="comment"># at 479599</span></span><br><span class="line"><span class="comment">#190929  8:54:47 server id 1  end_log_pos 479642 CRC32 0xc710e522 	Write_rows: table id 668 flags: STMT_END_F</span></span><br><span class="line"></span><br><span class="line">BINLOG '</span><br><span class="line">V3GQXRMBAAAAMAAAAG9RBwAAAJwCAAAAAAEABHNlYW0AAnQxAAIDDwL9AgL/6bjz</span><br><span class="line">V3GQXR4BAAAAKwAAAJpRBwAAAJwCAAAAAAEAAgAC//wBAAAAAQAxIuUQxw==</span><br><span class="line">'<span class="comment">/*!*/</span>;</span><br><span class="line"><span class="comment">### INSERT INTO `seam`.`t1`</span></span><br><span class="line"><span class="comment">### SET</span></span><br><span class="line"><span class="comment">###   @1=1</span></span><br><span class="line"><span class="comment">###   @2='1'</span></span><br><span class="line"><span class="comment"># at 479642</span></span><br><span class="line"><span class="comment">#190929  8:54:47 server id 1  end_log_pos 479673 CRC32 0xeb84f735 	Xid = 8541</span></span><br><span class="line"><span class="keyword">COMMIT</span><span class="comment">/*!*/</span>;</span><br><span class="line"><span class="comment"># at 479673</span></span><br><span class="line"><span class="comment"># at 479738</span></span><br><span class="line"><span class="comment">#190929  8:55:03 server id 1  end_log_pos 479810 CRC32 0x6f1fee7a 	Query	thread_id=540	exec_time=0	error_code=0</span></span><br><span class="line"><span class="keyword">SET</span> <span class="built_in">TIMESTAMP</span>=<span class="number">1569747303</span><span class="comment">/*!*/</span>;</span><br><span class="line"><span class="keyword">BEGIN</span></span><br><span class="line"><span class="comment">/*!*/</span>;</span><br><span class="line"><span class="comment"># at 479810</span></span><br><span class="line"><span class="comment">#190929  8:55:03 server id 1  end_log_pos 479858 CRC32 0x9160df8e 	Table_map: `seam`.`t1` mapped to number 668</span></span><br><span class="line"><span class="comment"># at 479858</span></span><br><span class="line"><span class="comment">#190929  8:55:03 server id 1  end_log_pos 479901 CRC32 0xd604924a 	Write_rows: table id 668 flags: STMT_END_F</span></span><br><span class="line"></span><br><span class="line">BINLOG '</span><br><span class="line">Z3GQXRMBAAAAMAAAAHJSBwAAAJwCAAAAAAEABHNlYW0AAnQxAAIDDwL9AgKO32CR</span><br><span class="line">Z3GQXR4BAAAAKwAAAJ1SBwAAAJwCAAAAAAEAAgAC//wCAAAAAQAySpIE1g==</span><br><span class="line">'<span class="comment">/*!*/</span>;</span><br><span class="line"><span class="comment">### INSERT INTO `seam`.`t1`</span></span><br><span class="line"><span class="comment">### SET</span></span><br><span class="line"><span class="comment">###   @1=2</span></span><br><span class="line"><span class="comment">###   @2='2'</span></span><br><span class="line"><span class="comment"># at 479901</span></span><br><span class="line"><span class="comment">#190929  8:55:03 server id 1  end_log_pos 479932 CRC32 0x2eb84ec5 	Xid = 8544</span></span><br><span class="line"><span class="keyword">COMMIT</span><span class="comment">/*!*/</span>;</span><br><span class="line">DELIMITER ;</span><br><span class="line"><span class="comment"># End of log file</span></span><br><span class="line"><span class="comment">/*!50003 SET COMPLETION_TYPE=@OLD_COMPLETION_TYPE*/</span>;</span><br><span class="line"><span class="comment">/*!50530 SET @@SESSION.PSEUDO_SLAVE_MODE=0*/</span>;</span><br><span class="line">root@seam_alongparty_cn:/<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<p>如上所示，其实这里的SQL语句不是原始SQL语句，那么能否看到原始SQL语句呢?</p>
+<h3 id="开启binlog-rows-query-log-events"><a href="#开启binlog-rows-query-log-events" class="headerlink" title="开启binlog_rows_query_log_events"></a>开启binlog_rows_query_log_events</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line">MySQL [seam]&gt; show variables like <span class="string">'binlog_rows_query_log_events'</span>;</span><br><span class="line">+------------------------------+-------+</span><br><span class="line">| Variable_name                | Value |</span><br><span class="line">+------------------------------+-------+</span><br><span class="line">| binlog_rows_query_log_events | OFF   |</span><br><span class="line">+------------------------------+-------+</span><br><span class="line">1 row <span class="keyword">in</span> <span class="built_in">set</span> (0.01 sec)</span><br><span class="line"></span><br><span class="line">MySQL [seam]&gt; <span class="built_in">set</span> binlog_rows_query_log_events=1;</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">MySQL [seam]&gt; flush logs;</span><br><span class="line">Query OK, 0 rows affected (0.03 sec)</span><br><span class="line"></span><br><span class="line">MySQL [seam]&gt; show variables like <span class="string">'binlog_rows_query_log_events'</span>;</span><br><span class="line">+------------------------------+-------+</span><br><span class="line">| Variable_name                | Value |</span><br><span class="line">+------------------------------+-------+</span><br><span class="line">| binlog_rows_query_log_events | ON    |</span><br><span class="line">+------------------------------+-------+</span><br><span class="line">1 row <span class="keyword">in</span> <span class="built_in">set</span> (0.00 sec)</span><br><span class="line"></span><br><span class="line">MySQL [seam]&gt; show master status;</span><br><span class="line">+------------------+----------+--------------+------------------+-------------------+</span><br><span class="line">| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB | Executed_Gtid_Set |</span><br><span class="line">+------------------+----------+--------------+------------------+-------------------+</span><br><span class="line">| mysql_bin.000003 |      154 |              |                  |                   |</span><br><span class="line">+------------------+----------+--------------+------------------+-------------------+</span><br><span class="line">1 row <span class="keyword">in</span> <span class="built_in">set</span> (0.00 sec)</span><br><span class="line"></span><br><span class="line">MySQL [seam]&gt; insert into t1(c1) values(<span class="string">'3'</span>);</span><br><span class="line">Query OK, 1 row affected (0.01 sec)</span><br><span class="line"></span><br><span class="line">MySQL [seam]&gt; insert into t1(c1) values(<span class="string">'4'</span>);</span><br><span class="line">Query OK, 1 row affected (0.01 sec)</span><br><span class="line"></span><br><span class="line">MySQL [seam]&gt; show master status;</span><br><span class="line">+------------------+----------+--------------+------------------+-------------------+</span><br><span class="line">| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB | Executed_Gtid_Set |</span><br><span class="line">+------------------+----------+--------------+------------------+-------------------+</span><br><span class="line">| mysql_bin.000003 |      780 |              |                  |                   |</span><br><span class="line">+------------------+----------+--------------+------------------+-------------------+</span><br><span class="line">1 row <span class="keyword">in</span> <span class="built_in">set</span> (0.00 sec)</span><br><span class="line"></span><br><span class="line">MySQL [seam]&gt; select * from t1;</span><br><span class="line">+----+------+</span><br><span class="line">| id | c1   |</span><br><span class="line">+----+------+</span><br><span class="line">|  2 | 2    |</span><br><span class="line">|  3 | 3    |</span><br><span class="line">|  4 | 4    |</span><br><span class="line">+----+------+</span><br><span class="line">3 rows <span class="keyword">in</span> <span class="built_in">set</span> (0.00 sec)</span><br><span class="line"></span><br><span class="line">MySQL [seam]&gt; show master status;</span><br><span class="line">+------------------+----------+--------------+------------------+-------------------+</span><br><span class="line">| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB | Executed_Gtid_Set |</span><br><span class="line">+------------------+----------+--------------+------------------+-------------------+</span><br><span class="line">| mysql_bin.000003 |      780 |              |                  |                   |</span><br><span class="line">+------------------+----------+--------------+------------------+-------------------+</span><br><span class="line">1 row <span class="keyword">in</span> <span class="built_in">set</span> (0.00 sec)</span><br><span class="line"></span><br><span class="line">MySQL [seam]&gt; delete from t1 <span class="built_in">where</span> id=3;</span><br><span class="line">Query OK, 1 row affected (0.01 sec)</span><br><span class="line"></span><br><span class="line">MySQL [seam]&gt; select * from t1;</span><br><span class="line">+----+------+</span><br><span class="line">| id | c1   |</span><br><span class="line">+----+------+</span><br><span class="line">|  2 | 2    |</span><br><span class="line">|  4 | 4    |</span><br><span class="line">+----+------+</span><br><span class="line">2 rows <span class="keyword">in</span> <span class="built_in">set</span> (0.00 sec)</span><br><span class="line"></span><br><span class="line">MySQL [seam]&gt; show master status;</span><br><span class="line">+------------------+----------+--------------+------------------+-------------------+</span><br><span class="line">| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB | Executed_Gtid_Set |</span><br><span class="line">+------------------+----------+--------------+------------------+-------------------+</span><br><span class="line">| mysql_bin.000003 |     1088 |              |                  |                   |</span><br><span class="line">+------------------+----------+--------------+------------------+-------------------+</span><br><span class="line">1 row <span class="keyword">in</span> <span class="built_in">set</span> (0.00 sec)</span><br><span class="line"></span><br><span class="line">MySQL [seam]&gt;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>查看binlog日志</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line">root@seam_alongparty_cn:/<span class="comment"># mysqlbinlog -uroot -p -h172.17.0.8 --database=seam --skip-gtids=true --read-from-remote-server  --skip-gtids=true --base64-output=decode-rows  --stop-position=1088 -v -v mysql_bin.000003</span></span><br><span class="line">Enter password: </span><br><span class="line"><span class="comment">/*!50530 SET @@SESSION.PSEUDO_SLAVE_MODE=1*/</span>;</span><br><span class="line"><span class="comment">/*!50003 SET @OLD_COMPLETION_TYPE=@@COMPLETION_TYPE,COMPLETION_TYPE=0*/</span>;</span><br><span class="line">DELIMITER <span class="comment">/*!*/</span>;</span><br><span class="line"><span class="comment"># at 4</span></span><br><span class="line"><span class="comment">#190929  9:03:09 server id 1  end_log_pos 123 CRC32 0x5622badf 	Start: binlog v 4, server v 5.7.26-log created 190929  9:03:09</span></span><br><span class="line"><span class="comment">/*!50616 SET @@SESSION.GTID_NEXT='AUTOMATIC'*/</span><span class="comment">/*!*/</span>;</span><br><span class="line"><span class="comment"># at 123</span></span><br><span class="line"><span class="comment"># at 154</span></span><br><span class="line"><span class="comment"># at 219</span></span><br><span class="line"><span class="comment">#190929  9:03:41 server id 1  end_log_pos 291 CRC32 0x7dbeeb3a 	Query	thread_id=540	exec_time=0	error_code=0</span></span><br><span class="line"><span class="keyword">SET</span> <span class="built_in">TIMESTAMP</span>=<span class="number">1569747821</span><span class="comment">/*!*/</span>;</span><br><span class="line"><span class="keyword">SET</span> @@session.pseudo_thread_id=<span class="number">540</span><span class="comment">/*!*/</span>;</span><br><span class="line"><span class="keyword">SET</span> @@session.foreign_key_checks=<span class="number">1</span>, @@session.sql_auto_is_null=<span class="number">0</span>, @@session.unique_checks=<span class="number">1</span>, @@session.autocommit=<span class="number">1</span><span class="comment">/*!*/</span>;</span><br><span class="line"><span class="keyword">SET</span> @@session.sql_mode=<span class="number">1436549152</span><span class="comment">/*!*/</span>;</span><br><span class="line"><span class="keyword">SET</span> @@session.auto_increment_increment=<span class="number">1</span>, @@session.auto_increment_offset=<span class="number">1</span><span class="comment">/*!*/</span>;</span><br><span class="line"><span class="comment">/*!\C utf8mb4 */</span><span class="comment">/*!*/</span>;</span><br><span class="line"><span class="keyword">SET</span> @@session.character_set_client=<span class="number">224</span>,@@session.collation_connection=<span class="number">224</span>,@@session.collation_server=<span class="number">224</span><span class="comment">/*!*/</span>;</span><br><span class="line"><span class="keyword">SET</span> @@session.lc_time_names=<span class="number">0</span><span class="comment">/*!*/</span>;</span><br><span class="line"><span class="keyword">SET</span> @@session.collation_database=<span class="keyword">DEFAULT</span><span class="comment">/*!*/</span>;</span><br><span class="line"><span class="keyword">BEGIN</span></span><br><span class="line"><span class="comment">/*!*/</span>;</span><br><span class="line"><span class="comment"># at 291</span></span><br><span class="line"><span class="comment">#190929  9:03:41 server id 1  end_log_pos 345 CRC32 0x107a0b38 	Rows_query</span></span><br><span class="line"><span class="comment"># insert into t1(c1) values('3')</span></span><br><span class="line"><span class="comment"># at 345</span></span><br><span class="line"><span class="comment">#190929  9:03:41 server id 1  end_log_pos 393 CRC32 0x8300c6cf 	Table_map: `seam`.`t1` mapped to number 668</span></span><br><span class="line"><span class="comment"># at 393</span></span><br><span class="line"><span class="comment">#190929  9:03:41 server id 1  end_log_pos 436 CRC32 0x99f3121d 	Write_rows: table id 668 flags: STMT_END_F</span></span><br><span class="line"><span class="comment">### INSERT INTO `seam`.`t1`</span></span><br><span class="line"><span class="comment">### SET</span></span><br><span class="line"><span class="comment">###   @1=3 /* INT meta=0 nullable=0 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @2='3' /* VARSTRING(765) meta=765 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment"># at 436</span></span><br><span class="line"><span class="comment">#190929  9:03:41 server id 1  end_log_pos 467 CRC32 0x91a746d3 	Xid = 8568</span></span><br><span class="line"><span class="keyword">COMMIT</span><span class="comment">/*!*/</span>;</span><br><span class="line"><span class="comment"># at 467</span></span><br><span class="line"><span class="comment"># at 532</span></span><br><span class="line"><span class="comment">#190929  9:03:44 server id 1  end_log_pos 604 CRC32 0x31c79d45 	Query	thread_id=540	exec_time=0	error_code=0</span></span><br><span class="line"><span class="keyword">SET</span> <span class="built_in">TIMESTAMP</span>=<span class="number">1569747824</span><span class="comment">/*!*/</span>;</span><br><span class="line"><span class="keyword">BEGIN</span></span><br><span class="line"><span class="comment">/*!*/</span>;</span><br><span class="line"><span class="comment"># at 604</span></span><br><span class="line"><span class="comment">#190929  9:03:44 server id 1  end_log_pos 658 CRC32 0x2e767527 	Rows_query</span></span><br><span class="line"><span class="comment"># insert into t1(c1) values('4')</span></span><br><span class="line"><span class="comment"># at 658</span></span><br><span class="line"><span class="comment">#190929  9:03:44 server id 1  end_log_pos 706 CRC32 0x6b0634b6 	Table_map: `seam`.`t1` mapped to number 668</span></span><br><span class="line"><span class="comment"># at 706</span></span><br><span class="line"><span class="comment">#190929  9:03:44 server id 1  end_log_pos 749 CRC32 0xaed063c2 	Write_rows: table id 668 flags: STMT_END_F</span></span><br><span class="line"><span class="comment">### INSERT INTO `seam`.`t1`</span></span><br><span class="line"><span class="comment">### SET</span></span><br><span class="line"><span class="comment">###   @1=4 /* INT meta=0 nullable=0 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @2='4' /* VARSTRING(765) meta=765 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment"># at 749</span></span><br><span class="line"><span class="comment">#190929  9:03:44 server id 1  end_log_pos 780 CRC32 0x5c866e54 	Xid = 8569</span></span><br><span class="line"><span class="keyword">COMMIT</span><span class="comment">/*!*/</span>;</span><br><span class="line"><span class="comment"># at 780</span></span><br><span class="line"><span class="comment"># at 845</span></span><br><span class="line"><span class="comment">#190929  9:04:28 server id 1  end_log_pos 917 CRC32 0x90df385e 	Query	thread_id=540	exec_time=0	error_code=0</span></span><br><span class="line"><span class="keyword">SET</span> <span class="built_in">TIMESTAMP</span>=<span class="number">1569747868</span><span class="comment">/*!*/</span>;</span><br><span class="line"><span class="keyword">BEGIN</span></span><br><span class="line"><span class="comment">/*!*/</span>;</span><br><span class="line"><span class="comment"># at 917</span></span><br><span class="line"><span class="comment">#190929  9:04:28 server id 1  end_log_pos 966 CRC32 0xaee1cf6c 	Rows_query</span></span><br><span class="line"><span class="comment"># delete from t1 where id=3</span></span><br><span class="line"><span class="comment"># at 966</span></span><br><span class="line"><span class="comment">#190929  9:04:28 server id 1  end_log_pos 1014 CRC32 0xa65a9986 	Table_map: `seam`.`t1` mapped to number 668</span></span><br><span class="line"><span class="comment"># at 1014</span></span><br><span class="line"><span class="comment">#190929  9:04:28 server id 1  end_log_pos 1057 CRC32 0xb60b444f 	Delete_rows: table id 668 flags: STMT_END_F</span></span><br><span class="line"><span class="comment">### DELETE FROM `seam`.`t1`</span></span><br><span class="line"><span class="comment">### WHERE</span></span><br><span class="line"><span class="comment">###   @1=3 /* INT meta=0 nullable=0 is_null=0 */</span></span><br><span class="line"><span class="comment">###   @2='3' /* VARSTRING(765) meta=765 nullable=1 is_null=0 */</span></span><br><span class="line"><span class="comment"># at 1057</span></span><br><span class="line"><span class="comment">#190929  9:04:28 server id 1  end_log_pos 1088 CRC32 0xed4c1031 	Xid = 8573</span></span><br><span class="line"><span class="keyword">COMMIT</span><span class="comment">/*!*/</span>;</span><br><span class="line">DELIMITER ;</span><br><span class="line"><span class="comment"># End of log file</span></span><br><span class="line"><span class="comment">/*!50003 SET COMPLETION_TYPE=@OLD_COMPLETION_TYPE*/</span>;</span><br><span class="line"><span class="comment">/*!50530 SET @@SESSION.PSEUDO_SLAVE_MODE=0*/</span>;</span><br><span class="line">root@seam_alongparty_cn:/<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<p>哐当哐当哐当……  原始SQL出来了，然后就可以把SQL整理出来进行恢复了</p>
+<h3 id="开启binlog时，两个很有用的参数"><a href="#开启binlog时，两个很有用的参数" class="headerlink" title="开启binlog时，两个很有用的参数"></a>开启binlog时，两个很有用的参数</h3><ul>
+<li>binlog_rows_query_log_events =1     </li>
+</ul>
+<p>在row模式下..开启该参数,将把sql语句打印到binlog日志里面.默认是0(off);   虽然将语句放入了binlog,但不会执行这个sql,就相当于注释一样.但对于dba来说,在查看binlog的时候,很有用处.</p>
+<ul>
+<li>binlog_row_image=’minimal’    </li>
+</ul>
+<p>默认为full,在binlog为row格式下,full将记录update前后所有字段的值,minimal时,只记录更改字段的值和where字段的值,noblob时,记录除了blob和text的所有字段的值,如果update的blob或text字段,也只记录该字段更改后的值,更改前的不记录;大家都知道row格式下的binlog增长速度太快,对存储空间,主从传输都是一个不小的压力.因为每个event记录了所有更改数据前后的值,不管数据是否有改动都会记录.binlog_row_image的引入就大大减少了binlog记录的数据.在结合binlog_rows_query_log_events,对于dba日常维护binlog是完全没有压力的,而且节省了硬盘空间开销,减小I/O,减少了主从传输压力;</p>
+<h3 id="在线闪回binlog2sql"><a href="#在线闪回binlog2sql" class="headerlink" title="在线闪回binlog2sql"></a>在线闪回<a href="https://github.com/danfengcao/binlog2sql" target="_blank" rel="noopener">binlog2sql</a></h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/danfengcao/binlog2sql.git &amp;&amp; <span class="built_in">cd</span> binlog2sql</span><br><span class="line">pip install -r requirements.txt</span><br></pre></td></tr></table></figure>
+
+<p>binlog2sql大部分参数与mysqlbinlog相同，另增加了一些参数</p>
+<ul>
+<li>-t 指定表，多个表以空格隔开</li>
+<li>–only-dml 只解析dml，忽略ddl。可选。默认False。</li>
+<li>–sql-type 指定解析类型，支持INSERT,UPDATE,DELETE。多种类型用空格隔开，默认增删改都解析。</li>
+</ul>
+<p>解析出标准SQL</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">shell&gt; python binlog2sql.py -h127.0.0.1 -P3306 -uadmin -p<span class="string">'admin'</span> -dtest -t test3 test4 --start-file=<span class="string">'mysql-bin.000002'</span></span><br><span class="line"></span><br><span class="line">输出：</span><br><span class="line">INSERT INTO `<span class="built_in">test</span>`.`test3`(`addtime`, `data`, `id`) VALUES (<span class="string">'2016-12-10 13:03:38'</span>, <span class="string">'english'</span>, 4); <span class="comment">#start 570 end 736</span></span><br><span class="line">UPDATE `<span class="built_in">test</span>`.`test3` SET `addtime`=<span class="string">'2016-12-10 12:00:00'</span>, `data`=<span class="string">'中文'</span>, `id`=3 WHERE `addtime`=<span class="string">'2016-12-10 13:03:22'</span> AND `data`=<span class="string">'中文'</span> AND `id`=3 LIMIT 1; <span class="comment">#start 763 end 954</span></span><br><span class="line">DELETE FROM `<span class="built_in">test</span>`.`test3` WHERE `addtime`=<span class="string">'2016-12-10 13:03:38'</span> AND `data`=<span class="string">'english'</span> AND `id`=4 LIMIT 1; <span class="comment">#start 981 end 1147</span></span><br></pre></td></tr></table></figure>
+
+<p>根据可以知道删除操作的position位置，然后使用–stop-position参数生成回滚sql</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">shell&gt; python binlog2sql.py --flashback -h127.0.0.1 -P3306 -uadmin -p<span class="string">'admin'</span> -dtest -ttest3 --start-file=<span class="string">'mysql-bin.000002'</span> --start-position=763 --stop-position=1147</span><br><span class="line"></span><br><span class="line">输出：</span><br><span class="line">INSERT INTO `<span class="built_in">test</span>`.`test3`(`addtime`, `data`, `id`) VALUES (<span class="string">'2016-12-10 13:03:38'</span>, <span class="string">'english'</span>, 4); <span class="comment">#start 981 end 1147</span></span><br><span class="line">UPDATE `<span class="built_in">test</span>`.`test3` SET `addtime`=<span class="string">'2016-12-10 13:03:22'</span>, `data`=<span class="string">'中文'</span>, `id`=3 WHERE `addtime`=<span class="string">'2016-12-10 12:00:00'</span> AND `data`=<span class="string">'中文'</span> AND `id`=3 LIMIT 1; <span class="comment">#start 763 end 954</span></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="https://github.com/danfengcao/binlog2sql/blob/master/example/mysql-flashback-priciple-and-practice.md" target="_blank" rel="noopener">闪回原理及实战</a></p>
+<p><a href="http://blog.itpub.net/20892230/viewspace-2129567/" target="_blank" rel="noopener">binlog很有用的2个参数binlog_rows_query_log_events和binlog_row_image</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/page/7/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/9/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+  </nav>
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="曾胜龙"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">曾胜龙</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yourname" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yourname" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank">粤ICP备18122209号 </a>
+      <img src="http://www.beian.gov.cn/portal/download" style="display: inline-block;">
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">曾胜龙</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

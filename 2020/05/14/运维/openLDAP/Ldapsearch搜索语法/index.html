@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"kbsonlong.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"3QSL94PCBQ","apiKey":"d2fe765a64df1740fcab93644d3a2677","indexName":"hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="一、基本操作    连接 连接操作作用于应用程序与LDAP服务器之间的连接和断开。    查询 查询操作通常指的是搜索search和比较compare。也就是利用属性值查找相应条目。   更改 包括add&#x2F;delete&#x2F;modify&#x2F;modifyDN   二、搜索参数   （这里只介绍一下搜索参数的搜索层次，为下文做铺垫）    base 表示把基准DN作为搜索对象。例如：cn&#x3D;yanzong,o">
+<meta property="og:type" content="article">
+<meta property="og:title" content="运维&#x2F;openLDAP&#x2F;Ldapsearch搜索语法">
+<meta property="og:url" content="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/openLDAP/Ldapsearch%E6%90%9C%E7%B4%A2%E8%AF%AD%E6%B3%95/index.html">
+<meta property="og:site_name" content="蜷缩的蜗牛">
+<meta property="og:description" content="一、基本操作    连接 连接操作作用于应用程序与LDAP服务器之间的连接和断开。    查询 查询操作通常指的是搜索search和比较compare。也就是利用属性值查找相应条目。   更改 包括add&#x2F;delete&#x2F;modify&#x2F;modifyDN   二、搜索参数   （这里只介绍一下搜索参数的搜索层次，为下文做铺垫）    base 表示把基准DN作为搜索对象。例如：cn&#x3D;yanzong,o">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-05-14T13:51:59.587Z">
+<meta property="article:modified_time" content="2020-05-14T13:51:59.587Z">
+<meta property="article:author" content="曾胜龙">
+<meta property="article:tag" content="Devops Kubernetes Docker">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/openLDAP/Ldapsearch%E6%90%9C%E7%B4%A2%E8%AF%AD%E6%B3%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>运维/openLDAP/Ldapsearch搜索语法 | 蜷缩的蜗牛</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="蜷缩的蜗牛" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">蜷缩的蜗牛</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">运维笔记</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/kbsonlong" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/openLDAP/Ldapsearch%E6%90%9C%E7%B4%A2%E8%AF%AD%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          运维/openLDAP/Ldapsearch搜索语法
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:59" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:59+08:00">2020-05-14</time>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><strong>一、基本操作</strong></p>
+<table>
+<thead>
+<tr>
+<th>连接</th>
+<th>连接操作作用于应用程序与LDAP服务器之间的连接和断开。</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>查询</td>
+<td>查询操作通常指的是搜索search和比较compare。也就是利用属性值查找相应条目。</td>
+</tr>
+<tr>
+<td>更改</td>
+<td>包括add/delete/modify/modifyDN</td>
+</tr>
+</tbody></table>
+<p><strong>二、搜索参数</strong></p>
+<p>  （这里只介绍一下搜索参数的搜索层次，为下文做铺垫）</p>
+<table>
+<thead>
+<tr>
+<th>base</th>
+<th>表示把基准DN作为搜索对象。例如：cn=yanzong,ou=Ops,dc=shuyun,dc=com 的基准DN是dc=shuyun,dc=com</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>one</td>
+<td>表示把基准DN的第一层作为搜索对象，如上个例子中的ou=Ops为搜索对象。</td>
+</tr>
+<tr>
+<td>sub</td>
+<td>表示把基准DN及以下的整棵树都作为搜索对象。</td>
+</tr>
+</tbody></table>
+<p><strong>三、ldapsearch 参数表</strong></p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-a deref</td>
+<td>指定别名反向引用。请输入 never、always、search 或 find。如果不使用此参数，缺省为 never。</td>
+</tr>
+<tr>
+<td>-A</td>
+<td>只检索属性的名称，而不检索属性的值。</td>
+</tr>
+<tr>
+<td>-b base dn</td>
+<td>指定用作搜索起始点的专有名称。使用引号来指定该值，如：”ou=Ops,dc=shuyun,dc=com”.如果要搜索的服务器需要指定搜索起点，则必须使用此参数。否则此参数是可选的。也可以同时使用 -b 和 -s 来确定搜索范围。没有 –s，-b 就会搜索指定为起始点的项以及该项的所有子项。</td>
+</tr>
+<tr>
+<td>-B</td>
+<td>允许打印非 ASCII 值</td>
+</tr>
+<tr>
+<td>-D bind dn</td>
+<td>指定服务器用于验证您的专有名称。名称必须与目录中的项相符，并且必须拥有搜索目录所需的权限。请使用引号来指定该名称，例如：”cn=Manager,dc=shuyun,dc=com”。如果不使用此参数，则与服务器的连接是匿名的。如果服务器不允许匿名连接，则必须使用 -D。除了 -D，还必须使用 -w 参数来指定与专有名称相关联的口令。</td>
+</tr>
+<tr>
+<td>-f file</td>
+<td>指定包含要使用的搜索过滤器的文件，如 -f 过滤器。请将每个搜索过滤器置于单独的一行。Ldapsearch 会对每一行执行一次搜索。可选择指定过滤模式。例如，指定 -f 过滤 “cn=%s”，并在文件的每一行中输入公用名称的值。</td>
+</tr>
+<tr>
+<td>-F sep</td>
+<td>在属性名称和值之间打印 sep 而不是等号 (=)。例如，如果读取 ldapsearch 输出的工具希望使用其他的分隔符时，可以使用此参数。</td>
+</tr>
+<tr>
+<td>-h host name</td>
+<td>指定要连接的服务器主机名，如 -h ldap.shuyun.com。</td>
+</tr>
+<tr>
+<td>-l timelimit</td>
+<td>指定完成搜索的时间限制（秒）。如果没有指定此参数或指定的限制为 0，那么搜索就没有时间限制。但是，ldapsearch 的等待时间决不会超过服务器上设置的搜索时间限制。</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>-L</th>
+<th>指定以 LDIF 格式输出。LDIF 格式使用冒号 (:) 而不是等号 (=) 作为属性描述符。LDIF 对一次性添加或修改大量目录项很有帮助。例如，可以将输出内容引入兼容 LDAP 的目录中。</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-M</td>
+<td>将参考对象作为普通项进行管理，以使 ldapsearch 可返回参考项本身的属性，而不是所参考的项的属性。</td>
+</tr>
+<tr>
+<td>-n</td>
+<td>显示如何执行搜索，但不实际执行搜索</td>
+</tr>
+<tr>
+<td>-p port</td>
+<td>指定服务器使用的端口。如果没有使用此参数，缺省情况下 ldapsearch 使用 389 端口。</td>
+</tr>
+<tr>
+<td>-R</td>
+<td>不自动遵循服务器返回的搜索引用。请注意，Netscape 目录服务器将术语 referrals 用于搜索引用。</td>
+</tr>
+<tr>
+<td>-s scope</td>
+<td>指定使用 -b 参数时的搜索范围：base – 仅搜索 -b 参数指定的项onelevel – 仅搜索 -b 参数指定项的直接子项，而不搜索该项本身subtree – 搜索 -b 参数指定的项以及它的所有子项。这是不带 -s 时使用 -b 的缺省行为。指定 -b 和 -s 的顺序并不重要。</td>
+</tr>
+<tr>
+<td>-S attribute</td>
+<td>按指定的属性排序结果。</td>
+</tr>
+<tr>
+<td>-z sizelimit</td>
+<td>指定返回项的最大数目。如果没有指定此参数或指定的限制为 0，那么返回的项没有数量限制。但是，ldapsearch 返回的项决不会多于服务器允许的数量。</td>
+</tr>
+<tr>
+<td>-u</td>
+<td>指定 ldapsearch 以用户友好格式返回专有名称。</td>
+</tr>
+<tr>
+<td>-v</td>
+<td>指定 ldapsearch 以详尽模式运行。</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>-w password</th>
+<th>指定与 -D 参数一起使用的与专有名称关联的口令。</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>x</td>
+<td>与 -S 一起使用时可指定 LDAP 服务器在将结果返回之前就对它们进行排序。如果使用 -S 而不使用 –x，ldapsearch 将对结果排序。</td>
+</tr>
+</tbody></table>
+<p>四、匹配语法</p>
+<table>
+<thead>
+<tr>
+<th>运算符</th>
+<th>用途</th>
+<th>例子</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>=</td>
+<td>查找所包含的属性值与指定值相同的项</td>
+<td>“cn=yanzong”</td>
+</tr>
+<tr>
+<td>&gt;=</td>
+<td>查找特定项，该项中包含的属性的数字或字母值大于或等于指定的值。</td>
+<td>“cn&gt;=D”</td>
+</tr>
+<tr>
+<td>&lt;=</td>
+<td>查找特定项，该项中包含的属性的数字或字母值小于或等于指定的值。</td>
+<td>“roomNumber&lt;=300”</td>
+</tr>
+<tr>
+<td>=*</td>
+<td>查找包含特定属性的值的项，而不用管属性的值是什么。</td>
+<td>“sn=*”</td>
+</tr>
+<tr>
+<td>~=</td>
+<td>查找特定项，该项中所含属性的值约等于指定的值。</td>
+<td>“sn~=Brning” 可能返回 sn=Browning</td>
+</tr>
+<tr>
+<td>&amp;</td>
+<td>查找与所有搜索过滤器中指定的条件相匹配的项</td>
+<td>“(&amp;(cn=John Browning)(l=Dallas))”</td>
+</tr>
+<tr>
+<td>|</td>
+<td>查找与至少一个搜索过滤器中指定的条件相匹配的项</td>
+<td>“(|(cn=John Browning)(l=Dallas))”</td>
+</tr>
+<tr>
+<td>!</td>
+<td>查找与任何搜索过滤器中指定的条件都不匹配的项</td>
+<td>“(!(cn=John Browning)(l=Dallas))”</td>
+</tr>
+<tr>
+<td>= <string>*<string></td>
+<td>查找所包含的属性值与指定值相同的项(模糊匹配)</td>
+<td>“cn=y<em>zong” “cn=yan</em>“</td>
+</tr>
+</tbody></table>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">必须使用搜索过滤器指定要搜索的属性。搜索过滤器的语法为：</span><br><span class="line">        <span class="string">"&lt;attribute&gt; &lt;operator&gt; &lt;value&gt;"</span></span><br><span class="line">例如，下面的搜索过滤器可以找到所有的特定项，只要该项中以 Smith 作为 sn（别称）属性的值：</span><br><span class="line">        <span class="string">"sn=Smith"</span></span><br><span class="line">可以在搜索过滤器中指定存储在目录中的任意属性。以下是用来搜索个人项的公用属性：</span><br><span class="line">        cn -- 个人的公用名称</span><br><span class="line">        sn -- 个人的姓</span><br><span class="line">        telephonenumber -- 个人的电话号码</span><br><span class="line">        l -- 个人的地理位置</span><br><span class="line">如果这里不是太清楚可以参考：http://407711169.blog.51cto.com/6616996/1439623 </span><br><span class="line">可以在 ldapsearch 命令行中指定搜索过滤器，或在文件中指定它们，并使用 lsearch 参数 -f 引用此文件。如果使用文件，请在单独的行中指定每个搜索过滤器。</span><br><span class="line">请注意：如果 LDAP 目录（如 Domino LDAP 目录）支持语言标记，则可在搜索过滤器中包含它们。例如：</span><br><span class="line">        <span class="string">"givenName;lang-fr=Etienne"</span></span><br><span class="line">使用布尔运算符的多个搜索过滤器</span><br><span class="line">您可以使用多个搜索过滤器以及布尔运算符。使用下列语法：</span><br><span class="line">        <span class="string">"(operator(filter)(filter))"</span></span><br><span class="line">例如，使用下面的搜索过滤器查找别称为 Browning、位置为 Dallas 的项。</span><br><span class="line">        <span class="string">"(&amp;(sn=Browning)(l=Dallas))"</span></span><br><span class="line">布尔运算符可以嵌套。例如，使用下面的搜索过滤器在邮件网络域 MDN 中查找 surname 为 caneel 或 givenname 为 alfred 的项：</span><br><span class="line">        <span class="string">"(&amp;(maildomain=MDN)(|(sn=caneel)(givenname=alfred)))"</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p><strong>五、使用 ldapsearch 的样例</strong></p>
+<table>
+<thead>
+<tr>
+<th>搜索</th>
+<th>命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>使用端口 389 的主机 ldap.acme.com 上的所有项，并返回所有属性和值同上，但仅返回属性名称</td>
+<td>ldapsearch -h ldap.acme.com “objectClass=*”ldapsearch -A -h ldap.acme.com” objectClass=*”</td>
+</tr>
+<tr>
+<td>使用端口 389 的主机 ldap.acme.com 上的所有项，并且反向引用找到的所有别名</td>
+<td>ldapsearch -a always -h ldap.acme.com “objectClass=*”</td>
+</tr>
+<tr>
+<td>使用端口 389 的主机 ldap.acme.com 上的所有项，并返回 mail、cn、sn 和 givenname 等属性</td>
+<td>ldapsearch -h ldap.acme.com “objectClass=*” mail cn sn givenname</td>
+</tr>
+<tr>
+<td>在使用端口 389 的主机 ldap.acme.com 上，在 ”ou=West，o=Acme，c=US” 基准下搜索 (cn=Mike*)，并返回所有属性和值</td>
+<td>ldapsearch -b “ou=West,o=Acme,c=US” -h ldap.acme.com “(cn=Mike*)”</td>
+</tr>
+<tr>
+<td>使用端口 389 的主机 ldap.acme.com 上的一个级别，并返回所有属性和值同上，但限制基准的范围</td>
+<td>ldapsearch -s onelevel -h ldap.acme.com “objectClass=*”ldapsearch -s base -h ldap.acme.com “objectClass=*”</td>
+</tr>
+<tr>
+<td>使用端口 389 的主机 ldap.acme.com 上的所有项，并返回所有的属性和值；搜索时间限制为五秒</td>
+<td>ldapsearch -l 5 -h ldap.acme.com “objectClass=*”</td>
+</tr>
+<tr>
+<td>使用端口 389 的主机 ldap.acme.com 上的所有项，并返回所有的属性和值；大小限制为五</td>
+<td>ldapsearch -z 5 -h ldap.acme.com “objectClass=*”</td>
+</tr>
+<tr>
+<td>使用端口 389 的主机 ldap.acme.com 上的所有项，捆绑为：用户“cn=John Doe,o=Acme”，口令“password”，并以 LDIF 格式返回所有的属性和值</td>
+<td>ldapsearch -h ldap.acme.com -D “cn=john doe,o=acme” -w password -L “objectClass=*”</td>
+</tr>
+<tr>
+<td>使用端口 389 的主机 ldap.acme.com。对“cn=John Doe,o=Acme”项，返回其允许匿名查看的所有属性</td>
+<td>ldapsearch -h ldap.acme.com” -s base -b “cn=john doe,o=acme” objectClass=*”</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>配置为在端口 391 上侦听 LDAP 请求的另一台主机 bluepages.ibm.com 上的所有项</th>
+<th>ldapsearch -h bluepages.ibm.com -p 391 “objectClass=*”</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>端口 391 上的 bluepages.ibm.com。对还有与 OR 过滤器中任意一个属性相匹配的属性的任何“个人”对象类型进行子树搜索（缺省），从组织“o=ibm”开始。超时值为 300 秒，返回的最大项数设为 1000。且仅返回 DN（缺省）和 CN（这是 Web 应用程序的公用过滤器）。</td>
+<td>ldapsearch -h bluepages.ibm.com -p 391 -b “o=ibm” -l 300 -z 1000 “(&amp;(objectclass=Person)(|(cn=jerry seinfeld<em>)(givenname=jerry seinfeld</em>)(sn=jerry seinfeld<em>)(mail=jerry seinfeld</em>)))” cn</td>
+</tr>
+<tr>
+<td>端口 391 上的 bluepages.ibm.com。以基准项“cn=HR Group,ou=Asia,o=IBM”为起始，时间限制为 300 秒，查询此项的所有成员。（Web 应用程序中用以确定群组成员的另一个公用过滤器）。</td>
+<td>ldapsearch -h bluepages.ibm.com -p 391 -b “cn=HR Group,ou=Asia,o=IBM” -s base -l 300 “(objectclass=*)” member</td>
+</tr>
+</tbody></table>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>提示语.</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>曾胜龙
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/openLDAP/Ldapsearch%E6%90%9C%E7%B4%A2%E8%AF%AD%E6%B3%95/" title="运维&#x2F;openLDAP&#x2F;Ldapsearch搜索语法">https://kbsonlong.github.io/2020/05/14/运维/openLDAP/Ldapsearch搜索语法/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/images/wechat_channel.jpg">
+            <span class="icon">
+              <i class="fab fa-weixin"></i>
+            </span>
+
+            <span class="label">WeChat</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/openLDAP/install/" rel="prev" title="运维/openLDAP/install">
+      <i class="fa fa-chevron-left"></i> 运维/openLDAP/install
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/openLDAP/OpenLDAP/" rel="next" title="运维/openLDAP/OpenLDAP">
+      运维/openLDAP/OpenLDAP <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="曾胜龙"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">曾胜龙</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yourname" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yourname" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank">粤ICP备18122209号 </a>
+      <img src="http://www.beian.gov.cn/portal/download" style="display: inline-block;">
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">曾胜龙</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

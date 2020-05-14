@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"kbsonlong.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"3QSL94PCBQ","apiKey":"d2fe765a64df1740fcab93644d3a2677","indexName":"hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta property="og:type" content="website">
+<meta property="og:title" content="蜷缩的蜗牛">
+<meta property="og:url" content="https://kbsonlong.github.io/page/3/index.html">
+<meta property="og:site_name" content="蜷缩的蜗牛">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="曾胜龙">
+<meta property="article:tag" content="Devops Kubernetes Docker">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://kbsonlong.github.io/page/3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : true,
+    isPost : false,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>蜷缩的蜗牛</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="蜷缩的蜗牛" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">蜷缩的蜗牛</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">运维笔记</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/kbsonlong" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content index posts-expand">
+            
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/Watcher/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/Watcher/" class="post-title-link" itemprop="url">运维/Elasticsearch/Watcher</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:59" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:59+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">##创建watcher</span></span><br><span class="line">PUT _watcher/watch/log_error_watch  </span><br><span class="line">&#123;  </span><br><span class="line">  <span class="string">"trigger"</span> : &#123;  </span><br><span class="line">    <span class="string">"schedule"</span> : &#123; <span class="string">"interval"</span> : <span class="string">"10s"</span> &#125;   </span><br><span class="line">  &#125;,  </span><br><span class="line">  <span class="string">"input"</span> : &#123;  </span><br><span class="line">    <span class="string">"search"</span> : &#123;  </span><br><span class="line">      <span class="string">"request"</span> : &#123;  </span><br><span class="line">        <span class="string">"indices"</span> : [ <span class="string">"baibu-app-log"</span> ],  </span><br><span class="line">        <span class="string">"body"</span> : &#123;  </span><br><span class="line">          <span class="string">"query"</span>: &#123;</span><br><span class="line">            <span class="string">"bool"</span>: &#123;</span><br><span class="line">          <span class="string">"must"</span>: &#123;</span><br><span class="line">            <span class="string">"match"</span>: &#123;</span><br><span class="line">              <span class="string">"level"</span>: <span class="string">"ERROR"</span></span><br><span class="line">            &#125;</span><br><span class="line">          &#125;,</span><br><span class="line">          <span class="string">"must_not"</span>: &#123;</span><br><span class="line">            <span class="string">"match"</span>: &#123;</span><br><span class="line">              <span class="string">"message"</span>: <span class="string">"[Param 'beat' is required]"</span></span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;  </span><br><span class="line">      &#125;  </span><br><span class="line">    &#125;  </span><br><span class="line">  &#125;  </span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">## 查看watcher</span></span><br><span class="line">GET /_watcher/watch/log_error_watch?pretty</span><br><span class="line"></span><br><span class="line"><span class="comment">## 执行watcher</span></span><br><span class="line">POST /_watcher/watch/log_error_watch/_execute?pretty</span><br></pre></td></tr></table></figure>
+
+
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/es%E9%85%8D%E7%BD%AE%E8%A7%A3%E9%87%8A/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/es%E9%85%8D%E7%BD%AE%E8%A7%A3%E9%87%8A/" class="post-title-link" itemprop="url">运维/Elasticsearch/es配置解释</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:58" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:58+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## 禁止自动创建</span></span><br><span class="line">action.auto_create_index: <span class="literal">false</span></span><br><span class="line"><span class="comment">## 动态配置mapper</span></span><br><span class="line">index.mapper.dynamic: <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">input &#123;</span><br><span class="line">  beats &#123;</span><br><span class="line">    port =&gt; 25000</span><br><span class="line">    codec =&gt; json</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">filter&#123;</span><br><span class="line"></span><br><span class="line">     ruby &#123;</span><br><span class="line">         code =&gt; <span class="string">"event.set('timestamp', event.get('@timestamp').time.localtime + 8*60*60)"</span></span><br><span class="line">     &#125;</span><br><span class="line">     ruby &#123;</span><br><span class="line">         code =&gt; <span class="string">"event.set('@timestamp',event.get('timestamp'))"</span></span><br><span class="line">     &#125;</span><br><span class="line">     ruby &#123; </span><br><span class="line">       code =&gt; <span class="string">"event.set('@timestamp',event.timestamp.time.localtime)"</span> </span><br><span class="line">   &#125; </span><br><span class="line"></span><br><span class="line">     date &#123;</span><br><span class="line">        match =&gt; [<span class="string">"timestamp"</span>, <span class="string">"yyyy-MM-dd HH:mm:ss.SSS"</span>]</span><br><span class="line">        <span class="comment">#赋值给那个key</span></span><br><span class="line">        target =&gt; <span class="string">"@timestamp"</span></span><br><span class="line">        <span class="comment">#删除不需要的字段</span></span><br><span class="line">        <span class="comment">#remove_field =&gt; ["timestamp"]</span></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="comment">#date &#123;</span></span><br><span class="line">     <span class="comment">#           match =&gt; [ "timestamp","MMM  d HH:mm:ss", "MMM dd HH:mm:ss", "ISO8601"]</span></span><br><span class="line">     <span class="comment">#           target =&gt; "timestamp3"</span></span><br><span class="line">     <span class="comment">#   &#125;</span></span><br><span class="line"></span><br><span class="line">     mutate &#123;</span><br><span class="line">        <span class="comment">#remove_field =&gt; ["message"]</span></span><br><span class="line">        remove_field =&gt; [<span class="string">"source"</span>]</span><br><span class="line">        remove_field =&gt; [<span class="string">"tags"</span>]</span><br><span class="line">        remove_field =&gt; [<span class="string">"beat"</span>]</span><br><span class="line">        remove_field =&gt; [<span class="string">"log"</span>]</span><br><span class="line">        remove_field =&gt; [<span class="string">"input"</span>]</span><br><span class="line">        remove_field =&gt; [<span class="string">"host"</span>]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">output &#123;</span><br><span class="line">  <span class="comment">#elasticsearch &#123;</span></span><br><span class="line">  <span class="comment">#  hosts =&gt; ["192.168.16.148"]</span></span><br><span class="line">  <span class="comment">#  manage_template =&gt; false</span></span><br><span class="line">  <span class="comment">#  index =&gt; "baibu-app-json-%&#123;+YYYY.MM&#125;"</span></span><br><span class="line">  <span class="comment">#&#125;</span></span><br><span class="line">  stdout &#123;</span><br><span class="line">    codec =&gt; rubydebug</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/es%E7%9B%91%E6%8E%A7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/es%E7%9B%91%E6%8E%A7/" class="post-title-link" itemprop="url">运维/Elasticsearch/es监控</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:58" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:58+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker run -d --net=host --name es_exporter \</span><br><span class="line">           justwatch/elasticsearch_exporter \</span><br><span class="line">           --es.all --es.cluster_settings \</span><br><span class="line">           --es.indices --es.indices_settings \</span><br><span class="line">           --es.shards</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"--es.uri==192.168.16.148:9200 --es.all=true --es.cluster_settings=true --es.indices=true --es.indices_settings=true --es.shards=true"</span></span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">vim consul-es.json</span><br><span class="line">&#123;</span><br><span class="line">  <span class="attr">"ID"</span>: <span class="string">"baibu-es"</span>,</span><br><span class="line">  <span class="attr">"Name"</span>: <span class="string">"baibu-es"</span>,</span><br><span class="line">  <span class="attr">"Tags"</span>: [</span><br><span class="line">    <span class="string">"elasticsearch"</span></span><br><span class="line">  ],</span><br><span class="line">  <span class="attr">"Address"</span>: <span class="string">"192.168.16.148"</span>,</span><br><span class="line">  <span class="attr">"Port"</span>: <span class="number">9114</span>,</span><br><span class="line">  <span class="attr">"Meta"</span>: &#123;</span><br><span class="line">    <span class="attr">"service"</span>: <span class="string">"elasticsearch"</span>,</span><br><span class="line">    <span class="attr">"team"</span>: <span class="string">"appgroup"</span>,</span><br><span class="line">    <span class="attr">"project"</span>: <span class="string">"bigdata"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"EnableTagOverride"</span>: <span class="literal">false</span>,</span><br><span class="line">  <span class="attr">"Check"</span>: &#123;</span><br><span class="line">    <span class="attr">"HTTP"</span>: <span class="string">"http://192.168.16.148:9114/metrics"</span>,</span><br><span class="line">    <span class="attr">"Interval"</span>: <span class="string">"10s"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"Weights"</span>: &#123;</span><br><span class="line">    <span class="attr">"Passing"</span>: <span class="number">10</span>,</span><br><span class="line">    <span class="attr">"Warning"</span>: <span class="number">1</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://blog.csdn.net/qq_25934401/article/details/84977549" target="_blank" rel="noopener">prometheus 监控之 elasticsearch</a></p>
+<p><a href="https://www.cnblogs.com/xuliang666/p/11211920.html" target="_blank" rel="noopener">Prometheus监控ES</a></p>
+<p><a href="https://blog.csdn.net/aixiaoyang168/article/details/103022342" target="_blank" rel="noopener">Prometheus 通过 consul 实现自动服务发现</a></p>
+<p><a href="https://blog.csdn.net/wsyyyyy/article/details/91046599" target="_blank" rel="noopener">prometheus+consul服务发现+alertmanager配置</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/ES%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E7%AE%A1%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/ES%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E7%AE%A1%E7%90%86/" class="post-title-link" itemprop="url">运维/Elasticsearch/ES生命周期管理</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:58" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:58+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建生命周期策略</span></span><br><span class="line">PUT _ilm/policy/baibu_app_policy</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"policy"</span>: &#123;</span><br><span class="line">    <span class="string">"phases"</span>: &#123;</span><br><span class="line">      <span class="string">"hot"</span>: &#123;</span><br><span class="line">        <span class="string">"actions"</span>: &#123;</span><br><span class="line">          <span class="string">"rollover"</span>: &#123;</span><br><span class="line">            <span class="string">"max_docs"</span>: 500000000,</span><br><span class="line">            <span class="string">"max_age"</span>: <span class="string">"1d"</span>,</span><br><span class="line">            <span class="string">"max_size"</span>: <span class="string">"50gb"</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="string">"warm"</span>: &#123;</span><br><span class="line">        <span class="string">"actions"</span>: &#123;</span><br><span class="line">          <span class="string">"shrink"</span>: &#123;</span><br><span class="line">            <span class="string">"number_of_shards"</span>: 1</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="string">"delete"</span>: &#123;</span><br><span class="line">        <span class="string">"min_age"</span>: <span class="string">"7d"</span>,</span><br><span class="line">        <span class="string">"actions"</span>: &#123;</span><br><span class="line">          <span class="string">"delete"</span>: &#123;&#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建模板并应用ILM策略到模板</span></span><br><span class="line">PUT _template/baibu-app-template</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"index_patterns"</span>: [<span class="string">"baibu-app-log-*"</span>],</span><br><span class="line">  <span class="string">"settings"</span>: &#123;</span><br><span class="line">    <span class="string">"number_of_replicas"</span>: 2,</span><br><span class="line">    <span class="string">"number_of_shards"</span>: 5,</span><br><span class="line">    <span class="string">"index.lifecycle.name"</span>: <span class="string">"baibu_app_policy"</span>,</span><br><span class="line">    <span class="string">"index.lifecycle.rollover_alias"</span>: <span class="string">"baibu-app-log"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建第一个index, index 格式必须满足该正则 ^.*-\d+$ , example：baibu-app-log-1</span></span><br><span class="line">PUT /%3Cbaibu-app-log-%7Bnow%2Fd%7D-1%3E</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"aliases"</span>: &#123;</span><br><span class="line">    <span class="string">"baibu-app-log"</span>: &#123;</span><br><span class="line">      <span class="string">"is_write_index"</span>: <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">## 检查 index生命周期策略是否正常工作</span></span><br><span class="line">GET baibu-app-log-*/_ilm/explain</span><br><span class="line"></span><br><span class="line"><span class="comment">## 查看别名</span></span><br><span class="line">GET baibu-app-log/_alias</span><br><span class="line"></span><br><span class="line"><span class="comment">## 通过别名写入数据</span></span><br><span class="line">POST baibu-app-log/_doc</span><br><span class="line">&#123;</span><br><span class="line"> <span class="string">"name"</span>:<span class="string">"kyle"</span>,</span><br><span class="line"> <span class="string">"time"</span>:<span class="string">"2019-08-14T06:51:37.000Z"</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">## 查询数据</span></span><br><span class="line">GET baibu-app-log/_search</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br></pre></td><td class="code"><pre><span class="line">PUT _template/baibu-app-template</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"index_patterns"</span>: [</span><br><span class="line">    <span class="string">"baibu-app-log-*"</span></span><br><span class="line">  ],</span><br><span class="line">  <span class="string">"settings"</span>: &#123;</span><br><span class="line">    <span class="string">"index"</span>: &#123;</span><br><span class="line">      <span class="string">"lifecycle"</span>: &#123;</span><br><span class="line">        <span class="string">"name"</span>: <span class="string">"baibu_app_policy"</span>,</span><br><span class="line">        <span class="string">"rollover_alias"</span>: <span class="string">"baibu-app-log"</span></span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="string">"number_of_shards"</span>: <span class="string">"5"</span>,</span><br><span class="line">      <span class="string">"number_of_replicas"</span>: <span class="string">"2"</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">"aliases"</span>: &#123;</span><br><span class="line">    <span class="string">"aliases"</span>: &#123;&#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">"mappings"</span>: &#123;</span><br><span class="line">    <span class="string">"properties"</span>: &#123;</span><br><span class="line">      <span class="string">"agent"</span>: &#123;</span><br><span class="line">        <span class="string">"properties"</span>: &#123;</span><br><span class="line">          <span class="string">"hostname"</span>: &#123;</span><br><span class="line">            <span class="string">"type"</span>: <span class="string">"text"</span>,</span><br><span class="line">            <span class="string">"fields"</span>: &#123;</span><br><span class="line">              <span class="string">"keyword"</span>: &#123;</span><br><span class="line">                <span class="string">"ignore_above"</span>: 256,</span><br><span class="line">                <span class="string">"type"</span>: <span class="string">"keyword"</span></span><br><span class="line">              &#125;</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;,</span><br><span class="line">          <span class="string">"id"</span>: &#123;</span><br><span class="line">            <span class="string">"type"</span>: <span class="string">"text"</span>,</span><br><span class="line">            <span class="string">"fields"</span>: &#123;</span><br><span class="line">              <span class="string">"keyword"</span>: &#123;</span><br><span class="line">                <span class="string">"ignore_above"</span>: 256,</span><br><span class="line">                <span class="string">"type"</span>: <span class="string">"keyword"</span></span><br><span class="line">              &#125;</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;,</span><br><span class="line">          <span class="string">"ephemeral_id"</span>: &#123;</span><br><span class="line">            <span class="string">"type"</span>: <span class="string">"text"</span>,</span><br><span class="line">            <span class="string">"fields"</span>: &#123;</span><br><span class="line">              <span class="string">"keyword"</span>: &#123;</span><br><span class="line">                <span class="string">"ignore_above"</span>: 256,</span><br><span class="line">                <span class="string">"type"</span>: <span class="string">"keyword"</span></span><br><span class="line">              &#125;</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;,</span><br><span class="line">          <span class="string">"type"</span>: &#123;</span><br><span class="line">            <span class="string">"type"</span>: <span class="string">"text"</span>,</span><br><span class="line">            <span class="string">"fields"</span>: &#123;</span><br><span class="line">              <span class="string">"keyword"</span>: &#123;</span><br><span class="line">                <span class="string">"ignore_above"</span>: 256,</span><br><span class="line">                <span class="string">"type"</span>: <span class="string">"keyword"</span></span><br><span class="line">              &#125;</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;,</span><br><span class="line">          <span class="string">"version"</span>: &#123;</span><br><span class="line">            <span class="string">"type"</span>: <span class="string">"text"</span>,</span><br><span class="line">            <span class="string">"fields"</span>: &#123;</span><br><span class="line">              <span class="string">"keyword"</span>: &#123;</span><br><span class="line">                <span class="string">"ignore_above"</span>: 256,</span><br><span class="line">                <span class="string">"type"</span>: <span class="string">"keyword"</span></span><br><span class="line">              &#125;</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="string">"level"</span>: &#123;</span><br><span class="line">        <span class="string">"type"</span>: <span class="string">"text"</span>,</span><br><span class="line">        <span class="string">"fields"</span>: &#123;</span><br><span class="line">          <span class="string">"keyword"</span>: &#123;</span><br><span class="line">            <span class="string">"ignore_above"</span>: 256,</span><br><span class="line">            <span class="string">"type"</span>: <span class="string">"keyword"</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="string">"line"</span>: &#123;</span><br><span class="line">        <span class="string">"type"</span>: <span class="string">"text"</span>,</span><br><span class="line">        <span class="string">"fields"</span>: &#123;</span><br><span class="line">          <span class="string">"keyword"</span>: &#123;</span><br><span class="line">            <span class="string">"ignore_above"</span>: 256,</span><br><span class="line">            <span class="string">"type"</span>: <span class="string">"keyword"</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="string">"pid"</span>: &#123;</span><br><span class="line">        <span class="string">"type"</span>: <span class="string">"text"</span>,</span><br><span class="line">        <span class="string">"fields"</span>: &#123;</span><br><span class="line">          <span class="string">"keyword"</span>: &#123;</span><br><span class="line">            <span class="string">"ignore_above"</span>: 256,</span><br><span class="line">            <span class="string">"type"</span>: <span class="string">"keyword"</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="string">"thread"</span>: &#123;</span><br><span class="line">        <span class="string">"type"</span>: <span class="string">"text"</span>,</span><br><span class="line">        <span class="string">"fields"</span>: &#123;</span><br><span class="line">          <span class="string">"keyword"</span>: &#123;</span><br><span class="line">            <span class="string">"ignore_above"</span>: 256,</span><br><span class="line">            <span class="string">"type"</span>: <span class="string">"keyword"</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="string">"message"</span>: &#123;</span><br><span class="line">        <span class="string">"type"</span>: <span class="string">"text"</span>,</span><br><span class="line">        <span class="string">"fields"</span>: &#123;</span><br><span class="line">          <span class="string">"keyword"</span>: &#123;</span><br><span class="line">            <span class="string">"ignore_above"</span>: 256,</span><br><span class="line">            <span class="string">"type"</span>: <span class="string">"keyword"</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="string">"tags"</span>: &#123;</span><br><span class="line">        <span class="string">"type"</span>: <span class="string">"text"</span>,</span><br><span class="line">        <span class="string">"fields"</span>: &#123;</span><br><span class="line">          <span class="string">"keyword"</span>: &#123;</span><br><span class="line">            <span class="string">"ignore_above"</span>: 256,</span><br><span class="line">            <span class="string">"type"</span>: <span class="string">"keyword"</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="string">"trace"</span>: &#123;</span><br><span class="line">        <span class="string">"type"</span>: <span class="string">"text"</span>,</span><br><span class="line">        <span class="string">"fields"</span>: &#123;</span><br><span class="line">          <span class="string">"keyword"</span>: &#123;</span><br><span class="line">            <span class="string">"ignore_above"</span>: 256,</span><br><span class="line">            <span class="string">"type"</span>: <span class="string">"keyword"</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="string">"@timestamp"</span>: &#123;</span><br><span class="line">        <span class="string">"type"</span>: <span class="string">"date"</span></span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="string">"service"</span>: &#123;</span><br><span class="line">        <span class="string">"type"</span>: <span class="string">"text"</span>,</span><br><span class="line">        <span class="string">"fields"</span>: &#123;</span><br><span class="line">          <span class="string">"keyword"</span>: &#123;</span><br><span class="line">            <span class="string">"ignore_above"</span>: 256,</span><br><span class="line">            <span class="string">"type"</span>: <span class="string">"keyword"</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="string">"@version"</span>: &#123;</span><br><span class="line">        <span class="string">"type"</span>: <span class="string">"text"</span>,</span><br><span class="line">        <span class="string">"fields"</span>: &#123;</span><br><span class="line">          <span class="string">"keyword"</span>: &#123;</span><br><span class="line">            <span class="string">"ignore_above"</span>: 256,</span><br><span class="line">            <span class="string">"type"</span>: <span class="string">"keyword"</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="string">"stackTrace"</span>: &#123;</span><br><span class="line">        <span class="string">"type"</span>: <span class="string">"text"</span>,</span><br><span class="line">        <span class="string">"fields"</span>: &#123;</span><br><span class="line">          <span class="string">"keyword"</span>: &#123;</span><br><span class="line">            <span class="string">"ignore_above"</span>: 256,</span><br><span class="line">            <span class="string">"type"</span>: <span class="string">"keyword"</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="string">"class"</span>: &#123;</span><br><span class="line">        <span class="string">"type"</span>: <span class="string">"text"</span>,</span><br><span class="line">        <span class="string">"fields"</span>: &#123;</span><br><span class="line">          <span class="string">"keyword"</span>: &#123;</span><br><span class="line">            <span class="string">"ignore_above"</span>: 256,</span><br><span class="line">            <span class="string">"type"</span>: <span class="string">"keyword"</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="string">"parentSpan"</span>: &#123;</span><br><span class="line">        <span class="string">"type"</span>: <span class="string">"text"</span>,</span><br><span class="line">        <span class="string">"fields"</span>: &#123;</span><br><span class="line">          <span class="string">"keyword"</span>: &#123;</span><br><span class="line">            <span class="string">"ignore_above"</span>: 256,</span><br><span class="line">            <span class="string">"type"</span>: <span class="string">"keyword"</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="string">"span"</span>: &#123;</span><br><span class="line">        <span class="string">"type"</span>: <span class="string">"text"</span>,</span><br><span class="line">        <span class="string">"fields"</span>: &#123;</span><br><span class="line">          <span class="string">"keyword"</span>: &#123;</span><br><span class="line">            <span class="string">"ignore_above"</span>: 256,</span><br><span class="line">            <span class="string">"type"</span>: <span class="string">"keyword"</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="string">"timestamp"</span>: &#123;</span><br><span class="line">        <span class="string">"type"</span>: <span class="string">"date"</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">PUT /_ilm/policy/datastream_policy?pretty</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"policy"</span>: &#123;                       </span><br><span class="line">    <span class="string">"phases"</span>: &#123;</span><br><span class="line">      <span class="string">"hot"</span>: &#123;                      </span><br><span class="line">        <span class="string">"actions"</span>: &#123;</span><br><span class="line">          <span class="string">"rollover"</span>: &#123;             </span><br><span class="line">            <span class="string">"max_size"</span>: <span class="string">"50GB"</span>,</span><br><span class="line">            <span class="string">"max_age"</span>: <span class="string">"30d"</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="string">"delete"</span>: &#123;</span><br><span class="line">        <span class="string">"min_age"</span>: <span class="string">"90d"</span>,           </span><br><span class="line">        <span class="string">"actions"</span>: &#123;</span><br><span class="line">          <span class="string">"delete"</span>: &#123;&#125;              </span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PUT /_template/datastream_template?pretty</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"index_patterns"</span>: [<span class="string">"datastream-*"</span>],                 </span><br><span class="line">  <span class="string">"settings"</span>: &#123;</span><br><span class="line">    <span class="string">"number_of_shards"</span>: 1,</span><br><span class="line">    <span class="string">"number_of_replicas"</span>: 1,</span><br><span class="line">    <span class="string">"index.lifecycle.name"</span>: <span class="string">"datastream_policy"</span>,      </span><br><span class="line">    <span class="string">"index.lifecycle.rollover_alias"</span>: <span class="string">"datastream"</span>    </span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">PUT /datastream-000001?pretty</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"aliases"</span>: &#123;</span><br><span class="line">    <span class="string">"datastream"</span>: &#123;</span><br><span class="line">      <span class="string">"is_write_index"</span>: <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">GET /datastream-*/_ilm/explain?pretty</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">GET /datastream-*/_ilm/explain?pretty</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"indices"</span> : &#123;</span><br><span class="line">    <span class="string">"datastream-000001"</span> : &#123;</span><br><span class="line">      <span class="string">"index"</span> : <span class="string">"datastream-000001"</span>,</span><br><span class="line">      <span class="string">"managed"</span> : <span class="literal">true</span>,  <span class="comment">## 该索引由ILM管理</span></span><br><span class="line">      <span class="string">"policy"</span> : <span class="string">"datastream_policy"</span>,  <span class="comment">## 策略名称</span></span><br><span class="line">      <span class="string">"lifecycle_date_millis"</span> : 1584066954384,</span><br><span class="line">      <span class="string">"phase"</span> : <span class="string">"hot"</span>,  <span class="comment">##  索引当前处于哪个阶段</span></span><br><span class="line">      <span class="string">"phase_time_millis"</span> : 1584066955095,</span><br><span class="line">      <span class="string">"action"</span> : <span class="string">"unfollow"</span>, <span class="comment">## 索引当前正在执行什么操作</span></span><br><span class="line">      <span class="string">"action_time_millis"</span> : 1584066955095,</span><br><span class="line">      <span class="string">"step"</span> : <span class="string">"wait-for-follow-shard-tasks"</span>,  <span class="comment">## 索引当前处于哪个步骤</span></span><br><span class="line">      <span class="string">"step_time_millis"</span> : 1584066955596,</span><br><span class="line">      <span class="string">"phase_execution"</span> : &#123;</span><br><span class="line">        <span class="string">"policy"</span> : <span class="string">"datastream_policy"</span>,</span><br><span class="line">        <span class="string">"phase_definition"</span> : &#123;       <span class="comment">##  索引当前所在的阶段策略</span></span><br><span class="line">          <span class="string">"min_age"</span> : <span class="string">"0ms"</span>,</span><br><span class="line">          <span class="string">"actions"</span> : &#123;</span><br><span class="line">            <span class="string">"rollover"</span> : &#123;</span><br><span class="line">              <span class="string">"max_size"</span> : <span class="string">"50gb"</span>,</span><br><span class="line">              <span class="string">"max_age"</span> : <span class="string">"30d"</span></span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="string">"version"</span> : 1,     <span class="comment">## 用于执行当前阶段的策略的版本</span></span><br><span class="line">        <span class="string">"modified_date_in_millis"</span> : 1584066901936</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/ElasticAlert/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/ElasticAlert/" class="post-title-link" itemprop="url">运维/Elasticsearch/ElasticAlert</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:58" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:58+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>docker run -d –name kong      –network=host         -v /data/server/kong:/data/server/kong         -v /data/logs:/data/logs         registry.cn-hangzhou.aliyuncs.com/zhijing/kong:1.4.2 kong start –conf /data/server/kong/kong.conf</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /data/server/elastalert/&#123;config,rules,rule_templates&#125;</span><br><span class="line">cat &lt;&lt; EOF &gt; /data/server/elastalert/config/elastalert.yaml</span><br><span class="line"><span class="comment"># The elasticsearch hostname for metadata writeback</span></span><br><span class="line"><span class="comment"># Note that every rule can have its own elasticsearch host</span></span><br><span class="line">es_host: localhost</span><br><span class="line"></span><br><span class="line"><span class="comment"># The elasticsearch port</span></span><br><span class="line">es_port: 9200</span><br><span class="line"></span><br><span class="line"><span class="comment"># This is the folder that contains the rule yaml files</span></span><br><span class="line"><span class="comment"># Any .yaml file will be loaded as a rule</span></span><br><span class="line">rules_folder: rules</span><br><span class="line"></span><br><span class="line"><span class="comment"># How often ElastAlert will query elasticsearch</span></span><br><span class="line"><span class="comment"># The unit can be anything from weeks to seconds</span></span><br><span class="line">run_every:</span><br><span class="line">  <span class="comment">#seconds: 5</span></span><br><span class="line">  minutes: 1</span><br><span class="line"></span><br><span class="line"><span class="comment"># ElastAlert will buffer results from the most recent</span></span><br><span class="line"><span class="comment"># period of time, in case some log sources are not in real time</span></span><br><span class="line">buffer_time:</span><br><span class="line">  minutes: 15</span><br><span class="line"></span><br><span class="line"><span class="comment"># Optional URL prefix for elasticsearch</span></span><br><span class="line"><span class="comment">#es_url_prefix: elasticsearch</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Connect with TLS to elasticsearch</span></span><br><span class="line"><span class="comment">#use_ssl: True</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Verify TLS certificates</span></span><br><span class="line"><span class="comment">#verify_certs: True</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># GET request with body is the default option for Elasticsearch.</span></span><br><span class="line"><span class="comment"># If it fails for some reason, you can pass 'GET', 'POST' or 'source'.</span></span><br><span class="line"><span class="comment"># See http://elasticsearch-py.readthedocs.io/en/master/connection.html?highlight=send_get_body_as#transport</span></span><br><span class="line"><span class="comment"># for details</span></span><br><span class="line"><span class="comment">#es_send_get_body_as: GET</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Option basic-auth username and password for elasticsearch</span></span><br><span class="line"><span class="comment">#es_username: someusername</span></span><br><span class="line"><span class="comment">#es_password: somepassword</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The index on es_host which is used for metadata storage</span></span><br><span class="line"><span class="comment"># This can be a unmapped index, but it is recommended that you run</span></span><br><span class="line"><span class="comment"># elastalert-create-index to set a mapping</span></span><br><span class="line">writeback_index: elastalert_status</span><br><span class="line"></span><br><span class="line"><span class="comment"># If an alert fails for some reason, ElastAlert will retry</span></span><br><span class="line"><span class="comment"># sending the alert until this time period has elapsed</span></span><br><span class="line">alert_time_limit:</span><br><span class="line">  days: 2</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"> cat &lt;&lt; EOF &gt; /data/server/elastalert/config/config.json</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"appName"</span>: <span class="string">"elastalert-server"</span>,</span><br><span class="line">  <span class="string">"port"</span>: 3030,</span><br><span class="line">  <span class="string">"wsport"</span>: 3333,</span><br><span class="line">  <span class="string">"elastalertPath"</span>: <span class="string">"/opt/elastalert"</span>,</span><br><span class="line">  <span class="string">"verbose"</span>: <span class="literal">false</span>,</span><br><span class="line">  <span class="string">"es_debug"</span>: <span class="literal">false</span>,</span><br><span class="line">  <span class="string">"debug"</span>: <span class="literal">false</span>,</span><br><span class="line">  <span class="string">"rulesPath"</span>: &#123;</span><br><span class="line">    <span class="string">"relative"</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="string">"path"</span>: <span class="string">"/rules"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">"templatesPath"</span>: &#123;</span><br><span class="line">    <span class="string">"relative"</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="string">"path"</span>: <span class="string">"/rule_templates"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">"es_host"</span>: <span class="string">"elasticsearch"</span>,</span><br><span class="line">  <span class="string">"es_port"</span>: 9200,</span><br><span class="line">  <span class="string">"writeback_index"</span>: <span class="string">"elastalert_status"</span></span><br><span class="line">&#125;</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /data/server/ ; git <span class="built_in">clone</span> https://github.com/bitsensor/elastalert.git; <span class="built_in">cd</span> elastalert</span><br><span class="line">cat &lt;&lt; EOF &gt; docker-compose.yml</span><br><span class="line">version: <span class="string">'2'</span></span><br><span class="line">services:</span><br><span class="line">    elastalert:</span><br><span class="line">        network_mode: <span class="string">"host"</span></span><br><span class="line">        container_name: elastalert</span><br><span class="line">        image: bitsensor/elastalert:2.0.0</span><br><span class="line">        restart: always</span><br><span class="line">        volumes:</span><br><span class="line">            - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime</span><br><span class="line">            - /data/server/elastalert/config/elastalert.yaml:/opt/elastalert/config.yaml</span><br><span class="line">            - /data/server/elastalert/config/config.json:/opt/elastalert-server/config/config.json</span><br><span class="line">            - /data/server/elastalert/rules:/opt/elastalert/rules</span><br><span class="line">            - /data/server/elastalert/rule_templates:/opt/elastalert/rule_templates</span><br><span class="line">            - /data/server/elastalert/base_config:/opt/elastalert/base_config</span><br><span class="line">        environment:</span><br><span class="line">            - TZ=Asia/Shanghai</span><br><span class="line">EOF</span><br><span class="line">curl -L https://get.daocloud.io/docker/compose/releases/download/1.24.0/docker-compose-`uname -s`-`uname -m` &gt; /usr/<span class="built_in">local</span>/bin/docker-compose &amp;&amp; chmod +x /usr/<span class="built_in">local</span>/bin/docker-compose &amp;&amp; ln -s /usr/<span class="built_in">local</span>/bin/docker-compose /usr/bin</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cat /opt/elastalert/smtp_auth_file.yaml</span><br><span class="line"><span class="comment">#邮箱用户名</span></span><br><span class="line">user: webmaster@baibu.la</span><br><span class="line"><span class="comment">##不是邮箱密码，是设置的SMTP密码</span></span><br><span class="line">password: tRpD2fpzE6zp2XQq</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Alert when the rate of events exceeds a threshold</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># (Optional)</span></span><br><span class="line"><span class="comment"># Elasticsearch host</span></span><br><span class="line"> es_host: localhost</span><br><span class="line"></span><br><span class="line"><span class="comment"># (Optional)</span></span><br><span class="line"><span class="comment"># Elasticsearch port</span></span><br><span class="line"><span class="comment"># es_port: 9200</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># (OptionaL) Connect with SSL to Elasticsearch</span></span><br><span class="line"><span class="comment">#use_ssl: True</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># (Optional) basic-auth username and password for Elasticsearch</span></span><br><span class="line"><span class="comment">#es_username: someusername</span></span><br><span class="line"><span class="comment">#es_password: somepassword</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># (Required)</span></span><br><span class="line"><span class="comment"># Rule name, must be unique</span></span><br><span class="line"> name: Example rule</span><br><span class="line"></span><br><span class="line"><span class="comment"># (Required)</span></span><br><span class="line"><span class="comment"># Type of alert.</span></span><br><span class="line"><span class="comment"># the frequency rule type alerts when num_events events occur with timeframe time</span></span><br><span class="line"> <span class="built_in">type</span>: frequency</span><br><span class="line"></span><br><span class="line"><span class="comment"># (Required)</span></span><br><span class="line"><span class="comment"># Index to search, wildcard supported</span></span><br><span class="line"> index: applog*</span><br><span class="line"></span><br><span class="line"><span class="comment"># (Required, frequency specific)</span></span><br><span class="line"><span class="comment"># Alert when this many documents matching the query occur within a timeframe</span></span><br><span class="line"><span class="comment"># 当在一个时间范围内出现这么多与查询匹配的文档时发出警报</span></span><br><span class="line"> num_events: 10</span><br><span class="line"></span><br><span class="line"><span class="comment"># (Required, frequency specific)</span></span><br><span class="line"><span class="comment"># num_events must occur within this amount of time to trigger an alert</span></span><br><span class="line"><span class="comment"># 设置单位时间</span></span><br><span class="line"> timeframe:</span><br><span class="line">   minutes: 10</span><br><span class="line"></span><br><span class="line"><span class="comment"># (Required)</span></span><br><span class="line"><span class="comment"># A list of Elasticsearch filters used for find events</span></span><br><span class="line"><span class="comment"># These filters are joined with AND and nested in a filtered query</span></span><br><span class="line"><span class="comment"># For more info: http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl.html</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#匹配日志中field字段值为value的日志数据，若不想进行过滤可以写成“filter: []”（这种方式可以用在日志数量的告警中）</span></span><br><span class="line"> filter:</span><br><span class="line"> - query:</span><br><span class="line">     query_string:</span><br><span class="line">       query: <span class="string">"loglevl: ERROR"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#SMTP configration</span></span><br><span class="line"> smtp_host: smtp.baibu.la</span><br><span class="line"> smtp_port: 465</span><br><span class="line"> smtp_ssl: True</span><br><span class="line"></span><br><span class="line"><span class="comment">#SMTP auth</span></span><br><span class="line"> smtp_auth_file: /opt/elastalert/smtp_auth_file.yaml</span><br><span class="line"> email_reply_to: <span class="string">""</span></span><br><span class="line"> from_addr: webmaster@baibu.la</span><br><span class="line"></span><br><span class="line"><span class="comment"># (Required)</span></span><br><span class="line"><span class="comment"># The alert is use when a match is found</span></span><br><span class="line"> alert:</span><br><span class="line"> - <span class="string">"email"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># (required, email specific)</span></span><br><span class="line"><span class="comment"># a list of email addresses to send alerts to</span></span><br><span class="line"> email:</span><br><span class="line"> - <span class="string">"zengshenglong@baibu.la"</span></span><br><span class="line"> - <span class="string">"yangminghui@baibu.la"</span></span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">cat</span> <span class="string">&lt;&lt;</span> <span class="string">EOF</span> <span class="string">&gt;</span> <span class="string">/data/server/elastalert/rules/accountant-server-dubbo-provider.yaml</span></span><br><span class="line"><span class="comment"># Alert when the rate of events exceeds a threshold</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># (Optional)</span></span><br><span class="line"><span class="comment"># Elasticsearch host</span></span><br><span class="line"> <span class="attr">es_host:</span> <span class="string">es-cn-mp91jslmn003l6ne5.elasticsearch.aliyuncs.com</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># (Optional)</span></span><br><span class="line"><span class="comment"># Elasticsearch port</span></span><br><span class="line"><span class="comment"># es_port: 9200</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># (OptionaL) Connect with SSL to Elasticsearch</span></span><br><span class="line"><span class="comment">#use_ssl: True</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># (Optional) basic-auth username and password for Elasticsearch</span></span><br><span class="line"><span class="attr">es_username:</span> <span class="string">elasticalert</span></span><br><span class="line"><span class="attr">es_password:</span> <span class="string">DwfBd2JEnMdrPUYpPmRP36XEksPedd</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># (Required)</span></span><br><span class="line"><span class="comment"># Rule name, must be unique</span></span><br><span class="line"> <span class="attr">name:</span> <span class="string">webhook</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># (Required)</span></span><br><span class="line"><span class="comment"># Type of alert.</span></span><br><span class="line"><span class="comment"># the frequency rule type alerts when num_events events occur with timeframe time</span></span><br><span class="line"> <span class="attr">type:</span> <span class="string">frequency</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># (Required)</span></span><br><span class="line"><span class="comment"># Index to search, wildcard supported</span></span><br><span class="line"> <span class="attr">index:</span> <span class="string">baibu-app-*</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># (Required, frequency specific)</span></span><br><span class="line"><span class="comment"># Alert when this many documents matching the query occur within a timeframe</span></span><br><span class="line"><span class="comment"># 当在一个时间范围内出现这么多与查询匹配的文档时发出警报</span></span><br><span class="line"> <span class="attr">num_events:</span> <span class="number">5</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># (Required, frequency specific)</span></span><br><span class="line"><span class="comment"># num_events must occur within this amount of time to trigger an alert</span></span><br><span class="line"><span class="comment"># 设置单位时间</span></span><br><span class="line"> <span class="attr">timeframe:</span></span><br><span class="line">   <span class="attr">minutes:</span> <span class="number">5</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># (Required)</span></span><br><span class="line"><span class="comment"># A list of Elasticsearch filters used for find events</span></span><br><span class="line"><span class="comment"># These filters are joined with AND and nested in a filtered query</span></span><br><span class="line"><span class="comment"># For more info: http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl.html</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#匹配日志中field字段值为value的日志数据，若不想进行过滤可以写成“filter: []”（这种方式可以用在日志数量的告警中）</span></span><br><span class="line"> <span class="attr">filter:</span></span><br><span class="line"> <span class="bullet">-</span> <span class="attr">query:</span></span><br><span class="line">     <span class="attr">query_string:</span></span><br><span class="line">       <span class="attr">query:</span> <span class="string">'level: "ERROR" AND service: "accountant-server-dubbo-provider"'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># (Required)</span></span><br><span class="line"><span class="comment"># The alert is use when a match is found</span></span><br><span class="line"> <span class="attr">alert:</span></span><br><span class="line"> <span class="bullet">-</span> <span class="string">"post"</span></span><br><span class="line"> <span class="attr">http_post_url:</span> <span class="string">"http://elastalert.baibu.la:5000/webhook"</span></span><br><span class="line"></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/es7.x/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/es7.x/" class="post-title-link" itemprop="url">运维/Elasticsearch/es7.x</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:58" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:58+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>ES7.0之后集群协调方式与之前版本有较大差异，6.x之前集群发现方式配置参数：discovery.zen.ping.unicast.hosts，新版集群发下方式配置参数：discovery.seed_hosts</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">cluster.name: baibu</span><br><span class="line">node.name: es01</span><br><span class="line">node.master: <span class="literal">true</span></span><br><span class="line">node.data: <span class="literal">true</span></span><br><span class="line">node.attr.box_type: hot</span><br><span class="line">path.data: /usr/share/elasticsearch/data</span><br><span class="line">path.logs: /usr/share/elasticsearch/logs</span><br><span class="line">network.host: 0.0.0.0</span><br><span class="line">http.port: 9200</span><br><span class="line">network.publish_host: 172.16.12.30</span><br><span class="line">transport.tcp.port: 9300</span><br><span class="line"><span class="comment">#discovery.zen.ping_timeout: 60s</span></span><br><span class="line"><span class="comment">##discovery.zen.ping.unicast.hosts: ["baibu-env-es01:9300","baibu-env-es02:9300","baibu-env-es03:9300"]</span></span><br><span class="line">discovery.seed_hosts: [<span class="string">"baibu-env-es01"</span>,<span class="string">"baibu-env-es02"</span>,<span class="string">"baibu-env-es03"</span>]</span><br><span class="line">cluster.initial_master_nodes: [es01,es02,es03]  </span><br><span class="line">discovery.zen.minimum_master_nodes: 1</span><br><span class="line">http.cors.enabled: <span class="literal">true</span></span><br><span class="line">http.cors.allow-origin: <span class="string">"*"</span></span><br><span class="line">http.cors.allow-headers: Authorization,X-Requested-With,Content-Length,Content-Type</span><br><span class="line">bootstrap.memory_lock: <span class="literal">false</span></span><br><span class="line">bootstrap.system_call_filter: <span class="literal">false</span></span><br><span class="line">xpack.security.enabled: <span class="literal">false</span></span><br><span class="line">xpack.monitoring.enabled: <span class="literal">true</span></span><br><span class="line">indices.fielddata.cache.size: 20%</span><br></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<p>cluster.initial_master_nodes: [es01,es02,es03]   ## 初始化节点必须为node.name名称，不然节点无法加入集群</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">docker run --net=host -d --restart=always --name es01 \</span><br><span class="line">           --<span class="built_in">ulimit</span> memlock=-1:-1             \</span><br><span class="line">           --<span class="built_in">log</span>-driver json-file --<span class="built_in">log</span>-opt max-size=10m --<span class="built_in">log</span>-opt max-file=7            \</span><br><span class="line">           -e cluster.name=cluster            \</span><br><span class="line">           -e node.name=es01 -e TZ=<span class="string">"Asia/Shanghai"</span>            \</span><br><span class="line">           -e node.attr.box_type=hot            \</span><br><span class="line">           -e bootstrap.memory_lock=<span class="literal">true</span>            \</span><br><span class="line">           -e <span class="string">"ES_JAVA_OPTS=-Xms2g -Xmx2g"</span>            \</span><br><span class="line">           -e cluster.initial_master_nodes=bb-uat-db-17-0            \</span><br><span class="line">           -v /data/server/elasticsearch/esdata01:/usr/share/elasticsearch/data   \</span><br><span class="line">           elasticsearch:7.1.0</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">cat &lt;&lt;EOF&gt;/data3/server/es9200/conf/elasticsearch.yml</span><br><span class="line">cluster.name: bigdata</span><br><span class="line">node.name: es03</span><br><span class="line">node.master: <span class="literal">true</span></span><br><span class="line">node.data: <span class="literal">true</span></span><br><span class="line">node.attr.box_type: hot</span><br><span class="line">path.data: /usr/share/elasticsearch/data</span><br><span class="line">path.logs: /usr/share/elasticsearch/logs</span><br><span class="line">network.host: 0.0.0.0</span><br><span class="line">http.port: 9200</span><br><span class="line">transport.tcp.port: 9300</span><br><span class="line">discovery.seed_hosts: [<span class="string">"dev-cdh-master"</span>,<span class="string">"dev-cdh-slave1"</span>,<span class="string">"dev-cdh-slave2"</span>]</span><br><span class="line">cluster.initial_master_nodes: [es01,es02,es03]  </span><br><span class="line">discovery.zen.minimum_master_nodes: 1</span><br><span class="line">http.cors.enabled: <span class="literal">true</span></span><br><span class="line">http.cors.allow-origin: <span class="string">"*"</span></span><br><span class="line">http.cors.allow-headers: Authorization,X-Requested-With,Content-Length,Content-Type</span><br><span class="line">bootstrap.memory_lock: <span class="literal">false</span></span><br><span class="line">bootstrap.system_call_filter: <span class="literal">false</span></span><br><span class="line">xpack.security.enabled: <span class="literal">false</span></span><br><span class="line">xpack.monitoring.enabled: <span class="literal">true</span></span><br><span class="line">indices.fielddata.cache.size: 20%</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">docker run --net=host -d --restart=always --name es03 \</span><br><span class="line">           --<span class="built_in">log</span>-driver json-file --<span class="built_in">log</span>-opt max-size=10m --<span class="built_in">log</span>-opt max-file=7 \</span><br><span class="line">           --<span class="built_in">ulimit</span> memlock=-1:-1  -e TZ=<span class="string">"Asia/Shanghai"</span> \</span><br><span class="line">           -e bootstrap.memory_lock=<span class="literal">true</span> -m 4g --oom-kill-disable\</span><br><span class="line">           -v /data3/server/es9200/data:/usr/share/elasticsearch/data \</span><br><span class="line">           -v /data3/server/es9200/logs:/usr/share/elasticsearch/logs \</span><br><span class="line">           -v /data3/server/es9200/conf/jvm.options:/usr/share/elasticsearch/config/jvm.options \</span><br><span class="line">           -v /data3/server/es9200/conf/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml              elasticsearch:7.5.1</span><br><span class="line">           </span><br><span class="line"></span><br><span class="line">docker run --net=host -d --name kibana -m 1g --oom-kill-disable\</span><br><span class="line">            --<span class="built_in">log</span>-driver json-file --<span class="built_in">log</span>-opt max-size=10m --<span class="built_in">log</span>-opt max-file=7 \</span><br><span class="line">            -e I18N_LOCALE=zh-CN \</span><br><span class="line">            -e  XPACK_GRAPH_ENABLED=<span class="literal">true</span> \</span><br><span class="line">            -e TIMELION_ENABLED=<span class="literal">true</span> \</span><br><span class="line">            -e XPACK_MONITORING_COLLECTION_ENABLED=<span class="string">"true"</span> \</span><br><span class="line">            kibana:7.5.1</span><br><span class="line">            </span><br><span class="line"></span><br><span class="line">docker run -e TZ=<span class="string">"Asia/Shanghai"</span>   -d --net=host --restart=always     --<span class="built_in">log</span>-driver json-file --<span class="built_in">log</span>-opt max-size=10m --<span class="built_in">log</span>-opt max-file=7   --volume=/:/rootfs:ro   --volume=/var/run:/var/run:ro   --volume=/sys:/sys:ro   --volume=/var/lib/docker/:/var/lib/docker:ro   --volume=/dev/disk/:/dev/disk:ro   --detach=<span class="literal">true</span>   --name=cadvisor   registry.cn-hangzhou.aliyuncs.com/zhijing/cadvisor:latest</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/%E7%94%A8%E6%88%B7%E8%A7%92%E8%89%B2%E7%AE%A1%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/%E7%94%A8%E6%88%B7%E8%A7%92%E8%89%B2%E7%AE%A1%E7%90%86/" class="post-title-link" itemprop="url">运维/Elasticsearch/用户角色管理</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:58" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:58+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">## 查看所有角色</span></span><br><span class="line">GET /_xpack/security/role?pretty</span><br><span class="line"></span><br><span class="line"><span class="comment">## 查看角色</span></span><br><span class="line">GET /_xpack/security/role/dev-read?pretty</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"dev-read"</span> : &#123;</span><br><span class="line">    <span class="string">"cluster"</span> : [ ],</span><br><span class="line">    <span class="string">"indices"</span> : [</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="string">"names"</span> : [</span><br><span class="line">          <span class="string">"baibu-app*"</span></span><br><span class="line">        ],</span><br><span class="line">        <span class="string">"privileges"</span> : [</span><br><span class="line">          <span class="string">"read"</span>,</span><br><span class="line">          <span class="string">"monitor"</span>,</span><br><span class="line">          <span class="string">"view_index_metadata"</span></span><br><span class="line">        ],</span><br><span class="line">        <span class="string">"field_security"</span> : &#123;</span><br><span class="line">          <span class="string">"grant"</span> : [</span><br><span class="line">            <span class="string">"*"</span></span><br><span class="line">          ]</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="string">"allow_restricted_indices"</span> : <span class="literal">false</span></span><br><span class="line">      &#125;</span><br><span class="line">    ],</span><br><span class="line">    <span class="string">"applications"</span> : [</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="string">"application"</span> : <span class="string">"kibana-.kibana"</span>,</span><br><span class="line">        <span class="string">"privileges"</span> : [</span><br><span class="line">          <span class="string">"read"</span></span><br><span class="line">        ],</span><br><span class="line">        <span class="string">"resources"</span> : [</span><br><span class="line">          <span class="string">"*"</span></span><br><span class="line">        ]</span><br><span class="line">      &#125;</span><br><span class="line">    ],</span><br><span class="line">    <span class="string">"run_as"</span> : [ ],</span><br><span class="line">    <span class="string">"metadata"</span> : &#123; &#125;,</span><br><span class="line">    <span class="string">"transient_metadata"</span> : &#123;</span><br><span class="line">      <span class="string">"enabled"</span> : <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">## 查看所有用户</span></span><br><span class="line">GET /_xpack/security/user?pretty</span><br><span class="line"></span><br><span class="line"><span class="comment">## 查看用户</span></span><br><span class="line">GET /_xpack/security/user/zengshenglong?pretty</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"zengshenglong"</span> : &#123;</span><br><span class="line">    <span class="string">"username"</span> : <span class="string">"zengshenglong"</span>,</span><br><span class="line">    <span class="string">"roles"</span> : [</span><br><span class="line">      <span class="string">"dev-read"</span></span><br><span class="line">    ],</span><br><span class="line">    <span class="string">"full_name"</span> : <span class="string">"zengshenglong"</span>,</span><br><span class="line">    <span class="string">"email"</span> : <span class="string">"zengshenglong@baibu.la"</span>,</span><br><span class="line">    <span class="string">"metadata"</span> : &#123; &#125;,</span><br><span class="line">    <span class="string">"enabled"</span> : <span class="literal">true</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">## 禁用用户</span></span><br><span class="line">PUT /_xpack/security/user/zengshenglong/_disable?pretty</span><br><span class="line"></span><br><span class="line"><span class="comment">## 查看用户</span></span><br><span class="line">GET /_xpack/security/user/zengshenglong?pretty</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"zengshenglong"</span> : &#123;</span><br><span class="line">    <span class="string">"username"</span> : <span class="string">"zengshenglong"</span>,</span><br><span class="line">    <span class="string">"roles"</span> : [</span><br><span class="line">      <span class="string">"dev-read"</span></span><br><span class="line">    ],</span><br><span class="line">    <span class="string">"full_name"</span> : <span class="string">"zengshenglong"</span>,</span><br><span class="line">    <span class="string">"email"</span> : <span class="string">"zengshenglong@baibu.la"</span>,</span><br><span class="line">    <span class="string">"metadata"</span> : &#123; &#125;,</span><br><span class="line">    <span class="string">"enabled"</span> : <span class="literal">false</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">## 启用用户</span></span><br><span class="line">PUT /_xpack/security/user/zengshenglong/_enable?pretty</span><br><span class="line"></span><br><span class="line"><span class="comment">## 删除用户</span></span><br><span class="line">DELETE /_xpack/security/user/zengshenglong?pretty</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"found"</span> : <span class="literal">true</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">## 创建或更新用户</span></span><br><span class="line">POST /_xpack/security/user/zengshenglong?pretty</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"password"</span> : <span class="string">"kbsonlong"</span>,</span><br><span class="line">  <span class="string">"roles"</span> : [ <span class="string">"dev-read"</span> ],</span><br><span class="line">  <span class="string">"full_name"</span> : <span class="string">"zengshenglong"</span>,</span><br><span class="line">  <span class="string">"email"</span> : <span class="string">"zengshenglong@baibu.la"</span>,</span><br><span class="line">  <span class="string">"metadata"</span> : &#123;</span><br><span class="line">    <span class="string">"intelligence"</span> : 7</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">result:</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"user"</span> : &#123;</span><br><span class="line">    <span class="string">"created"</span> : <span class="literal">false</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">"created"</span> : <span class="literal">false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/KVM/%E8%B0%83%E4%BC%98/KVM%E6%80%BB%E7%BB%93-KVM%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B9%8BCPU%E4%BC%98%E5%8C%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/KVM/%E8%B0%83%E4%BC%98/KVM%E6%80%BB%E7%BB%93-KVM%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B9%8BCPU%E4%BC%98%E5%8C%96/" class="post-title-link" itemprop="url">运维/虚拟化/KVM/调优/KVM总结-KVM性能优化之CPU优化</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:58" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:58+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>任何平台根据场景的不同，都有相应的优化。不一样的硬件环境、网络环境，同样的一个平台，它跑出的效果也肯定不一样。就好比一辆法拉利，在高速公路里跑跟乡村街道跑，速度和激情肯定不同…</p>
+<p>所以，我们做运维工作，也是如此。首先你得充分了解你所用的软件平台，然后根据你现有的生产环境去充分的测试，最后得出结果，做最优的调整。</p>
+<p>KVM也是一样，首先要做的是充分的了解它，看看有哪些参数和设置我们可以做出调整，最终应用以求发挥最高的性能。</p>
+<p>那么KVM的性能调优，我们可以从四个方面入手 —— CPU、内存、磁盘IO、网络。</p>
+<h2 id="KVM-CPU性能调优"><a href="#KVM-CPU性能调优" class="headerlink" title="KVM CPU性能调优"></a>KVM CPU性能调优</h2><p>CPU这块我们是针对NUMA这块的调优，那么什么是NUMA呢？NUMA是英文 Non Uniform Memory Access Architecture 的缩写，意思就是非统一内存访问，它是一种解决多CPU共同工作的解决方案。我们知道现在的服务器配置都比较高了，CPU很多都是多路多核的，而且CPU是需要跟存储器进行数据交互的，以往的年代，那时候的CPU运算速率不高，而且都是单CPU模式，那么存储器里的数据要放到CPU里进行运算这是完完全全跟得上的。但是现在的CPU运算速度大大增强了，而且都是多CPU模式，于是就出现了不平衡，那就是存储器里的数据完全不够让CPU消化，并且还会出现多个CPU抢食存储器的情况… 这种情况下CPU就表现得非常的饥渴… 数据不够享用，而且存储器还不够分配。</p>
+<p>因此计算机科学家为了提升计算机的性能，就认真的研究了下CPU和存储器之间的协调交互模式。总体核心思想就是寻找一个多CPU模式下，如何让CPU能最大化的“享用”更多来自多个存储器的数据。</p>
+<p>于是就设计出了以下几套解决方案：</p>
+<p><strong>1. SMP技术</strong></p>
+<p>最开始是SMP技术，SMP（Symmetric Multi-Processing ）技术就是对称多处理结构，这种结构的最大特点就是CPU共享所有资源，比如总线，内存，IO系统等等。</p>
+<p>既然是共享所有的资源，所以，各个CPU之间是平等的关系，然后操作系统管理着这些CPU对资源的访问（通常是用队列的形式去管理）。每个CPU依次的去处理队列中的进程，如果两个CPU同时访问，那么一般是通过软件锁的机制去解决争夺的问题，软件锁这概念跟开发里的线程安全锁机制道理是一样的，当一个CPU处理着一进程，一般会先锁住，处理完再释放。</p>
+<p>所以说到这里，这里的对称指的就是CPU之间是平等的无主从，访问资源也是平等的。我们可以看下面这张图：<br><img src="https://img-blog.csdn.net/20170504132503770?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>这个结构是最早出现的方案，但是就是因为最早出现，所以它的弊端很快就显现出来了，那就是它的扩展能力不强。我们看上面这张图就明显感觉到，如果服务器要提升性能增加CPU，那么内存（内存最大化的情况下）就明显不够了，因为是共享模式，多一个CPU就多一个吃内存数据的人… 因此多增加的CPU没法享受到内存的数据，就会停歇，这样就造成了CPU的浪费。</p>
+<p>有实验数据表明，SMP型的服务器CPU最好是2-4颗就OK了，多余的就浪费了。<br><img src="https://img-blog.csdn.net/20170504132544068?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>由此可见，这种方式是有缺陷的。。。因此科学家又想到了另外一个结构方案，那就是NUMA。</p>
+<p><strong>2. NUMA技术</strong></p>
+<p>NUMA刚才我们在前面说了是非统一内存访问的意思，它的出现就很好的解决了SMP的扩展问题。有了NUMA技术那么就可以把几十个甚至上百个CPU组合在一个服务器內。<br>NUMA架构设计图：<br><img src="https://img-blog.csdn.net/20170504132617052?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>从图中我们发现，每个CPU模块之间都是通过互联模块进行连接和信息交互，CPU都是互通互联的，同时，每个CPU模块平均划分为若干个Chip（不多于4个），每个Chip都有自己的内存控制器及内存插槽。</p>
+<p>在NUMA中还有三个节点的概念：<br>\1. 本地节点： 对于某个节点中的所有CPU，此节点称为本地节点。<br>\2. 邻居节点：与本地节点相邻的节点称为邻居节点。<br>\3. 远端节点：非本地节点或邻居节点的节点，称为远端节点。<br>邻居节点和远端节点，都称作非本地节点(Off Node)。</p>
+<p>这里要注意的是，CPU访问不同类型节点内存的速度是不相同的，访问本地节点的速度最快，访问远端节点的速度最慢，即访问速度与节点的距离有关，距离越远访问速度越慢，此距离称作Node Distance。正是因为有这个特点，所以我们的应用程序要尽量的减少不同CPU模块之间的交互，也就是说，如果你的应用程序能有方法固定在一个CPU模块里，那么你的应用的性能将会有很大的提升。<br><img src="https://img-blog.csdn.net/20170504132705209?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="访问速度：本地节点&gt;邻居节点&gt;远端节点"></p>
+<p>因此KVM也是一样，我们在CPU优化这块就是要让KVM绑定在指定的CPU上，这样减少跨CPU的交互使用，让KVM的性能提升。现在我们的服务器还有linux操作系统都是默认走NUMA模式，所以我们接下来说说如何去做CPU的绑定。</p>
+<p>那么具体如何操作？</p>
+<p><strong>3. numactl 命令讲解</strong></p>
+<p>我们这里用一台真实的物理机演示，这台物理机的是IBM 3650M4。</p>
+<p>首先我们用numactl命令查看NUMA的情况，如果你系统没有这个命令，用 yum install numactl 安装下即可。</p>
+<p><code># numactl --h</code><br>numactl 帮助命令，主要参数如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">--interleave&#x3D;nodes, -i nodes      </span><br><span class="line">这个选项用于设定内存的交织分配模式。 </span><br><span class="line">也就是说系统在为多个节点分配内存空间的时候，将会以轮询分发的方式被分配给这多个节点。如果在当前众多的交织分配内存节点中的目标节点无法正确的分配内存空间的话，内存空间将会由其他的节点来分配。多节点可以通过 --interleave , --membind 和 --cpunodebind 命令来指定。</span><br><span class="line"></span><br><span class="line">--membind&#x3D;nodes, -m nodes     </span><br><span class="line">选项 &#39;--membind&#39; 仅用来从节点中分配内存空间所用。 如果在这些节点中无法分配出所请求的空间大小的话该分配操作将会失败. </span><br><span class="line">上述命令中指定需要分配空间的 nodes 的方式可以遵照上述 N,N,N , N-N ,N 这种方式来指定.</span><br><span class="line"></span><br><span class="line">--cpunodebind&#x3D;nodes, -N nodes     </span><br><span class="line">这命令仅用于施加在运行与 cpu 上的进程。</span><br><span class="line">这个命令用于显示 cpu 的个数，cpu 数目信息同样记录在系统中的存放处理器领域信息的 &#x2F;proc&#x2F;cpuinfo 文件夹下，或者是按照关联的中央处理器信息 在当前的中央处理器集中所存放。</span><br><span class="line"></span><br><span class="line">--localalloc, -l     </span><br><span class="line">这个命令选项通常是为当前的节点分配内存的。</span><br><span class="line"></span><br><span class="line">--preferred&#x3D;node      </span><br><span class="line">该命令由于指定优先分配内存空间的节点，如果无法将空间分配给该节点的话，应该分配给该节点上的空间将会被分发到其他的节点上 。 </span><br><span class="line">该命令选项后面仅接收一个单独的节点标号.  相关的表示方式也可以使用。</span><br><span class="line"></span><br><span class="line">--show, -s      </span><br><span class="line">该命令用于显示 NUMA 机制作用在当前运行的那些进程上。</span><br><span class="line"></span><br><span class="line">--hardware, -H      </span><br><span class="line">该命令用于显示当前系统中有多少个可用的节点。</span><br><span class="line"></span><br><span class="line">--huge     </span><br><span class="line">当创建一个基于大内存页面的系统级的共享内存段的时候使用--huge 这个选项，注意这选项仅在 --shmid 或是 --shm 命令的后面使用才有效。</span><br><span class="line"></span><br><span class="line">--offset    </span><br><span class="line">该参数选项用于指定共享内存段中的位移量的偏移。 默认的情况下偏移量是 0 。 有效的偏移量单位是 m (用于表示 MB)  g (用于表示 GB) , k (用于表示 KB ), 其他没有指定的被认为是以字节为单位。</span><br><span class="line"></span><br><span class="line">--strict    </span><br><span class="line">这个参数选项 当施加了 NUMA 调度机制的共享内存段区域的页面被施加了另一个机制而导致错误的时候，使用 --strict 选项将会把错误信息显示出来. 默认情况是不使用该选项的。</span><br><span class="line"></span><br><span class="line">--shmmode shmmode    </span><br><span class="line">该选项仅在 --shmid 或是 --shm 之前使用才会生效。 </span><br><span class="line">当创建一个共享内存段的时候，通过整型数值来指定共享内存的共享的模式类型。</span><br><span class="line"></span><br><span class="line">--shmid id     </span><br><span class="line">通过ID 号码来创建或使用一个共享内存段。(如果共享内存段已经存在，那么通过 shmid 来指定下面要使用某个 ID 的共享内存段;如果该 ID 对应的共享内存段并不存在的话，那么就创建一个)。</span><br><span class="line"></span><br><span class="line">--shm shmkeyfile     </span><br><span class="line">通过存放在 shmkeyfile（共享内存-键文件）中的 ID 号码来创建或者是使用一个共享内存段。访问 shmkeyfile 文件的进程是通过 fork(3 arguments) 方法来实现的。</span><br><span class="line"></span><br><span class="line">--file tmpfsfile     </span><br><span class="line">将 numa 机制施加于文件上面, 这个文件属于 tmpfs或者是 hugetlbfs 这种特殊的文件系统。</span><br><span class="line"></span><br><span class="line">--touch      </span><br><span class="line">通过将 numa 机制施加于刚刚页面上来实现内存的早期 numa 化。默认情况下是不使用该选项，如果存在映射或是访问页面的应用的话，将会使用该早期实行 NUMA 机制的这种方法。</span><br><span class="line"></span><br><span class="line">--dump    </span><br><span class="line">该选项用于废除将已经 numa 化的特定区域上的 NUMA性质.</span><br><span class="line"></span><br><span class="line">--dump-nodes      </span><br><span class="line">nodes 所指定的节点以外的所有节点上的 NUMA 特性全都会被移除</span><br><span class="line">  all  用于将所有的节点上的 NUMA 特性移除</span><br><span class="line">  number  通过指定 node 后接的数值来废除该数字对应的 node </span><br><span class="line">  number1(number2)  node number1（node number2）上的 NUMA 特性将会被移除</span><br><span class="line">  number1-number2    node number1 -- node number2 区间上的所有存在的 node 的 NUMA 特性将会被移除</span><br><span class="line">  !nodes 除了 nodes 所指定的节点以外的所有节点上的 NUMA 特性全都会被移除123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960</span><br></pre></td></tr></table></figure>
+
+<p>以上是numactl的详细命令，那么接下来我们先看看当前服务器CPU的numa情况：</p>
+<p>我们执行lscpu命令可以查看到一些CPU信息：<br><img src="https://img-blog.csdn.net/20170504133512354?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>我们用<code>numactl --hardware</code>可以查看，如这里我准备了两台IBM的服务器，一个3650M4另外一个是3850M2。</p>
+<p>我们可以从命令返回的情况看出，这台服务器numa有2个node（node0和node1)：<br><img src="https://img-blog.csdn.net/20170504133550796?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>我们再看另外一个服务器，这是一台IBM 3850M2，那么它就只有一个node：<br><img src="https://img-blog.csdn.net/20170504133615558?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>通过这个<code>numactl --hardware</code>命令，我们可以看出上面那台机器每个node有81894 MB的内存可以使用（大概79G），而IBM 3850M2这个服务器node有131070MB（120多G）内存可用（基本上是整个服务器的内存）<br>那么接下来我们可以看下cpu numa的调度分配情况：<br>我们运行numastat命令可以查到：<br><img src="https://img-blog.csdn.net/20170504133636469?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>3650M4</p>
+<p><img src="https://img-blog.csdn.net/20170504133659126?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>3850M2</p>
+<p>参数解释：<br>● numa_hit 使用本节点内存次数<br>● num_miss 计划使用本节点内存而被调度到其他节点次数<br>● num_foregin 计划使用其他节点内存而使用本地内存次数<br>● interleave_hit 交叉分配使用的内存中使用本节点的内存次数<br>● local_node 在本节点运行的程序使用本节点内存次数<br>● NB other_node 在其他节点运行的程序使用本节点内存次数</p>
+<p>接着我们看下这个命令：numastat -c ， 这个命令c 后面跟上进程名就能看到相关进程的NUMA内存使用情况。比如：numastat -c qemu-kvm，这样我们就知道了qemu-kvm这个进程，它在node0 和node1上使用的内存大小，单位是MB：<br><img src="https://img-blog.csdn.net/20170504133809043?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>通过这几个命令我们可以查看一些numa的基本状态和使用情况。那么针对CPU Numa技术，linux操作系统本身呢也有自身对这块的设计。拿linux来说，它默认使用的就是NUMA自动平衡策略，也就是说，系统会自动的调配numa的内存使用，以求一个平衡。</p>
+<p>当然，这个设置是可以用户自己控制的，如果我们想关闭，直接运行</p>
+<p><code># echo 0 &gt; /proc/sys/kernel/numa_balancing</code> 即可<br><code># echo 1 &gt; /proc/sys/kernel/numa_balancing</code> 开启</p>
+<p><strong>4. CPU绑定操作</strong></p>
+<p>说到这，既然我们的操作系统还有CPU特性都采用了NUMA架构，那么我们完全可以通过调整KVM对应的NUMA关系来达到KVM CPU这方面的优化。这里，我们一般是通过CPU绑定的方法来做相关操作的。</p>
+<p>那么具体的操作是怎么样的呢？那么接下来我们通过一个例子来演示。这里是一台物理机，之前我们看过了，现在上面装好了KVM，然后运行着几个虚拟机，我们用 virsh list 命令可以查看到当前运行的虚拟机列表。<br><img src="https://img-blog.csdn.net/20170504134117247?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>比如我们要看这个Win7-ent虚拟机里vCPU对应物理CPU的情况，那么可以运行：<br><code># virsh vcpuinfo Win7-ent</code> 可以查看<br><img src="https://img-blog.csdn.net/20170504134202352?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>这个虚拟机是2个vCPU 双核的，然后都是跑在了物理机的CPU8上，使用的时间是2964.6s。最后一个是CPU的亲和性，这个yyyyy 表示的是使用的物理CPU内部的逻辑核，一个y就代表其中一个CPU逻辑核。全部是y ，那么说明这台物理机的24个CPU核，这个CPU都能调度使用。</p>
+<p>当然，我们可以进入vrish ，然后运行emulatorpin Win7-ent， 通过这个命令我们可以更详细的得到这个虚拟机可以用哪几个核：<br><img src="https://img-blog.csdn.net/20170504134049897?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>我们可以看到目前这个虚拟机0-23的CPU它都能调度使用。</p>
+<p>那么以上就是查看虚拟机CPU NUMA调度的信息，如果我们要把虚拟机绑定到固定的CPU上，我们就要做以下操作：<br><code># virsh emulatorpin Win7-ent 18-23 --live</code><br>通过这个命令，我们把这个win7的虚拟机vCPU绑定在了18-23这6个CPU之间的核上。<br>我们用命令查看下<br>emulatorpin Win7-ent<br><img src="https://img-blog.csdn.net/20170504134345530?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>我们也可以用virsh dumpxml Win7-ent 查看确认：<br><img src="https://img-blog.csdn.net/20170504134407358?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>这是让虚拟机里的vCPU一起绑定的方法。<br>那么有的人会疑问，一个虚拟机我有两个vCPU, 比如这个win7 ，它就是双核的，我想让里面的vCPU1和vCPU2分别绑定在不同的物理CPU上可以吗？怎么操作呢？这也是可以的，我们通过下面的方法可以进行相关的vCPU分别绑定</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># virsh vcpupin Win7-ent 0 22</span><br><span class="line"># virsh vcpupin Win7-ent 1 23</span><br><span class="line"># virsh dumpxml Win7-ent123</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img-blog.csdn.net/20170504134509561?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># virsh vcpuinfo Win7-ent1</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img-blog.csdn.net/20170504134535998?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>这里要注意的是，你把虚拟机用reboot重启，这个绑定配置还是生效的，但是你shutdown的话，CPU绑定的效果会失效。我们要让VM关机然后起来也生效，就必须把参数写入到虚拟机的XML里，然后保存，这样关机了也不会失效，这里要注意下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># virsh edit vm11</span><br></pre></td></tr></table></figure>
+
+<p>添加：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;cputune&gt;</span><br><span class="line">    &lt;vcpupin vcpu&#x3D;&#39;0&#39; cpuset&#x3D;&#39;22&#39;&#x2F;&gt;</span><br><span class="line">    &lt;vcpupin vcpu&#x3D;&#39;1&#39; cpuset&#x3D;&#39;23&#39;&#x2F;&gt;</span><br><span class="line">&lt;&#x2F;cputune&gt;1234</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img-blog.csdn.net/20170504134714891?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>以上就是CPU绑定技术的操作。通过这样的操作，我们可以在一台多CPU的物理机上固定几个CPU给虚拟机用。当然，至于为什么可以这样做，前面我们提到了关于NUMA的原理，如果固定了虚拟机的CPU，那么它就不会去找远端节点了，另外就是有些场景下，一物理机多个CPU，如果前面几个CPU负载很高，利用率大，后面几个CPU利用率低，那么我们可以协调下，做CPU的绑定，平衡下CPU的负载。</p>
+<p>以上是CPU的绑定，接下来我们讲讲CPU的热添加。</p>
+<p><strong>5. CPU 热添加</strong></p>
+<p>首先我们先了解下什么叫热添加，热添加就是在虚拟机运行不关机的情况下，做CPU的添加操作。那么要注意的是，这个热添加是在Redhat7.0以后才出现的，之前是没有的。所以要享用这功能那必须要求KVM宿主机和虚拟机都得在7.0版本以后。那么具体怎么操作我们通过一个演示给大家操作下。</p>
+<p>比如目前这个虚拟机，这是一个CentOS7.1的。我们先看下目前虚拟机的CPU的数值，我们可以进系统查看，<code>cat /proc/cpuinfo| grep &quot;processor&quot;| uniq| wc -l</code> ，我们看到当前是2个CPU：<br><img src="https://img-blog.csdn.net/20170504134813641?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>然后我们解释下这个最大CPU分配数是怎么个意思，它的意思就是给这个虚拟机最大预留的CPU个数，这个设置很重要，如果你想给虚拟机热添加，那么这个设置必须写。比如我们这里写的4，那么我们可以给虚拟机最大热添加到4个CPU，而且4是上限。</p>
+<p>那么接下来说下，具体怎么热添加。我们先在宿主机里先给这个虚拟机添加第三个CPU，原来是2个，现在再添加一个变成3个：<br><code>setvcpus VM3_CentOS7.1 3 --live</code><br>然后我们到虚拟机里面把这个CPU激活 ：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo 1 &gt;&#x2F;sys&#x2F;devices&#x2F;system&#x2F;cpu&#x2F;cpu2&#x2F;online1</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img-blog.csdn.net/20170504134923547?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>我们再运行查看，发现已经变成3个了。</p>
+<p>如果要减少，那么只能在虚拟机里减少刚才的CPU</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># echo 0 &gt;&#x2F;sys&#x2F;devices&#x2F;system&#x2F;cpu&#x2F;cpu2&#x2F;online1</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img-blog.csdn.net/20170504135020863?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>但是在宿主机层面看这个虚拟机的vCPU数还是3个，也就是说不支持热减少，我们运行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vcpuinfo VM3_CentOS7.11</span><br></pre></td></tr></table></figure>
+
+<p>命令发现还是3个：<br><img src="https://img-blog.csdn.net/20170504135110630?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>同理，Windows的添加也是如此，直接在宿主机里添加第三个CPU即可</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># setvcpus VM4_Win2008 3 --live1</span><br></pre></td></tr></table></figure>
+
+<p>然后虚拟机里不用操作，它会自动刷新成3个CPU，我们也可以一个windows虚拟机做相关的演示，具体的可以由读者自己操作了。</p>
+<p>到这为止, 以上就是KVM CPU方面的优化。总结起来就两点，一个是CPU绑定，还有一个就是热添加。</p>
+<p>CPU绑定首先得了解NUMA技术，然后站在整个宿主机CPU资源的层面去调节。热添加，当你某个虚拟机正在运行，然后突然业务压力增大了，可以通过这方法达到0停机提升虚拟机CPU性能。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/KVM/%E8%B0%83%E4%BC%98/KVM%E6%80%BB%E7%BB%93-KVM%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B9%8B%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/KVM/%E8%B0%83%E4%BC%98/KVM%E6%80%BB%E7%BB%93-KVM%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B9%8B%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" class="post-title-link" itemprop="url">运维/虚拟化/KVM/调优/KVM总结-KVM性能优化之内存优化</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:58" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:58+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>内存方面有以下四个方向去着手：</p>
+<ol>
+<li>EPT 技术</li>
+<li>大页和透明大页</li>
+<li>KSM 技术</li>
+<li>内存限制</li>
+</ol>
+<h2 id="EPT技术"><a href="#EPT技术" class="headerlink" title="EPT技术"></a>EPT技术</h2><p>EPT也就是扩展页表，这是intel开创的硬件辅助内存虚拟化技术。我们知道内存的使用，是一个逻辑地址跟物理地址转换的过程。虚拟机内部有逻辑地址转成成物理地址的过程，然后再跳出来，虚拟机这块内存又跟宿主机存在逻辑到物理的转换。有了EPT技术，那么能够将虚拟机的物理地址直接翻译为宿主机的物理地址，从而把后面那个转换过程去掉了，增加了效率。</p>
+<p>那么这项技术，现在的服务器都支持，只要在BIOS打开了intel 的VT设置，这个也一起打开了。</p>
+<p>所以这个基于硬件的优化，目前不需要做额外的什么操作。<br><img src="https://img-blog.csdn.net/20170507171014631?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<h2 id="大页和透明大页"><a href="#大页和透明大页" class="headerlink" title="大页和透明大页"></a>大页和透明大页</h2><p>我们先解释什么叫大页。</p>
+<p>所谓的大页指的是内存的大页面。当然，有大页面必然有对应的小页面… 我们知道内存采用的是分页机制，当初这个机制提出的时候，计算机的内存大小也就几十M，所以当时内存默认的页面大小都是4KB，那么这个4KB 也就是所谓的小页面。但是随着计算机的硬件发展，现在的内存基本上都是几十G 甚至上百G了，虽然，如果还是4KB小页的方式，那么必然会存在一些问题。那么会有哪些问题呢？操作系统如果还是小页存在，那么将会产生较多的TLB Miss和缺页中断，从而大大影响性能。</p>
+<p>为什么小页就存在较多的Miss和缺页中断呢？比如说系统里的一个应用程序需要2MB的内容，如果操作系统还是以4KB小页为单位，那么内存里就要有512个页面（512*4KB=2M），所以在TLB里就需要512个表项以及512个页表项，因此操作系统就要经历512次的TLB miss和512次的缺页中断才能将2MB的应用程序空间全部映射到物理内存里。想想，2MB内存的需要就要经历512次的操作，如果内存需求大呢？必然操作数量会大大增加，从而间接的影响性能。</p>
+<p>如果把这个4KB变成2MB呢？那就很轻松了，一次TLB Miss和缺页中断操作就完成了，大大的增加了效率。</p>
+<p>所以，虚拟机可以通过分配巨型页也就是刚才说的大页来提高运行性能。</p>
+<p>那么具体怎么操作呢？也就是说如何把这个4KB的小页变成2MB甚至1GB的大页，然后把这个大页赋给虚拟机使用？</p>
+<p>我们可以先通过命令 <code>cat /proc/meminfo | grep HugePages</code>查看当前系统有多少个大页：<br><img src="https://img-blog.csdn.net/20170507171056110?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"><br>我们看到，当前数量是0。</p>
+<p>那么如何设置大页的数量呢？也就是上面的HugePages_Total的数量。</p>
+<p>只要运行<code>echo 2000 &gt; /proc/sys/vm/nr_hugepages</code> 这个命令即可：<br><img src="https://img-blog.csdn.net/20170507171213947?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"><br>已经变成了2000了。</p>
+<p>当然这样重启会失效，我们运行这个命令让它永久生效 ：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sysctl -w vm.nr_hugepages&#x3D;20001</span><br></pre></td></tr></table></figure>
+
+<p>运行了这个命令系统重启的话，大页的数量也将是保持2000，不会变。<br>接下来，我们还得把大页进行挂载，我们运行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># mount -t hugetlbfs hugetlbfs &#x2F;dev&#x2F;hugepages 1</span><br></pre></td></tr></table></figure>
+
+<p>这个hugetlbfs 是一种特殊文件系统，那至于为什么采用这样的文件系统是因为这样花费的代价小。</p>
+<p>通过这几步操作，开启-&gt;设置大页数量-&gt;挂载， 那么宿主机这块就没什么问题了。</p>
+<p>如果我们KVM里面的某个虚拟机要使用宿主机的大页，那么我们还得做如下操作：</p>
+<ol>
+<li>重启下libvirtd服务</li>
+<li>虚拟机也开启透明巨型页</li>
+<li>关闭虚拟机编辑虚拟机XML设置虚拟机可以使用宿主机的巨型页数量</li>
+</ol>
+<p>我们先看看，当前的大页是没进程用的， hugepages_free是2000：<br><img src="https://img-blog.csdn.net/20170507171349590?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>我们先把libvirtd服务重启：<code>systemctl restart libvirtd.service</code></p>
+<p>然后，我们看看虚拟机的透明大页有没有打开，一般默认系统是打开的，我们确认下<br><img src="https://img-blog.csdn.net/20170507171425529?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"><br>我们看到是always状态，那么就是打开的，OK，我们进行下一步。</p>
+<p>编辑虚拟机XML文件，让它使用宿主机的大页。</p>
+<p>我们先把虚拟机关闭，然后 <code>virsh edit vmname</code> 命令修改，添加下图中红色框框的内容：<br><img src="https://img-blog.csdn.net/20170507171458482?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>修改后，保存，然后开启虚拟机，注意这个虚拟机的内存是2G的配置。</p>
+<p>最后我们在宿主机运行<code>cat /proc/meminfo | grep -i HugePages</code> 查看下大页的使用情况<br><img src="https://img-blog.csdn.net/20170507171525441?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>我们发现hugepages_free 已经变成了912个了，那么使用了2000-912=1088 个。</p>
+<p>Hugepagesize是2M，也就是每页页面的大小，使用了1088个页面，那么2*1088=2176M 正好跟虚拟机内存的大小2G差不多。</p>
+<p>如果想让虚拟机释放大页，那么只要把这个虚拟机关机或者删除XML里刚才添加的配置。</p>
+<p>刚才的操作，我们只是针对一个虚拟机的，也就是说我们把大页面赋给了一个虚拟机。如果我们要赋予多个虚拟机怎么办？</p>
+<p>那么要让大页同时让多个虚拟机享用，有以下两步要做：</p>
+<ol>
+<li>给NUMA 各个node节点分配多个2MB或者1GB的大页</li>
+<li>编辑虚拟机xml文件以使用node里分配好的大页</li>
+</ol>
+<p>我们可以运行下面两个命令就可以给宿主机各个NUMA Node分配大页</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># echo 4 &gt; &#x2F;sys&#x2F;devices&#x2F;system&#x2F;node&#x2F;node0&#x2F;hugepages&#x2F;hugepages-1048576kB&#x2F;nr_hugepages</span><br><span class="line"># echo 1024 &gt; &#x2F;sys&#x2F;devices&#x2F;system&#x2F;node&#x2F;node1&#x2F;hugepages&#x2F;hugepages-2048kB&#x2F;nr_hugepages12</span><br></pre></td></tr></table></figure>
+
+<p>这两个命令的意思就是先给node0里分配4个1GB的大页，然后再给node1分配1024个2MB的大页。</p>
+<p>然后执行相关挂载操作，这跟刚才我们做的操作类似：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># mkdir &#x2F;dev&#x2F;hugepages1G</span><br><span class="line"># mount -t hugetlbfs -o pagesize&#x3D;1G none &#x2F;dev&#x2F;hugepages1G</span><br><span class="line"># mkdir &#x2F;dev&#x2F;hugepages2M</span><br><span class="line"># mount -t hugetlbfs -o pagesize&#x3D;2M none &#x2F;dev&#x2F;hugepages2M1234</span><br></pre></td></tr></table></figure>
+
+<p>挂载成功后，重启下libvirtd服务，然后虚拟机就可以使用了，但是这里要注意的是，1GB的大页，虚拟机是不能直接使用的，需要在XML里指定。</p>
+<p>那么怎么指定? 我们目前宿主机NUMA node1和node2里面分别有4个1GB的和1024个2MB的大页。因此，只要跑在这两node上的虚拟机都可以享用了。</p>
+<p>比如刚才我们那虚拟机，我们要让它使用1GB的大页，我们只需要在XML里这样定义：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;memoryBacking&gt;      </span><br><span class="line">  &lt;hugepages&#x2F;&gt;          </span><br><span class="line">    &lt;page size&#x3D;&quot;1&quot; unit&#x3D;&quot;G&quot; nodeset&#x3D;&quot;0-3,5&quot;&#x2F;&gt;          </span><br><span class="line">    &lt;page size&#x3D;&quot;2&quot; unit&#x3D;&quot;M&quot; nodeset&#x3D;&quot;4&quot;&#x2F;&gt;      </span><br><span class="line">  &lt;&#x2F;hugepages&gt; </span><br><span class="line">&lt;&#x2F;memoryBacking&gt;123456</span><br></pre></td></tr></table></figure>
+
+<p>红色的部分就是要添加的参数，size是1，表示第一个使用的page；然后单位unit是G，nodeset=”0-3,5” 意思是虚拟机的NUMA node0，node1, node2 , node3和node5将使用1GB的大页 ； 虚拟机的node4将用2MB的大页。</p>
+<p>注意，这里的nodeset指的是虚拟机的节点，同时还要注意的是，如果宿主机大页面不够用了，你这样配置了，虚拟机是会起不来的。</p>
+<p>以上就是给虚拟机分配大页的方法。当然如果你想把宿主机的大页关闭，只要执行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># sysctl vm.nr_hugepages&#x3D;0</span><br><span class="line"># umount hugetlbfs12</span><br></pre></td></tr></table></figure>
+
+<p>接下来我们讲下透明大页。</p>
+<p>从Centos6开始，linux系统自带了一技术叫透明巨型页（transparent huge page），它允许所有的空余内存被用作缓存以提高性能，而且这个设置是默认开启的，我们不需要手动去操作。</p>
+<p>Centos下，我们用<code>cat /sys/kernel/mm/transparent_hugepage/enabled</code>可以查看<br><img src="https://img-blog.csdn.net/20170507171754611?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>我们看到这个中括号把这个always括起来了，说明这机器的透明巨型页的功能是打开的。当有512个页面可以整合的时候，就会合成一个2MB的大页；如果是在括号把never括起来了，那么就是关闭状态；madvise的话就是避免改变内存占用。</p>
+<p>当然，如果你想改变透明巨型页的状态，比如说关闭它，那么运行下面的命令即可：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># echo never &gt;&#x2F;sys&#x2F;kernel&#x2F;mm&#x2F;transparent_hugepage&#x2F;enabled1</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img-blog.csdn.net/20170507171820552?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>最后要注意的是透明巨型页跟刚才我们说的hugetlbfs 文件挂载大页是不冲突的，如果你没做任何大页的指定和挂载，那么KVM就会使用透明大页的方式。</p>
+<p>那么说到这，大家就会疑问，既然有透明大页，我为何还要费劲的去做相关大页的指定？ 其实这两种方式都差不多，区别就是一个是手动的一，个是自动的。如果你对你宿主机资源把握的更加精准，推荐的还是手动指定。</p>
+<h2 id="KSM-技术"><a href="#KSM-技术" class="headerlink" title="KSM 技术"></a>KSM 技术</h2><p>KSM是什么呢？KSM（Kernel SamePage Merging），也就是所谓的相同页面内存压缩技术。</p>
+<p>KSM服务在linux系统里默认是开启的，它的作用就是让内存利用的更加高效，我们知道内存是分页的，如果多个程序中用的内存都是相同的页面，那么KSM就会把相同的内存合并，这样就能腾出更多的空间。</p>
+<p>KSM在系统里有个守护进程，它的作用就是不断的扫描宿主机的内存情况，检测有相同的页面就会合并，这或多或少会消耗CPU。</p>
+<p>下面有几个命令设置大家要了解：<br>首先是开关KSM服务：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">systemctl start|stop ksmd</span><br><span class="line">systemctl start|stop ksmtuned </span><br><span class="line">systemctl enable|disable ksmd</span><br><span class="line">systemctl enable|disable ksmtuned1234</span><br></pre></td></tr></table></figure>
+
+<p>如果你的环境，内存资源比较丰富，VM又不多，这个功能开不开启都无所谓；如果不够，又想跑多一点的虚拟机，那么可以打开这个功能。但是你一定要注意，这个是一种内存超用的方案，如果一台宿主机里大部分虚拟机内存变化比较频繁，那么要慎重开启，因为KSM会频繁的做内存扫描，不停的做内存合并操作，这会大量的消耗CPU资源，如果内存不够还会用到swap，那么最终会严重影响虚拟机性能。</p>
+<p>当然，也有设置能让虚拟机不受宿主机KSM的影响，具体操作如下：</p>
+<p>编辑虚拟机的XML文件，添加：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;memoryBacking&gt;</span><br><span class="line">    &lt;nosharepages&#x2F;&gt;</span><br><span class="line">&lt;&#x2F;memoryBacking&gt;123</span><br></pre></td></tr></table></figure>
+
+<p>这样，这个KSM就不会去合并这个虚拟机的内存了。</p>
+<p>总的来说，如果你的环境硬件配置比较高，同时又追求VM数量，把KSM打开是一个很不错的选择（但是一定要做好相关资源的实时监控，特别是CPU）。在笔者维护过的项目中，遇到过只追求数量而不追求性能的场景，当时我们就开启了KSM服务，服务器配置是双路E5-2690 <a href="mailto:v3@2.60GHz">v3@2.60GHz</a> 48core、512G内存，当每台计算节点到80个VM的时候（VM大部分配置为4c8G，windows和linux各占50%）。用htop命令监控查看CPU每个核基本上都是99%满负载，此时，虚拟机体验十分不好，后来降到60个左右，CPU负荷在60%-70%，这样情况才有明显好转。</p>
+<p>所以，用不用KSM视你自己的生产环境和客户需求具体而定，这配置还是得慎重。</p>
+<h2 id="内存限制技术"><a href="#内存限制技术" class="headerlink" title="内存限制技术"></a>内存限制技术</h2><p>通过虚拟机内存限制，可以让虚拟机的内存使用限制在一定范围内。</p>
+<p>那么这个操作有什么作用呢？比如你的一台KVM宿主机，里面跑着多个业务的虚拟机，有的虚拟机业务比较大，吃得内存多，有的业务比较低，用不了多少内存，那么我们可以通过内存限制技术来手动调节宿主机的内存分配。</p>
+<p>当然这里要说明的是，使用这个必须对你虚拟化环境特别清楚，比如宿主机平时的负载情况以及各个虚拟机的负载情况。</p>
+<p>那么具体如何操作呢？我们通过memtune命令或者通过改虚拟机的XML文件来设定内存的限制。</p>
+<p>这个memtune命令有以下4个参数<br><img src="https://img-blog.csdn.net/20170507171941068?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"><br>hard_limit：强制设置虚拟机最大使用内存，单位为KB<br>soft_limit：可用最大内存，单位为KB<br>swap_hard_limit：虚拟机最多使用的内存加上swap的大小，单位为KB<br>min_guarantee：强制设置虚拟机最低使用的内存，单位为KB</p>
+<p>最后一个参数虽然OPTIONS里有列出，但是实测是发现CentOS7.0 以上系统不能支持，执行的时候会报下面这样的错误：<br><img src="https://img-blog.csdn.net/20170507172004694?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>centos6 虽然不会报这个错，但是这命令貌似也不会有实际效果<br>官方解释这是一个bug，大家可以参考下面的链接：<br><a href="https://bugzilla.redhat.com/show_bug.cgi?id=1122455" target="_blank" rel="noopener">https://bugzilla.redhat.com/show_bug.cgi?id=1122455</a></p>
+<p>–config ： 写入配置文件中，虚拟机重启后生效<br>–live ：让设置立即生效，但是虚拟机重启后，效果消失 （如果不加–config –live –current 那么默认是这个）<br>–current ：影响关机或者运行状态的虚拟机，如果当前虚拟机正在运行，那么虚拟机停止后，效果会消失</p>
+<p>例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># memtune VM3_CentOS7.1  --hard-limit 9437184 --config1</span><br></pre></td></tr></table></figure>
+
+<p>给虚拟机VM3_CentOS7.1 设置最大使用内存为9G</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># memtune VM3_CentOS7.1  --soft-limit 8388608 --config1</span><br></pre></td></tr></table></figure>
+
+<p>给虚拟机VM3_CentOS7.1 设置最大可用内存为8G</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># memtune VM3_CentOS7.1 --swap-hard-limit 10485760 --config1</span><br></pre></td></tr></table></figure>
+
+<p>限制虚拟机VM3_CentOS7.1最大内加可以使用的宿主机swap不超过10GB内存，注意设置这个值的时候必须大于hard-limit的所设置的值。</p>
+<p>这个设置可以慎用，因为虚拟机使用了swap那么速度性能肯定会下降很多，而且要注意的是，这里设置的内存大小必须大于hard-limit</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># memtune VM3_CentOS7.1  --min-guarantee 4194304 --config1</span><br></pre></td></tr></table></figure>
+
+<p>这个命令我们可以操作下，但是演示会发现前面所说的error</p>
+<p>以上是通过命令的方式，我们刚才说了，还可以通过修改XML的方式来现在虚拟机的内存。</p>
+<p>我们在XML里添加下面这个配置即可：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;memtune&gt;</span><br><span class="line">      &lt;hard_limit unit&#x3D;&#39;KiB&#39;&gt;9437184&lt;&#x2F;hard_limit&gt;</span><br><span class="line">      &lt;soft_limit unit&#x3D;&#39;KiB&#39;&gt;8388608&lt;&#x2F;soft_limit&gt;</span><br><span class="line">      &lt;swap_hard_limit unit&#x3D;&#39;KiB&#39;&gt;10485760&lt;&#x2F;swap_hard_limit&gt;</span><br><span class="line">&lt;&#x2F;memtune&gt;12345</span><br></pre></td></tr></table></figure>
+
+<p>注意第四个参数min_guarantee加里面会报错，虚拟机启动不了。</p>
+<p>以上几点就是KVM在内存方面的相关调试设置。作为工程师首先要做的是熟悉底层各种参数，然后根据生产环境和客户需求做出最优配置，这样才能得出最强的性能。</p>
+<p>性能调优，这个很吃经验，所以第一步还是熟悉下平台里原生有哪些设置参数以及它们的作用吧！</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/%E4%BC%98%E5%8C%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/%E4%BC%98%E5%8C%96/" class="post-title-link" itemprop="url">运维/Elasticsearch/优化</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:58" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:58+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>1、每个es节点RAM不超过32G；</p>
+<p>2、每个分片数据量30GB左右，不要超过50GB</p>
+<p>每个分片(shard)本质是一个lucene 索引，Lucene硬性限制每个index文档最大数量为2的31次方，即20亿。随着 shard 体积的增大，其查询效率会下降，而且数据迁移和恢复的成本也会增高。官方建议单个 shard 大小不要超过 50GB</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+  </nav>
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="曾胜龙"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">曾胜龙</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yourname" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yourname" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank">粤ICP备18122209号 </a>
+      <img src="http://www.beian.gov.cn/portal/download" style="display: inline-block;">
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">曾胜龙</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

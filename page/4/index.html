@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"kbsonlong.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"3QSL94PCBQ","apiKey":"d2fe765a64df1740fcab93644d3a2677","indexName":"hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta property="og:type" content="website">
+<meta property="og:title" content="蜷缩的蜗牛">
+<meta property="og:url" content="https://kbsonlong.github.io/page/4/index.html">
+<meta property="og:site_name" content="蜷缩的蜗牛">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="曾胜龙">
+<meta property="article:tag" content="Devops Kubernetes Docker">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://kbsonlong.github.io/page/4/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : true,
+    isPost : false,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>蜷缩的蜗牛</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="蜷缩的蜗牛" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">蜷缩的蜗牛</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">运维笔记</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/kbsonlong" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content index posts-expand">
+            
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/KVM/%E8%B0%83%E4%BC%98/KVM%E6%80%BB%E7%BB%93-KVM%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B9%8B%E7%A3%81%E7%9B%98IO%E4%BC%98%E5%8C%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/KVM/%E8%B0%83%E4%BC%98/KVM%E6%80%BB%E7%BB%93-KVM%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B9%8B%E7%A3%81%E7%9B%98IO%E4%BC%98%E5%8C%96/" class="post-title-link" itemprop="url">运维/虚拟化/KVM/调优/KVM总结-KVM性能优化之磁盘IO优化</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:58" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:58+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>前面讲了KVM CPU(<a href="http://blog.csdn.net/dylloveyou/article/details/71169463)、内存(http://blog.csdn.net/dylloveyou/article/details/71338378)的优化，下面接着第三块的内容，KVM磁盘性能方面的调优。磁盘IO我们可以从以下四个方面去着手优化：" target="_blank" rel="noopener">http://blog.csdn.net/dylloveyou/article/details/71169463)、内存(http://blog.csdn.net/dylloveyou/article/details/71338378)的优化，下面接着第三块的内容，KVM磁盘性能方面的调优。磁盘IO我们可以从以下四个方面去着手优化：</a></p>
+<ol>
+<li>磁盘类型选择</li>
+<li>缓存模式选择</li>
+<li>AIO 异步读写方式选择</li>
+<li>磁盘IO调度器选择</li>
+</ol>
+<h2 id="磁盘类型选择"><a href="#磁盘类型选择" class="headerlink" title="磁盘类型选择"></a>磁盘类型选择</h2><p>磁盘方面，建议是用Virtio模式，在CentOS7.1 中，磁盘的类型有IDE 、SATA 以及virtio 三种。磁盘这块也有完全虚拟化和半虚拟化之分。virtio它就是半虚拟化的，最初是由澳大利亚的一个天才级程序员Rusty Russell编写，是一个在hypervisor之上的抽象API接口，它让客户机知道自己运行在虚拟化环境中，从而与hypervisor一起根据 virtio 标准协作，因此，virtio能让客户机中达到更好的性能（特别是I/O性能）。</p>
+<p>关于使用virtio的测试数据，如下图所示，virtio模式的读写能力远高于IDE的：<br><img src="https://img-blog.csdn.net/20170510111507950?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>图上淡紫色的数据条是virtio的数据，红色的是IDE的，性能几乎是相差很大。</p>
+<p>所以大家在选择磁盘模式的时候，注意选择virtio模式，特别是在云环境里，你制作的虚拟机模版，最好选择virtio模式。</p>
+<h2 id="缓存模式选择"><a href="#缓存模式选择" class="headerlink" title="缓存模式选择"></a>缓存模式选择</h2><p>目前KVM这块支持5种磁盘缓存模式，writethrough、writeback、none、directsync或者unsafe。一般用到的就是前面3种，后面两种几乎不会使用。</p>
+<ul>
+<li>writethrough：（直写模式）数据直接写入磁盘里，不使用缓存；在数据更新时，同时写入缓存Cache和后端存储。此模式的优点是操作简单；缺点是因为数据修改需要同时写入存储，数据写入速度较慢。</li>
+<li>writeback：（回写模式）在数据更新时只写入缓存Cache。只在数据被替换出缓存时，被修改的缓存数据才会被写到后端存储。此模式的优点是数据写入速度快，因为不需要写存储；缺点是一旦更新后的数据未被写入存储时出现系统掉电的情况，数据将无法找回。</li>
+<li>none：这种模式作用在Guest OS Pagecache和Physical Disk<br>Cache中，相当于虚拟机能直接访问宿主机的磁盘，性能不错！</li>
+</ul>
+<p><img src="https://img-blog.csdn.net/20170510111755671?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"><br>从图中可以看到，writeback采用了guest和host两层的page cache，也就是说同一个文件会存在两份cache，这是没有必要的，none和writethrough都会绕过host层的page cache。</p>
+<p>低于QEMU-KVM 1.2 的版本kvm默认的cache方式是writethrouh，这种方式是最安全的，不会造成数据的不一致性，但是性能也是最差的。</p>
+<p>总的来说，这三种模式，从安全和性能两角度分析，效果如下：<br><strong>性能上： writeback &gt; none &gt; writethrough</strong><br><strong>安全上 ：writeback &lt; none &lt; writethrough</strong><br>关于这三种模式的测试结果，如下图所示：<br><img src="https://img-blog.csdn.net/20170510111622436?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"><br>其中淡紫色的是 none模式，我们发现它的性能数据几乎很平均，所以选择它是最合适的方式，既安全稳定性能又不错。设置的方法也很简单，直接在XML里定义：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;driver name&#x3D;&#39;qemu&#39; type&#x3D;&#39;qcow2&#39; cache&#x3D;&#39;none&#39;&#x2F;&gt; 1</span><br></pre></td></tr></table></figure>
+
+<p>加上<code>cache=&#39;none&#39;</code>即可</p>
+<p>综合数据的安全性和性能，建议选择none模式，注意CentOS下默认是none。</p>
+<h2 id="AIO-异步读写方式选择"><a href="#AIO-异步读写方式选择" class="headerlink" title="AIO 异步读写方式选择"></a>AIO 异步读写方式选择</h2><p>aio 这块分为两种，一种是native方式，还有一种是thread方式。</p>
+<p>Linux系统上异步IO常见的有两种实现，一种是kernel native AIO，另外一种是threaded aio: user space AIO emulated by posix thread workers。</p>
+<p>Kernel native AIO : Kernel的原生态异步IO实现。</p>
+<p>Threaded aio : linux用户空间异步IO的实现，其实它不是真正的异步IO，是通过启动一定数量的 blocking IO线程来模拟异步IO。这种实现有不少缺点，毕竟有不少线程开销，还在改进中。</p>
+<p>因此，我们KVM里选择AIO这块选择Kernel的原生态的native更好。<br>开启方式是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;driver name&#x3D;&#39;qemu&#39; type&#x3D;&#39;qcow2&#39; cache&#x3D;&#39;none&#39; aio&#x3D;&#39;native&#39;&#x2F;&gt;1</span><br></pre></td></tr></table></figure>
+
+<h2 id="磁盘IO调度器选择"><a href="#磁盘IO调度器选择" class="headerlink" title="磁盘IO调度器选择"></a>磁盘IO调度器选择</h2><p>目前Linux 磁盘IO调度主要有3种，NOOP ，Deadline ，CFQ 。</p>
+<p>Deadline I/O scheduler ：用过期时间来排序io操作顺序，保证先出现的io请求有最短的延迟时间，相对于写操作，给读操作更优先的级别，是比较好的一个调度模式。特别适合于读取较多的环境(比如数据库,Oracle 10G 之类)。</p>
+<p>NOOP (elevator=noop)： 这个调度模式会把所有的数据请求直接合并到一个简单的队列里。在有些SAN 环境下，这个选择可能是最好选择。适用于随机存取设备, 不适合有机械结构的存储器。因为没有优化顺序，会增加额外的寻道时间。属于最简单的一个调度模式，无视io操作优先级和复杂性，执行完一个再执行一个，如果读写操作繁多的话，就会造成效率降低。</p>
+<p>CFQ I/O scheduler：完全公平队列，是anticipatory模式的替代品，没有过多的做预测性调度，而是根据给定的进程io优先级，直接来分配操作的顺序。这个模式在linux上表现良好，但也许并不是最适合android的io调度模式，太强调均衡，而降低了连续读写数据的性能。适用于有大量进程的多用户系统。</p>
+<p>Linux默认是deadline，我们可以通过命令 <code>cat /sys/block/sd*/queue/scheduler</code> 查看：<br><img src="https://img-blog.csdn.net/20170510112016249?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"><br>如果要更改模式，我们就用：<br>格式：<code>echo {SCHEDULER-NAME} &gt; /sys/block/{DEVICE-NAME}/queue/scheduler</code><br>例：<code>echo cfq &gt; /sys/block/sda/queue/scheduler</code> 改成cfq模式</p>
+<p>这三种调度方式，得具体看你的虚拟机跑的应用去选择，一般的是选择CFQ模式。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/%E6%97%A5%E5%BF%97%E5%91%8A%E8%AD%A6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/%E6%97%A5%E5%BF%97%E5%91%8A%E8%AD%A6/" class="post-title-link" itemprop="url">运维/Elasticsearch/日志告警</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:58" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:58+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Alert when the rate of events exceeds a threshold</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># (Optional)</span></span><br><span class="line"><span class="comment"># Elasticsearch host</span></span><br><span class="line"> <span class="attr">es_host:</span> <span class="string">localhost</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># (Optional)</span></span><br><span class="line"><span class="comment"># Elasticsearch port</span></span><br><span class="line"><span class="comment"># es_port: 9200</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># (OptionaL) Connect with SSL to Elasticsearch</span></span><br><span class="line"><span class="comment">#use_ssl: True</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># (Optional) basic-auth username and password for Elasticsearch</span></span><br><span class="line"><span class="comment">#es_username: someusername</span></span><br><span class="line"><span class="comment">#es_password: somepassword</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># (Required)</span></span><br><span class="line"><span class="comment"># Rule name, must be unique</span></span><br><span class="line"> <span class="attr">name:</span> <span class="string">webhook</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># (Required)</span></span><br><span class="line"><span class="comment"># Type of alert.</span></span><br><span class="line"><span class="comment"># the frequency rule type alerts when num_events events occur with timeframe time</span></span><br><span class="line"> <span class="attr">type:</span> <span class="string">frequency</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># (Required)</span></span><br><span class="line"><span class="comment"># Index to search, wildcard supported</span></span><br><span class="line"> <span class="attr">index:</span> <span class="string">applog*</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># (Required, frequency specific)</span></span><br><span class="line"><span class="comment"># Alert when this many documents matching the query occur within a timeframe</span></span><br><span class="line"><span class="comment"># 当在一个时间范围内出现这么多与查询匹配的文档时发出警报</span></span><br><span class="line"> <span class="attr">num_events:</span> <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># (Required, frequency specific)</span></span><br><span class="line"><span class="comment"># num_events must occur within this amount of time to trigger an alert</span></span><br><span class="line"><span class="comment"># 设置单位时间</span></span><br><span class="line"> <span class="attr">timeframe:</span></span><br><span class="line">   <span class="attr">minutes:</span> <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># (Required)</span></span><br><span class="line"><span class="comment"># A list of Elasticsearch filters used for find events</span></span><br><span class="line"><span class="comment"># These filters are joined with AND and nested in a filtered query</span></span><br><span class="line"><span class="comment"># For more info: http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl.html</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#匹配日志中field字段值为value的日志数据，若不想进行过滤可以写成“filter: []”（这种方式可以用在日志数量的告警中）</span></span><br><span class="line"> <span class="attr">filter:</span></span><br><span class="line"> <span class="bullet">-</span> <span class="attr">query:</span></span><br><span class="line">     <span class="attr">query_string:</span></span><br><span class="line">       <span class="attr">query:</span> <span class="string">'loglevl: ERROR AND service: "xxxx"'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># (Required)</span></span><br><span class="line"><span class="comment"># The alert is use when a match is found</span></span><br><span class="line"> <span class="attr">alert:</span></span><br><span class="line"> <span class="bullet">-</span> <span class="string">"post"</span></span><br><span class="line"><span class="comment"># web接口</span></span><br><span class="line"> <span class="attr">http_post_url:</span> <span class="string">"http://192.168.7.42:5000/webhook"</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python3</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">@author: kbsonlong</span></span><br><span class="line"><span class="string">@contact: kbsonlong@gmail.com</span></span><br><span class="line"><span class="string">@site: http://www.alongparty.cn/</span></span><br><span class="line"><span class="string">@software: PyCharm</span></span><br><span class="line"><span class="string">@file: feishu-elastic-alert.py</span></span><br><span class="line"><span class="string">@time: 2020-03-04 21:26</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> flask,json</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FeishuApi</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,app_id,app_secret,chat_name)</span>:</span></span><br><span class="line">        self.app_id=app_id</span><br><span class="line">        self.app_secret=app_secret</span><br><span class="line">        self.chat_name=chat_name</span><br><span class="line">        self.access_token=self.get_access_token()</span><br><span class="line">        self.headers=&#123;</span><br><span class="line">            <span class="string">"Authorization"</span>: <span class="string">"Bearer &#123;&#125;"</span>.format(self.access_token),</span><br><span class="line">            <span class="string">"Content-Type"</span>: <span class="string">"application/json"</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 获取token</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_access_token</span><span class="params">(self)</span>:</span></span><br><span class="line">        data = &#123;</span><br><span class="line">            <span class="string">"app_id"</span>: self.app_id,</span><br><span class="line">            <span class="string">"app_secret"</span>: self.app_secret</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            res = requests.post(<span class="string">"https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal/"</span>, json=data)</span><br><span class="line">            <span class="keyword">if</span> res.status_code == <span class="number">200</span>:</span><br><span class="line">                res_json = res.json()</span><br><span class="line">                access_token = res_json.get(<span class="string">"tenant_access_token"</span>)</span><br><span class="line">                <span class="keyword">return</span> access_token</span><br><span class="line">        <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">            <span class="keyword">return</span> &#123;<span class="string">"error"</span>: e&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 获取群列表</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_chat_list</span><span class="params">(self)</span>:</span></span><br><span class="line">        params = &#123;</span><br><span class="line">            <span class="string">"page_size"</span>: <span class="number">100</span>,</span><br><span class="line">            <span class="string">"page_token"</span>: <span class="string">""</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            res = requests.get(<span class="string">"https://open.feishu.cn/open-apis/chat/v4/list"</span>, params=params, headers=self.headers)</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> res.status_code == <span class="number">200</span>:</span><br><span class="line">                res_json = res.json()</span><br><span class="line">                data = res_json.get(<span class="string">"data"</span>)</span><br><span class="line">                groups = data.get(<span class="string">"groups"</span>)</span><br><span class="line">                <span class="keyword">for</span> i <span class="keyword">in</span> groups:</span><br><span class="line">                    <span class="keyword">if</span> i.get(<span class="string">"name"</span>) == self.chat_name:</span><br><span class="line">                        <span class="keyword">return</span> i</span><br><span class="line">        <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">            <span class="keyword">return</span> &#123;<span class="string">"error"</span>: e&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">send_msg</span><span class="params">(self,text)</span>:</span></span><br><span class="line">        res = self.get_chat_list()</span><br><span class="line">        chat_id = res.get(<span class="string">"chat_id"</span>)</span><br><span class="line"></span><br><span class="line">        data = &#123;</span><br><span class="line">            <span class="string">"chat_id"</span>: chat_id,</span><br><span class="line">            <span class="string">"msg_type"</span>: <span class="string">"text"</span>,</span><br><span class="line">            <span class="string">"content"</span>: &#123;</span><br><span class="line">                <span class="string">"text"</span>: text</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            res=requests.post(<span class="string">"https://open.feishu.cn/open-apis/message/v4/send/"</span>, headers=self.headers,json=data)</span><br><span class="line">            <span class="keyword">return</span> res.json()</span><br><span class="line">        <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">            <span class="keyword">return</span> &#123;<span class="string">"error"</span>:e&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">server=flask.Flask(__name__)<span class="comment">#__name__代表当前的python文件。把当前的python文件当做一个服务启动</span></span><br><span class="line"><span class="meta">@server.route('/webhook',methods=['get','post'])</span></span><br><span class="line"><span class="comment">#第一个参数就是路径,第二个参数支持的请求方式，不写的话默认是get，</span></span><br><span class="line"><span class="comment">#加了@server.route才是一个接口，不然就是一个普通函数</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">webhook</span><span class="params">()</span>:</span></span><br><span class="line">    data = json.loads(flask.request.data)</span><br><span class="line">    alert_info = <span class="string">"""告警时间:  &#123;timestamp&#125;\n应用名称: &#123;appname&#125;\n日志地址: https://es-cn-mp91jslmn003l6ne5.kibana.elasticsearch.aliyuncs.com:5601/app/kibana#/discover\n日志等级: &#123;loglevl&#125;\n日志信息: &#123;logs&#125;</span></span><br><span class="line"><span class="string">    """</span>.format(</span><br><span class="line">        timestamp=data.get(<span class="string">"timestamp"</span>),</span><br><span class="line">        appname=data.get(<span class="string">"appname"</span>),</span><br><span class="line">        loglevl=data.get(<span class="string">"loglevl"</span>),</span><br><span class="line">        logs=data.get(<span class="string">"logs"</span>)[:<span class="number">300</span>],</span><br><span class="line">    )</span><br><span class="line">    app_id = <span class="string">"cli_9d65946861b2d102"</span></span><br><span class="line">    app_secret = <span class="string">"aiT6FWMTIsCfJTbLjiXdXdKvRYo3WojZ"</span></span><br><span class="line">    chat_name = <span class="string">"致景运维"</span></span><br><span class="line">    fei = FeishuApi(app_id, app_secret, chat_name)</span><br><span class="line">    res = fei.send_msg(alert_info)</span><br><span class="line">    <span class="keyword">return</span> json.dumps(res,ensure_ascii=<span class="literal">False</span>)</span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    server.run(debug=<span class="literal">True</span>,host=<span class="string">"0.0.0.0"</span>)</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/Bgp/%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/Bgp/%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99/" class="post-title-link" itemprop="url">运维/Bgp/参考资料</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:58" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:58+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><a href="https://blog.csdn.net/kadwf123/article/details/96838805" target="_blank" rel="noopener">使用CentOS7.4搭建bgp网络实验Quagga</a></p>
+<p><a href="https://linux.cn/article-4609-1.html" target="_blank" rel="noopener">想玩 BGP 路由器么？用 CentOS 做一个</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99/" class="post-title-link" itemprop="url">运维/Elasticsearch/参考资料</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:58" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:58+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><a href="https://yq.aliyun.com/articles/657712" target="_blank" rel="noopener">阿里云Elasticsearch 智能化运维实践</a></p>
+<p><a href="https://github.com/kbsonlong/geektime-ELK" target="_blank" rel="noopener">Elasticsearch核心技术与实战</a></p>
+<p><a href="https://qbox.io/blog/optimizing-elasticsearch-how-many-shards-per-index" target="_blank" rel="noopener">Elasticsearch每个索引分多少分片？</a></p>
+<p><a href="https://www.jianshu.com/p/c89975b50447" target="_blank" rel="noopener">Elasticsearch 压测方案之 esrally 简介</a></p>
+<p><a href="https://blog.csdn.net/qq_25934401/article/details/84977549" target="_blank" rel="noopener">prometheus 监控之 elasticsearch</a></p>
+<p><a href="https://www.cnblogs.com/xuliang666/p/11211920.html" target="_blank" rel="noopener">Prometheus监控ES</a></p>
+<p><a href="https://blog.csdn.net/aixiaoyang168/article/details/103022342" target="_blank" rel="noopener">Prometheus 通过 consul 实现自动服务发现</a></p>
+<p><a href="https://blog.csdn.net/wsyyyyy/article/details/91046599" target="_blank" rel="noopener">prometheus+consul服务发现+alertmanager配置</a></p>
+<p><a href="https://chanjarster.github.io/post/collect-docker-log-by-fluentd/" target="_blank" rel="noopener">使用Fluentd收集Docker容器日志</a></p>
+<p><a href="https://elkguide.elasticsearch.cn/elasticsearch/other/elastalert.html" target="_blank" rel="noopener">ElastAlert</a></p>
+<p><a href="https://elastalert.readthedocs.io/en/latest/recipes/writing_filters.html#writingfilters" target="_blank" rel="noopener">Writing Filters For Rules</a></p>
+<p><a href="https://blog.csdn.net/cql252283126/article/details/89361544" target="_blank" rel="noopener">filebeat 负载均衡到多个logstash配置</a></p>
+<p><a href="https://blog.csdn.net/lnkToKing/article/details/79806424" target="_blank" rel="noopener">Logstash 使用 nginx 做负载均衡收集 log4j2 的日志</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/6.7.1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/6.7.1/" class="post-title-link" itemprop="url">运维/Elasticsearch/6.7.1</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:58" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:58+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">docker run --net=host -d --restart=always --name qa-es01 \</span><br><span class="line">           --<span class="built_in">ulimit</span> memlock=-1:-1 \</span><br><span class="line">            --<span class="built_in">log</span>-driver json-file --<span class="built_in">log</span>-opt max-size=10m --<span class="built_in">log</span>-opt max-file=7 \</span><br><span class="line">           -e cluster.name=kie-cluster -e network.host=192.168.18.229\</span><br><span class="line">           -e bootstrap.memory_lock=<span class="literal">true</span> \</span><br><span class="line">           -e <span class="string">"ES_JAVA_OPTS=-Xms2g -Xmx2g"</span> \</span><br><span class="line">           -v /data/server/elasticsearch/esdata01:/usr/share/elasticsearch/data \</span><br><span class="line">           registry.cn-hangzhou.aliyuncs.com/zhijing/elasticsearch:6.7.1</span><br><span class="line">           </span><br><span class="line">           </span><br><span class="line">docker run --net=host -d --restart=always --name qa-es02 \</span><br><span class="line">           --<span class="built_in">ulimit</span> memlock=-1:-1 \</span><br><span class="line">           --<span class="built_in">log</span>-driver json-file --<span class="built_in">log</span>-opt max-size=10m --<span class="built_in">log</span>-opt max-file=7 \</span><br><span class="line">           -e cluster.name=kie-cluster -e network.host=192.168.19.119\</span><br><span class="line">           -e bootstrap.memory_lock=<span class="literal">true</span> \</span><br><span class="line">           -e <span class="string">"discovery.zen.ping.unicast.hosts=qa-es01"</span> \</span><br><span class="line">           -e <span class="string">"ES_JAVA_OPTS=-Xms2g -Xmx2g"</span> \</span><br><span class="line">           -v /data/server/elasticsearch/esdata02:/usr/share/elasticsearch/data \</span><br><span class="line">           registry.cn-hangzhou.aliyuncs.com/zhijing/elasticsearch:6.7.1</span><br><span class="line">           </span><br><span class="line">cat &lt;&lt; EOF &gt;/data/server/kibana/conf/kibana.yml </span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># ** THIS IS AN AUTO-GENERATED FILE **</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Default Kibana configuration for docker target</span></span><br><span class="line">server.host: <span class="string">"0"</span></span><br><span class="line">elasticsearch.hosts: [ <span class="string">"http://192.168.18.229:9200"</span> ]</span><br><span class="line">xpack.monitoring.ui.container.elasticsearch.enabled: <span class="literal">true</span></span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/KVM/Centos7%E5%AE%89%E8%A3%85KVM/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/KVM/Centos7%E5%AE%89%E8%A3%85KVM/" class="post-title-link" itemprop="url">运维/虚拟化/KVM/Centos7安装KVM</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:58" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:58+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="安装KVM"><a href="#安装KVM" class="headerlink" title="安装KVM"></a>安装KVM</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum install -y qemu-kvm qemu-key-tools virt-manager libvirt virt-install   python-virtinst bridge-utils</span><br><span class="line">yum install libguestfs libguestfs-tools net-tools acpid -y</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="配置网络"><a href="#配置网络" class="headerlink" title="配置网络"></a>配置网络</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">cp /etc/sysconfig/network-scripts/ifcfg-em4 /etc/sysconfig/network-scripts/ifcfg-br0</span><br><span class="line">cat &lt;&lt; EOF &gt; /etc/sysconfig/network-scripts/ifcfg-br0</span><br><span class="line">TYPE=Bridge</span><br><span class="line">DEVICE=br0</span><br><span class="line">ONBOOT=yes</span><br><span class="line">NM_CONTROLLED=yes</span><br><span class="line">BOOTPROTO=static</span><br><span class="line">IPADDR=192.168.17.138</span><br><span class="line">NETMASK=255.255.250.0</span><br><span class="line">GATEWAY=192.168.16.1</span><br><span class="line">DNS1=202.96.128.166</span><br><span class="line">DNS2=114.114.114.114</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">cat &lt;&lt; EOF &gt; /etc/sysconfig/network-scripts/ifcfg-em4</span><br><span class="line">DEVICE=em4</span><br><span class="line">BRIDGE=br0</span><br><span class="line">ONBOOT=yes</span><br><span class="line">TYPE=Ethernet</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"net.ipv4.ip_forward=1"</span>&gt;&gt; /etc/sysctl.conf</span><br><span class="line"><span class="built_in">echo</span> 1 &gt; /proc/sys/net/ipv4/ip_forward</span><br><span class="line">/bin/<span class="built_in">echo</span> <span class="string">"* soft nproc 65500"</span> &gt;&gt;/etc/security/limits.conf</span><br><span class="line">/bin/<span class="built_in">echo</span> <span class="string">"* hard nproc 65500"</span> &gt;&gt;/etc/security/limits.conf</span><br><span class="line">/bin/<span class="built_in">echo</span> <span class="string">"* soft nofile 65500"</span> &gt;&gt;/etc/security/limits.conf</span><br><span class="line">/bin/<span class="built_in">echo</span> <span class="string">"* hard nofile 65500"</span> &gt;&gt;/etc/security/limits.conf</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="创建虚拟机模板"><a href="#创建虚拟机模板" class="headerlink" title="创建虚拟机模板"></a>创建虚拟机模板</h3><h4 id="创建虚拟机定制初始化信息"><a href="#创建虚拟机定制初始化信息" class="headerlink" title="创建虚拟机定制初始化信息"></a>创建虚拟机定制初始化信息</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /data/server/kvm/&#123;template,images,iso&#125;</span><br><span class="line">mv /root/CentOS-7-x86_64-DVD-1810.iso /data/server/kvm/iso</span><br><span class="line">qemu-img create -f qcow2 /data/server/kvm/images/centos7-template 30G</span><br><span class="line"></span><br><span class="line">virt-install --name centos7-template --virt-type kvm --ram 1024 --vcpus 1,maxvcpus=1 --cdrom=/data/server/kvm/iso/CentOS-7-x86_64-DVD-1810.iso --disk path=/data/server/kvm/images/centos7-template  --network=default --graphics vnc,listen=0.0.0.0 --noautoconsole</span><br><span class="line"></span><br><span class="line"><span class="comment">#####</span></span><br><span class="line"><span class="comment">#--name Centos                    ###虚拟机名字</span></span><br><span class="line"><span class="comment">#--virt-type kvm                  ###虚拟机类型</span></span><br><span class="line"><span class="comment">#--ram 1024                       ###虚拟机内存</span></span><br><span class="line"><span class="comment">#--cdrom=/opt/CentOS-7.1.iso      ###镜像地址</span></span><br><span class="line"><span class="comment">#--disk path=/kvmdir/test.img     ###虚拟机安装位置</span></span><br><span class="line"><span class="comment">#--network=default                ###默认网络配置</span></span><br><span class="line"><span class="comment">#--graphics vnc,listen=0.0.0.0    ###监听所有IP，默认第一个端口5900</span></span><br><span class="line"><span class="comment">#--vcpus 5                        ###可以使用cpu个数</span></span><br><span class="line"><span class="comment">#--vcpus 5,maxcpus=10             ###可以使用5颗cpu，最大支持10颗cpu</span></span><br><span class="line"><span class="comment">#####</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="通过vnc连接虚拟机安装系统"><a href="#通过vnc连接虚拟机安装系统" class="headerlink" title="通过vnc连接虚拟机安装系统"></a>通过vnc连接虚拟机安装系统</h4><p>省略安装操作系统步骤</p>
+<h4 id="定义虚拟机xml模板"><a href="#定义虚拟机xml模板" class="headerlink" title="定义虚拟机xml模板"></a>定义虚拟机xml模板</h4><p>主要有几个参数</p>
+<blockquote>
+<ul>
+<li>%VM_NAME% : 虚拟机名称，并引用至虚拟机主机名</li>
+<li>%MEMORY% : 虚拟机分配内存大小，单位为Gb</li>
+<li>%VCPU% : 虚拟机分配内核数</li>
+<li>%MAC_ADDR% : 虚拟机网卡eth0的mac地址</li>
+<li>%UUID%: 虚拟机UUID</li>
+</ul>
+</blockquote>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">WARNING: THIS IS AN AUTO-GENERATED FILE. CHANGES TO IT ARE LIKELY TO BE</span></span><br><span class="line"><span class="comment">OVERWRITTEN AND LOST. Changes to this xml configuration should be made using:</span></span><br><span class="line"><span class="comment">  virsh edit kbsonlong</span></span><br><span class="line"><span class="comment">or other application using the libvirt API.</span></span><br><span class="line"><span class="comment">--&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">domain</span> <span class="attr">type</span>=<span class="string">'kvm'</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>%VM_NAME%<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">uuid</span>&gt;</span>%UUID%<span class="tag">&lt;/<span class="name">uuid</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">memory</span> <span class="attr">unit</span>=<span class="string">'KiB'</span>&gt;</span>%MEMORY%<span class="tag">&lt;/<span class="name">memory</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">currentMemory</span> <span class="attr">unit</span>=<span class="string">'KiB'</span>&gt;</span>%MEMORY%<span class="tag">&lt;/<span class="name">currentMemory</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">memoryBacking</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">hugepages</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">memoryBacking</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">vcpu</span> <span class="attr">placement</span>=<span class="string">'static'</span> <span class="attr">current</span>=<span class="string">'%VCPU%'</span>&gt;</span>%VCPU%<span class="tag">&lt;/<span class="name">vcpu</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">os</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">type</span> <span class="attr">arch</span>=<span class="string">'x86_64'</span> <span class="attr">machine</span>=<span class="string">'pc-i440fx-rhel7.0.0'</span>&gt;</span>hvm<span class="tag">&lt;/<span class="name">type</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">boot</span> <span class="attr">dev</span>=<span class="string">'hd'</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">os</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">features</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">acpi</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">apic</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">features</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">cpu</span> <span class="attr">mode</span>=<span class="string">'custom'</span> <span class="attr">match</span>=<span class="string">'exact'</span> <span class="attr">check</span>=<span class="string">'partial'</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">model</span> <span class="attr">fallback</span>=<span class="string">'allow'</span>&gt;</span>IvyBridge-IBRS<span class="tag">&lt;/<span class="name">model</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">feature</span> <span class="attr">policy</span>=<span class="string">'require'</span> <span class="attr">name</span>=<span class="string">'md-clear'</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">feature</span> <span class="attr">policy</span>=<span class="string">'require'</span> <span class="attr">name</span>=<span class="string">'spec-ctrl'</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">feature</span> <span class="attr">policy</span>=<span class="string">'require'</span> <span class="attr">name</span>=<span class="string">'ssbd'</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">cpu</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">clock</span> <span class="attr">offset</span>=<span class="string">'utc'</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">timer</span> <span class="attr">name</span>=<span class="string">'rtc'</span> <span class="attr">tickpolicy</span>=<span class="string">'catchup'</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">timer</span> <span class="attr">name</span>=<span class="string">'pit'</span> <span class="attr">tickpolicy</span>=<span class="string">'delay'</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">timer</span> <span class="attr">name</span>=<span class="string">'hpet'</span> <span class="attr">present</span>=<span class="string">'no'</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">clock</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">on_poweroff</span>&gt;</span>destroy<span class="tag">&lt;/<span class="name">on_poweroff</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">on_reboot</span>&gt;</span>restart<span class="tag">&lt;/<span class="name">on_reboot</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">on_crash</span>&gt;</span>destroy<span class="tag">&lt;/<span class="name">on_crash</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">pm</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">suspend-to-mem</span> <span class="attr">enabled</span>=<span class="string">'no'</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">suspend-to-disk</span> <span class="attr">enabled</span>=<span class="string">'no'</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">pm</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">devices</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">emulator</span>&gt;</span>/usr/libexec/qemu-kvm<span class="tag">&lt;/<span class="name">emulator</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">disk</span> <span class="attr">type</span>=<span class="string">'file'</span> <span class="attr">device</span>=<span class="string">'disk'</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">driver</span> <span class="attr">name</span>=<span class="string">'qemu'</span> <span class="attr">type</span>=<span class="string">'qcow2'</span> <span class="attr">cache</span>=<span class="string">'none'</span> <span class="attr">aio</span>=<span class="string">'native'</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">source</span> <span class="attr">file</span>=<span class="string">'/data/server/kvm/images/%VM_NAME%'</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">target</span> <span class="attr">dev</span>=<span class="string">'vda'</span> <span class="attr">bus</span>=<span class="string">'virtio'</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">address</span> <span class="attr">type</span>=<span class="string">'pci'</span> <span class="attr">domain</span>=<span class="string">'0x0000'</span> <span class="attr">bus</span>=<span class="string">'0x00'</span> <span class="attr">slot</span>=<span class="string">'0x06'</span> <span class="attr">function</span>=<span class="string">'0x0'</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">disk</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">disk</span> <span class="attr">type</span>=<span class="string">'file'</span> <span class="attr">device</span>=<span class="string">'disk'</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">driver</span> <span class="attr">name</span>=<span class="string">'qemu'</span> <span class="attr">type</span>=<span class="string">'qcow2'</span> <span class="attr">cache</span>=<span class="string">'none'</span> <span class="attr">aio</span>=<span class="string">'native'</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">source</span> <span class="attr">file</span>=<span class="string">'/data/server/kvm/images/%VM_NAME%-vdb'</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">target</span> <span class="attr">dev</span>=<span class="string">'vdb'</span> <span class="attr">bus</span>=<span class="string">'virtio'</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">address</span> <span class="attr">type</span>=<span class="string">'pci'</span> <span class="attr">domain</span>=<span class="string">'0x0000'</span> <span class="attr">bus</span>=<span class="string">'0x00'</span> <span class="attr">slot</span>=<span class="string">'0x09'</span> <span class="attr">function</span>=<span class="string">'0x0'</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">disk</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">disk</span> <span class="attr">type</span>=<span class="string">'file'</span> <span class="attr">device</span>=<span class="string">'cdrom'</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">driver</span> <span class="attr">name</span>=<span class="string">'qemu'</span> <span class="attr">type</span>=<span class="string">'raw'</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">target</span> <span class="attr">dev</span>=<span class="string">'hda'</span> <span class="attr">bus</span>=<span class="string">'ide'</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">readonly</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">address</span> <span class="attr">type</span>=<span class="string">'drive'</span> <span class="attr">controller</span>=<span class="string">'0'</span> <span class="attr">bus</span>=<span class="string">'0'</span> <span class="attr">target</span>=<span class="string">'0'</span> <span class="attr">unit</span>=<span class="string">'0'</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">disk</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">controller</span> <span class="attr">type</span>=<span class="string">'usb'</span> <span class="attr">index</span>=<span class="string">'0'</span> <span class="attr">model</span>=<span class="string">'ich9-ehci1'</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">address</span> <span class="attr">type</span>=<span class="string">'pci'</span> <span class="attr">domain</span>=<span class="string">'0x0000'</span> <span class="attr">bus</span>=<span class="string">'0x00'</span> <span class="attr">slot</span>=<span class="string">'0x04'</span> <span class="attr">function</span>=<span class="string">'0x7'</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">controller</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">controller</span> <span class="attr">type</span>=<span class="string">'usb'</span> <span class="attr">index</span>=<span class="string">'0'</span> <span class="attr">model</span>=<span class="string">'ich9-uhci1'</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">master</span> <span class="attr">startport</span>=<span class="string">'0'</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">address</span> <span class="attr">type</span>=<span class="string">'pci'</span> <span class="attr">domain</span>=<span class="string">'0x0000'</span> <span class="attr">bus</span>=<span class="string">'0x00'</span> <span class="attr">slot</span>=<span class="string">'0x04'</span> <span class="attr">function</span>=<span class="string">'0x0'</span> <span class="attr">multifunction</span>=<span class="string">'on'</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">controller</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">controller</span> <span class="attr">type</span>=<span class="string">'usb'</span> <span class="attr">index</span>=<span class="string">'0'</span> <span class="attr">model</span>=<span class="string">'ich9-uhci2'</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">master</span> <span class="attr">startport</span>=<span class="string">'2'</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">address</span> <span class="attr">type</span>=<span class="string">'pci'</span> <span class="attr">domain</span>=<span class="string">'0x0000'</span> <span class="attr">bus</span>=<span class="string">'0x00'</span> <span class="attr">slot</span>=<span class="string">'0x04'</span> <span class="attr">function</span>=<span class="string">'0x1'</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">controller</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">controller</span> <span class="attr">type</span>=<span class="string">'usb'</span> <span class="attr">index</span>=<span class="string">'0'</span> <span class="attr">model</span>=<span class="string">'ich9-uhci3'</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">master</span> <span class="attr">startport</span>=<span class="string">'4'</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">address</span> <span class="attr">type</span>=<span class="string">'pci'</span> <span class="attr">domain</span>=<span class="string">'0x0000'</span> <span class="attr">bus</span>=<span class="string">'0x00'</span> <span class="attr">slot</span>=<span class="string">'0x04'</span> <span class="attr">function</span>=<span class="string">'0x2'</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">controller</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">controller</span> <span class="attr">type</span>=<span class="string">'pci'</span> <span class="attr">index</span>=<span class="string">'0'</span> <span class="attr">model</span>=<span class="string">'pci-root'</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">controller</span> <span class="attr">type</span>=<span class="string">'ide'</span> <span class="attr">index</span>=<span class="string">'0'</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">address</span> <span class="attr">type</span>=<span class="string">'pci'</span> <span class="attr">domain</span>=<span class="string">'0x0000'</span> <span class="attr">bus</span>=<span class="string">'0x00'</span> <span class="attr">slot</span>=<span class="string">'0x01'</span> <span class="attr">function</span>=<span class="string">'0x1'</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">controller</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">controller</span> <span class="attr">type</span>=<span class="string">'virtio-serial'</span> <span class="attr">index</span>=<span class="string">'0'</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">address</span> <span class="attr">type</span>=<span class="string">'pci'</span> <span class="attr">domain</span>=<span class="string">'0x0000'</span> <span class="attr">bus</span>=<span class="string">'0x00'</span> <span class="attr">slot</span>=<span class="string">'0x05'</span> <span class="attr">function</span>=<span class="string">'0x0'</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">controller</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">interface</span> <span class="attr">type</span>=<span class="string">'bridge'</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">mac</span> <span class="attr">address</span>=<span class="string">'52:54:%MAC_ADDR%'</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">source</span> <span class="attr">bridge</span>=<span class="string">'br0'</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">model</span> <span class="attr">type</span>=<span class="string">'virtio'</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">address</span> <span class="attr">type</span>=<span class="string">'pci'</span> <span class="attr">domain</span>=<span class="string">'0x0000'</span> <span class="attr">bus</span>=<span class="string">'0x00'</span> <span class="attr">slot</span>=<span class="string">'0x03'</span> <span class="attr">function</span>=<span class="string">'0x0'</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">interface</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">serial</span> <span class="attr">type</span>=<span class="string">'pty'</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">target</span> <span class="attr">type</span>=<span class="string">'isa-serial'</span> <span class="attr">port</span>=<span class="string">'0'</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">model</span> <span class="attr">name</span>=<span class="string">'isa-serial'</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">target</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">serial</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">console</span> <span class="attr">type</span>=<span class="string">'pty'</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">target</span> <span class="attr">type</span>=<span class="string">'serial'</span> <span class="attr">port</span>=<span class="string">'0'</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">console</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">channel</span> <span class="attr">type</span>=<span class="string">'unix'</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">target</span> <span class="attr">type</span>=<span class="string">'virtio'</span> <span class="attr">name</span>=<span class="string">'org.qemu.guest_agent.0'</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">address</span> <span class="attr">type</span>=<span class="string">'virtio-serial'</span> <span class="attr">controller</span>=<span class="string">'0'</span> <span class="attr">bus</span>=<span class="string">'0'</span> <span class="attr">port</span>=<span class="string">'1'</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">channel</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">'tablet'</span> <span class="attr">bus</span>=<span class="string">'usb'</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">address</span> <span class="attr">type</span>=<span class="string">'usb'</span> <span class="attr">bus</span>=<span class="string">'0'</span> <span class="attr">port</span>=<span class="string">'1'</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">input</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">'mouse'</span> <span class="attr">bus</span>=<span class="string">'ps2'</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">'keyboard'</span> <span class="attr">bus</span>=<span class="string">'ps2'</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">graphics</span> <span class="attr">type</span>=<span class="string">'vnc'</span> <span class="attr">port</span>=<span class="string">'-1'</span> <span class="attr">autoport</span>=<span class="string">'yes'</span> <span class="attr">listen</span>=<span class="string">'0.0.0.0'</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">listen</span> <span class="attr">type</span>=<span class="string">'address'</span> <span class="attr">address</span>=<span class="string">'0.0.0.0'</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">graphics</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">video</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">model</span> <span class="attr">type</span>=<span class="string">'cirrus'</span> <span class="attr">vram</span>=<span class="string">'16384'</span> <span class="attr">heads</span>=<span class="string">'1'</span> <span class="attr">primary</span>=<span class="string">'yes'</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">address</span> <span class="attr">type</span>=<span class="string">'pci'</span> <span class="attr">domain</span>=<span class="string">'0x0000'</span> <span class="attr">bus</span>=<span class="string">'0x00'</span> <span class="attr">slot</span>=<span class="string">'0x02'</span> <span class="attr">function</span>=<span class="string">'0x0'</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">video</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">memballoon</span> <span class="attr">model</span>=<span class="string">'virtio'</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">address</span> <span class="attr">type</span>=<span class="string">'pci'</span> <span class="attr">domain</span>=<span class="string">'0x0000'</span> <span class="attr">bus</span>=<span class="string">'0x00'</span> <span class="attr">slot</span>=<span class="string">'0x07'</span> <span class="attr">function</span>=<span class="string">'0x0'</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">memballoon</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">rng</span> <span class="attr">model</span>=<span class="string">'virtio'</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">backend</span> <span class="attr">model</span>=<span class="string">'random'</span>&gt;</span>/dev/urandom<span class="tag">&lt;/<span class="name">backend</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">address</span> <span class="attr">type</span>=<span class="string">'pci'</span> <span class="attr">domain</span>=<span class="string">'0x0000'</span> <span class="attr">bus</span>=<span class="string">'0x00'</span> <span class="attr">slot</span>=<span class="string">'0x08'</span> <span class="attr">function</span>=<span class="string">'0x0'</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">rng</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">devices</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">domain</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="创建虚拟机脚本"><a href="#创建虚拟机脚本" class="headerlink" title="创建虚拟机脚本"></a>创建虚拟机脚本</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/env bash</span></span><br><span class="line"><span class="comment">#author: kbsonlong</span></span><br><span class="line"><span class="comment">#contact: kbsonlong@gmail.com</span></span><br><span class="line"><span class="comment">#site: http://www.alongparty.cn/</span></span><br><span class="line"><span class="comment">#software: PyCharm</span></span><br><span class="line"><span class="comment">#file: create_vm.sh</span></span><br><span class="line"><span class="comment">#time: 2020-04-09 04:36</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">help</span></span>()&#123;</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"Use: <span class="variable">$0</span> -h"</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"-n: 新建虚拟机名称"</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"-m: 新建虚拟机内存大小,单位G"</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"-c: 新建虚拟机Cpu数量"</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"-s: 新建虚拟机第二块磁盘空间大小"</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"-p: 新建虚拟机VNC序号，1代表5900，依次累加"</span></span><br><span class="line">    <span class="built_in">echo</span> -e <span class="string">"-i: 新建虚拟机IP地址\n\t模板默认配置为192.168.17.140\n\t网关:192.168.16.1\n\t子网掩码:255.255.252.0"</span></span><br><span class="line">    <span class="built_in">exit</span> 1</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#设置xml所需参数</span></span><br><span class="line"><span class="function"><span class="title">set_xml_args_single</span></span>()&#123;</span><br><span class="line">    UUID=`uuidgen`</span><br><span class="line">    vm_config_dir=/etc/libvirt/qemu/</span><br><span class="line">    qcow2_dir=/data/server/kvm/images</span><br><span class="line">    template_name=centos7-template</span><br><span class="line">    src_path=/data/server/kvm/images/centos7-template</span><br><span class="line">    template_xml=/data/server/kvm/centos7-template.xml</span><br><span class="line">    MAC_ADDR=`openssl rand -hex 4 | sed -E <span class="string">"s/(..)/\1:/g; s/:$//"</span>`</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">get_newname</span></span>()&#123;</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">true</span></span><br><span class="line">        <span class="keyword">do</span></span><br><span class="line">                <span class="comment">#read -p "请输入新虚拟机名称：" newname</span></span><br><span class="line">                <span class="keyword">if</span> [ <span class="variable">$1</span> ];<span class="keyword">then</span></span><br><span class="line">                    VM_NAME=<span class="variable">$1</span></span><br><span class="line">                    <span class="built_in">break</span></span><br><span class="line">                <span class="keyword">else</span></span><br><span class="line">                    <span class="built_in">echo</span> <span class="string">"************"</span></span><br><span class="line">                    <span class="built_in">echo</span> <span class="string">"请输入新虚拟机名称！"</span></span><br><span class="line">                    <span class="built_in">exit</span> 1</span><br><span class="line">                    <span class="built_in">echo</span> <span class="string">"************"</span></span><br><span class="line">                <span class="keyword">fi</span></span><br><span class="line">        <span class="keyword">done</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="title">get_newmemary</span></span>()&#123;</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">true</span></span><br><span class="line">        <span class="keyword">do</span></span><br><span class="line">                current_free_mem=`free -m|awk <span class="string">'/^Mem/&#123;print $NF&#125;'</span>`</span><br><span class="line">                mem_total=`free -g|awk <span class="string">'/^Mem/&#123;print $2&#125;'</span>`</span><br><span class="line">                <span class="built_in">echo</span> <span class="string">"目前本机内存总大小：<span class="variable">$&#123;mem_total&#125;</span> G"</span></span><br><span class="line">                <span class="built_in">echo</span> <span class="string">"当前空闲内存大小为：<span class="variable">$&#123;current_free_mem&#125;</span> MB"</span></span><br><span class="line">                <span class="comment">#read -p "请输入新虚拟机内存大小(单位G)：" newmemary</span></span><br><span class="line">                <span class="keyword">if</span> [ <span class="variable">$1</span> ];<span class="keyword">then</span></span><br><span class="line">                        <span class="keyword">if</span> [[ <span class="variable">$1</span> -le <span class="variable">$mem_total</span> ]];<span class="keyword">then</span></span><br><span class="line">                            newmemory=<span class="variable">$1</span></span><br><span class="line">                            <span class="built_in">break</span></span><br><span class="line">                        <span class="keyword">else</span></span><br><span class="line">                                <span class="built_in">echo</span> <span class="string">"**********************************"</span></span><br><span class="line">                                <span class="built_in">echo</span> <span class="string">"输入的数值必须小于当前空闲内存大小！"</span></span><br><span class="line">                                <span class="built_in">exit</span> 1</span><br><span class="line">                                <span class="built_in">echo</span> <span class="string">"**********************************"</span></span><br><span class="line">                        <span class="keyword">fi</span></span><br><span class="line">                <span class="keyword">else</span></span><br><span class="line">                        <span class="built_in">echo</span> <span class="string">"********************"</span></span><br><span class="line">                        <span class="built_in">echo</span> <span class="string">"请输入新虚拟机内存！"</span></span><br><span class="line">                        <span class="built_in">exit</span> 1</span><br><span class="line">                        <span class="built_in">echo</span> <span class="string">"********************"</span></span><br><span class="line">                <span class="keyword">fi</span></span><br><span class="line">        <span class="keyword">done</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="title">get_newcpu</span></span>()&#123;</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">true</span></span><br><span class="line">        <span class="keyword">do</span></span><br><span class="line">                core=`cat /proc/cpuinfo| grep <span class="string">"processor"</span>| wc -l`</span><br><span class="line">                <span class="built_in">echo</span> <span class="string">"可用core个数：<span class="variable">$&#123;core&#125;</span>"</span></span><br><span class="line">                <span class="comment">#read -p "请输入新虚拟机处理器核数：" newcpu</span></span><br><span class="line">                <span class="keyword">if</span> [ <span class="variable">$1</span> ];<span class="keyword">then</span></span><br><span class="line">                        <span class="keyword">if</span> [ <span class="variable">$1</span> -le <span class="variable">$core</span> ];<span class="keyword">then</span></span><br><span class="line">                            VCPU=<span class="variable">$1</span></span><br><span class="line">                            <span class="built_in">break</span></span><br><span class="line">                        <span class="keyword">else</span></span><br><span class="line">                                <span class="built_in">echo</span> <span class="string">"******************************"</span></span><br><span class="line">                                <span class="built_in">echo</span> <span class="string">"不能超过可用个数或者输入错误！"</span></span><br><span class="line">                                <span class="built_in">exit</span> 1</span><br><span class="line">                                <span class="built_in">echo</span> <span class="string">"******************************"</span></span><br><span class="line">                        <span class="keyword">fi</span></span><br><span class="line">                <span class="keyword">else</span></span><br><span class="line">                        <span class="built_in">echo</span> <span class="string">"**************"</span></span><br><span class="line">                        <span class="built_in">echo</span> <span class="string">"输入不能为空！"</span></span><br><span class="line">                        <span class="built_in">exit</span> 1</span><br><span class="line">                        <span class="built_in">echo</span> <span class="string">"**************"</span></span><br><span class="line">                <span class="keyword">fi</span></span><br><span class="line">        <span class="keyword">done</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">get_newdisk</span></span>()&#123;</span><br><span class="line">    <span class="keyword">if</span> [ <span class="variable">$1</span> ];<span class="keyword">then</span></span><br><span class="line">        VDB_SIZE=<span class="variable">$1</span></span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"请输入磁盘空间大小"</span></span><br><span class="line">        <span class="built_in">exit</span> 1</span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">isIp</span></span>()&#123;</span><br><span class="line">       IP=<span class="variable">$1</span></span><br><span class="line">        <span class="keyword">if</span> [ `<span class="built_in">echo</span> <span class="variable">$IP</span> | awk -F . <span class="string">'&#123;print NF&#125;'</span>` -ne 4 ];<span class="keyword">then</span></span><br><span class="line">                <span class="built_in">echo</span> <span class="string">"Wrong IP!"</span></span><br><span class="line">                <span class="built_in">exit</span> 2</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">                a=`<span class="built_in">echo</span> <span class="variable">$IP</span> | awk -F . <span class="string">'&#123;print $1&#125;'</span>`</span><br><span class="line">                b=`<span class="built_in">echo</span> <span class="variable">$IP</span> | awk -F . <span class="string">'&#123;print $2&#125;'</span>`</span><br><span class="line">                c=`<span class="built_in">echo</span> <span class="variable">$IP</span> | awk -F . <span class="string">'&#123;print $3&#125;'</span>`</span><br><span class="line">                d=`<span class="built_in">echo</span> <span class="variable">$IP</span> | awk -F . <span class="string">'&#123;print $4&#125;'</span>`</span><br><span class="line">                <span class="keyword">if</span> [[ <span class="variable">$a</span> -gt 0 &amp;&amp; <span class="variable">$a</span> -le 255 ]] &amp;&amp; [[ <span class="variable">$b</span> -ge 0 &amp;&amp; <span class="variable">$b</span> -le 255 ]] &amp;&amp; [[ <span class="variable">$c</span> -ge 0 &amp;&amp; <span class="variable">$c</span> -le 255 ]] &amp;&amp; [[ <span class="variable">$d</span> -gt 0 &amp;&amp; <span class="variable">$d</span> -lt 255 ]];<span class="keyword">then</span></span><br><span class="line">                        <span class="built_in">echo</span> <span class="string">"合法IP:<span class="variable">$IP</span>"</span></span><br><span class="line">                <span class="keyword">else</span></span><br><span class="line">                       <span class="built_in">echo</span> <span class="string">"请输入合法IP地址"</span></span><br><span class="line">                       <span class="built_in">exit</span> 1</span><br><span class="line">                <span class="keyword">fi</span></span><br><span class="line">        <span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">create_vm</span></span>()&#123;</span><br><span class="line">    MEMORY=$[newmemory*1024*1024]</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"正在创建镜像........"</span></span><br><span class="line">    cp <span class="variable">$&#123;qcow2_dir&#125;</span>/<span class="variable">$&#123;template_name&#125;</span> <span class="variable">$&#123;qcow2_dir&#125;</span>/<span class="variable">$&#123;VM_NAME&#125;</span>.qcow2 &amp;&gt; /dev/null <span class="comment">###镜像文件</span></span><br><span class="line">    qemu-img create -f qcow2 <span class="variable">$&#123;qcow2_dir&#125;</span>/<span class="variable">$&#123;VM_NAME&#125;</span>-vdb.qcow2 <span class="variable">$&#123;VDB_SIZE&#125;</span>G</span><br><span class="line">    <span class="built_in">echo</span> -e <span class="string">"\e[32;1m[ok]\e[0m"</span></span><br><span class="line">    cat <span class="variable">$&#123;template_xml&#125;</span> &gt; <span class="variable">$&#123;vm_config_dir&#125;</span>/<span class="variable">$&#123;VM_NAME&#125;</span>.xml <span class="comment">##描述文件</span></span><br><span class="line">    sed -i <span class="string">"s/%VM_NAME%/<span class="variable">$&#123;VM_NAME&#125;</span>/g"</span> <span class="variable">$&#123;vm_config_dir&#125;</span>/<span class="variable">$&#123;VM_NAME&#125;</span>.xml</span><br><span class="line">    sed -i <span class="string">"s/%UUID%/<span class="variable">$&#123;UUID&#125;</span>/g"</span> <span class="variable">$&#123;vm_config_dir&#125;</span>/<span class="variable">$&#123;VM_NAME&#125;</span>.xml</span><br><span class="line">    sed -i <span class="string">"s/%MAC_ADDR%/<span class="variable">$&#123;MAC_ADDR&#125;</span>/g"</span> <span class="variable">$&#123;vm_config_dir&#125;</span>/<span class="variable">$&#123;VM_NAME&#125;</span>.xml</span><br><span class="line">    sed -i <span class="string">"s/%VCPU%/<span class="variable">$&#123;VCPU&#125;</span>/g"</span> <span class="variable">$&#123;vm_config_dir&#125;</span>/<span class="variable">$&#123;VM_NAME&#125;</span>.xml</span><br><span class="line">    sed -i <span class="string">"s/%MEMORY%/<span class="variable">$&#123;MEMORY&#125;</span>/g"</span> <span class="variable">$&#123;vm_config_dir&#125;</span>/<span class="variable">$&#123;VM_NAME&#125;</span>.xml</span><br><span class="line">    sed -i <span class="string">"s/%VNC_PORT%/<span class="variable">$&#123;VNC_PORT&#125;</span>/g"</span> <span class="variable">$&#123;vm_config_dir&#125;</span>/<span class="variable">$&#123;VM_NAME&#125;</span>.xml</span><br><span class="line">    <span class="built_in">echo</span> -e <span class="string">"\e[32;1m[ok]\e[0m"</span></span><br><span class="line">    virsh define <span class="variable">$&#123;vm_config_dir&#125;</span>/<span class="variable">$&#123;VM_NAME&#125;</span>.xml &amp;&gt; /dev/null</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"正在创建虚拟机......."</span></span><br><span class="line">    <span class="built_in">echo</span> -e <span class="string">"\e[32;1m[ok]\e[0m"</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">## 配置IP地址和主机名称</span></span><br><span class="line"><span class="function"><span class="title">set_vm_info</span></span>()&#123;</span><br><span class="line"></span><br><span class="line">    clear</span><br><span class="line">    mountpoint=<span class="string">"/media/virimage"</span></span><br><span class="line">    <span class="comment">#判断不存在挂载目录</span></span><br><span class="line">    [ ! -d <span class="variable">$mountpoint</span> ] &amp;&amp; mkdir <span class="variable">$mountpoint</span></span><br><span class="line">    <span class="comment">#如果有设备挂载到该挂载点，则先umount卸载</span></span><br><span class="line">    <span class="keyword">if</span> mount |grep -q <span class="string">"<span class="variable">$mountpoint</span>"</span> ;<span class="keyword">then</span></span><br><span class="line">        umount <span class="variable">$mountpoint</span></span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line">    virsh list --all</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"请稍后..."</span></span><br><span class="line">    <span class="comment">#将虚拟机的磁盘文件挂载到/media/virtimage目录</span></span><br><span class="line">    guestmount -d <span class="variable">$&#123;VM_NAME&#125;</span> -i <span class="variable">$mountpoint</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"---------------------------------------"</span></span><br><span class="line">    <span class="comment">#如果ip地址不存在，就添加ip地址</span></span><br><span class="line">    grep -q <span class="string">"IPADDR"</span> <span class="variable">$&#123;mountpoint&#125;</span>/etc/sysconfig/network-scripts/ifcfg-eth0 || <span class="built_in">echo</span> <span class="string">"IPADDR=<span class="variable">$&#123;IP&#125;</span>"</span> &gt;&gt; <span class="variable">$&#123;mountpoint&#125;</span>/etc/sysconfig/network-scripts/ifcfg-eth0</span><br><span class="line">    <span class="comment">#如果ip地址存在</span></span><br><span class="line">    sed -i <span class="string">"s/IPADDR=.*/IPADDR=<span class="variable">$&#123;IP&#125;</span>/g"</span>  <span class="variable">$&#123;mountpoint&#125;</span>/etc/sysconfig/network-scripts/ifcfg-eth0</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"ifup eth0"</span> &gt;&gt; <span class="variable">$&#123;mountpoint&#125;</span>/etc/rc.d/rc.local</span><br><span class="line">    chmod +x <span class="variable">$&#123;mountpoint&#125;</span>/etc/rc.d/rc.local</span><br><span class="line">    <span class="comment">#修改主机名</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"<span class="variable">$&#123;VM_NAME&#125;</span>"</span> &gt; <span class="variable">$&#123;mountpoint&#125;</span>/etc/hostname</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"<span class="variable">$&#123;IP&#125;</span> <span class="variable">$&#123;VM_NAME&#125;</span>"</span> &gt;&gt; <span class="variable">$&#123;mountpoint&#125;</span>/etc/hosts</span><br><span class="line">    umount <span class="variable">$&#123;mountpoint&#125;</span></span><br><span class="line">    sleep 0.5</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"正在启动<span class="variable">$&#123;VM_NAME&#125;</span>"</span></span><br><span class="line">    virsh start <span class="variable">$&#123;VM_NAME&#125;</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="built_in">getopts</span> :n:m:c:p:i:s: OPTION;<span class="keyword">do</span></span><br><span class="line">    <span class="keyword">case</span> <span class="variable">$OPTION</span> <span class="keyword">in</span></span><br><span class="line">    n) get_newname <span class="variable">$OPTARG</span></span><br><span class="line">       ;;</span><br><span class="line">    m) get_newmemary <span class="variable">$OPTARG</span></span><br><span class="line">       ;;</span><br><span class="line">    c) get_newcpu <span class="variable">$OPTARG</span></span><br><span class="line">       ;;</span><br><span class="line">    p) VNC_PORT=<span class="variable">$OPTARG</span></span><br><span class="line">       ;;</span><br><span class="line">    i) isIp <span class="variable">$OPTARG</span></span><br><span class="line">       ;;</span><br><span class="line">    s) get_newdisk <span class="variable">$OPTARG</span></span><br><span class="line">       ;;</span><br><span class="line">    ?) <span class="built_in">help</span></span><br><span class="line">       ;;</span><br><span class="line">    <span class="keyword">esac</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line">set_xml_args_single</span><br><span class="line">create_vm</span><br><span class="line">set_vm_info</span><br><span class="line"></span><br><span class="line"><span class="comment">## sh  create_vm.sh -n quanbu-test-17-142 -m 2 -c 2 -i 192.168.17.142 -s 10</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<blockquote>
+<p><a href="https://blog.51cto.com/xiaoli110/1558984" target="_blank" rel="noopener">https://blog.51cto.com/xiaoli110/1558984</a></p>
+<p><a href="https://blog.csdn.net/dylloveyou/article/details/72382079" target="_blank" rel="noopener">https://blog.csdn.net/dylloveyou/article/details/72382079</a></p>
+<p><a href="https://blog.51cto.com/13641879/2157164" target="_blank" rel="noopener">https://blog.51cto.com/13641879/2157164</a></p>
+<p><a href="https://blog.51cto.com/13871362/2350104" target="_blank" rel="noopener">https://blog.51cto.com/13871362/2350104</a></p>
+</blockquote>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/Ansible/Ansible%E5%88%86%E7%BB%84/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/Ansible/Ansible%E5%88%86%E7%BB%84/" class="post-title-link" itemprop="url">运维/Ansible/Ansible分组</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:58" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:58+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="1）inventory作用"><a href="#1）inventory作用" class="headerlink" title="1）inventory作用"></a>1）inventory作用</h1><p>作用：通常用于定义要管理主机的认证信息，例如ssh登录用户名，密码等相关信息<br>缺省文件：/etc/ansible/hosts</p>
+<h1 id="2）定义主机组方式"><a href="#2）定义主机组方式" class="headerlink" title="2）定义主机组方式"></a>2）定义主机组方式</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#vim /etc/ansible/hosts</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[webservers]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">192.168.1.31</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">192.168.1.32</span><br><span class="line">[root@localhost ~]<span class="comment"># ansible webservers -uroot -k -m ping -o</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">SSH password: </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">192.168.1.32 | SUCCESS =&gt; &#123;<span class="string">"changed"</span>: <span class="literal">false</span>, <span class="string">"ping"</span>: <span class="string">"pong"</span>&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">192.168.1.31 | SUCCESS =&gt; &#123;<span class="string">"changed"</span>: <span class="literal">false</span>, <span class="string">"ping"</span>: <span class="string">"pong"</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="3）批量定义主机"><a href="#3）批量定义主机" class="headerlink" title="3）批量定义主机"></a>3）批量定义主机</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#vim /etc/ansible/hosts</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[webservers]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">192.168.1.[31:34]</span><br><span class="line">[root@localhost ~]<span class="comment"># ansible webservers -uroot -k -m ping -o</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">SSH password: </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">192.168.1.32 | SUCCESS =&gt; &#123;<span class="string">"changed"</span>: <span class="literal">false</span>, <span class="string">"ping"</span>: <span class="string">"pong"</span>&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">192.168.1.31 | SUCCESS =&gt; &#123;<span class="string">"changed"</span>: <span class="literal">false</span>, <span class="string">"ping"</span>: <span class="string">"pong"</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="4）内置参数：用户名和密码；命令行不用输入-u和-k选项"><a href="#4）内置参数：用户名和密码；命令行不用输入-u和-k选项" class="headerlink" title="4）内置参数：用户名和密码；命令行不用输入-u和-k选项"></a>4）内置参数：用户名和密码；命令行不用输入-u和-k选项</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#vim /etc/ansible/hosts</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[webservers]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">192.168.1.[31:32] ansible_ssh_user=<span class="string">'root'</span> ansible_ssh_pass=<span class="string">'redhat'</span></span><br><span class="line">[root@localhost ~]<span class="comment"># ansible webservers  -m ping -o</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">SSH password: </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">192.168.1.32 | SUCCESS =&gt; &#123;<span class="string">"changed"</span>: <span class="literal">false</span>, <span class="string">"ping"</span>: <span class="string">"pong"</span>&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">192.168.1.31 | SUCCESS =&gt; &#123;<span class="string">"changed"</span>: <span class="literal">false</span>, <span class="string">"ping"</span>: <span class="string">"pong"</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="5）内置参数：ssh端口"><a href="#5）内置参数：ssh端口" class="headerlink" title="5）内置参数：ssh端口"></a>5）内置参数：ssh端口</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#vim /etc/ansible/hosts</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[webservers]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">192.168.1.[31:32] ansible_ssh_user=<span class="string">'root'</span> ansible_ssh_pass=<span class="string">'redhat'</span> ansible_ssh_port=<span class="string">'22'</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="6）vars变量-：定义主机的内置参数"><a href="#6）vars变量-：定义主机的内置参数" class="headerlink" title="6）vars变量 ：定义主机的内置参数"></a>6）vars变量 ：定义主机的内置参数</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#vim /etc/ansible/hosts</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[webservers]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">192.168.1.[31:32]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[webservers:vars]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">ansible_ssh_user=<span class="string">'root'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">ansible_ssh_pass=<span class="string">'redhat'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">ansible_ssh_port=<span class="string">'22'</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="7）子组分类变量：children"><a href="#7）子组分类变量：children" class="headerlink" title="7）子组分类变量：children"></a>7）子组分类变量：children</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#vim /etc/ansible/hosts </span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[nginx]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">192.168.1.31</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[apache]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">192.168.1.32</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[webservers:children]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">apache</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">nginx</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[webservers:vars]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">ansible_ssh_user=<span class="string">'root'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">ansible_ssh_pass=<span class="string">'redhat'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">ansible_ssh_port=<span class="string">'22'</span></span><br><span class="line">[root@localhost ~]<span class="comment"># ansible webservers -m ping -o</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">192.168.1.31 | SUCCESS =&gt; &#123;<span class="string">"changed"</span>: <span class="literal">false</span>, <span class="string">"ping"</span>: <span class="string">"pong"</span>&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">192.168.1.32 | SUCCESS =&gt; &#123;<span class="string">"changed"</span>: <span class="literal">false</span>, <span class="string">"ping"</span>: <span class="string">"pong"</span>&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># ansible nginx -m ping -o</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">192.168.1.31 | SUCCESS =&gt; &#123;<span class="string">"changed"</span>: <span class="literal">false</span>, <span class="string">"ping"</span>: <span class="string">"pong"</span>&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># ansible apache -m ping -o</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">192.168.1.32 | SUCCESS =&gt; &#123;<span class="string">"changed"</span>: <span class="literal">false</span>, <span class="string">"ping"</span>: <span class="string">"pong"</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="8）自定义主机清单文件"><a href="#8）自定义主机清单文件" class="headerlink" title="8）自定义主机清单文件"></a>8）自定义主机清单文件</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# ansible -i &#x2F;etc&#x2F;ansible&#x2F;webservices webservers -m ping -o</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">192.168.1.31 | SUCCESS &#x3D;&gt; &#123;&quot;changed&quot;: false, &quot;ping&quot;: &quot;pong&quot;&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">192.168.1.32 | SUCCESS &#x3D;&gt; &#123;&quot;changed&quot;: false, &quot;ping&quot;: &quot;pong&quot;&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="9）查看组中的主机列表"><a href="#9）查看组中的主机列表" class="headerlink" title="9）查看组中的主机列表"></a>9）查看组中的主机列表</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># ansible webservers --list-host</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  hosts (2):</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    192.168.1.32</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    192.168.1.31</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># ansible nginx  --list-host</span></span><br><span class="line">  hosts (1):</span><br><span class="line">    192.168.1.31</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/Ansible/%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/Ansible/%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99/" class="post-title-link" itemprop="url">运维/Ansible/参考资料</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:58" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:58+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><a href="https://ansible-tran.readthedocs.io/en/latest/" target="_blank" rel="noopener">Ansible中文权威指南</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes%20Service%E7%BD%91%E7%BB%9C%E8%BF%BD%E8%B8%AA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes%20Service%E7%BD%91%E7%BB%9C%E8%BF%BD%E8%B8%AA/" class="post-title-link" itemprop="url">运维/虚拟化/Kubernetes Service网络追踪</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:58" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:58+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>节点信息</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># kubectl get node -o wide</span></span><br><span class="line">NAME       STATUS   ROLES    AGE   VERSION   INTERNAL-IP      EXTERNAL-IP   OS-IMAGE                KERNEL-VERSION          CONTAINER-RUNTIME</span><br><span class="line">master01   Ready    master   15d   v1.17.3   192.168.19.68    &lt;none&gt;        CentOS Linux 7 (Core)   3.10.0-957.el7.x86_64   docker://19.3.6</span><br><span class="line">master02   Ready    master   16d   v1.17.3   192.168.18.165   &lt;none&gt;        CentOS Linux 7 (Core)   3.10.0-957.el7.x86_64   docker://19.3.6</span><br><span class="line">master03   Ready    master   16d   v1.17.3   192.168.19.23    &lt;none&gt;        CentOS Linux 7 (Core)   3.10.0-957.el7.x86_64   docker://19.3.6</span><br><span class="line">node01     Ready    &lt;none&gt;   16d   v1.17.3   192.168.19.8     &lt;none&gt;        CentOS Linux 7 (Core)   3.10.0-957.el7.x86_64   docker://19.3.6</span><br><span class="line">node02     Ready    &lt;none&gt;   16d   v1.17.3   192.168.19.202   &lt;none&gt;        CentOS Linux 7 (Core)   3.10.0-957.el7.x86_64   docker://19.3.6</span><br><span class="line">node03     Ready    &lt;none&gt;   46h   v1.17.3   192.168.18.213   &lt;none&gt;        CentOS Linux 7 (Core)   3.10.0-957.el7.x86_64   docker://19.3.6</span><br><span class="line">node06     Ready    &lt;none&gt;   15d   v1.17.3   192.168.16.186   &lt;none&gt;        CentOS Linux 7 (Core)   3.10.0-957.el7.x86_64   docker://19.3.6</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h4 id="Service详细"><a href="#Service详细" class="headerlink" title="Service详细"></a>Service详细</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># kubectl -n qa-quanbu describe svc test-eureka-server</span></span><br><span class="line">Name:                     <span class="built_in">test</span>-eureka-server</span><br><span class="line">Namespace:                qa-quanbu</span><br><span class="line">Labels:                   k8s.eip.work/env=qa</span><br><span class="line">                          k8s.eip.work/group=quanbu</span><br><span class="line">                          k8s.eip.work/layer=svc</span><br><span class="line">                          k8s.eip.work/name=eureka-server</span><br><span class="line">Annotations:              field.cattle.io/ipAddresses: null</span><br><span class="line">                          field.cattle.io/publicEndpoints:</span><br><span class="line">                            [&#123;<span class="string">"addresses"</span>:[<span class="string">"192.168.16.186"</span>],<span class="string">"port"</span>:50001,<span class="string">"protocol"</span>:<span class="string">"TCP"</span>,<span class="string">"serviceName"</span>:<span class="string">"qa-quanbu:test-eureka-server"</span>,<span class="string">"allNodes"</span>:<span class="literal">true</span>&#125;]</span><br><span class="line">                          field.cattle.io/targetDnsRecordIds: null</span><br><span class="line">                          field.cattle.io/targetWorkloadIds: null</span><br><span class="line">                          kubectl.kubernetes.io/last-applied-configuration:</span><br><span class="line">                            &#123;<span class="string">"apiVersion"</span>:<span class="string">"v1"</span>,<span class="string">"kind"</span>:<span class="string">"Service"</span>,<span class="string">"metadata"</span>:&#123;<span class="string">"annotations"</span>:&#123;&#125;,<span class="string">"labels"</span>:&#123;<span class="string">"k8s.eip.work/env"</span>:<span class="string">"qa"</span>,<span class="string">"k8s.eip.work/group"</span>:<span class="string">"quanbu"</span>,<span class="string">"k8s.eip....</span></span><br><span class="line"><span class="string">Selector:                 k8s.eip.work/env=qa,k8s.eip.work/group=quanbu,k8s.eip.work/layer=svc,k8s.eip.work/name=eureka-server</span></span><br><span class="line"><span class="string">Type:                     NodePort</span></span><br><span class="line"><span class="string">IP:                       10.96.57.35</span></span><br><span class="line"><span class="string">Port:                     5001  5001/TCP</span></span><br><span class="line"><span class="string">TargetPort:               5001/TCP</span></span><br><span class="line"><span class="string">NodePort:                 5001  50001/TCP</span></span><br><span class="line"><span class="string">Endpoints:                10.244.2.243:5001</span></span><br><span class="line"><span class="string">Session Affinity:         None</span></span><br><span class="line"><span class="string">External Traffic Policy:  Cluster</span></span><br><span class="line"><span class="string">Events:                   &lt;none&gt;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>可以通过Service的信息看到publicEndpoints是在<code>node06</code>(192.168.16.186)上</p>
+</blockquote>
+<p>往node06发起请求</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@node02 ~]<span class="comment"># curl -o /dev/null -s -w "time_connect: %&#123;time_connect&#125;\ntime_starttransfer: %&#123;time_starttransfer&#125;\ntime_total: %&#123;time_total&#125;\n" http://192.168.16.186:50001</span></span><br><span class="line">time_connect: 0.004</span><br><span class="line">time_starttransfer: 0.043</span><br><span class="line">time_total: 0.044</span><br><span class="line">[root@node02 ~]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>node02上抓包信息</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">[root@node02 ~]<span class="comment"># tcpdump port 50001</span></span><br><span class="line">tcpdump: verbose output suppressed, use -v or -vv <span class="keyword">for</span> full protocol decode</span><br><span class="line">listening on eth0, link-type EN10MB (Ethernet), capture size 262144 bytes</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">17:54:02.163817 IP node02.36688 &gt; node06.50001: Flags [S], seq 3700482889, win 29200, options [mss 1460,sackOK,TS val 1450209399 ecr 0,nop,wscale 7], length 0</span><br><span class="line">17:54:02.167172 IP node06.50001 &gt; node02.36688: Flags [S.], seq 4144170268, ack 3700482890, win 27960, options [mss 1410,sackOK,TS val 1450215433 ecr 1450209399,nop,wscale 7], length 0</span><br><span class="line">17:54:02.167225 IP node02.36688 &gt; node06.50001: Flags [.], ack 1, win 229, options [nop,nop,TS val 1450209402 ecr 1450215433], length 0</span><br><span class="line">17:54:02.167366 IP node02.36688 &gt; node06.50001: Flags [P.], seq 1:85, ack 1, win 229, options [nop,nop,TS val 1450209402 ecr 1450215433], length 84</span><br><span class="line">17:54:02.170426 IP node06.50001 &gt; node02.36688: Flags [.], ack 85, win 219, options [nop,nop,TS val 1450215436 ecr 1450209402], length 0</span><br><span class="line">17:54:02.206272 IP node06.50001 &gt; node02.36688: Flags [.], seq 1:6991, ack 85, win 219, options [nop,nop,TS val 1450215471 ecr 1450209402], length 6990</span><br><span class="line">17:54:02.206324 IP node02.36688 &gt; node06.50001: Flags [.], ack 6991, win 338, options [nop,nop,TS val 1450209441 ecr 1450215471], length 0</span><br><span class="line">17:54:02.206336 IP node06.50001 &gt; node02.36688: Flags [.], ack 85, win 219, options [nop,nop,TS val 1450215471 ecr 1450209402], length 0</span><br><span class="line">17:54:02.206343 IP node06.50001 &gt; node02.36688: Flags [P.], seq 6991:8193, ack 85, win 219, options [nop,nop,TS val 1450215472 ecr 1450209402], length 1202</span><br><span class="line">17:54:02.206351 IP node02.36688 &gt; node06.50001: Flags [.], ack 8193, win 360, options [nop,nop,TS val 1450209441 ecr 1450215472], length 0</span><br><span class="line">17:54:02.206731 IP node06.50001 &gt; node02.36688: Flags [.], seq 8193:13785, ack 85, win 219, options [nop,nop,TS val 1450215472 ecr 1450209402], length 5592</span><br><span class="line">17:54:02.206751 IP node02.36688 &gt; node06.50001: Flags [.], ack 13785, win 447, options [nop,nop,TS val 1450209441 ecr 1450215472], length 0</span><br><span class="line">17:54:02.206767 IP node06.50001 &gt; node02.36688: Flags [.], ack 85, win 219, options [nop,nop,TS val 1450215472 ecr 1450209402], length 0</span><br><span class="line">17:54:02.207198 IP node06.50001 &gt; node02.36688: Flags [.], seq 13785:20775, ack 85, win 219, options [nop,nop,TS val 1450215472 ecr 1450209441], length 6990</span><br><span class="line">17:54:02.207235 IP node02.36688 &gt; node06.50001: Flags [.], ack 20775, win 556, options [nop,nop,TS val 1450209442 ecr 1450215472], length 0</span><br><span class="line">17:54:02.207252 IP node06.50001 &gt; node02.36688: Flags [.], seq 20775:22173, ack 85, win 219, options [nop,nop,TS val 1450215472 ecr 1450209441], length 1398</span><br><span class="line">17:54:02.207264 IP node02.36688 &gt; node06.50001: Flags [.], ack 22173, win 578, options [nop,nop,TS val 1450209442 ecr 1450215472], length 0</span><br><span class="line">17:54:02.207286 IP node06.50001 &gt; node02.36688: Flags [.], ack 85, win 219, options [nop,nop,TS val 1450215472 ecr 1450209441], length 0</span><br><span class="line">17:54:02.207390 IP node06.50001 &gt; node02.36688: Flags [.], seq 22173:23571, ack 85, win 219, options [nop,nop,TS val 1450215472 ecr 1450209441], length 1398</span><br><span class="line">17:54:02.207403 IP node02.36688 &gt; node06.50001: Flags [.], ack 23571, win 600, options [nop,nop,TS val 1450209442 ecr 1450215472], length 0</span><br><span class="line">17:54:02.207417 IP node06.50001 &gt; node02.36688: Flags [P.], seq 23571:24422, ack 85, win 219, options [nop,nop,TS val 1450215473 ecr 1450209441], length 851</span><br><span class="line">17:54:02.207428 IP node02.36688 &gt; node06.50001: Flags [.], ack 24422, win 622, options [nop,nop,TS val 1450209442 ecr 1450215473], length 0</span><br><span class="line">17:54:02.207453 IP node06.50001 &gt; node02.36688: Flags [P.], seq 24422:24427, ack 85, win 219, options [nop,nop,TS val 1450215473 ecr 1450209441], length 5</span><br><span class="line">17:54:02.207461 IP node02.36688 &gt; node06.50001: Flags [.], ack 24427, win 622, options [nop,nop,TS val 1450209442 ecr 1450215473], length 0</span><br><span class="line">17:54:02.207604 IP node02.36688 &gt; node06.50001: Flags [F.], seq 85, ack 24427, win 622, options [nop,nop,TS val 1450209442 ecr 1450215473], length 0</span><br><span class="line">17:54:02.210200 IP node06.50001 &gt; node02.36688: Flags [F.], seq 24427, ack 86, win 219, options [nop,nop,TS val 1450215476 ecr 1450209442], length 0</span><br><span class="line">17:54:02.210247 IP node02.36688 &gt; node06.50001: Flags [.], ack 24428, win 622, options [nop,nop,TS val 1450209445 ecr 1450215476], length 0</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>从抓包信息可以看到由node02的36688端口向node06的50001端口发起tcp连接</p>
+</blockquote>
+<p>往master02节点发起请求</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># tcpdump port 50001</span></span><br><span class="line"></span><br><span class="line">tcpdump: verbose output suppressed, use -v or -vv <span class="keyword">for</span> full protocol decode</span><br><span class="line">listening on eth0, link-type EN10MB (Ethernet), capture size 262144 bytes</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">19:59:51.928683 IP node02.48324 &gt; master02.50001: Flags [S], seq 153890559, win 29200, options [mss 1460,sackOK,TS val 1457759163 ecr 0,nop,wscale 7], length 0</span><br><span class="line">19:59:52.928840 IP node02.48324 &gt; master02.50001: Flags [S], seq 153890559, win 29200, options [mss 1460,sackOK,TS val 1457760164 ecr 0,nop,wscale 7], length 0</span><br><span class="line">19:59:54.932819 IP node02.48324 &gt; master02.50001: Flags [S], seq 153890559, win 29200, options [mss 1460,sackOK,TS val 1457762168 ecr 0,nop,wscale 7], length 0</span><br><span class="line">19:59:58.941800 IP node02.48324 &gt; master02.50001: Flags [S], seq 153890559, win 29200, options [mss 1460,sackOK,TS val 1457766177 ecr 0,nop,wscale 7], length 0</span><br><span class="line">20:00:06.972852 IP node02.48324 &gt; master02.50001: Flags [S], seq 153890559, win 29200, options [mss 1460,sackOK,TS val 1457774208 ecr 0,nop,wscale 7], length 0</span><br><span class="line">20:00:23.004869 IP node02.48324 &gt; master02.50001: Flags [S], seq 153890559, win 29200, options [mss 1460,sackOK,TS val 1457790240 ecr 0,nop,wscale 7], length 0</span><br><span class="line">20:00:55.100833 IP node02.48324 &gt; master02.50001: Flags [S], seq 153890559, win 29200, options [mss 1460,sackOK,TS val 1457822336 ecr 0,nop,wscale 7], length 0</span><br><span class="line">20:00:55.101798 IP master02.50001 &gt; node02.48324: Flags [S.], seq 1564618017, ack 153890560, win 27960, options [mss 1410,sackOK,TS val 1457828368 ecr 1457822336,nop,wscale 7], length 0</span><br><span class="line">20:00:55.101851 IP node02.48324 &gt; master02.50001: Flags [.], ack 1, win 229, options [nop,nop,TS val 1457822337 ecr 1457828368], length 0</span><br><span class="line">20:00:55.101960 IP node02.48324 &gt; master02.50001: Flags [P.], seq 1:79, ack 1, win 229, options [nop,nop,TS val 1457822337 ecr 1457828368], length 78</span><br><span class="line">20:00:55.102410 IP master02.50001 &gt; node02.48324: Flags [.], ack 79, win 219, options [nop,nop,TS val 1457828369 ecr 1457822337], length 0</span><br><span class="line">20:00:55.132871 IP master02.50001 &gt; node02.48324: Flags [P.], seq 1:8193, ack 79, win 219, options [nop,nop,TS val 1457828399 ecr 1457822337], length 8192</span><br><span class="line">20:00:55.132921 IP node02.48324 &gt; master02.50001: Flags [.], ack 8193, win 357, options [nop,nop,TS val 1457822368 ecr 1457828399], length 0</span><br><span class="line">20:00:55.133043 IP master02.50001 &gt; node02.48324: Flags [.], seq 8193:13785, ack 79, win 219, options [nop,nop,TS val 1457828399 ecr 1457822337], length 5592</span><br><span class="line">20:00:55.133066 IP node02.48324 &gt; master02.50001: Flags [.], ack 13785, win 444, options [nop,nop,TS val 1457822368 ecr 1457828399], length 0</span><br><span class="line">20:00:55.133492 IP master02.50001 &gt; node02.48324: Flags [.], seq 13785:15183, ack 79, win 219, options [nop,nop,TS val 1457828400 ecr 1457822368], length 1398</span><br><span class="line">20:00:55.133541 IP node02.48324 &gt; master02.50001: Flags [.], ack 15183, win 466, options [nop,nop,TS val 1457822368 ecr 1457828400], length 0</span><br><span class="line">20:00:55.133557 IP master02.50001 &gt; node02.48324: Flags [P.], seq 15183:26727, ack 79, win 219, options [nop,nop,TS val 1457828400 ecr 1457822368], length 11544</span><br><span class="line">20:00:55.133575 IP node02.48324 &gt; master02.50001: Flags [.], ack 26727, win 646, options [nop,nop,TS val 1457822368 ecr 1457828400], length 0</span><br><span class="line">20:00:55.134217 IP master02.50001 &gt; node02.48324: Flags [P.], seq 26727:26732, ack 79, win 219, options [nop,nop,TS val 1457828400 ecr 1457822368], length 5</span><br><span class="line">20:00:55.134241 IP node02.48324 &gt; master02.50001: Flags [.], ack 26732, win 646, options [nop,nop,TS val 1457822369 ecr 1457828400], length 0</span><br><span class="line">20:00:55.134454 IP node02.48324 &gt; master02.50001: Flags [F.], seq 79, ack 26732, win 646, options [nop,nop,TS val 1457822369 ecr 1457828400], length 0</span><br><span class="line">20:00:55.135573 IP master02.50001 &gt; node02.48324: Flags [F.], seq 26732, ack 80, win 219, options [nop,nop,TS val 1457828402 ecr 1457822369], length 0</span><br><span class="line">20:00:55.135620 IP node02.48324 &gt; master02.50001: Flags [.], ack 26733, win 646, options [nop,nop,TS val 1457822370 ecr 1457828402], length 0</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/logstash/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="曾胜龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蜷缩的蜗牛">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/logstash/" class="post-title-link" itemprop="url">运维/虚拟化/Kubernetes/logstash</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-14 21:51:58" itemprop="dateCreated datePublished" datetime="2020-05-14T21:51:58+08:00">2020-05-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">###Deployment</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Deployment</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">logstash</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">ops</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">io.kompose.service:</span> <span class="string">logstash</span></span><br><span class="line">  <span class="attr">annotations:</span></span><br><span class="line">    <span class="attr">deployment.kubernetes.io/revision:</span> <span class="string">'1'</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">replicas:</span> <span class="number">1</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">matchLabels:</span></span><br><span class="line">      <span class="attr">io.kompose.service:</span> <span class="string">logstash</span></span><br><span class="line">  <span class="attr">template:</span></span><br><span class="line">    <span class="attr">metadata:</span></span><br><span class="line">      <span class="attr">creationTimestamp:</span> <span class="literal">null</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">io.kompose.service:</span> <span class="string">logstash</span></span><br><span class="line">    <span class="attr">spec:</span></span><br><span class="line">      <span class="attr">volumes:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">logstash-conf</span></span><br><span class="line">          <span class="attr">hostPath:</span></span><br><span class="line">            <span class="attr">path:</span> <span class="string">/data/server/logstash/conf</span></span><br><span class="line">            <span class="attr">type:</span> <span class="string">''</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">logstash.yml</span></span><br><span class="line">          <span class="attr">hostPath:</span></span><br><span class="line">            <span class="attr">path:</span> <span class="string">/data/server/logstash/logstash.yml</span></span><br><span class="line">            <span class="attr">type:</span> <span class="string">''</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">jvm.options</span></span><br><span class="line">          <span class="attr">hostPath:</span></span><br><span class="line">            <span class="attr">path:</span> <span class="string">/data/server/logstash/jvm.options</span></span><br><span class="line">            <span class="attr">type:</span> <span class="string">''</span></span><br><span class="line">      <span class="attr">containers:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">logstash</span></span><br><span class="line">          <span class="attr">image:</span> <span class="string">'registry.cn-hangzhou.aliyuncs.com/zhijing/logstash:6.7.1'</span></span><br><span class="line">          <span class="attr">command:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="string">logstash</span></span><br><span class="line">            <span class="bullet">-</span> <span class="string">'-f'</span></span><br><span class="line">            <span class="bullet">-</span> <span class="string">/etc/logstash/conf</span></span><br><span class="line">          <span class="attr">resources:</span> <span class="string">&#123;&#125;</span></span><br><span class="line">          <span class="attr">volumeMounts:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">logstash-conf</span></span><br><span class="line">              <span class="attr">mountPath:</span> <span class="string">/etc/logstash/conf</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">logstash.yml</span></span><br><span class="line">              <span class="attr">mountPath:</span> <span class="string">/usr/share/logstash/config/logstash.yml</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">jvm.options</span></span><br><span class="line">              <span class="attr">mountPath:</span> <span class="string">/usr/share/logstash/config/jvm.options</span></span><br><span class="line">          <span class="attr">terminationMessagePath:</span> <span class="string">/dev/termination-log</span></span><br><span class="line">          <span class="attr">terminationMessagePolicy:</span> <span class="string">File</span></span><br><span class="line">          <span class="attr">imagePullPolicy:</span> <span class="string">Always</span></span><br><span class="line">      <span class="attr">restartPolicy:</span> <span class="string">Always</span></span><br><span class="line">      <span class="attr">terminationGracePeriodSeconds:</span> <span class="number">30</span></span><br><span class="line">      <span class="attr">dnsPolicy:</span> <span class="string">ClusterFirst</span></span><br><span class="line">      <span class="attr">securityContext:</span> <span class="string">&#123;&#125;</span></span><br><span class="line">      <span class="attr">schedulerName:</span> <span class="string">default-scheduler</span></span><br><span class="line">  <span class="attr">strategy:</span></span><br><span class="line">    <span class="attr">type:</span> <span class="string">RollingUpdate</span></span><br><span class="line">    <span class="attr">rollingUpdate:</span></span><br><span class="line">      <span class="attr">maxUnavailable:</span> <span class="number">1</span></span><br><span class="line">      <span class="attr">maxSurge:</span> <span class="number">1</span></span><br><span class="line">  <span class="attr">revisionHistoryLimit:</span> <span class="number">2147483647</span></span><br><span class="line">  <span class="attr">progressDeadlineSeconds:</span> <span class="number">2147483647</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">###Service</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">logstash</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">ops</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">logstash</span></span><br><span class="line">    <span class="attr">chart:</span> <span class="string">logstash</span></span><br><span class="line">    <span class="attr">heritage:</span> <span class="string">Tiller</span></span><br><span class="line">    <span class="attr">release:</span> <span class="string">logstash</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">applog</span></span><br><span class="line">      <span class="attr">protocol:</span> <span class="string">TCP</span></span><br><span class="line">      <span class="attr">port:</span> <span class="number">5044</span></span><br><span class="line">      <span class="attr">targetPort:</span> <span class="number">5044</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">nginxlog</span></span><br><span class="line">      <span class="attr">protocol:</span> <span class="string">TCP</span></span><br><span class="line">      <span class="attr">port:</span> <span class="number">5045</span></span><br><span class="line">      <span class="attr">targetPort:</span> <span class="number">5045</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">io.kompose.service:</span> <span class="string">logstash</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">NodePort</span></span><br><span class="line">  <span class="attr">sessionAffinity:</span> <span class="string">None</span></span><br><span class="line">  <span class="attr">externalTrafficPolicy:</span> <span class="string">Cluster</span></span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+  </nav>
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="曾胜龙"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">曾胜龙</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yourname" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yourname" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank">粤ICP备18122209号 </a>
+      <img src="http://www.beian.gov.cn/portal/download" style="display: inline-block;">
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">曾胜龙</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
