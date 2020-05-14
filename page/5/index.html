@@ -1,27 +1,17 @@
 <!DOCTYPE html>
+
 <html lang="zh-CN">
+
 <head>
+  
+  <title>蜷缩的蜗牛</title>
   <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
-  <meta http-equiv="Cache-Control" content="no-transform">
-  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+  
+  
 
-<link rel="stylesheet" href="/css/main.css">
-
-
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
-
-<script id="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"kbsonlong.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"3QSL94PCBQ","apiKey":"d2fe765a64df1740fcab93644d3a2677","indexName":"hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
-  </script>
-
+  <link rel="shortcut icon" href="/favicon.ico" type="image/png" />
   <meta property="og:type" content="website">
 <meta property="og:title" content="蜷缩的蜗牛">
 <meta property="og:url" content="https://kbsonlong.github.io/page/5/index.html">
@@ -30,228 +20,343 @@
 <meta property="article:author" content="曾胜龙">
 <meta property="article:tag" content="Devops Kubernetes Docker">
 <meta name="twitter:card" content="summary">
-
-<link rel="canonical" href="https://kbsonlong.github.io/page/5/">
-
-
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : true,
-    isPost : false,
-    lang   : 'zh-CN'
-  };
-</script>
-
-  <title>蜷缩的蜗牛</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/gh/nexmoe/nexmoe.github.io@latest/css/style.css,npm/highlight.js@9.15.8/styles/atom-one-dark.css,gh/nexmoe/nexmoe.github.io@latest/lib/mdui_043tiny/css/mdui.css,gh/nexmoe/nexmoe.github.io@latest/lib/iconfont/iconfont.css" crossorigin>
   
-
-
-
-
-
-
-  <noscript>
-  <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
-
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
-
-<link rel="alternate" href="/atom.xml" title="蜷缩的蜗牛" type="application/atom+xml">
+  <!--<link rel="stylesheet" href="/css/style.css?v=1589470542576">-->
+<meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/atom.xml" title="蜷缩的蜗牛" type="application/atom+xml">
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
-
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
+<body class="mdui-drawer-body-left">
+  
+  <div id="nexmoe-background">
+    <div class="nexmoe-bg" style="background-image: url(https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg)"></div>
+    <div class="mdui-appbar mdui-shadow-0">
+      <div class="mdui-toolbar">
+        <a mdui-drawer="{target: '#drawer', swipe: true}" title="menu" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon nexmoefont icon-menu"></i></a>
+        <div class="mdui-toolbar-spacer"></div>
+        <!--<a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">search</i></a>-->
+        <a href="/" title="曾胜龙" class="mdui-btn mdui-btn-icon"><img src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/avatar.png" alt="曾胜龙"></a>
+       </div>
     </div>
   </div>
-
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">蜷缩的蜗牛</h1>
-      <span class="logo-line-after"><i></i></span>
-    </a>
-      <p class="site-subtitle" itemprop="description">运维笔记</p>
-  </div>
-
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
-    </div>
-  </div>
-</div>
-
-
-
-
-<nav class="site-nav">
-  <ul id="menu" class="main-menu menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-about">
-
-    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
-
-  </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+  <div id="nexmoe-header">
+      <div class="nexmoe-drawer mdui-drawer" id="drawer">
+    <div class="nexmoe-avatar mdui-ripple">
+        <a href="/" title="曾胜龙">
+            <img src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/avatar.png" alt="曾胜龙" alt="曾胜龙">
         </a>
-      </li>
-  </ul>
-</nav>
-
-
-
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container">
-    <input autocomplete="off" autocapitalize="off"
-           placeholder="搜索..." spellcheck="false"
-           type="search" class="search-input">
-  </div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
+    </div>
+    <div class="nexmoe-count">
+        <div><span>文章</span>109</div>
+        <div><span>标签</span>24</div>
+        <div><span>分类</span>25</div>
+    </div>
+    <div class="nexmoe-list mdui-list" mdui-collapse="{accordion: true}">
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/" title="回到首页">
+            <i class="mdui-list-item-icon nexmoefont icon-home"></i>
+            <div class="mdui-list-item-content">
+                回到首页
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/archives" title="文章归档">
+            <i class="mdui-list-item-icon nexmoefont icon-container"></i>
+            <div class="mdui-list-item-content">
+                文章归档
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/about.html" title="关于博客">
+            <i class="mdui-list-item-icon nexmoefont icon-info-circle"></i>
+            <div class="mdui-list-item-content">
+                关于博客
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/PY.html" title="我的朋友">
+            <i class="mdui-list-item-icon nexmoefont icon-unorderedlist"></i>
+            <div class="mdui-list-item-content">
+                我的朋友
+            </div>
+        </a>
+        
+    </div>
+    <aside id="nexmoe-sidebar">
+  
+  <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-search">
+        <form id="search_form" action_e="https://cn.bing.com/search?q=site:nexmoe.com" onsubmit="return search();">
+            <label><input id="search_value" name="q" type="search" placeholder="搜索"></label>
+        </form>
+    </div>
 </div>
-<div id="search-result">
-  <div id="no-result">
-    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
-  </div>
+  
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">社交按钮</h3>
+    <div class="nexmoe-widget nexmoe-social">
+        <a class="mdui-ripple" href="https://space.bilibili.com/20238211" target="_blank" mdui-tooltip="{content: '哔哩哔哩'}" style="color: rgb(231, 106, 141);background-color: rgba(231, 106, 141, .15);">
+            <i class="nexmoefont icon-bilibili"></i>
+        </a><a class="mdui-ripple" href="https://github.com/nexmoe/" target="_blank" mdui-tooltip="{content: 'GitHub'}" style="color: rgb(25, 23, 23);background-color: rgba(25, 23, 23, .15);">
+            <i class="nexmoefont icon-github"></i>
+        </a>
+    </div>
 </div>
+  
+  
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">文章分类</h3>
+    <div class="nexmoe-widget">
+
+      <ul class="category-list">
+
+        
+
+
+        
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Ansible/">Ansible</a>
+          <span class="category-list-count">3</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Bgp/">Bgp</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Docker/">Docker</a>
+          <span class="category-list-count">6</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Elasticsearch/">Elasticsearch</a>
+          <span class="category-list-count">12</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/KVM/">KVM</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Kafka/">Kafka</a>
+          <span class="category-list-count">2</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Kong/">Kong</a>
+          <span class="category-list-count">2</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Kubernetes/">Kubernetes</a>
+          <span class="category-list-count">19</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Mongodb/">Mongodb</a>
+          <span class="category-list-count">3</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Mysql/">Mysql</a>
+          <span class="category-list-count">3</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Prometheus/">Prometheus</a>
+          <span class="category-list-count">4</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/RabbitMQ/">RabbitMQ</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Redis/">Redis</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/RocketMQ/">RocketMQ</a>
+          <span class="category-list-count">2</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/gitlab/">gitlab</a>
+          <span class="category-list-count">3</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/k8s安装实战/">k8s安装实战</a>
+          <span class="category-list-count">10</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/nacos/">nacos</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/openLDAP/">openLDAP</a>
+          <span class="category-list-count">6</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/标准化及流程化/">标准化及流程化</a>
+          <span class="category-list-count">8</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/深入剖析Kubernetes/">深入剖析Kubernetes</a>
+          <span class="category-list-count">2</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/监控系统/">监控系统</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/系统初始化/">系统初始化</a>
+          <span class="category-list-count">3</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/虚拟化/">虚拟化</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/调优/">调优</a>
+          <span class="category-list-count">3</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/运维/">运维</a>
+          <span class="category-list-count">2</span>
+        </li>
+
+        
+      </ul>
 
     </div>
   </div>
 
-</div>
-    </header>
 
+  
+  
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">标签云</h3>
+    <div id="randomtagcloud" class="nexmoe-widget tagcloud nexmoe-rainbow">
+      <a href="/tags/Ansible/" style="font-size: 12.5px;">Ansible</a> <a href="/tags/Bgp/" style="font-size: 10px;">Bgp</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/Elasticsearch/" style="font-size: 18.75px;">Elasticsearch</a> <a href="/tags/KVM/" style="font-size: 10px;">KVM</a> <a href="/tags/Kafka/" style="font-size: 11.25px;">Kafka</a> <a href="/tags/Kong/" style="font-size: 11.25px;">Kong</a> <a href="/tags/Kubernetes/" style="font-size: 20px;">Kubernetes</a> <a href="/tags/Mongodb/" style="font-size: 12.5px;">Mongodb</a> <a href="/tags/Mysql/" style="font-size: 12.5px;">Mysql</a> <a href="/tags/Prometheus/" style="font-size: 13.75px;">Prometheus</a> <a href="/tags/RabbitMQ/" style="font-size: 10px;">RabbitMQ</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 11.25px;">RocketMQ</a> <a href="/tags/gitlab/" style="font-size: 12.5px;">gitlab</a> <a href="/tags/k8s%E5%AE%89%E8%A3%85%E5%AE%9E%E6%88%98/" style="font-size: 17.5px;">k8s安装实战</a> <a href="/tags/nacos/" style="font-size: 10px;">nacos</a> <a href="/tags/openLDAP/" style="font-size: 15px;">openLDAP</a> <a href="/tags/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/" style="font-size: 16.25px;">标准化及流程化</a> <a href="/tags/%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes/" style="font-size: 11.25px;">深入剖析Kubernetes</a> <a href="/tags/%E7%B3%BB%E7%BB%9F%E5%88%9D%E5%A7%8B%E5%8C%96/" style="font-size: 12.5px;">系统初始化</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96/" style="font-size: 10px;">虚拟化</a> <a href="/tags/%E8%B0%83%E4%BC%98/" style="font-size: 12.5px;">调优</a> <a href="/tags/%E8%BF%90%E7%BB%B4/" style="font-size: 11.25px;">运维</a>
+    </div>
     
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
   </div>
-  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
 
-  <a href="https://github.com/kbsonlong" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+  
+  
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">文章归档</h3>
+    <div class="nexmoe-widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a></li></ul>
+    </div>
+  </div>
 
 
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-
-          <div class="content index posts-expand">
+  
+</aside>
+    <div class="nexmoe-copyright">
+        &copy; 2020 曾胜龙
+        Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+        & <a href="https://nexmoe.com/hexo-theme-nexmoe.html" target="_blank">Nexmoe</a>
+    </div>
+</div><!-- .nexmoe-drawer -->
+  </div>
+  <div id="nexmoe-content">
+    <div class="nexmoe-primary">
+        <section class="nexmoe-posts">
+    
+    <div class="nexmoe-post">
+        <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/%E8%BF%90%E7%BB%B4%E6%A0%87%E5%87%86%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/">
             
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/%E8%BF%90%E7%BB%B4%E6%A0%87%E5%87%86%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/">
+                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 66.66666666666666%;"> 
+                    <img data-src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg" data-sizes="auto" alt="运维标准及流程化.md" class="lazyload">
+                    <h1>运维标准及流程化.md</h1>
+                </div>
+            
+        </a>
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="曾胜龙">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="蜷缩的蜗牛">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/%E8%BF%90%E7%BB%B4%E6%A0%87%E5%87%86%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/" class="post-title-link" itemprop="url">运维标准及流程化.md</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-05-14 22:16:05" itemprop="dateCreated datePublished" datetime="2020-05-14T22:16:05+08:00">2020-05-14</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/" itemprop="url" rel="index"><span itemprop="name">标准化及流程化</span></a>
-                </span>
-            </span>
-
-          
-
+        <div class="nexmoe-post-meta nexmoe-rainbow">
+            <a><i class="nexmoefont icon-calendar-fill"></i>2020年05月14日</a>
+            <a><i class="nexmoefont icon-areachart"></i>4k 字</a>
+            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 16 分钟</a>
         </div>
-      </header>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>当下企业很多都热衷于建设运维自动化、智能化，通过技术革新代替繁杂的手工运维，提高生产效率的同时最大程度的减少人为失误。但是如何建设自动化运维，在不同的企业有着不同的建设方法和技术栈，虽然大多是以Python为主。一般说来，企业的运维发展由起步到成熟，大致要经过三个大阶段：运维无序化、运维标准化和流程化、运维自动化。</p>
-<p><img src="https://mmbiz.qpic.cn/mmbiz_png/bFGx7h2f7WnDvbpyJXurp5EHu4cTqpgElJy054Bk81cJHRXs2nriaqHhhCDkl81q1uyoLco88MwwdzJUia8W9O0Q/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="img"></p>
+        <article>
+            
+                <p>当下企业很多都热衷于建设运维自动化、智能化，通过技术革新代替繁杂的手工运维，提高生产效率的同时最大程度的减少人为失误。但是如何建设自动化运维，在不同的企业有着不同的建设方法和技术栈，虽然大多是以Python为主。一般说来，企业的运维发展由起步到成熟，大致要经过三个大阶段：运维无序化、运维标准化和流程化、运维自动化。</p>
+<p><img data-sizes="auto" data-src="https://mmbiz.qpic.cn/mmbiz_png/bFGx7h2f7WnDvbpyJXurp5EHu4cTqpgElJy054Bk81cJHRXs2nriaqHhhCDkl81q1uyoLco88MwwdzJUia8W9O0Q/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="img" class="lazyload"></p>
 <p>运维无序化主要表现在运维工作无规范统一，更多是团队成员依赖自身技术各自为战，着重于眼前运维工作，过多处于被迫接受和疲惫应付工作的状态。运维无序阶段提升工作效率主要依赖加人和加班，而且此阶段运维工作效率低下，人为失误较多，故障排除难度较大。长时间的运维无序化，对内团队成员极度疲惫和不自信，对外主要表现为不再被各业务部门和其他IT兄弟团队所信任。一般创业初期的IT运维处于无序化较多，如何解决结束无序化的苦恼，解放生产力呢？答案更多被提及的是运维自动化。然而面对众说纷纭的运维自动化平台，如何结合自身条件进行落地实现呢？答案很多，有购买商业产品（价格真的不便宜），有自主研发，结合本人推行运维自动化的实际经验提醒各位，不管哪种方式，运维标准化和流程化一定是首先要做的，否则运维自动化只能是空中楼阁，欲求不得。</p>
 <p>什么是运维标准化和流程化呢？如果非要给出定义的话，那么我的定义是两个字：文档。</p>
 <p>运维的标准化和流程化首先要以文档的形式进行展示，并且能够指导日常运维工作。国有国法，家有家规，冰箱洗衣机都有说明书，运维标准化流程化就是运维工作的国法家规，运维工作如何进行的说明书。相比开发、测试等其他岗位，运维工作直面生产环境，每一步运维操作与生产系统能否正常运行息息相关，稍有不慎就易产生生产事故。并且运维自动化的落地实施也是要基于运维的标准化和流程化，所以作为运维管理的第一步，不可忽略。</p>
 <p>标准化和流程化的建设思路一般是包括三大部分：日常工作梳理、标准化和流程化制定、日常工作标准化和流程化执行。</p>
 <h2 id="一、运维工作梳理"><a class="header-anchor" href="#一、运维工作梳理">¶</a><strong>一、运维工作梳理</strong></h2>
 <p><strong>运维工作相对比较繁杂，结合实际运维工作，不同的公司又不同的划分方法，以某公司为例，大致分为数据中心（DC）运维、IT资源运维、服务运维、事件管理四个部分。</strong></p>
-<p><img src="http://typora.alongparty.cn/typora_img/20200317155414.png" alt=""></p>
+<p><img data-sizes="auto" data-src="http://typora.alongparty.cn/typora_img/20200317155414.png" alt="" class="lazyload"></p>
 <h3 id="数据中心运维"><a class="header-anchor" href="#数据中心运维">¶</a><strong>数据中心运维</strong></h3>
 <p>主要因为有自建IDC机房和部分托管在其他IDC机房的服务器，所以日常运维工作中有关于数据中心相关的工作，例如数据中心的设计和建设工作，数据中心日常巡检，数据中心权限管理、备件梳理管理、设备上下架等管理。如果是部署在云端的企业，对于数据中心的运维工作会少一些。</p>
 <h3 id="IT资源运维"><a class="header-anchor" href="#IT资源运维">¶</a><strong>IT资源运维</strong></h3>
@@ -692,208 +797,79 @@
 <h2 id="四、总结"><a class="header-anchor" href="#四、总结">¶</a><strong>四、总结</strong></h2>
 <p><strong>标准化和流程化作为运维管理体系的基石和运维自动化的第一步，在进行运维管理工作中必不可少，而且要实现彻底的标准统一。在进行落地的过程中，要适当的与运维自动化并行，加快自动化的脚步，只有这样才能最大程度的减少人为失误，减少人力成本，提高运维的效率和质量。</strong></p>
 
-      
+            
+        </article>
     </div>
-
     
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+    <div class="nexmoe-post">
+        <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E7%B3%BB%E7%BB%9F%E5%88%9D%E5%A7%8B%E5%8C%96/fail2ban/">
+            
+                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 66.66666666666666%;"> 
+                    <img data-src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg" data-sizes="auto" alt="fail2ban.md" class="lazyload">
+                    <h1>fail2ban.md</h1>
+                </div>
+            
+        </a>
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E7%B3%BB%E7%BB%9F%E5%88%9D%E5%A7%8B%E5%8C%96/fail2ban/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="曾胜龙">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="蜷缩的蜗牛">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E7%B3%BB%E7%BB%9F%E5%88%9D%E5%A7%8B%E5%8C%96/fail2ban/" class="post-title-link" itemprop="url">fail2ban.md</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-05-14 22:16:05" itemprop="dateCreated datePublished" datetime="2020-05-14T22:16:05+08:00">2020-05-14</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E5%88%9D%E5%A7%8B%E5%8C%96/" itemprop="url" rel="index"><span itemprop="name">系统初始化</span></a>
-                </span>
-            </span>
-
-          
-
+        <div class="nexmoe-post-meta nexmoe-rainbow">
+            <a><i class="nexmoefont icon-calendar-fill"></i>2020年05月14日</a>
+            <a><i class="nexmoefont icon-areachart"></i>72 字</a>
+            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 1 分钟</a>
         </div>
-      </header>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">yum install epel-release -y</span><br><span class="line">yum install fail2ban -y</span><br><span class="line"></span><br><span class="line">cat &lt;&lt;EOF &gt; /etc/fail2ban/jail.local</span><br><span class="line">[ssh-iptables]</span><br><span class="line">enabled  = <span class="literal">true</span></span><br><span class="line">filter   = sshd</span><br><span class="line">action   = iptables[name=SSH, port=ssh, protocol=tcp]</span><br><span class="line"><span class="comment">#           sendmail-whois[name=SSH, dest=root, sender=fail2ban@example.com]</span></span><br><span class="line">logpath  = /var/<span class="built_in">log</span>/secure</span><br><span class="line">maxretry = 5</span><br><span class="line">bantime = 2592000</span><br><span class="line">findtime = 1800</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">systemctl start fail2ban</span><br><span class="line">systemctl <span class="built_in">enable</span> fail2ban</span><br><span class="line"><span class="comment">## 解禁fail2ban-client set sshd unbanip &lt;ip&gt;</span></span><br><span class="line">fail2ban-client status</span><br><span class="line">fail2ban-client status sshd-iptables</span><br></pre></td></tr></table></figure>
+        <article>
+            
+                <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">yum install epel-release -y</span><br><span class="line">yum install fail2ban -y</span><br><span class="line"></span><br><span class="line">cat &lt;&lt;EOF &gt; /etc/fail2ban/jail.local</span><br><span class="line">[ssh-iptables]</span><br><span class="line">enabled  = <span class="literal">true</span></span><br><span class="line">filter   = sshd</span><br><span class="line">action   = iptables[name=SSH, port=ssh, protocol=tcp]</span><br><span class="line"><span class="comment">#           sendmail-whois[name=SSH, dest=root, sender=fail2ban@example.com]</span></span><br><span class="line">logpath  = /var/<span class="built_in">log</span>/secure</span><br><span class="line">maxretry = 5</span><br><span class="line">bantime = 2592000</span><br><span class="line">findtime = 1800</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">systemctl start fail2ban</span><br><span class="line">systemctl <span class="built_in">enable</span> fail2ban</span><br><span class="line"><span class="comment">## 解禁fail2ban-client set sshd unbanip &lt;ip&gt;</span></span><br><span class="line">fail2ban-client status</span><br><span class="line">fail2ban-client status sshd-iptables</span><br></pre></td></tr></table></figure>
 <p><a href="http://dig.ping.pe/seam.alongparty.cn:A:114.114.114.114" target="_blank" rel="noopener">域名解析检测</a></p>
 
-      
+            
+        </article>
     </div>
-
     
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+    <div class="nexmoe-post">
+        <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E7%B3%BB%E7%BB%9F%E5%88%9D%E5%A7%8B%E5%8C%96/filebeat/">
+            
+                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 66.66666666666666%;"> 
+                    <img data-src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg" data-sizes="auto" alt="filebeat.md" class="lazyload">
+                    <h1>filebeat.md</h1>
+                </div>
+            
+        </a>
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E7%B3%BB%E7%BB%9F%E5%88%9D%E5%A7%8B%E5%8C%96/filebeat/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="曾胜龙">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="蜷缩的蜗牛">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E7%B3%BB%E7%BB%9F%E5%88%9D%E5%A7%8B%E5%8C%96/filebeat/" class="post-title-link" itemprop="url">filebeat.md</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-05-14 22:16:05" itemprop="dateCreated datePublished" datetime="2020-05-14T22:16:05+08:00">2020-05-14</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E5%88%9D%E5%A7%8B%E5%8C%96/" itemprop="url" rel="index"><span itemprop="name">系统初始化</span></a>
-                </span>
-            </span>
-
-          
-
+        <div class="nexmoe-post-meta nexmoe-rainbow">
+            <a><i class="nexmoefont icon-calendar-fill"></i>2020年05月14日</a>
+            <a><i class="nexmoefont icon-areachart"></i>550 字</a>
+            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 3 分钟</a>
         </div>
-      </header>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /data/server/filebeat/data</span><br><span class="line">chown 1000.1000 /data/server/filebeat/data</span><br><span class="line"></span><br><span class="line">cat &lt;&lt; EOF &gt; /data/server/filebeat/filebeat.yml</span><br><span class="line">filebeat.inputs:</span><br><span class="line">- <span class="built_in">type</span>: <span class="built_in">log</span></span><br><span class="line">  enabled: <span class="literal">true</span></span><br><span class="line">  paths:</span><br><span class="line">    - /data/logs/apps/*/*master*.<span class="built_in">log</span></span><br><span class="line">    <span class="comment">#- c:\programdata\elasticsearch\logs\*</span></span><br><span class="line">  <span class="comment"># Exclude lines. A list of regular expressions to match. It drops the lines that are</span></span><br><span class="line">  <span class="comment"># matching any regular expression from the list.</span></span><br><span class="line">  <span class="comment">#exclude_lines: ['^DBG']</span></span><br><span class="line">  <span class="comment"># Include lines. A list of regular expressions to match. It exports the lines that are</span></span><br><span class="line">  <span class="comment"># matching any regular expression from the list.</span></span><br><span class="line">  <span class="comment">#include_lines: ['^ERR', '^WARN']</span></span><br><span class="line">  <span class="comment"># Exclude files. A list of regular expressions to match. Filebeat drops the files that</span></span><br><span class="line">  <span class="comment"># are matching any regular expression from the list. By default, no files are dropped.</span></span><br><span class="line">  exclude_files: [<span class="string">'.gz$'</span>]</span><br><span class="line">  <span class="comment"># Optional additional fields. These fields can be freely picked</span></span><br><span class="line">  <span class="comment"># to add additional information to the crawled log files for filtering</span></span><br><span class="line">  fields:</span><br><span class="line">      logIndex: springboot</span><br><span class="line">      docType: springboot</span><br><span class="line">  <span class="comment">#  level: debug</span></span><br><span class="line">  <span class="comment">#  review: 1</span></span><br><span class="line">  <span class="comment">### Multiline options</span></span><br><span class="line">  <span class="comment"># Multiline can be used for log messages spanning multiple lines. This is common</span></span><br><span class="line">  <span class="comment"># for Java Stack Traces or C-Line Continuation</span></span><br><span class="line">  <span class="comment"># The regexp Pattern that has to be matched. The example pattern matches all lines starting with [</span></span><br><span class="line">  <span class="comment">#multiline.pattern: ^\[</span></span><br><span class="line">  multiline.pattern: <span class="string">'^[0-9]&#123;4&#125;-[0-9]&#123;2&#125;-[0-9]&#123;2&#125;'</span></span><br><span class="line">  <span class="comment"># Defines if the pattern set under pattern should be negated or not. Default is false.</span></span><br><span class="line">  multiline.negate: <span class="literal">true</span></span><br><span class="line">  <span class="comment"># Match can be set to "after" or "before". It is used to define if lines should be append to a pattern</span></span><br><span class="line">  <span class="comment"># that was (not) matched before or after or as long as a pattern is not matched based on negate.</span></span><br><span class="line">  <span class="comment"># Note: After is the equivalent to previous and before is the equivalent to to next in Logstash</span></span><br><span class="line">  multiline.match: after</span><br><span class="line">filebeat.config.modules:</span><br><span class="line">  <span class="comment"># Glob pattern for configuration loading</span></span><br><span class="line">  path: \<span class="variable">$&#123;path.config&#125;</span>/modules.d/*.yml</span><br><span class="line">  <span class="comment"># Set to true to enable config reloading</span></span><br><span class="line">  reload.enabled: <span class="literal">false</span></span><br><span class="line">  <span class="comment"># Period on which files under path should be checked for changes</span></span><br><span class="line">  <span class="comment">#reload.period: 10s</span></span><br><span class="line">setup.template.settings:</span><br><span class="line">  index.number_of_shards: 3</span><br><span class="line">  <span class="comment">#index.codec: best_compression</span></span><br><span class="line">  <span class="comment">#_source.enabled: false</span></span><br><span class="line">tags: [<span class="string">"spring-log"</span>]</span><br><span class="line">setup.kibana:</span><br><span class="line">  <span class="comment"># Kibana Host</span></span><br><span class="line">  <span class="comment"># Scheme and port can be left out and will be set to the default (http and 5601)</span></span><br><span class="line">  <span class="comment"># In case you specify and additional path, the scheme is required: http://localhost:5601/path</span></span><br><span class="line">  <span class="comment"># IPv6 addresses should always be defined as: https://[2001:db8::1]:5601</span></span><br><span class="line">  <span class="comment">#host: "localhost:5601"</span></span><br><span class="line">  <span class="comment"># Kibana Space ID</span></span><br><span class="line">  <span class="comment"># ID of the Kibana Space into which the dashboards should be loaded. By default,</span></span><br><span class="line">  <span class="comment"># the Default Space will be used.</span></span><br><span class="line">  <span class="comment">#space.id:</span></span><br><span class="line">  <span class="comment"># Array of hosts to connect to.</span></span><br><span class="line">  <span class="comment"># Enabled ilm (beta) to use index lifecycle management instead daily indices.</span></span><br><span class="line">  <span class="comment">#ilm.enabled: false</span></span><br><span class="line">  <span class="comment"># Optional protocol and basic auth credentials.</span></span><br><span class="line">  <span class="comment">#protocol: "https"</span></span><br><span class="line">  <span class="comment">#username: "elastic"</span></span><br><span class="line">  <span class="comment">#password: "changeme"</span></span><br><span class="line">output.logstash:</span><br><span class="line">  <span class="comment"># The Logstash hosts</span></span><br><span class="line">  hosts: [<span class="string">"192.168.16.148:25044"</span>]</span><br><span class="line">  <span class="comment"># Optional SSL. By default is off.</span></span><br><span class="line">  <span class="comment"># List of root certificates for HTTPS server verifications</span></span><br><span class="line">  <span class="comment">#ssl.certificate_authorities: ["/etc/pki/root/ca.pem"]</span></span><br><span class="line">  <span class="comment"># Certificate for SSL client authentication</span></span><br><span class="line">  <span class="comment">#ssl.certificate: "/etc/pki/client/cert.pem"</span></span><br><span class="line">  <span class="comment"># Client Certificate Key</span></span><br><span class="line">  <span class="comment">#ssl.key: "/etc/pki/client/cert.key"</span></span><br><span class="line">processors:</span><br><span class="line">  - add_host_metadata: ~</span><br><span class="line">  - add_cloud_metadata: ~</span><br><span class="line">logging.level: debug</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+        <article>
+            
+                <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /data/server/filebeat/data</span><br><span class="line">chown 1000.1000 /data/server/filebeat/data</span><br><span class="line"></span><br><span class="line">cat &lt;&lt; EOF &gt; /data/server/filebeat/filebeat.yml</span><br><span class="line">filebeat.inputs:</span><br><span class="line">- <span class="built_in">type</span>: <span class="built_in">log</span></span><br><span class="line">  enabled: <span class="literal">true</span></span><br><span class="line">  paths:</span><br><span class="line">    - /data/logs/apps/*/*master*.<span class="built_in">log</span></span><br><span class="line">    <span class="comment">#- c:\programdata\elasticsearch\logs\*</span></span><br><span class="line">  <span class="comment"># Exclude lines. A list of regular expressions to match. It drops the lines that are</span></span><br><span class="line">  <span class="comment"># matching any regular expression from the list.</span></span><br><span class="line">  <span class="comment">#exclude_lines: ['^DBG']</span></span><br><span class="line">  <span class="comment"># Include lines. A list of regular expressions to match. It exports the lines that are</span></span><br><span class="line">  <span class="comment"># matching any regular expression from the list.</span></span><br><span class="line">  <span class="comment">#include_lines: ['^ERR', '^WARN']</span></span><br><span class="line">  <span class="comment"># Exclude files. A list of regular expressions to match. Filebeat drops the files that</span></span><br><span class="line">  <span class="comment"># are matching any regular expression from the list. By default, no files are dropped.</span></span><br><span class="line">  exclude_files: [<span class="string">'.gz$'</span>]</span><br><span class="line">  <span class="comment"># Optional additional fields. These fields can be freely picked</span></span><br><span class="line">  <span class="comment"># to add additional information to the crawled log files for filtering</span></span><br><span class="line">  fields:</span><br><span class="line">      logIndex: springboot</span><br><span class="line">      docType: springboot</span><br><span class="line">  <span class="comment">#  level: debug</span></span><br><span class="line">  <span class="comment">#  review: 1</span></span><br><span class="line">  <span class="comment">### Multiline options</span></span><br><span class="line">  <span class="comment"># Multiline can be used for log messages spanning multiple lines. This is common</span></span><br><span class="line">  <span class="comment"># for Java Stack Traces or C-Line Continuation</span></span><br><span class="line">  <span class="comment"># The regexp Pattern that has to be matched. The example pattern matches all lines starting with [</span></span><br><span class="line">  <span class="comment">#multiline.pattern: ^\[</span></span><br><span class="line">  multiline.pattern: <span class="string">'^[0-9]&#123;4&#125;-[0-9]&#123;2&#125;-[0-9]&#123;2&#125;'</span></span><br><span class="line">  <span class="comment"># Defines if the pattern set under pattern should be negated or not. Default is false.</span></span><br><span class="line">  multiline.negate: <span class="literal">true</span></span><br><span class="line">  <span class="comment"># Match can be set to "after" or "before". It is used to define if lines should be append to a pattern</span></span><br><span class="line">  <span class="comment"># that was (not) matched before or after or as long as a pattern is not matched based on negate.</span></span><br><span class="line">  <span class="comment"># Note: After is the equivalent to previous and before is the equivalent to to next in Logstash</span></span><br><span class="line">  multiline.match: after</span><br><span class="line">filebeat.config.modules:</span><br><span class="line">  <span class="comment"># Glob pattern for configuration loading</span></span><br><span class="line">  path: \<span class="variable">$&#123;path.config&#125;</span>/modules.d/*.yml</span><br><span class="line">  <span class="comment"># Set to true to enable config reloading</span></span><br><span class="line">  reload.enabled: <span class="literal">false</span></span><br><span class="line">  <span class="comment"># Period on which files under path should be checked for changes</span></span><br><span class="line">  <span class="comment">#reload.period: 10s</span></span><br><span class="line">setup.template.settings:</span><br><span class="line">  index.number_of_shards: 3</span><br><span class="line">  <span class="comment">#index.codec: best_compression</span></span><br><span class="line">  <span class="comment">#_source.enabled: false</span></span><br><span class="line">tags: [<span class="string">"spring-log"</span>]</span><br><span class="line">setup.kibana:</span><br><span class="line">  <span class="comment"># Kibana Host</span></span><br><span class="line">  <span class="comment"># Scheme and port can be left out and will be set to the default (http and 5601)</span></span><br><span class="line">  <span class="comment"># In case you specify and additional path, the scheme is required: http://localhost:5601/path</span></span><br><span class="line">  <span class="comment"># IPv6 addresses should always be defined as: https://[2001:db8::1]:5601</span></span><br><span class="line">  <span class="comment">#host: "localhost:5601"</span></span><br><span class="line">  <span class="comment"># Kibana Space ID</span></span><br><span class="line">  <span class="comment"># ID of the Kibana Space into which the dashboards should be loaded. By default,</span></span><br><span class="line">  <span class="comment"># the Default Space will be used.</span></span><br><span class="line">  <span class="comment">#space.id:</span></span><br><span class="line">  <span class="comment"># Array of hosts to connect to.</span></span><br><span class="line">  <span class="comment"># Enabled ilm (beta) to use index lifecycle management instead daily indices.</span></span><br><span class="line">  <span class="comment">#ilm.enabled: false</span></span><br><span class="line">  <span class="comment"># Optional protocol and basic auth credentials.</span></span><br><span class="line">  <span class="comment">#protocol: "https"</span></span><br><span class="line">  <span class="comment">#username: "elastic"</span></span><br><span class="line">  <span class="comment">#password: "changeme"</span></span><br><span class="line">output.logstash:</span><br><span class="line">  <span class="comment"># The Logstash hosts</span></span><br><span class="line">  hosts: [<span class="string">"192.168.16.148:25044"</span>]</span><br><span class="line">  <span class="comment"># Optional SSL. By default is off.</span></span><br><span class="line">  <span class="comment"># List of root certificates for HTTPS server verifications</span></span><br><span class="line">  <span class="comment">#ssl.certificate_authorities: ["/etc/pki/root/ca.pem"]</span></span><br><span class="line">  <span class="comment"># Certificate for SSL client authentication</span></span><br><span class="line">  <span class="comment">#ssl.certificate: "/etc/pki/client/cert.pem"</span></span><br><span class="line">  <span class="comment"># Client Certificate Key</span></span><br><span class="line">  <span class="comment">#ssl.key: "/etc/pki/client/cert.key"</span></span><br><span class="line">processors:</span><br><span class="line">  - add_host_metadata: ~</span><br><span class="line">  - add_cloud_metadata: ~</span><br><span class="line">logging.level: debug</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">docker run -d --net host --name filebeat\</span><br><span class="line">           -v /data/server/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml \</span><br><span class="line">           -v /data/logs:/data/logs  \</span><br><span class="line">           -v /data/server/filebeat/data:/usr/share/filebeat/data \</span><br><span class="line">           -e TZ=<span class="string">"Asia/Shanghai"</span> \</span><br><span class="line">           registry.cn-hangzhou.aliyuncs.com/zhijing/filebeat:6.7.1 &gt;&gt;/dev/null</span><br></pre></td></tr></table></figure>
 
-      
+            
+        </article>
     </div>
-
     
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+    <div class="nexmoe-post">
+        <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E7%B3%BB%E7%BB%9F%E5%88%9D%E5%A7%8B%E5%8C%96/openldap%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86/">
+            
+                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 66.66666666666666%;"> 
+                    <img data-src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg" data-sizes="auto" alt="openldap用户管理.md" class="lazyload">
+                    <h1>openldap用户管理.md</h1>
+                </div>
+            
+        </a>
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E7%B3%BB%E7%BB%9F%E5%88%9D%E5%A7%8B%E5%8C%96/openldap%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="曾胜龙">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="蜷缩的蜗牛">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E7%B3%BB%E7%BB%9F%E5%88%9D%E5%A7%8B%E5%8C%96/openldap%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86/" class="post-title-link" itemprop="url">openldap用户管理.md</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-05-14 22:16:05" itemprop="dateCreated datePublished" datetime="2020-05-14T22:16:05+08:00">2020-05-14</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E5%88%9D%E5%A7%8B%E5%8C%96/" itemprop="url" rel="index"><span itemprop="name">系统初始化</span></a>
-                </span>
-            </span>
-
-          
-
+        <div class="nexmoe-post-meta nexmoe-rainbow">
+            <a><i class="nexmoefont icon-calendar-fill"></i>2020年05月14日</a>
+            <a><i class="nexmoefont icon-areachart"></i>302 字</a>
+            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 1 分钟</a>
         </div>
-      </header>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h4 id="添加用户"><a class="header-anchor" href="#添加用户">¶</a>添加用户</h4>
+        <article>
+            
+                <h4 id="添加用户"><a class="header-anchor" href="#添加用户">¶</a>添加用户</h4>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">cat &lt;&lt; EOF &gt; zengshenglong.ldif</span><br><span class="line">dn: uid=zengshenglong,ou=People,dc=baibu,dc=la</span><br><span class="line">uid: zengshenglong</span><br><span class="line">cn: zengshenglong</span><br><span class="line">objectClass: account</span><br><span class="line">objectClass: posixAccount</span><br><span class="line">objectClass: top</span><br><span class="line">objectClass: shadowAccount</span><br><span class="line">shadowMin: 0</span><br><span class="line">shadowMax: 99999</span><br><span class="line">shadowWarning: 7</span><br><span class="line">loginShell: /bin/bash</span><br><span class="line">uidNumber: 3014</span><br><span class="line">gidNumber: 3001</span><br><span class="line">homeDirectory: /home/zengshenglong</span><br><span class="line">gecos: zengshenglong</span><br><span class="line">userPassword:: e1NTSEF9RFFXU2NJbk1RQnBxL3Y3K20rL3U4Q0d3cURJMGsvREI</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">ldapadd -h ldap.baibu.la -p 389 -D <span class="string">'cn=admin,dc=baibu,dc=la'</span> -w kbsonlong -f zengshenglong.ldif</span><br></pre></td></tr></table></figure>
 <h4 id="查找用户"><a class="header-anchor" href="#查找用户">¶</a>查找用户</h4>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ldapsearch -x -h ldap.baibu.la -p 389 -b <span class="string">"dc=baibu,dc=la"</span> -D <span class="string">"cn=admin,dc=baibu,dc=la"</span> -w kbsonlong <span class="string">"uid=zengshenglong"</span></span><br></pre></td></tr></table></figure>
@@ -901,139 +877,53 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ldappasswd -x -h ldap.baibu.la -p 389 -D <span class="string">'cn=admin,dc=baibu,dc=la'</span> -w kbsonlong  <span class="string">'uid=zengshenglong,ou=People,dc=baibu,dc=la'</span> -s zengshenglong</span><br></pre></td></tr></table></figure>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">dn: uid=zengshenglong,ou=People,dc=alongparty,dc=cn</span><br><span class="line">uid: zengshenglong                       // OpenLDAP 的 uid 信息</span><br><span class="line">cn: zengshenglong</span><br><span class="line">sn: zengshenglong</span><br><span class="line">givenName: zengshenglong</span><br><span class="line">displayName: zengshenglong</span><br><span class="line">objectClass: posixAccount</span><br><span class="line">objectClass: top</span><br><span class="line">objectClass: person</span><br><span class="line">objectClass: shadowAccount</span><br><span class="line">objectClass: inetOrgPerson</span><br><span class="line">uidNumber: 1009                  // 账号的 UID</span><br><span class="line">gidNumber: 1009                  // 账号的 GID</span><br><span class="line">gecos: System Manager</span><br><span class="line">loginShell: /bin/bash            // 用户登入的 SHELL</span><br><span class="line">homeDirectory: /home/zengshenglong      // 用户的主目录指定</span><br><span class="line">userPassword: zengshenglong             // 明文密码</span><br><span class="line">shadowLastChange: 17654          // 用户最后一次修改密码的实际，从 1970-01-01 时起</span><br><span class="line">shadowMin: 0                     // 密码将允许修改的天数（0代表任何时间）</span><br><span class="line">shadowMax: 999999                // 系统强制用户修改为新密码的天数（1代表永远不能进行修改）</span><br><span class="line">shadowWarning: 7                 // 密码过期 7 天进行报告</span><br><span class="line">shadowExpire: -1                 // 密码过期后，账号状态</span><br><span class="line">employeeNumber: 18002            // 工号相关信息</span><br><span class="line">homePhone: 020-xxxxxxxx          // 家庭电话</span><br><span class="line">mobile: 136xxxxxxxxx             // 手机信息</span><br><span class="line">mail: alongparty@gmai.com        // 电子邮箱</span><br><span class="line">postalAddress: Guangzhou         // 住址信息</span><br><span class="line">initials: Test</span><br></pre></td></tr></table></figure>
 
-      
+            
+        </article>
     </div>
-
     
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+    <div class="nexmoe-post">
+        <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Harbor/">
+            
+                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 66.66666666666666%;"> 
+                    <img data-src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg" data-sizes="auto" alt="Harbor.md" class="lazyload">
+                    <h1>Harbor.md</h1>
+                </div>
+            
+        </a>
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Harbor/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="曾胜龙">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="蜷缩的蜗牛">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Harbor/" class="post-title-link" itemprop="url">Harbor.md</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-05-14 22:16:05" itemprop="dateCreated datePublished" datetime="2020-05-14T22:16:05+08:00">2020-05-14</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%99%9A%E6%8B%9F%E5%8C%96/" itemprop="url" rel="index"><span itemprop="name">虚拟化</span></a>
-                </span>
-            </span>
-
-          
-
+        <div class="nexmoe-post-meta nexmoe-rainbow">
+            <a><i class="nexmoefont icon-calendar-fill"></i>2020年05月14日</a>
+            <a><i class="nexmoefont icon-areachart"></i>353 字</a>
+            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 2 分钟</a>
         </div>
-      </header>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
+        <article>
+            
+                <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">DOMAIN=baibu.la</span><br><span class="line">HARBOR_ROOT_DIR=/data/server/harbor</span><br><span class="line">HARBOR_VERSION=1.10.1</span><br><span class="line">HARBOR_ADMIN_PASSWORD=kbsonlong</span><br><span class="line"></span><br><span class="line">wget https://github.com/goharbor/harbor/releases/download/v<span class="variable">$&#123;HARBOR_VERSION&#125;</span>/harbor-online-installer-v<span class="variable">$&#123;HARBOR_VERSION&#125;</span>.tgz</span><br><span class="line"></span><br><span class="line">tar zxf harbor-online-installer-v<span class="variable">$&#123;HARBOR_VERSION&#125;</span>.tgz</span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> harbor/</span><br><span class="line">yum install openssl -y</span><br><span class="line">openssl genrsa -out ca.key 4096</span><br><span class="line"></span><br><span class="line">openssl req -x509 -new -nodes -sha512 -days 3650 \</span><br><span class="line"> -subj <span class="string">"/C=CN/ST=Guangdong/L=Guangzhou/O=zhijing/OU=IT/CN=harbor.<span class="variable">$&#123;DOMAIN&#125;</span>"</span> \</span><br><span class="line"> -key ca.key \</span><br><span class="line"> -out ca.crt</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">openssl genrsa -out harbor.<span class="variable">$&#123;DOMAIN&#125;</span>.key 4096</span><br><span class="line"> </span><br><span class="line">openssl req -sha512 -new \</span><br><span class="line">    -subj <span class="string">"/C=CN/ST=Guangdong/L=Guangzhou/O=zhijing/OU=IT/CN=harbor.<span class="variable">$&#123;DOMAIN&#125;</span>"</span> \</span><br><span class="line">    -key harbor.<span class="variable">$&#123;DOMAIN&#125;</span>.key \</span><br><span class="line">    -out harbor.<span class="variable">$&#123;DOMAIN&#125;</span>.csr</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">cat &gt; v3.ext &lt;&lt;-EOF</span><br><span class="line">authorityKeyIdentifier=keyid,issuer</span><br><span class="line">basicConstraints=CA:FALSE</span><br><span class="line">keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment</span><br><span class="line">extendedKeyUsage = serverAuth</span><br><span class="line">subjectAltName = @alt_names</span><br><span class="line"></span><br><span class="line">[alt_names]</span><br><span class="line">DNS.1=harbor.<span class="variable">$&#123;DOMAIN&#125;</span></span><br><span class="line">DNS.2=<span class="variable">$&#123;DOMAIN&#125;</span></span><br><span class="line">DNS.3=`hostname`</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">openssl x509 -req -sha512 -days 3650 \</span><br><span class="line">    -extfile v3.ext \</span><br><span class="line">    -CA ca.crt -CAkey ca.key -CAcreateserial \</span><br><span class="line">    -<span class="keyword">in</span> harbor.<span class="variable">$&#123;DOMAIN&#125;</span>.csr \</span><br><span class="line">    -out harbor.<span class="variable">$&#123;DOMAIN&#125;</span>.crt</span><br><span class="line">    </span><br><span class="line">mkdir -p <span class="variable">$&#123;HARBOR_ROOT_DIR&#125;</span>/cert</span><br><span class="line"></span><br><span class="line">cp harbor.<span class="variable">$&#123;DOMAIN&#125;</span>.crt <span class="variable">$&#123;HARBOR_ROOT_DIR&#125;</span>/cert</span><br><span class="line">cp harbor.<span class="variable">$&#123;DOMAIN&#125;</span>.key <span class="variable">$&#123;HARBOR_ROOT_DIR&#125;</span>/cert</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">##docker配置客户端证书</span></span><br><span class="line">openssl x509 -inform PEM -<span class="keyword">in</span> harbor.<span class="variable">$&#123;DOMAIN&#125;</span>.crt -out harbor.<span class="variable">$&#123;DOMAIN&#125;</span>.cert</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">mkdir -p /etc/docker/certs.d/harbor.<span class="variable">$&#123;DOMAIN&#125;</span>/</span><br><span class="line">cp harbor.<span class="variable">$&#123;DOMAIN&#125;</span>.cert /etc/docker/certs.d/harbor.<span class="variable">$&#123;DOMAIN&#125;</span>/</span><br><span class="line">cp harbor.<span class="variable">$&#123;DOMAIN&#125;</span>.key /etc/docker/certs.d/harbor.<span class="variable">$&#123;DOMAIN&#125;</span>/</span><br><span class="line">cp ca.crt /etc/docker/certs.d/harbor.<span class="variable">$&#123;DOMAIN&#125;</span>/</span><br><span class="line"></span><br><span class="line">systemctl restart docker</span><br><span class="line"></span><br><span class="line">sed -i <span class="string">"s/reg.mydomain.com/harbor.<span class="variable">$&#123;DOMAIN&#125;</span>/g"</span> harbor.yml</span><br><span class="line"></span><br><span class="line">sed -i <span class="string">"s#/your/certificate/path#<span class="variable">$&#123;HARBOR_ROOT_DIR&#125;</span>/cert/harbor.<span class="variable">$&#123;DOMAIN&#125;</span>.crt#g"</span> harbor.yml</span><br><span class="line"></span><br><span class="line">sed -i <span class="string">"s#/your/private/key/path#<span class="variable">$&#123;HARBOR_ROOT_DIR&#125;</span>/cert/harbor.<span class="variable">$&#123;DOMAIN&#125;</span>.key#g"</span> harbor.yml</span><br><span class="line"></span><br><span class="line">sed -i <span class="string">"s#data_volume: /data#data_volume: <span class="variable">$&#123;HARBOR_ROOT_DIR&#125;</span>/data#g"</span> harbor.yml</span><br><span class="line"></span><br><span class="line">sed -i <span class="string">"s/Harbor12345/<span class="variable">$&#123;HARBOR_ADMIN_PASSWORD&#125;</span>/g"</span> harbor.yml</span><br><span class="line"></span><br><span class="line">./prepare</span><br><span class="line"></span><br><span class="line">./install.sh --with-notary --with-clair --with-chartmuseum</span><br></pre></td></tr></table></figure>
 
-      
-          <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">DOMAIN=baibu.la</span><br><span class="line">HARBOR_ROOT_DIR=/data/server/harbor</span><br><span class="line">HARBOR_VERSION=1.10.1</span><br><span class="line">HARBOR_ADMIN_PASSWORD=kbsonlong</span><br><span class="line"></span><br><span class="line">wget https://github.com/goharbor/harbor/releases/download/v<span class="variable">$&#123;HARBOR_VERSION&#125;</span>/harbor-online-installer-v<span class="variable">$&#123;HARBOR_VERSION&#125;</span>.tgz</span><br><span class="line"></span><br><span class="line">tar zxf harbor-online-installer-v<span class="variable">$&#123;HARBOR_VERSION&#125;</span>.tgz</span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> harbor/</span><br><span class="line">yum install openssl -y</span><br><span class="line">openssl genrsa -out ca.key 4096</span><br><span class="line"></span><br><span class="line">openssl req -x509 -new -nodes -sha512 -days 3650 \</span><br><span class="line"> -subj <span class="string">"/C=CN/ST=Guangdong/L=Guangzhou/O=zhijing/OU=IT/CN=harbor.<span class="variable">$&#123;DOMAIN&#125;</span>"</span> \</span><br><span class="line"> -key ca.key \</span><br><span class="line"> -out ca.crt</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">openssl genrsa -out harbor.<span class="variable">$&#123;DOMAIN&#125;</span>.key 4096</span><br><span class="line"> </span><br><span class="line">openssl req -sha512 -new \</span><br><span class="line">    -subj <span class="string">"/C=CN/ST=Guangdong/L=Guangzhou/O=zhijing/OU=IT/CN=harbor.<span class="variable">$&#123;DOMAIN&#125;</span>"</span> \</span><br><span class="line">    -key harbor.<span class="variable">$&#123;DOMAIN&#125;</span>.key \</span><br><span class="line">    -out harbor.<span class="variable">$&#123;DOMAIN&#125;</span>.csr</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">cat &gt; v3.ext &lt;&lt;-EOF</span><br><span class="line">authorityKeyIdentifier=keyid,issuer</span><br><span class="line">basicConstraints=CA:FALSE</span><br><span class="line">keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment</span><br><span class="line">extendedKeyUsage = serverAuth</span><br><span class="line">subjectAltName = @alt_names</span><br><span class="line"></span><br><span class="line">[alt_names]</span><br><span class="line">DNS.1=harbor.<span class="variable">$&#123;DOMAIN&#125;</span></span><br><span class="line">DNS.2=<span class="variable">$&#123;DOMAIN&#125;</span></span><br><span class="line">DNS.3=`hostname`</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">openssl x509 -req -sha512 -days 3650 \</span><br><span class="line">    -extfile v3.ext \</span><br><span class="line">    -CA ca.crt -CAkey ca.key -CAcreateserial \</span><br><span class="line">    -<span class="keyword">in</span> harbor.<span class="variable">$&#123;DOMAIN&#125;</span>.csr \</span><br><span class="line">    -out harbor.<span class="variable">$&#123;DOMAIN&#125;</span>.crt</span><br><span class="line">    </span><br><span class="line">mkdir -p <span class="variable">$&#123;HARBOR_ROOT_DIR&#125;</span>/cert</span><br><span class="line"></span><br><span class="line">cp harbor.<span class="variable">$&#123;DOMAIN&#125;</span>.crt <span class="variable">$&#123;HARBOR_ROOT_DIR&#125;</span>/cert</span><br><span class="line">cp harbor.<span class="variable">$&#123;DOMAIN&#125;</span>.key <span class="variable">$&#123;HARBOR_ROOT_DIR&#125;</span>/cert</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">##docker配置客户端证书</span></span><br><span class="line">openssl x509 -inform PEM -<span class="keyword">in</span> harbor.<span class="variable">$&#123;DOMAIN&#125;</span>.crt -out harbor.<span class="variable">$&#123;DOMAIN&#125;</span>.cert</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">mkdir -p /etc/docker/certs.d/harbor.<span class="variable">$&#123;DOMAIN&#125;</span>/</span><br><span class="line">cp harbor.<span class="variable">$&#123;DOMAIN&#125;</span>.cert /etc/docker/certs.d/harbor.<span class="variable">$&#123;DOMAIN&#125;</span>/</span><br><span class="line">cp harbor.<span class="variable">$&#123;DOMAIN&#125;</span>.key /etc/docker/certs.d/harbor.<span class="variable">$&#123;DOMAIN&#125;</span>/</span><br><span class="line">cp ca.crt /etc/docker/certs.d/harbor.<span class="variable">$&#123;DOMAIN&#125;</span>/</span><br><span class="line"></span><br><span class="line">systemctl restart docker</span><br><span class="line"></span><br><span class="line">sed -i <span class="string">"s/reg.mydomain.com/harbor.<span class="variable">$&#123;DOMAIN&#125;</span>/g"</span> harbor.yml</span><br><span class="line"></span><br><span class="line">sed -i <span class="string">"s#/your/certificate/path#<span class="variable">$&#123;HARBOR_ROOT_DIR&#125;</span>/cert/harbor.<span class="variable">$&#123;DOMAIN&#125;</span>.crt#g"</span> harbor.yml</span><br><span class="line"></span><br><span class="line">sed -i <span class="string">"s#/your/private/key/path#<span class="variable">$&#123;HARBOR_ROOT_DIR&#125;</span>/cert/harbor.<span class="variable">$&#123;DOMAIN&#125;</span>.key#g"</span> harbor.yml</span><br><span class="line"></span><br><span class="line">sed -i <span class="string">"s#data_volume: /data#data_volume: <span class="variable">$&#123;HARBOR_ROOT_DIR&#125;</span>/data#g"</span> harbor.yml</span><br><span class="line"></span><br><span class="line">sed -i <span class="string">"s/Harbor12345/<span class="variable">$&#123;HARBOR_ADMIN_PASSWORD&#125;</span>/g"</span> harbor.yml</span><br><span class="line"></span><br><span class="line">./prepare</span><br><span class="line"></span><br><span class="line">./install.sh --with-notary --with-clair --with-chartmuseum</span><br></pre></td></tr></table></figure>
-
-      
+            
+        </article>
     </div>
-
     
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+    <div class="nexmoe-post">
+        <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%B6%88%E6%81%AF%E7%B3%BB%E7%BB%9F%E4%B8%AD%E9%97%B4%E4%BB%B6/Kafka/Kafka%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C/">
+            
+                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 66.66666666666666%;"> 
+                    <img data-src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg" data-sizes="auto" alt="Kafka常用操作.md" class="lazyload">
+                    <h1>Kafka常用操作.md</h1>
+                </div>
+            
+        </a>
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%B6%88%E6%81%AF%E7%B3%BB%E7%BB%9F%E4%B8%AD%E9%97%B4%E4%BB%B6/Kafka/Kafka%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="曾胜龙">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="蜷缩的蜗牛">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%B6%88%E6%81%AF%E7%B3%BB%E7%BB%9F%E4%B8%AD%E9%97%B4%E4%BB%B6/Kafka/Kafka%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C/" class="post-title-link" itemprop="url">Kafka常用操作.md</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-05-14 22:16:05" itemprop="dateCreated datePublished" datetime="2020-05-14T22:16:05+08:00">2020-05-14</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Kafka/" itemprop="url" rel="index"><span itemprop="name">Kafka</span></a>
-                </span>
-            </span>
-
-          
-
+        <div class="nexmoe-post-meta nexmoe-rainbow">
+            <a><i class="nexmoefont icon-calendar-fill"></i>2020年05月14日</a>
+            <a><i class="nexmoefont icon-areachart"></i>916 字</a>
+            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 4 分钟</a>
         </div>
-      </header>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="生产者发送消息"><a class="header-anchor" href="#生产者发送消息">¶</a>生产者发送消息</h2>
+        <article>
+            
+                <h2 id="生产者发送消息"><a class="header-anchor" href="#生产者发送消息">¶</a>生产者发送消息</h2>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="built_in">exec</span> -ti dev-kafka9094 /app/bin/kafka-console-producer.sh --broker-list localhost:9094 --topic my-topic</span><br></pre></td></tr></table></figure>
 <h2 id="以消费组方式消费消息"><a class="header-anchor" href="#以消费组方式消费消息">¶</a>以消费组方式消费消息</h2>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="built_in">exec</span> -ti dev-kafka9094 /app/bin/kafka-console-consumer.sh --bootstrap-server localhost:9094 --topic my-topic --from-beginning --group <span class="built_in">test</span>-group</span><br></pre></td></tr></table></figure>
@@ -1088,139 +978,53 @@
 <p>可以看到副本集已经修改为2.</p>
 </blockquote>
 
-      
+            
+        </article>
     </div>
-
     
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+    <div class="nexmoe-post">
+        <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%B6%88%E6%81%AF%E7%B3%BB%E7%BB%9F%E4%B8%AD%E9%97%B4%E4%BB%B6/Kafka/%E5%AE%89%E8%A3%85/">
+            
+                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 66.66666666666666%;"> 
+                    <img data-src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg" data-sizes="auto" alt="安装.md" class="lazyload">
+                    <h1>安装.md</h1>
+                </div>
+            
+        </a>
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%B6%88%E6%81%AF%E7%B3%BB%E7%BB%9F%E4%B8%AD%E9%97%B4%E4%BB%B6/Kafka/%E5%AE%89%E8%A3%85/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="曾胜龙">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="蜷缩的蜗牛">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%B6%88%E6%81%AF%E7%B3%BB%E7%BB%9F%E4%B8%AD%E9%97%B4%E4%BB%B6/Kafka/%E5%AE%89%E8%A3%85/" class="post-title-link" itemprop="url">安装.md</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-05-14 22:16:05" itemprop="dateCreated datePublished" datetime="2020-05-14T22:16:05+08:00">2020-05-14</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Kafka/" itemprop="url" rel="index"><span itemprop="name">Kafka</span></a>
-                </span>
-            </span>
-
-          
-
+        <div class="nexmoe-post-meta nexmoe-rainbow">
+            <a><i class="nexmoefont icon-calendar-fill"></i>2020年05月14日</a>
+            <a><i class="nexmoefont icon-areachart"></i>1.2k 字</a>
+            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 7 分钟</a>
         </div>
-      </header>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
+        <article>
+            
+                <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br></pre></td><td class="code"><pre><span class="line">安装ZK</span><br><span class="line">sudo docker run -d --restart=always --net=host \</span><br><span class="line">                  --name=zookeeper \</span><br><span class="line">                  --<span class="built_in">log</span>-driver json-file --<span class="built_in">log</span>-opt max-size=10m --<span class="built_in">log</span>-opt max-file=3 \</span><br><span class="line">                  -v /data/server/zookeeper/conf:/conf   \</span><br><span class="line">                  -v /data/server/zookeeper/data:/data \</span><br><span class="line">                  -v /data/server/zookeeper/logs:/datalog \</span><br><span class="line">                  zookeeper</span><br><span class="line">安装kafka集群</span><br><span class="line">cat &lt;&lt; EOF &gt; /data/server/dev-kafka9093/conf/kafka-startup.tmpl</span><br><span class="line">[</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="string">"sh"</span>:<span class="string">"/app/bin/kafka-server-start.sh"</span>,</span><br><span class="line">    <span class="string">"./config/server.properties"</span>:<span class="string">""</span>,</span><br><span class="line">    <span class="string">"--override"</span>:<span class="string">"-Djava.net.preferIPv4Stack=true"</span>,</span><br><span class="line">    <span class="string">"--override"</span>:<span class="string">"delete.topic.enable=true"</span>,</span><br><span class="line">    <span class="string">"--override"</span>:<span class="string">"advertised.host.name=<span class="variable">$&#123;HOSTNAME&#125;</span>"</span>,</span><br><span class="line">    <span class="string">"--override"</span>:<span class="string">"advertised.port=<span class="variable">$&#123;PORT&#125;</span>"</span>,</span><br><span class="line">    <span class="string">"--override"</span>:<span class="string">"zookeeper.connect=172.17.0.8:2181/kafka"</span></span><br><span class="line">  &#125;</span><br><span class="line">]</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">cat &lt;&lt; EOF &gt; /data/server/dev-kafka9093/conf/server.properties.tmpl</span><br><span class="line"><span class="comment"># Licensed to the Apache Software Foundation (ASF) under one or more</span></span><br><span class="line"><span class="comment"># contributor license agreements.  See the NOTICE file distributed with</span></span><br><span class="line"><span class="comment"># this work for additional information regarding copyright ownership.</span></span><br><span class="line"><span class="comment"># The ASF licenses this file to You under the Apache License, Version 2.0</span></span><br><span class="line"><span class="comment"># (the "License"); you may not use this file except in compliance with</span></span><br><span class="line"><span class="comment"># the License.  You may obtain a copy of the License at</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#    http://www.apache.org/licenses/LICENSE-2.0</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Unless required by applicable law or agreed to in writing, software</span></span><br><span class="line"><span class="comment"># distributed under the License is distributed on an "AS IS" BASIS,</span></span><br><span class="line"><span class="comment"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span></span><br><span class="line"><span class="comment"># See the License for the specific language governing permissions and</span></span><br><span class="line"><span class="comment"># limitations under the License.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># see kafka.server.KafkaConfig for additional details and defaults</span></span><br><span class="line"></span><br><span class="line"><span class="comment">############################# Server Basics #############################</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The id of the broker. This must be set to a unique integer for each broker.</span></span><br><span class="line">broker.id=<span class="variable">$&#123;ID&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">############################# Socket Server Settings #############################</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The address the socket server listens on. It will get the value returned from </span></span><br><span class="line"><span class="comment"># java.net.InetAddress.getCanonicalHostName() if not configured.</span></span><br><span class="line"><span class="comment">#   FORMAT:</span></span><br><span class="line"><span class="comment">#     listeners = listener_name://host_name:port</span></span><br><span class="line"><span class="comment">#   EXAMPLE:</span></span><br><span class="line"><span class="comment">#     listeners = PLAINTEXT://your.host.name:9092</span></span><br><span class="line">listeners=PLAINTEXT://:<span class="variable">$&#123;PORT&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Hostname and port the broker will advertise to producers and consumers. If not set, </span></span><br><span class="line"><span class="comment"># it uses the value for "listeners" if configured.  Otherwise, it will use the value</span></span><br><span class="line"><span class="comment"># returned from java.net.InetAddress.getCanonicalHostName().</span></span><br><span class="line">advertised.listeners=PLAINTEXT://:<span class="variable">$&#123;PORT&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Maps listener names to security protocols, the default is for them to be the same. See the config documentation for more details</span></span><br><span class="line"><span class="comment">#listener.security.protocol.map=PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The number of threads that the server uses for receiving requests from the network and sending responses to the network</span></span><br><span class="line">num.network.threads=3</span><br><span class="line"></span><br><span class="line"><span class="comment"># The number of threads that the server uses for processing requests, which may include disk I/O</span></span><br><span class="line">num.io.threads=8</span><br><span class="line"></span><br><span class="line"><span class="comment"># The send buffer (SO_SNDBUF) used by the socket server</span></span><br><span class="line">socket.send.buffer.bytes=102400</span><br><span class="line"></span><br><span class="line"><span class="comment"># The receive buffer (SO_RCVBUF) used by the socket server</span></span><br><span class="line">socket.receive.buffer.bytes=102400</span><br><span class="line"></span><br><span class="line"><span class="comment"># The maximum size of a request that the socket server will accept (protection against OOM)</span></span><br><span class="line">socket.request.max.bytes=104857600</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">############################# Log Basics #############################</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># A comma separated list of directories under which to store log files</span></span><br><span class="line">log.dirs=/tmp/kafka-logs</span><br><span class="line"></span><br><span class="line"><span class="comment"># The default number of log partitions per topic. More partitions allow greater</span></span><br><span class="line"><span class="comment"># parallelism for consumption, but this will also result in more files across</span></span><br><span class="line"><span class="comment"># the brokers.</span></span><br><span class="line">num.partitions=1</span><br><span class="line"></span><br><span class="line"><span class="comment"># The number of threads per data directory to be used for log recovery at startup and flushing at shutdown.</span></span><br><span class="line"><span class="comment"># This value is recommended to be increased for installations with data dirs located in RAID array.</span></span><br><span class="line">num.recovery.threads.per.data.dir=1</span><br><span class="line"></span><br><span class="line"><span class="comment">############################# Internal Topic Settings  #############################</span></span><br><span class="line"><span class="comment"># The replication factor for the group metadata internal topics "__consumer_offsets" and "__transaction_state"</span></span><br><span class="line"><span class="comment"># For anything other than development testing, a value greater than 1 is recommended for to ensure availability such as 3.</span></span><br><span class="line">offsets.topic.replication.factor=1</span><br><span class="line">transaction.state.log.replication.factor=1</span><br><span class="line">transaction.state.log.min.isr=1</span><br><span class="line"></span><br><span class="line"><span class="comment">############################# Log Flush Policy #############################</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Messages are immediately written to the filesystem but by default we only fsync() to sync</span></span><br><span class="line"><span class="comment"># the OS cache lazily. The following configurations control the flush of data to disk.</span></span><br><span class="line"><span class="comment"># There are a few important trade-offs here:</span></span><br><span class="line"><span class="comment">#    1. Durability: Unflushed data may be lost if you are not using replication.</span></span><br><span class="line"><span class="comment">#    2. Latency: Very large flush intervals may lead to latency spikes when the flush does occur as there will be a lot of data to flush.</span></span><br><span class="line"><span class="comment">#    3. Throughput: The flush is generally the most expensive operation, and a small flush interval may lead to excessive seeks.</span></span><br><span class="line"><span class="comment"># The settings below allow one to configure the flush policy to flush data after a period of time or</span></span><br><span class="line"><span class="comment"># every N messages (or both). This can be done globally and overridden on a per-topic basis.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The number of messages to accept before forcing a flush of data to disk</span></span><br><span class="line"><span class="comment">#log.flush.interval.messages=10000</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The maximum amount of time a message can sit in a log before we force a flush</span></span><br><span class="line"><span class="comment">#log.flush.interval.ms=1000</span></span><br><span class="line"></span><br><span class="line"><span class="comment">############################# Log Retention Policy #############################</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The following configurations control the disposal of log segments. The policy can</span></span><br><span class="line"><span class="comment"># be set to delete segments after a period of time, or after a given size has accumulated.</span></span><br><span class="line"><span class="comment"># A segment will be deleted whenever *either* of these criteria are met. Deletion always happens</span></span><br><span class="line"><span class="comment"># from the end of the log.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The minimum age of a log file to be eligible for deletion due to age</span></span><br><span class="line">log.retention.hours=168</span><br><span class="line"></span><br><span class="line"><span class="comment"># A size-based retention policy for logs. Segments are pruned from the log unless the remaining</span></span><br><span class="line"><span class="comment"># segments drop below log.retention.bytes. Functions independently of log.retention.hours.</span></span><br><span class="line"><span class="comment">#log.retention.bytes=1073741824</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The maximum size of a log segment file. When this size is reached a new log segment will be created.</span></span><br><span class="line">log.segment.bytes=1073741824</span><br><span class="line"></span><br><span class="line"><span class="comment"># The interval at which log segments are checked to see if they can be deleted according</span></span><br><span class="line"><span class="comment"># to the retention policies</span></span><br><span class="line">log.retention.check.interval.ms=300000</span><br><span class="line"></span><br><span class="line"><span class="comment">############################# Zookeeper #############################</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Zookeeper connection string (see zookeeper docs for details).</span></span><br><span class="line"><span class="comment"># This is a comma separated host:port pairs, each corresponding to a zk</span></span><br><span class="line"><span class="comment"># server. e.g. "127.0.0.1:3000,127.0.0.1:3001,127.0.0.1:3002".</span></span><br><span class="line"><span class="comment"># You can also append an optional chroot string to the urls to specify the</span></span><br><span class="line"><span class="comment"># root directory for all kafka znodes.</span></span><br><span class="line">zookeeper.connect=172.17.0.8:2181</span><br><span class="line"></span><br><span class="line"><span class="comment"># Timeout in ms for connecting to zookeeper</span></span><br><span class="line">zookeeper.connection.timeout.ms=6000</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">############################# Group Coordinator Settings #############################</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The following configuration specifies the time, in milliseconds, that the GroupCoordinator will delay the initial consumer rebalance.</span></span><br><span class="line"><span class="comment"># The rebalance will be further delayed by the value of group.initial.rebalance.delay.ms as new members join the group, up to a maximum of max.poll.interval.ms.</span></span><br><span class="line"><span class="comment"># The default value for this is 3 seconds.</span></span><br><span class="line"><span class="comment"># We override this to 0 here as it makes for a better out-of-the-box experience for development and testing.</span></span><br><span class="line"><span class="comment"># However, in production environments the default value of 3 seconds is more suitable as this will help to avoid unnecessary, and potentially expensive, rebalances during application startup.</span></span><br><span class="line">group.initial.rebalance.delay.ms=0</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">cat &lt;&lt; EOF &gt; /data/server/qa-kafka9094/docker-compose.yml</span><br><span class="line">version: <span class="string">'2'</span></span><br><span class="line">services:</span><br><span class="line">    mysql:</span><br><span class="line">        network_mode: <span class="string">"host"</span></span><br><span class="line">        container_name: <span class="string">"qa-kafka9094"</span></span><br><span class="line">        environment:</span><br><span class="line">            TZ: <span class="string">"Asia/Shanghai"</span></span><br><span class="line">        image: <span class="string">"registry.cn-hangzhou.aliyuncs.com/zhijing/kafka:2.11-2.2.0"</span></span><br><span class="line">        restart: always</span><br><span class="line">        <span class="built_in">command</span>: /app/bin/kafka-init</span><br><span class="line">        volumes:</span><br><span class="line">            - <span class="string">"/data/server/qa-kafka9094/conf/kafka-startup.json:/config/kafka-startup.json"</span></span><br><span class="line">            - <span class="string">"/data/server/qa-kafka9094/conf/server.properties:/config/server.properties"</span></span><br><span class="line">            - <span class="string">"/data/server/qa-kafka9094/data:/tmp/kafka-logs"</span></span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
 
-      
-          <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br></pre></td><td class="code"><pre><span class="line">安装ZK</span><br><span class="line">sudo docker run -d --restart=always --net=host \</span><br><span class="line">                  --name=zookeeper \</span><br><span class="line">                  --<span class="built_in">log</span>-driver json-file --<span class="built_in">log</span>-opt max-size=10m --<span class="built_in">log</span>-opt max-file=3 \</span><br><span class="line">                  -v /data/server/zookeeper/conf:/conf   \</span><br><span class="line">                  -v /data/server/zookeeper/data:/data \</span><br><span class="line">                  -v /data/server/zookeeper/logs:/datalog \</span><br><span class="line">                  zookeeper</span><br><span class="line">安装kafka集群</span><br><span class="line">cat &lt;&lt; EOF &gt; /data/server/dev-kafka9093/conf/kafka-startup.tmpl</span><br><span class="line">[</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="string">"sh"</span>:<span class="string">"/app/bin/kafka-server-start.sh"</span>,</span><br><span class="line">    <span class="string">"./config/server.properties"</span>:<span class="string">""</span>,</span><br><span class="line">    <span class="string">"--override"</span>:<span class="string">"-Djava.net.preferIPv4Stack=true"</span>,</span><br><span class="line">    <span class="string">"--override"</span>:<span class="string">"delete.topic.enable=true"</span>,</span><br><span class="line">    <span class="string">"--override"</span>:<span class="string">"advertised.host.name=<span class="variable">$&#123;HOSTNAME&#125;</span>"</span>,</span><br><span class="line">    <span class="string">"--override"</span>:<span class="string">"advertised.port=<span class="variable">$&#123;PORT&#125;</span>"</span>,</span><br><span class="line">    <span class="string">"--override"</span>:<span class="string">"zookeeper.connect=172.17.0.8:2181/kafka"</span></span><br><span class="line">  &#125;</span><br><span class="line">]</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">cat &lt;&lt; EOF &gt; /data/server/dev-kafka9093/conf/server.properties.tmpl</span><br><span class="line"><span class="comment"># Licensed to the Apache Software Foundation (ASF) under one or more</span></span><br><span class="line"><span class="comment"># contributor license agreements.  See the NOTICE file distributed with</span></span><br><span class="line"><span class="comment"># this work for additional information regarding copyright ownership.</span></span><br><span class="line"><span class="comment"># The ASF licenses this file to You under the Apache License, Version 2.0</span></span><br><span class="line"><span class="comment"># (the "License"); you may not use this file except in compliance with</span></span><br><span class="line"><span class="comment"># the License.  You may obtain a copy of the License at</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#    http://www.apache.org/licenses/LICENSE-2.0</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Unless required by applicable law or agreed to in writing, software</span></span><br><span class="line"><span class="comment"># distributed under the License is distributed on an "AS IS" BASIS,</span></span><br><span class="line"><span class="comment"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span></span><br><span class="line"><span class="comment"># See the License for the specific language governing permissions and</span></span><br><span class="line"><span class="comment"># limitations under the License.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># see kafka.server.KafkaConfig for additional details and defaults</span></span><br><span class="line"></span><br><span class="line"><span class="comment">############################# Server Basics #############################</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The id of the broker. This must be set to a unique integer for each broker.</span></span><br><span class="line">broker.id=<span class="variable">$&#123;ID&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">############################# Socket Server Settings #############################</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The address the socket server listens on. It will get the value returned from </span></span><br><span class="line"><span class="comment"># java.net.InetAddress.getCanonicalHostName() if not configured.</span></span><br><span class="line"><span class="comment">#   FORMAT:</span></span><br><span class="line"><span class="comment">#     listeners = listener_name://host_name:port</span></span><br><span class="line"><span class="comment">#   EXAMPLE:</span></span><br><span class="line"><span class="comment">#     listeners = PLAINTEXT://your.host.name:9092</span></span><br><span class="line">listeners=PLAINTEXT://:<span class="variable">$&#123;PORT&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Hostname and port the broker will advertise to producers and consumers. If not set, </span></span><br><span class="line"><span class="comment"># it uses the value for "listeners" if configured.  Otherwise, it will use the value</span></span><br><span class="line"><span class="comment"># returned from java.net.InetAddress.getCanonicalHostName().</span></span><br><span class="line">advertised.listeners=PLAINTEXT://:<span class="variable">$&#123;PORT&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Maps listener names to security protocols, the default is for them to be the same. See the config documentation for more details</span></span><br><span class="line"><span class="comment">#listener.security.protocol.map=PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The number of threads that the server uses for receiving requests from the network and sending responses to the network</span></span><br><span class="line">num.network.threads=3</span><br><span class="line"></span><br><span class="line"><span class="comment"># The number of threads that the server uses for processing requests, which may include disk I/O</span></span><br><span class="line">num.io.threads=8</span><br><span class="line"></span><br><span class="line"><span class="comment"># The send buffer (SO_SNDBUF) used by the socket server</span></span><br><span class="line">socket.send.buffer.bytes=102400</span><br><span class="line"></span><br><span class="line"><span class="comment"># The receive buffer (SO_RCVBUF) used by the socket server</span></span><br><span class="line">socket.receive.buffer.bytes=102400</span><br><span class="line"></span><br><span class="line"><span class="comment"># The maximum size of a request that the socket server will accept (protection against OOM)</span></span><br><span class="line">socket.request.max.bytes=104857600</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">############################# Log Basics #############################</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># A comma separated list of directories under which to store log files</span></span><br><span class="line">log.dirs=/tmp/kafka-logs</span><br><span class="line"></span><br><span class="line"><span class="comment"># The default number of log partitions per topic. More partitions allow greater</span></span><br><span class="line"><span class="comment"># parallelism for consumption, but this will also result in more files across</span></span><br><span class="line"><span class="comment"># the brokers.</span></span><br><span class="line">num.partitions=1</span><br><span class="line"></span><br><span class="line"><span class="comment"># The number of threads per data directory to be used for log recovery at startup and flushing at shutdown.</span></span><br><span class="line"><span class="comment"># This value is recommended to be increased for installations with data dirs located in RAID array.</span></span><br><span class="line">num.recovery.threads.per.data.dir=1</span><br><span class="line"></span><br><span class="line"><span class="comment">############################# Internal Topic Settings  #############################</span></span><br><span class="line"><span class="comment"># The replication factor for the group metadata internal topics "__consumer_offsets" and "__transaction_state"</span></span><br><span class="line"><span class="comment"># For anything other than development testing, a value greater than 1 is recommended for to ensure availability such as 3.</span></span><br><span class="line">offsets.topic.replication.factor=1</span><br><span class="line">transaction.state.log.replication.factor=1</span><br><span class="line">transaction.state.log.min.isr=1</span><br><span class="line"></span><br><span class="line"><span class="comment">############################# Log Flush Policy #############################</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Messages are immediately written to the filesystem but by default we only fsync() to sync</span></span><br><span class="line"><span class="comment"># the OS cache lazily. The following configurations control the flush of data to disk.</span></span><br><span class="line"><span class="comment"># There are a few important trade-offs here:</span></span><br><span class="line"><span class="comment">#    1. Durability: Unflushed data may be lost if you are not using replication.</span></span><br><span class="line"><span class="comment">#    2. Latency: Very large flush intervals may lead to latency spikes when the flush does occur as there will be a lot of data to flush.</span></span><br><span class="line"><span class="comment">#    3. Throughput: The flush is generally the most expensive operation, and a small flush interval may lead to excessive seeks.</span></span><br><span class="line"><span class="comment"># The settings below allow one to configure the flush policy to flush data after a period of time or</span></span><br><span class="line"><span class="comment"># every N messages (or both). This can be done globally and overridden on a per-topic basis.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The number of messages to accept before forcing a flush of data to disk</span></span><br><span class="line"><span class="comment">#log.flush.interval.messages=10000</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The maximum amount of time a message can sit in a log before we force a flush</span></span><br><span class="line"><span class="comment">#log.flush.interval.ms=1000</span></span><br><span class="line"></span><br><span class="line"><span class="comment">############################# Log Retention Policy #############################</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The following configurations control the disposal of log segments. The policy can</span></span><br><span class="line"><span class="comment"># be set to delete segments after a period of time, or after a given size has accumulated.</span></span><br><span class="line"><span class="comment"># A segment will be deleted whenever *either* of these criteria are met. Deletion always happens</span></span><br><span class="line"><span class="comment"># from the end of the log.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The minimum age of a log file to be eligible for deletion due to age</span></span><br><span class="line">log.retention.hours=168</span><br><span class="line"></span><br><span class="line"><span class="comment"># A size-based retention policy for logs. Segments are pruned from the log unless the remaining</span></span><br><span class="line"><span class="comment"># segments drop below log.retention.bytes. Functions independently of log.retention.hours.</span></span><br><span class="line"><span class="comment">#log.retention.bytes=1073741824</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The maximum size of a log segment file. When this size is reached a new log segment will be created.</span></span><br><span class="line">log.segment.bytes=1073741824</span><br><span class="line"></span><br><span class="line"><span class="comment"># The interval at which log segments are checked to see if they can be deleted according</span></span><br><span class="line"><span class="comment"># to the retention policies</span></span><br><span class="line">log.retention.check.interval.ms=300000</span><br><span class="line"></span><br><span class="line"><span class="comment">############################# Zookeeper #############################</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Zookeeper connection string (see zookeeper docs for details).</span></span><br><span class="line"><span class="comment"># This is a comma separated host:port pairs, each corresponding to a zk</span></span><br><span class="line"><span class="comment"># server. e.g. "127.0.0.1:3000,127.0.0.1:3001,127.0.0.1:3002".</span></span><br><span class="line"><span class="comment"># You can also append an optional chroot string to the urls to specify the</span></span><br><span class="line"><span class="comment"># root directory for all kafka znodes.</span></span><br><span class="line">zookeeper.connect=172.17.0.8:2181</span><br><span class="line"></span><br><span class="line"><span class="comment"># Timeout in ms for connecting to zookeeper</span></span><br><span class="line">zookeeper.connection.timeout.ms=6000</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">############################# Group Coordinator Settings #############################</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The following configuration specifies the time, in milliseconds, that the GroupCoordinator will delay the initial consumer rebalance.</span></span><br><span class="line"><span class="comment"># The rebalance will be further delayed by the value of group.initial.rebalance.delay.ms as new members join the group, up to a maximum of max.poll.interval.ms.</span></span><br><span class="line"><span class="comment"># The default value for this is 3 seconds.</span></span><br><span class="line"><span class="comment"># We override this to 0 here as it makes for a better out-of-the-box experience for development and testing.</span></span><br><span class="line"><span class="comment"># However, in production environments the default value of 3 seconds is more suitable as this will help to avoid unnecessary, and potentially expensive, rebalances during application startup.</span></span><br><span class="line">group.initial.rebalance.delay.ms=0</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">cat &lt;&lt; EOF &gt; /data/server/qa-kafka9094/docker-compose.yml</span><br><span class="line">version: <span class="string">'2'</span></span><br><span class="line">services:</span><br><span class="line">    mysql:</span><br><span class="line">        network_mode: <span class="string">"host"</span></span><br><span class="line">        container_name: <span class="string">"qa-kafka9094"</span></span><br><span class="line">        environment:</span><br><span class="line">            TZ: <span class="string">"Asia/Shanghai"</span></span><br><span class="line">        image: <span class="string">"registry.cn-hangzhou.aliyuncs.com/zhijing/kafka:2.11-2.2.0"</span></span><br><span class="line">        restart: always</span><br><span class="line">        <span class="built_in">command</span>: /app/bin/kafka-init</span><br><span class="line">        volumes:</span><br><span class="line">            - <span class="string">"/data/server/qa-kafka9094/conf/kafka-startup.json:/config/kafka-startup.json"</span></span><br><span class="line">            - <span class="string">"/data/server/qa-kafka9094/conf/server.properties:/config/server.properties"</span></span><br><span class="line">            - <span class="string">"/data/server/qa-kafka9094/data:/tmp/kafka-logs"</span></span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
-
-      
+            
+        </article>
     </div>
-
     
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+    <div class="nexmoe-post">
+        <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%B6%88%E6%81%AF%E7%B3%BB%E7%BB%9F%E4%B8%AD%E9%97%B4%E4%BB%B6/RabbitMQ/Rabbitmq%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2/">
+            
+                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 66.66666666666666%;"> 
+                    <img data-src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg" data-sizes="auto" alt="Rabbitmq快速部署.md" class="lazyload">
+                    <h1>Rabbitmq快速部署.md</h1>
+                </div>
+            
+        </a>
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%B6%88%E6%81%AF%E7%B3%BB%E7%BB%9F%E4%B8%AD%E9%97%B4%E4%BB%B6/RabbitMQ/Rabbitmq%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="曾胜龙">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="蜷缩的蜗牛">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%B6%88%E6%81%AF%E7%B3%BB%E7%BB%9F%E4%B8%AD%E9%97%B4%E4%BB%B6/RabbitMQ/Rabbitmq%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2/" class="post-title-link" itemprop="url">Rabbitmq快速部署.md</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-05-14 22:16:05" itemprop="dateCreated datePublished" datetime="2020-05-14T22:16:05+08:00">2020-05-14</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/RabbitMQ/" itemprop="url" rel="index"><span itemprop="name">RabbitMQ</span></a>
-                </span>
-            </span>
-
-          
-
+        <div class="nexmoe-post-meta nexmoe-rainbow">
+            <a><i class="nexmoefont icon-calendar-fill"></i>2020年05月14日</a>
+            <a><i class="nexmoefont icon-areachart"></i>134 字</a>
+            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 1 分钟</a>
         </div>
-      </header>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="创建目录"><a class="header-anchor" href="#创建目录">¶</a>创建目录</h2>
+        <article>
+            
+                <h2 id="创建目录"><a class="header-anchor" href="#创建目录">¶</a>创建目录</h2>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /data/server/rabbitmq/&#123;data,conf&#125;</span><br><span class="line">mkdir -p /data/logs/rabbitmq/&#123;<span class="built_in">log</span>,tmp&#125;</span><br><span class="line">chown 999.999 /data/server/rabbitmq -R</span><br><span class="line">chown 999.999 /data/logs/rabbitmq -R</span><br></pre></td></tr></table></figure>
 <h2 id="配置文件"><a class="header-anchor" href="#配置文件">¶</a>配置文件</h2>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># cat &lt;&lt; EOF &gt;&gt; /data/server/rabbitmq/conf/rabbitmq.conf</span></span><br><span class="line">loopback_users.guest = <span class="literal">false</span></span><br><span class="line">listeners.tcp.default = 5672</span><br><span class="line">default_pass = rabbitmq123</span><br><span class="line">default_user = root</span><br><span class="line">hipe_compile = <span class="literal">false</span></span><br><span class="line">management.listener.port = 15672</span><br><span class="line">management.listener.ssl = <span class="literal">false</span></span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line"><span class="comment"># cat &lt;&lt; EOF &gt;&gt; /data/server/rabbitmq/conf/enabled_plugins</span></span><br><span class="line">[rabbitmq_management,rabbitmq_tracing].</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
@@ -1228,72 +1032,29 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">docker run -d --restart=always --net=host --name rabbitmq \</span><br><span class="line">           -v /data/server/rabbitmq/data:/var/lib/rabbitmq \</span><br><span class="line">           -v /data/logs/rabbitmq/<span class="built_in">log</span>:/var/<span class="built_in">log</span>/rabbitmq \</span><br><span class="line">           -v /data/logs/rabbitmq/tmp:/var/tmp/rabbitmq-tracing \</span><br><span class="line">           -v /data/server/rabbitmq/conf:/etc/rabbitmq \</span><br><span class="line">           rabbitmq:3.7.7-management</span><br></pre></td></tr></table></figure>
 <p><a href="https://hub.docker.com/_/rabbitmq" target="_blank" rel="noopener">镜像地址</a></p>
 
-      
+            
+        </article>
     </div>
-
     
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+    <div class="nexmoe-post">
+        <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%B6%88%E6%81%AF%E7%B3%BB%E7%BB%9F%E4%B8%AD%E9%97%B4%E4%BB%B6/RocketMQ/Rocketmq%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/">
+            
+                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 66.66666666666666%;"> 
+                    <img data-src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg" data-sizes="auto" alt="Rocketmq集群部署.md" class="lazyload">
+                    <h1>Rocketmq集群部署.md</h1>
+                </div>
+            
+        </a>
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%B6%88%E6%81%AF%E7%B3%BB%E7%BB%9F%E4%B8%AD%E9%97%B4%E4%BB%B6/RocketMQ/Rocketmq%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="曾胜龙">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="蜷缩的蜗牛">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%B6%88%E6%81%AF%E7%B3%BB%E7%BB%9F%E4%B8%AD%E9%97%B4%E4%BB%B6/RocketMQ/Rocketmq%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/" class="post-title-link" itemprop="url">Rocketmq集群部署.md</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-05-14 22:16:05" itemprop="dateCreated datePublished" datetime="2020-05-14T22:16:05+08:00">2020-05-14</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/RocketMQ/" itemprop="url" rel="index"><span itemprop="name">RocketMQ</span></a>
-                </span>
-            </span>
-
-          
-
+        <div class="nexmoe-post-meta nexmoe-rainbow">
+            <a><i class="nexmoefont icon-calendar-fill"></i>2020年05月14日</a>
+            <a><i class="nexmoefont icon-areachart"></i>1.5k 字</a>
+            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 7 分钟</a>
         </div>
-      </header>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="01-namesrv部署"><a class="header-anchor" href="#01-namesrv部署">¶</a>01 namesrv部署</h2>
+        <article>
+            
+                <h2 id="01-namesrv部署"><a class="header-anchor" href="#01-namesrv部署">¶</a>01 namesrv部署</h2>
 <h3 id="1-1-namesrv配置"><a class="header-anchor" href="#1-1-namesrv配置">¶</a>1.1 namesrv配置</h3>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ROCKETMQ_HOME=/data/server/rocketmq</span><br><span class="line">mkdir -p <span class="variable">$ROCKETMQ_HOME</span>/namesrv</span><br><span class="line">vim <span class="variable">$ROCKETMQ_HOME</span>/namesrv/namesrv.properties</span><br></pre></td></tr></table></figure>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># 名称：NamesrvConfig.rocketmqHome &lt;String&gt;</span></span><br><span class="line"><span class="comment"># 默认值：(通过 sh mqnamesrv 设置 ROCKETMQ_HOME 环境变量，在源程序中获取环境变量得</span></span><br><span class="line"><span class="comment">#        到的目录)</span></span><br><span class="line"><span class="comment"># 描述：RocketMQ 主目录 </span></span><br><span class="line"><span class="comment"># 建议：不主动配置</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># rocketmqHome = $ROCKETMQ_HOME/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># 名称：NamesrvConfig.kvConfigPath &lt;String&gt;</span></span><br><span class="line"><span class="comment"># 默认值：$user.home/namesrv/kvConfig.json &lt;在源程序中获取用户环境变量后生成&gt;</span></span><br><span class="line"><span class="comment"># 描述：kv 配置文件路径，包含顺序消息主题的配置信息 </span></span><br><span class="line"><span class="comment"># 建议：启用顺序消息时配置</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line">kvConfigPath = <span class="variable">$ROCKETMQ_HOME</span>/namesrv/kvConfig.json</span><br><span class="line"></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># 名称：NamesrvConfig.configStorePath &lt;String&gt;</span></span><br><span class="line"><span class="comment"># 默认值：$user.home/namesrv/namesrv.properties &lt;在源程序中获取用户环境变量后生成&gt;</span></span><br><span class="line"><span class="comment"># 描述：NameServer 配置文件路径</span></span><br><span class="line"><span class="comment"># 建议：启动时通过 -c 指定</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line">configStorePath = <span class="variable">$ROCKETMQ_HOME</span>/namesrv/namesrv.properties</span><br><span class="line"></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># 名称：NamesrvConfig.clusterTest &lt;boolean&gt;</span></span><br><span class="line"><span class="comment"># 默认值：false &lt;在源程序中初始化字段时指定&gt;</span></span><br><span class="line"><span class="comment"># 描述：是否开启集群测试</span></span><br><span class="line"><span class="comment"># 建议：不主动配置</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line">clusterTest = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># 名称：NamesrvConfig.orderMessageEnable &lt;boolean&gt;</span></span><br><span class="line"><span class="comment"># 默认值：false &lt;在源程序中初始化字段时指定&gt;</span></span><br><span class="line"><span class="comment"># 描述：是否支持顺序消息</span></span><br><span class="line"><span class="comment"># 建议：启用顺序消息时配置</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line">orderMessageEnable = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># 名称：NettyServerConfig.listenPort &lt;int&gt;</span></span><br><span class="line"><span class="comment"># 默认值：9876 &lt;在源程序中初始化后单独设置&gt;</span></span><br><span class="line"><span class="comment"># 描述：服务端监听端口</span></span><br><span class="line"><span class="comment"># 建议：不主动配置</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line">listenPort = 9877</span><br><span class="line"></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># 名称：NettyServerConfig.serverWorkerThreads &lt;int&gt;</span></span><br><span class="line"><span class="comment"># 默认值：8 &lt;在源程序中初始化字段时指定&gt;</span></span><br><span class="line"><span class="comment"># 描述：Netty 业务线程池线程个数</span></span><br><span class="line"><span class="comment"># 建议：不主动配置</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line">serverWorkerThreads = 8</span><br><span class="line"></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># 名称：NettyServerConfig.serverCallbackExecutorThreads &lt;int&gt;</span></span><br><span class="line"><span class="comment"># 默认值：0 &lt;在源程序中初始化字段时指定&gt;</span></span><br><span class="line"><span class="comment"># 描述：Netty public 任务线程池线程个数，Netty 网络设计，根据业务类型会创建不同的线程池，比如处理发送消息、消息消费、心跳检测等。如果该业务类型(RequestCode)未注册线程池，则由 public 线程池执行</span></span><br><span class="line"><span class="comment"># 建议：</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line">serverCallbackExecutorThreads = 0</span><br><span class="line"></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># 名称：NettyServerConfig.serverSelectorThreads &lt;int&gt;</span></span><br><span class="line"><span class="comment"># 默认值：3 &lt;在源程序中初始化字段时指定&gt;</span></span><br><span class="line"><span class="comment"># 描述：IO 线程池线程个数，主要是 NameServer、Broker 端解析请求、返回响应的线程个数，这类线程池主要是处理网络请求的，解析请求包，然后转发到各个业务线程池完成具体的业务操作，然后将结果再返回调用方</span></span><br><span class="line"><span class="comment"># 建议：不主动配置</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line">serverSelectorThreads = 3</span><br><span class="line"></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># 名称：NettyServerConfig.serverOnewaySemaphoreValue &lt;int&gt;</span></span><br><span class="line"><span class="comment"># 默认值：256 &lt;在源程序中初始化字段时指定&gt;</span></span><br><span class="line"><span class="comment"># 描述：send oneway 消息请求并发度</span></span><br><span class="line"><span class="comment"># 建议：不主动配置</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line">serverOnewaySemaphoreValue = 256</span><br><span class="line"></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># 名称：NettyServerConfig.serverAsyncSemaphoreValue &lt;int&gt;</span></span><br><span class="line"><span class="comment"># 默认值：64 &lt;在源程序中初始化字段时指定&gt;</span></span><br><span class="line"><span class="comment"># 描述：异步消息发送最大并发度</span></span><br><span class="line"><span class="comment"># 建议：不主动配置</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line">serverAsyncSemaphoreValue = 64</span><br><span class="line"></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># 名称：NettyServerConfig.serverChannelMaxIdleTimeSeconds &lt;int&gt;</span></span><br><span class="line"><span class="comment"># 默认值：120 &lt;在源程序中初始化字段时指定&gt;</span></span><br><span class="line"><span class="comment"># 描述：网络连接最大空闲时间，单位秒，如果连接空闲时间超过该参数设置的值，连接将被关闭</span></span><br><span class="line"><span class="comment"># 建议：不主动配置</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line">serverChannelMaxIdleTimeSeconds = 120</span><br><span class="line"></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># 名称：NettyServerConfig.serverSocketSndBufSize &lt;int&gt;</span></span><br><span class="line"><span class="comment"># 默认值：65535 &lt;在源程序中初始化字段时指定&gt;</span></span><br><span class="line"><span class="comment"># 描述：网络 socket 发送缓存区大小，单位 B，即默认为 64KB</span></span><br><span class="line"><span class="comment"># 建议：不主动配置</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line">serverSocketSndBufSize = 65535</span><br><span class="line"></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># 名称：NettyServerConfig.serverSocketRcvBufSize &lt;int&gt;</span></span><br><span class="line"><span class="comment"># 默认值：65535 &lt;在源程序中初始化字段时指定&gt;</span></span><br><span class="line"><span class="comment"># 描述：网络 socket 接收缓存区大小，单位 B，即默认为 64KB</span></span><br><span class="line"><span class="comment"># 建议：不主动配置</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line">serverSocketRcvBufSize = 65535</span><br><span class="line"></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># 名称：NettyServerConfig.serverPooledByteBufAllocatorEnable &lt;int&gt;</span></span><br><span class="line"><span class="comment"># 默认值：true &lt;在源程序中初始化字段时指定&gt;</span></span><br><span class="line"><span class="comment"># 描述：ByteBuffer 是否开启缓存，建议开启</span></span><br><span class="line"><span class="comment"># 建议：不主动配置</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line">serverPooledByteBufAllocatorEnable = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># 名称：NettyServerConfig.useEpollNativeSelector &lt;int&gt;</span></span><br><span class="line"><span class="comment"># 默认值：false &lt;在源程序中初始化字段时指定&gt;</span></span><br><span class="line"><span class="comment"># 描述：是否启用 Epoll IO 模型</span></span><br><span class="line"><span class="comment"># 建议：Linux 环境开启</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line">useEpollNativeSelector = <span class="literal">true</span></span><br></pre></td></tr></table></figure>
@@ -1308,319 +1069,57 @@
 <h2 id="参考资料"><a class="header-anchor" href="#参考资料">¶</a>参考资料</h2>
 <p><a href="https://www.cnblogs.com/kevingrace/p/9015836.html" target="_blank" rel="noopener">RocketMQ 简单梳理 及 集群部署笔记</a></p>
 
-      
+            
+        </article>
     </div>
-
     
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+    <div class="nexmoe-post">
+        <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%B6%88%E6%81%AF%E7%B3%BB%E7%BB%9F%E4%B8%AD%E9%97%B4%E4%BB%B6/RocketMQ/%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99/">
+            
+                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 66.66666666666666%;"> 
+                    <img data-src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg" data-sizes="auto" alt="参考资料.md" class="lazyload">
+                    <h1>参考资料.md</h1>
+                </div>
+            
+        </a>
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%B6%88%E6%81%AF%E7%B3%BB%E7%BB%9F%E4%B8%AD%E9%97%B4%E4%BB%B6/RocketMQ/%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="曾胜龙">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="蜷缩的蜗牛">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%B6%88%E6%81%AF%E7%B3%BB%E7%BB%9F%E4%B8%AD%E9%97%B4%E4%BB%B6/RocketMQ/%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99/" class="post-title-link" itemprop="url">参考资料.md</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-05-14 22:16:05" itemprop="dateCreated datePublished" datetime="2020-05-14T22:16:05+08:00">2020-05-14</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/RocketMQ/" itemprop="url" rel="index"><span itemprop="name">RocketMQ</span></a>
-                </span>
-            </span>
-
-          
-
+        <div class="nexmoe-post-meta nexmoe-rainbow">
+            <a><i class="nexmoefont icon-calendar-fill"></i>2020年05月14日</a>
+            <a><i class="nexmoefont icon-areachart"></i>16 字</a>
+            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 1 分钟</a>
         </div>
-      </header>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><a href="https://blog.csdn.net/wangjinduo35056/article/details/88351625" target="_blank" rel="noopener">https://blog.csdn.net/wangjinduo35056/article/details/88351625</a></p>
+        <article>
+            
+                <p><a href="https://blog.csdn.net/wangjinduo35056/article/details/88351625" target="_blank" rel="noopener">https://blog.csdn.net/wangjinduo35056/article/details/88351625</a></p>
 <p><a href="https://blog.csdn.net/qq_27641935/article/details/106015319" target="_blank" rel="noopener">https://blog.csdn.net/qq_27641935/article/details/106015319</a></p>
 
-      
+            
+        </article>
     </div>
-
     
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
+</section>
+
+    <nav class="nexmoe-page-nav">
+      <a class="extend prev" rel="prev" href="/page/4/"><i class="nexmoefont icon-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/6/"><i class="nexmoefont icon-right"></i></a>
+    </nav>
   
-  
-  
-
-
-  
-  <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/6/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
-  </nav>
-
-
-
-          </div>
-          
-
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
-
-        </div>
-          
-  
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
-  </div>
-
-  <aside class="sidebar">
-    <div class="sidebar-inner">
-
-      <ul class="sidebar-nav motion-element">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-      </div>
-      <!--/noindex-->
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="曾胜龙"
-      src="/images/avatar.gif">
-  <p class="site-author-name" itemprop="name">曾胜龙</p>
-  <div class="site-description" itemprop="description"></div>
-</div>
-<div class="site-state-wrap motion-element">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives/">
-        
-          <span class="site-state-item-count">109</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-          
-        <span class="site-state-item-count">25</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-          
-        <span class="site-state-item-count">24</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
-</div>
-  <div class="links-of-author motion-element">
-      <span class="links-of-author-item">
-        <a href="https://github.com/kbsonlong" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kbsonlong" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
-      </span>
-  </div>
-  <div class="cc-license motion-element" itemprop="license">
-    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
-  </div>
-
-
-
-      </div>
-
     </div>
-  </aside>
-  <div id="sidebar-dimmer"></div>
-
-
-      </div>
-    </main>
-
-    <footer class="footer">
-      <div class="footer-inner">
-        
-
-        
-  <div class="beian"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank">粤ICP备18122209号 </a>
-      <img src="http://www.beian.gov.cn/portal/download" style="display: inline-block;">
   </div>
-
-<div class="copyright">
-  
-  &copy; 
-  <span itemprop="copyrightYear">2020</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">曾胜龙</span>
-</div>
-
-        
-<div class="busuanzi-count">
-  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-user"></i>
-      </span>
-      <span class="site-uv" title="总访客量">
-        <span id="busuanzi_value_site_uv"></span>
-      </span>
-    </span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-eye"></i>
-      </span>
-      <span class="site-pv" title="总访问量">
-        <span id="busuanzi_value_site_pv"></span>
-      </span>
-    </span>
-</div>
+  <script src="https://cdn.jsdelivr.net/combine/npm/lazysizes@5.1.0/lazysizes.min.js,gh/highlightjs/cdn-release@9.15.8/build/highlight.min.js,npm/mdui@0.4.3/dist/js/mdui.min.js?v=1"></script>
+<script >hljs.initHighlightingOnLoad();</script>
 
 
+    <script src="https://cdn.jsdelivr.net/gh/xtaodada/xtaodada.github.io@0.0.2/copy.js"></script>
 
 
-
-
-
-
-      </div>
-    </footer>
-  </div>
-
-  
-  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
-
-<script src="/js/utils.js"></script>
-
-<script src="/js/motion.js"></script>
-
-
-<script src="/js/schemes/pisces.js"></script>
-
-
-<script src="/js/next-boot.js"></script>
-
-<script src="/js/bookmark.js"></script>
-
-
-
-
-  
-  <script>
-    (function(){
-      var canonicalURL, curProtocol;
-      //Get the <link> tag
-      var x=document.getElementsByTagName("link");
-		//Find the last canonical URL
-		if(x.length > 0){
-			for (i=0;i<x.length;i++){
-				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
-					canonicalURL=x[i].href;
-				}
-			}
-		}
-    //Get protocol
-	    if (!canonicalURL){
-	    	curProtocol = window.location.protocol.split(':')[0];
-	    }
-	    else{
-	    	curProtocol = canonicalURL.split(':')[0];
-	    }
-      //Get current URL if the canonical URL does not exist
-	    if (!canonicalURL) canonicalURL = window.location.href;
-	    //Assign script content. Replace current URL with the canonical URL
-      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
-  </script>
-
-
-
-
-  
-<script src="/js/local-search.js"></script>
-
-
-
-
-
-
-
-
-
-
-
-
-
+<script src="/js/app.js?v=1589470542579"></script>
   
 
-  
+
+
+
 
 </body>
+
 </html>

@@ -1,27 +1,17 @@
 <!DOCTYPE html>
+
 <html lang="zh-CN">
+
 <head>
+  
+  <title>蜷缩的蜗牛</title>
   <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
-  <meta http-equiv="Cache-Control" content="no-transform">
-  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+  
+  
 
-<link rel="stylesheet" href="/css/main.css">
-
-
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
-
-<script id="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"kbsonlong.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"3QSL94PCBQ","apiKey":"d2fe765a64df1740fcab93644d3a2677","indexName":"hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
-  </script>
-
+  <link rel="shortcut icon" href="/favicon.ico" type="image/png" />
   <meta property="og:type" content="website">
 <meta property="og:title" content="蜷缩的蜗牛">
 <meta property="og:url" content="https://kbsonlong.github.io/page/7/index.html">
@@ -30,220 +20,335 @@
 <meta property="article:author" content="曾胜龙">
 <meta property="article:tag" content="Devops Kubernetes Docker">
 <meta name="twitter:card" content="summary">
-
-<link rel="canonical" href="https://kbsonlong.github.io/page/7/">
-
-
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : true,
-    isPost : false,
-    lang   : 'zh-CN'
-  };
-</script>
-
-  <title>蜷缩的蜗牛</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/gh/nexmoe/nexmoe.github.io@latest/css/style.css,npm/highlight.js@9.15.8/styles/atom-one-dark.css,gh/nexmoe/nexmoe.github.io@latest/lib/mdui_043tiny/css/mdui.css,gh/nexmoe/nexmoe.github.io@latest/lib/iconfont/iconfont.css" crossorigin>
   
-
-
-
-
-
-
-  <noscript>
-  <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
-
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
-
-<link rel="alternate" href="/atom.xml" title="蜷缩的蜗牛" type="application/atom+xml">
+  <!--<link rel="stylesheet" href="/css/style.css?v=1589470542965">-->
+<meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/atom.xml" title="蜷缩的蜗牛" type="application/atom+xml">
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
-
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
+<body class="mdui-drawer-body-left">
+  
+  <div id="nexmoe-background">
+    <div class="nexmoe-bg" style="background-image: url(https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg)"></div>
+    <div class="mdui-appbar mdui-shadow-0">
+      <div class="mdui-toolbar">
+        <a mdui-drawer="{target: '#drawer', swipe: true}" title="menu" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon nexmoefont icon-menu"></i></a>
+        <div class="mdui-toolbar-spacer"></div>
+        <!--<a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">search</i></a>-->
+        <a href="/" title="曾胜龙" class="mdui-btn mdui-btn-icon"><img src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/avatar.png" alt="曾胜龙"></a>
+       </div>
     </div>
   </div>
-
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">蜷缩的蜗牛</h1>
-      <span class="logo-line-after"><i></i></span>
-    </a>
-      <p class="site-subtitle" itemprop="description">运维笔记</p>
-  </div>
-
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
-    </div>
-  </div>
-</div>
-
-
-
-
-<nav class="site-nav">
-  <ul id="menu" class="main-menu menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-about">
-
-    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
-
-  </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+  <div id="nexmoe-header">
+      <div class="nexmoe-drawer mdui-drawer" id="drawer">
+    <div class="nexmoe-avatar mdui-ripple">
+        <a href="/" title="曾胜龙">
+            <img src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/avatar.png" alt="曾胜龙" alt="曾胜龙">
         </a>
-      </li>
-  </ul>
-</nav>
-
-
-
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container">
-    <input autocomplete="off" autocapitalize="off"
-           placeholder="搜索..." spellcheck="false"
-           type="search" class="search-input">
-  </div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
+    </div>
+    <div class="nexmoe-count">
+        <div><span>文章</span>109</div>
+        <div><span>标签</span>24</div>
+        <div><span>分类</span>25</div>
+    </div>
+    <div class="nexmoe-list mdui-list" mdui-collapse="{accordion: true}">
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/" title="回到首页">
+            <i class="mdui-list-item-icon nexmoefont icon-home"></i>
+            <div class="mdui-list-item-content">
+                回到首页
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/archives" title="文章归档">
+            <i class="mdui-list-item-icon nexmoefont icon-container"></i>
+            <div class="mdui-list-item-content">
+                文章归档
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/about.html" title="关于博客">
+            <i class="mdui-list-item-icon nexmoefont icon-info-circle"></i>
+            <div class="mdui-list-item-content">
+                关于博客
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/PY.html" title="我的朋友">
+            <i class="mdui-list-item-icon nexmoefont icon-unorderedlist"></i>
+            <div class="mdui-list-item-content">
+                我的朋友
+            </div>
+        </a>
+        
+    </div>
+    <aside id="nexmoe-sidebar">
+  
+  <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-search">
+        <form id="search_form" action_e="https://cn.bing.com/search?q=site:nexmoe.com" onsubmit="return search();">
+            <label><input id="search_value" name="q" type="search" placeholder="搜索"></label>
+        </form>
+    </div>
 </div>
-<div id="search-result">
-  <div id="no-result">
-    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
-  </div>
+  
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">社交按钮</h3>
+    <div class="nexmoe-widget nexmoe-social">
+        <a class="mdui-ripple" href="https://space.bilibili.com/20238211" target="_blank" mdui-tooltip="{content: '哔哩哔哩'}" style="color: rgb(231, 106, 141);background-color: rgba(231, 106, 141, .15);">
+            <i class="nexmoefont icon-bilibili"></i>
+        </a><a class="mdui-ripple" href="https://github.com/nexmoe/" target="_blank" mdui-tooltip="{content: 'GitHub'}" style="color: rgb(25, 23, 23);background-color: rgba(25, 23, 23, .15);">
+            <i class="nexmoefont icon-github"></i>
+        </a>
+    </div>
 </div>
+  
+  
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">文章分类</h3>
+    <div class="nexmoe-widget">
+
+      <ul class="category-list">
+
+        
+
+
+        
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Ansible/">Ansible</a>
+          <span class="category-list-count">3</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Bgp/">Bgp</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Docker/">Docker</a>
+          <span class="category-list-count">6</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Elasticsearch/">Elasticsearch</a>
+          <span class="category-list-count">12</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/KVM/">KVM</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Kafka/">Kafka</a>
+          <span class="category-list-count">2</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Kong/">Kong</a>
+          <span class="category-list-count">2</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Kubernetes/">Kubernetes</a>
+          <span class="category-list-count">19</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Mongodb/">Mongodb</a>
+          <span class="category-list-count">3</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Mysql/">Mysql</a>
+          <span class="category-list-count">3</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Prometheus/">Prometheus</a>
+          <span class="category-list-count">4</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/RabbitMQ/">RabbitMQ</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Redis/">Redis</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/RocketMQ/">RocketMQ</a>
+          <span class="category-list-count">2</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/gitlab/">gitlab</a>
+          <span class="category-list-count">3</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/k8s安装实战/">k8s安装实战</a>
+          <span class="category-list-count">10</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/nacos/">nacos</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/openLDAP/">openLDAP</a>
+          <span class="category-list-count">6</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/标准化及流程化/">标准化及流程化</a>
+          <span class="category-list-count">8</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/深入剖析Kubernetes/">深入剖析Kubernetes</a>
+          <span class="category-list-count">2</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/监控系统/">监控系统</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/系统初始化/">系统初始化</a>
+          <span class="category-list-count">3</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/虚拟化/">虚拟化</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/调优/">调优</a>
+          <span class="category-list-count">3</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/运维/">运维</a>
+          <span class="category-list-count">2</span>
+        </li>
+
+        
+      </ul>
 
     </div>
   </div>
 
-</div>
-    </header>
 
+  
+  
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">标签云</h3>
+    <div id="randomtagcloud" class="nexmoe-widget tagcloud nexmoe-rainbow">
+      <a href="/tags/Ansible/" style="font-size: 12.5px;">Ansible</a> <a href="/tags/Bgp/" style="font-size: 10px;">Bgp</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/Elasticsearch/" style="font-size: 18.75px;">Elasticsearch</a> <a href="/tags/KVM/" style="font-size: 10px;">KVM</a> <a href="/tags/Kafka/" style="font-size: 11.25px;">Kafka</a> <a href="/tags/Kong/" style="font-size: 11.25px;">Kong</a> <a href="/tags/Kubernetes/" style="font-size: 20px;">Kubernetes</a> <a href="/tags/Mongodb/" style="font-size: 12.5px;">Mongodb</a> <a href="/tags/Mysql/" style="font-size: 12.5px;">Mysql</a> <a href="/tags/Prometheus/" style="font-size: 13.75px;">Prometheus</a> <a href="/tags/RabbitMQ/" style="font-size: 10px;">RabbitMQ</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 11.25px;">RocketMQ</a> <a href="/tags/gitlab/" style="font-size: 12.5px;">gitlab</a> <a href="/tags/k8s%E5%AE%89%E8%A3%85%E5%AE%9E%E6%88%98/" style="font-size: 17.5px;">k8s安装实战</a> <a href="/tags/nacos/" style="font-size: 10px;">nacos</a> <a href="/tags/openLDAP/" style="font-size: 15px;">openLDAP</a> <a href="/tags/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/" style="font-size: 16.25px;">标准化及流程化</a> <a href="/tags/%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes/" style="font-size: 11.25px;">深入剖析Kubernetes</a> <a href="/tags/%E7%B3%BB%E7%BB%9F%E5%88%9D%E5%A7%8B%E5%8C%96/" style="font-size: 12.5px;">系统初始化</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96/" style="font-size: 10px;">虚拟化</a> <a href="/tags/%E8%B0%83%E4%BC%98/" style="font-size: 12.5px;">调优</a> <a href="/tags/%E8%BF%90%E7%BB%B4/" style="font-size: 11.25px;">运维</a>
+    </div>
     
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
   </div>
-  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
 
-  <a href="https://github.com/kbsonlong" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+  
+  
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">文章归档</h3>
+    <div class="nexmoe-widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a></li></ul>
+    </div>
+  </div>
 
 
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-
-          <div class="content index posts-expand">
+  
+</aside>
+    <div class="nexmoe-copyright">
+        &copy; 2020 曾胜龙
+        Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+        & <a href="https://nexmoe.com/hexo-theme-nexmoe.html" target="_blank">Nexmoe</a>
+    </div>
+</div><!-- .nexmoe-drawer -->
+  </div>
+  <div id="nexmoe-content">
+    <div class="nexmoe-primary">
+        <section class="nexmoe-posts">
+    
+    <div class="nexmoe-post">
+        <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/Kubernetes%E7%BB%84%E4%BB%B6/">
             
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/Kubernetes%E7%BB%84%E4%BB%B6/">
+                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 66.66666666666666%;"> 
+                    <img data-src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg" data-sizes="auto" alt="Kubernetes组件.md" class="lazyload">
+                    <h1>Kubernetes组件.md</h1>
+                </div>
+            
+        </a>
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="曾胜龙">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="蜷缩的蜗牛">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/Kubernetes%E7%BB%84%E4%BB%B6/" class="post-title-link" itemprop="url">Kubernetes组件.md</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-05-14 22:16:05" itemprop="dateCreated datePublished" datetime="2020-05-14T22:16:05+08:00">2020-05-14</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Kubernetes/" itemprop="url" rel="index"><span itemprop="name">Kubernetes</span></a>
-                </span>
-            </span>
-
-          
-
+        <div class="nexmoe-post-meta nexmoe-rainbow">
+            <a><i class="nexmoefont icon-calendar-fill"></i>2020年05月14日</a>
+            <a><i class="nexmoefont icon-areachart"></i>907 字</a>
+            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 3 分钟</a>
         </div>
-      </header>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="Master组件"><a class="header-anchor" href="#Master组件">¶</a>Master组件</h3>
+        <article>
+            
+                <h3 id="Master组件"><a class="header-anchor" href="#Master组件">¶</a>Master组件</h3>
 <p>Master 组件提供集群的控制平面。Master 组件对集群进行全局决策（例如，调度），并检测和响应集群事件（例如，当不满足部署的 <code>replicas</code> 字段时，启动新的 <a href="https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/" target="_blank" rel="noopener">pod</a>）</p>
 <h4 id="1-1-kube-apiserver"><a class="header-anchor" href="#1-1-kube-apiserver">¶</a>1.1 kube-apiserver</h4>
 <p>主节点上负责提供 Kubernetes API 服务的组件；它是 Kubernetes 控制面的前端。</p>
@@ -281,139 +386,53 @@
 <p>kube-proxy是集群中每个节点上运行的网络代理,实现 Kubernetes Service 概念的一部分。</p>
 <p>kube-proxy 维护节点上的网络规则。这些网络规则允许从集群内部或外部的网络会话与 Pod 进行网络通信。</p>
 
-      
+            
+        </article>
     </div>
-
     
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+    <div class="nexmoe-post">
+        <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/logstash/">
+            
+                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 66.66666666666666%;"> 
+                    <img data-src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg" data-sizes="auto" alt="logstash.md" class="lazyload">
+                    <h1>logstash.md</h1>
+                </div>
+            
+        </a>
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/logstash/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="曾胜龙">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="蜷缩的蜗牛">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/logstash/" class="post-title-link" itemprop="url">logstash.md</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-05-14 22:16:05" itemprop="dateCreated datePublished" datetime="2020-05-14T22:16:05+08:00">2020-05-14</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Kubernetes/" itemprop="url" rel="index"><span itemprop="name">Kubernetes</span></a>
-                </span>
-            </span>
-
-          
-
+        <div class="nexmoe-post-meta nexmoe-rainbow">
+            <a><i class="nexmoefont icon-calendar-fill"></i>2020年05月14日</a>
+            <a><i class="nexmoefont icon-areachart"></i>199 字</a>
+            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 1 分钟</a>
         </div>
-      </header>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
+        <article>
+            
+                <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">###Deployment</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Deployment</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">logstash</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">ops</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">io.kompose.service:</span> <span class="string">logstash</span></span><br><span class="line">  <span class="attr">annotations:</span></span><br><span class="line">    <span class="attr">deployment.kubernetes.io/revision:</span> <span class="string">'1'</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">replicas:</span> <span class="number">1</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">matchLabels:</span></span><br><span class="line">      <span class="attr">io.kompose.service:</span> <span class="string">logstash</span></span><br><span class="line">  <span class="attr">template:</span></span><br><span class="line">    <span class="attr">metadata:</span></span><br><span class="line">      <span class="attr">creationTimestamp:</span> <span class="literal">null</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">io.kompose.service:</span> <span class="string">logstash</span></span><br><span class="line">    <span class="attr">spec:</span></span><br><span class="line">      <span class="attr">volumes:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">logstash-conf</span></span><br><span class="line">          <span class="attr">hostPath:</span></span><br><span class="line">            <span class="attr">path:</span> <span class="string">/data/server/logstash/conf</span></span><br><span class="line">            <span class="attr">type:</span> <span class="string">''</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">logstash.yml</span></span><br><span class="line">          <span class="attr">hostPath:</span></span><br><span class="line">            <span class="attr">path:</span> <span class="string">/data/server/logstash/logstash.yml</span></span><br><span class="line">            <span class="attr">type:</span> <span class="string">''</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">jvm.options</span></span><br><span class="line">          <span class="attr">hostPath:</span></span><br><span class="line">            <span class="attr">path:</span> <span class="string">/data/server/logstash/jvm.options</span></span><br><span class="line">            <span class="attr">type:</span> <span class="string">''</span></span><br><span class="line">      <span class="attr">containers:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">logstash</span></span><br><span class="line">          <span class="attr">image:</span> <span class="string">'registry.cn-hangzhou.aliyuncs.com/zhijing/logstash:6.7.1'</span></span><br><span class="line">          <span class="attr">command:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="string">logstash</span></span><br><span class="line">            <span class="bullet">-</span> <span class="string">'-f'</span></span><br><span class="line">            <span class="bullet">-</span> <span class="string">/etc/logstash/conf</span></span><br><span class="line">          <span class="attr">resources:</span> <span class="string">&#123;&#125;</span></span><br><span class="line">          <span class="attr">volumeMounts:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">logstash-conf</span></span><br><span class="line">              <span class="attr">mountPath:</span> <span class="string">/etc/logstash/conf</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">logstash.yml</span></span><br><span class="line">              <span class="attr">mountPath:</span> <span class="string">/usr/share/logstash/config/logstash.yml</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">jvm.options</span></span><br><span class="line">              <span class="attr">mountPath:</span> <span class="string">/usr/share/logstash/config/jvm.options</span></span><br><span class="line">          <span class="attr">terminationMessagePath:</span> <span class="string">/dev/termination-log</span></span><br><span class="line">          <span class="attr">terminationMessagePolicy:</span> <span class="string">File</span></span><br><span class="line">          <span class="attr">imagePullPolicy:</span> <span class="string">Always</span></span><br><span class="line">      <span class="attr">restartPolicy:</span> <span class="string">Always</span></span><br><span class="line">      <span class="attr">terminationGracePeriodSeconds:</span> <span class="number">30</span></span><br><span class="line">      <span class="attr">dnsPolicy:</span> <span class="string">ClusterFirst</span></span><br><span class="line">      <span class="attr">securityContext:</span> <span class="string">&#123;&#125;</span></span><br><span class="line">      <span class="attr">schedulerName:</span> <span class="string">default-scheduler</span></span><br><span class="line">  <span class="attr">strategy:</span></span><br><span class="line">    <span class="attr">type:</span> <span class="string">RollingUpdate</span></span><br><span class="line">    <span class="attr">rollingUpdate:</span></span><br><span class="line">      <span class="attr">maxUnavailable:</span> <span class="number">1</span></span><br><span class="line">      <span class="attr">maxSurge:</span> <span class="number">1</span></span><br><span class="line">  <span class="attr">revisionHistoryLimit:</span> <span class="number">2147483647</span></span><br><span class="line">  <span class="attr">progressDeadlineSeconds:</span> <span class="number">2147483647</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">###Service</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">logstash</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">ops</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">logstash</span></span><br><span class="line">    <span class="attr">chart:</span> <span class="string">logstash</span></span><br><span class="line">    <span class="attr">heritage:</span> <span class="string">Tiller</span></span><br><span class="line">    <span class="attr">release:</span> <span class="string">logstash</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">applog</span></span><br><span class="line">      <span class="attr">protocol:</span> <span class="string">TCP</span></span><br><span class="line">      <span class="attr">port:</span> <span class="number">5044</span></span><br><span class="line">      <span class="attr">targetPort:</span> <span class="number">5044</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">nginxlog</span></span><br><span class="line">      <span class="attr">protocol:</span> <span class="string">TCP</span></span><br><span class="line">      <span class="attr">port:</span> <span class="number">5045</span></span><br><span class="line">      <span class="attr">targetPort:</span> <span class="number">5045</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">io.kompose.service:</span> <span class="string">logstash</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">NodePort</span></span><br><span class="line">  <span class="attr">sessionAffinity:</span> <span class="string">None</span></span><br><span class="line">  <span class="attr">externalTrafficPolicy:</span> <span class="string">Cluster</span></span><br></pre></td></tr></table></figure>
 
-      
-          <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">###Deployment</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Deployment</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">logstash</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">ops</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">io.kompose.service:</span> <span class="string">logstash</span></span><br><span class="line">  <span class="attr">annotations:</span></span><br><span class="line">    <span class="attr">deployment.kubernetes.io/revision:</span> <span class="string">'1'</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">replicas:</span> <span class="number">1</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">matchLabels:</span></span><br><span class="line">      <span class="attr">io.kompose.service:</span> <span class="string">logstash</span></span><br><span class="line">  <span class="attr">template:</span></span><br><span class="line">    <span class="attr">metadata:</span></span><br><span class="line">      <span class="attr">creationTimestamp:</span> <span class="literal">null</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">io.kompose.service:</span> <span class="string">logstash</span></span><br><span class="line">    <span class="attr">spec:</span></span><br><span class="line">      <span class="attr">volumes:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">logstash-conf</span></span><br><span class="line">          <span class="attr">hostPath:</span></span><br><span class="line">            <span class="attr">path:</span> <span class="string">/data/server/logstash/conf</span></span><br><span class="line">            <span class="attr">type:</span> <span class="string">''</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">logstash.yml</span></span><br><span class="line">          <span class="attr">hostPath:</span></span><br><span class="line">            <span class="attr">path:</span> <span class="string">/data/server/logstash/logstash.yml</span></span><br><span class="line">            <span class="attr">type:</span> <span class="string">''</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">jvm.options</span></span><br><span class="line">          <span class="attr">hostPath:</span></span><br><span class="line">            <span class="attr">path:</span> <span class="string">/data/server/logstash/jvm.options</span></span><br><span class="line">            <span class="attr">type:</span> <span class="string">''</span></span><br><span class="line">      <span class="attr">containers:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">logstash</span></span><br><span class="line">          <span class="attr">image:</span> <span class="string">'registry.cn-hangzhou.aliyuncs.com/zhijing/logstash:6.7.1'</span></span><br><span class="line">          <span class="attr">command:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="string">logstash</span></span><br><span class="line">            <span class="bullet">-</span> <span class="string">'-f'</span></span><br><span class="line">            <span class="bullet">-</span> <span class="string">/etc/logstash/conf</span></span><br><span class="line">          <span class="attr">resources:</span> <span class="string">&#123;&#125;</span></span><br><span class="line">          <span class="attr">volumeMounts:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">logstash-conf</span></span><br><span class="line">              <span class="attr">mountPath:</span> <span class="string">/etc/logstash/conf</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">logstash.yml</span></span><br><span class="line">              <span class="attr">mountPath:</span> <span class="string">/usr/share/logstash/config/logstash.yml</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">jvm.options</span></span><br><span class="line">              <span class="attr">mountPath:</span> <span class="string">/usr/share/logstash/config/jvm.options</span></span><br><span class="line">          <span class="attr">terminationMessagePath:</span> <span class="string">/dev/termination-log</span></span><br><span class="line">          <span class="attr">terminationMessagePolicy:</span> <span class="string">File</span></span><br><span class="line">          <span class="attr">imagePullPolicy:</span> <span class="string">Always</span></span><br><span class="line">      <span class="attr">restartPolicy:</span> <span class="string">Always</span></span><br><span class="line">      <span class="attr">terminationGracePeriodSeconds:</span> <span class="number">30</span></span><br><span class="line">      <span class="attr">dnsPolicy:</span> <span class="string">ClusterFirst</span></span><br><span class="line">      <span class="attr">securityContext:</span> <span class="string">&#123;&#125;</span></span><br><span class="line">      <span class="attr">schedulerName:</span> <span class="string">default-scheduler</span></span><br><span class="line">  <span class="attr">strategy:</span></span><br><span class="line">    <span class="attr">type:</span> <span class="string">RollingUpdate</span></span><br><span class="line">    <span class="attr">rollingUpdate:</span></span><br><span class="line">      <span class="attr">maxUnavailable:</span> <span class="number">1</span></span><br><span class="line">      <span class="attr">maxSurge:</span> <span class="number">1</span></span><br><span class="line">  <span class="attr">revisionHistoryLimit:</span> <span class="number">2147483647</span></span><br><span class="line">  <span class="attr">progressDeadlineSeconds:</span> <span class="number">2147483647</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">###Service</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">logstash</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">ops</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">logstash</span></span><br><span class="line">    <span class="attr">chart:</span> <span class="string">logstash</span></span><br><span class="line">    <span class="attr">heritage:</span> <span class="string">Tiller</span></span><br><span class="line">    <span class="attr">release:</span> <span class="string">logstash</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">applog</span></span><br><span class="line">      <span class="attr">protocol:</span> <span class="string">TCP</span></span><br><span class="line">      <span class="attr">port:</span> <span class="number">5044</span></span><br><span class="line">      <span class="attr">targetPort:</span> <span class="number">5044</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">nginxlog</span></span><br><span class="line">      <span class="attr">protocol:</span> <span class="string">TCP</span></span><br><span class="line">      <span class="attr">port:</span> <span class="number">5045</span></span><br><span class="line">      <span class="attr">targetPort:</span> <span class="number">5045</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">io.kompose.service:</span> <span class="string">logstash</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">NodePort</span></span><br><span class="line">  <span class="attr">sessionAffinity:</span> <span class="string">None</span></span><br><span class="line">  <span class="attr">externalTrafficPolicy:</span> <span class="string">Cluster</span></span><br></pre></td></tr></table></figure>
-
-      
+            
+        </article>
     </div>
-
     
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+    <div class="nexmoe-post">
+        <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99/">
+            
+                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 66.66666666666666%;"> 
+                    <img data-src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg" data-sizes="auto" alt="参考资料.md" class="lazyload">
+                    <h1>参考资料.md</h1>
+                </div>
+            
+        </a>
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="曾胜龙">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="蜷缩的蜗牛">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99/" class="post-title-link" itemprop="url">参考资料.md</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-05-14 22:16:05" itemprop="dateCreated datePublished" datetime="2020-05-14T22:16:05+08:00">2020-05-14</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Kubernetes/" itemprop="url" rel="index"><span itemprop="name">Kubernetes</span></a>
-                </span>
-            </span>
-
-          
-
+        <div class="nexmoe-post-meta nexmoe-rainbow">
+            <a><i class="nexmoefont icon-calendar-fill"></i>2020年05月14日</a>
+            <a><i class="nexmoefont icon-areachart"></i>233 字</a>
+            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 1 分钟</a>
         </div>
-      </header>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><a href="https://kubesphere.io/docs/express/zh-CN/basic/" target="_blank" rel="noopener">KubeSphere</a></p>
+        <article>
+            
+                <p><a href="https://kubesphere.io/docs/express/zh-CN/basic/" target="_blank" rel="noopener">KubeSphere</a></p>
 <p>修改默认存储路径:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim k8s/inventory/my_cluster/group_vars/all/docker.yml</span><br></pre></td></tr></table></figure>
 <p><a href="https://docs.kubeoperator.io/kubeoperator-v2.2/introduction" target="_blank" rel="noopener">KubeOperator</a></p>
@@ -442,72 +461,29 @@
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sealos</span><br></pre></td></tr></table></figure>
 <p><a href="https://sealyun.oss-cn-beijing.aliyuncs.com/d551b0b9e67e0416d0f9dce870a16665-1.18.0/kube1.18.0.tar.gz" target="_blank" rel="noopener">https://sealyun.oss-cn-beijing.aliyuncs.com/d551b0b9e67e0416d0f9dce870a16665-1.18.0/kube1.18.0.tar.gz</a></p>
 
-      
+            
+        </article>
     </div>
-
     
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+    <div class="nexmoe-post">
+        <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">
+            
+                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 66.66666666666666%;"> 
+                    <img data-src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg" data-sizes="auto" alt="常用命令.md" class="lazyload">
+                    <h1>常用命令.md</h1>
+                </div>
+            
+        </a>
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="曾胜龙">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="蜷缩的蜗牛">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="post-title-link" itemprop="url">常用命令.md</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-05-14 22:16:05" itemprop="dateCreated datePublished" datetime="2020-05-14T22:16:05+08:00">2020-05-14</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Kubernetes/" itemprop="url" rel="index"><span itemprop="name">Kubernetes</span></a>
-                </span>
-            </span>
-
-          
-
+        <div class="nexmoe-post-meta nexmoe-rainbow">
+            <a><i class="nexmoefont icon-calendar-fill"></i>2020年05月14日</a>
+            <a><i class="nexmoefont icon-areachart"></i>465 字</a>
+            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 2 分钟</a>
         </div>
-      </header>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="设置名称空间偏好"><a class="header-anchor" href="#设置名称空间偏好">¶</a>设置名称空间偏好</h3>
+        <article>
+            
+                <h3 id="设置名称空间偏好"><a class="header-anchor" href="#设置名称空间偏好">¶</a>设置名称空间偏好</h3>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">kubectl config <span class="built_in">set</span>-context --current --namespace=&lt;您的名称空间&gt;</span><br><span class="line"><span class="comment"># 验证结果</span></span><br><span class="line">kubectl config view --minify | grep namespace:</span><br></pre></td></tr></table></figure>
 <h3 id="并非所有对象都在名称空间里"><a class="header-anchor" href="#并非所有对象都在名称空间里">¶</a>并非所有对象都在名称空间里</h3>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在名称空间里</span></span><br><span class="line">kubectl api-resources --namespaced=<span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 不在名称空间里</span></span><br><span class="line">kubectl api-resources --namespaced=<span class="literal">false</span></span><br></pre></td></tr></table></figure>
@@ -539,209 +515,80 @@
 <li>集群用户可以使用自己的Kubernetes对象，而不会与集群中的其他用户组相互干扰</li>
 </ul>
 
-      
+            
+        </article>
     </div>
-
     
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+    <div class="nexmoe-post">
+        <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E6%97%A5%E5%BF%97%E9%87%87%E9%9B%86%E6%96%B9%E6%A1%88/">
+            
+                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 66.66666666666666%;"> 
+                    <img data-src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg" data-sizes="auto" alt="日志采集方案.md" class="lazyload">
+                    <h1>日志采集方案.md</h1>
+                </div>
+            
+        </a>
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E6%97%A5%E5%BF%97%E9%87%87%E9%9B%86%E6%96%B9%E6%A1%88/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="曾胜龙">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="蜷缩的蜗牛">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E6%97%A5%E5%BF%97%E9%87%87%E9%9B%86%E6%96%B9%E6%A1%88/" class="post-title-link" itemprop="url">日志采集方案.md</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-05-14 22:16:05" itemprop="dateCreated datePublished" datetime="2020-05-14T22:16:05+08:00">2020-05-14</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Kubernetes/" itemprop="url" rel="index"><span itemprop="name">Kubernetes</span></a>
-                </span>
-            </span>
-
-          
-
+        <div class="nexmoe-post-meta nexmoe-rainbow">
+            <a><i class="nexmoefont icon-calendar-fill"></i>2020年05月14日</a>
+            <a><i class="nexmoefont icon-areachart"></i>8 字</a>
+            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 1 分钟</a>
         </div>
-      </header>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
+        <article>
+            
+                <p><a href="https://blog.csdn.net/nmjhehe/article/details/99687171" target="_blank" rel="noopener">https://blog.csdn.net/nmjhehe/article/details/99687171</a></p>
 
-      
-          <p><a href="https://blog.csdn.net/nmjhehe/article/details/99687171" target="_blank" rel="noopener">https://blog.csdn.net/nmjhehe/article/details/99687171</a></p>
-
-      
+            
+        </article>
     </div>
-
     
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+    <div class="nexmoe-post">
+        <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E6%A6%82%E5%BF%B5/">
+            
+                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 66.66666666666666%;"> 
+                    <img data-src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg" data-sizes="auto" alt="概念.md" class="lazyload">
+                    <h1>概念.md</h1>
+                </div>
+            
+        </a>
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E6%A6%82%E5%BF%B5/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="曾胜龙">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="蜷缩的蜗牛">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E6%A6%82%E5%BF%B5/" class="post-title-link" itemprop="url">概念.md</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-05-14 22:16:05" itemprop="dateCreated datePublished" datetime="2020-05-14T22:16:05+08:00">2020-05-14</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Kubernetes/" itemprop="url" rel="index"><span itemprop="name">Kubernetes</span></a>
-                </span>
-            </span>
-
-          
-
+        <div class="nexmoe-post-meta nexmoe-rainbow">
+            <a><i class="nexmoefont icon-calendar-fill"></i>2020年05月14日</a>
+            <a><i class="nexmoefont icon-areachart"></i>12 字</a>
+            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 1 分钟</a>
         </div>
-      </header>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>pv:静态存储</p>
+        <article>
+            
+                <p>pv:静态存储</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <p>pvc:动态存储</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-      
+            
+        </article>
     </div>
-
     
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+    <div class="nexmoe-post">
+        <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E9%83%A8%E7%BD%B2%E6%B5%81%E7%A8%8B/">
+            
+                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 66.66666666666666%;"> 
+                    <img data-src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg" data-sizes="auto" alt="部署流程.md" class="lazyload">
+                    <h1>部署流程.md</h1>
+                </div>
+            
+        </a>
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E9%83%A8%E7%BD%B2%E6%B5%81%E7%A8%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="曾胜龙">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="蜷缩的蜗牛">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E9%83%A8%E7%BD%B2%E6%B5%81%E7%A8%8B/" class="post-title-link" itemprop="url">部署流程.md</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-05-14 22:16:05" itemprop="dateCreated datePublished" datetime="2020-05-14T22:16:05+08:00">2020-05-14</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Kubernetes/" itemprop="url" rel="index"><span itemprop="name">Kubernetes</span></a>
-                </span>
-            </span>
-
-          
-
+        <div class="nexmoe-post-meta nexmoe-rainbow">
+            <a><i class="nexmoefont icon-calendar-fill"></i>2020年05月14日</a>
+            <a><i class="nexmoefont icon-areachart"></i>116 字</a>
+            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 1 分钟</a>
         </div>
-      </header>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>1、查询namespace，存在跳过，不存在创建</p>
+        <article>
+            
+                <p>1、查询namespace，存在跳过，不存在创建</p>
 <p>2、查询存储卷pv和存储声明pvc，存在跳过，不存在创建</p>
 <p>3、查询服务svc，存在获取nodeport，不存在创建并查询nodeport</p>
 <p>4、创建deployment，将nodeport传入作为应用服务pod的注册到zk</p>
@@ -749,72 +596,29 @@
 <p>2、主机名通过configmap形式挂载到pod容器组里面/etc/hosts</p>
 <p>3、bootstrap.yml以configmap形式挂载到pod容器组</p>
 
-      
+            
+        </article>
     </div>
-
     
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+    <div class="nexmoe-post">
+        <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86/">
+            
+                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 66.66666666666666%;"> 
+                    <img data-src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg" data-sizes="auto" alt="问题处理.md" class="lazyload">
+                    <h1>问题处理.md</h1>
+                </div>
+            
+        </a>
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="曾胜龙">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="蜷缩的蜗牛">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86/" class="post-title-link" itemprop="url">问题处理.md</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-05-14 22:16:05" itemprop="dateCreated datePublished" datetime="2020-05-14T22:16:05+08:00">2020-05-14</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Kubernetes/" itemprop="url" rel="index"><span itemprop="name">Kubernetes</span></a>
-                </span>
-            </span>
-
-          
-
+        <div class="nexmoe-post-meta nexmoe-rainbow">
+            <a><i class="nexmoefont icon-calendar-fill"></i>2020年05月14日</a>
+            <a><i class="nexmoefont icon-areachart"></i>1.6k 字</a>
+            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 9 分钟</a>
         </div>
-      </header>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="善用describe、logs、get等排查集群网络是否正常"><a class="header-anchor" href="#善用describe、logs、get等排查集群网络是否正常">¶</a>善用describe、logs、get等排查集群网络是否正常</h3>
+        <article>
+            
+                <h3 id="善用describe、logs、get等排查集群网络是否正常"><a class="header-anchor" href="#善用describe、logs、get等排查集群网络是否正常">¶</a>善用describe、logs、get等排查集群网络是否正常</h3>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment"># kubectl -n kube-system get  ep kube-dns</span></span><br><span class="line">NAME       ENDPOINTS                                               AGE</span><br><span class="line">kube-dns   10.244.0.5:53,10.244.4.2:53,10.244.0.5:53 + 3 more...   37h</span><br><span class="line"></span><br><span class="line"><span class="comment"># kubectl -n kube-system describe svc kube-dns</span></span><br><span class="line">Name:              kube-dns</span><br><span class="line">Namespace:         kube-system</span><br><span class="line">Labels:            k8s-app=kube-dns</span><br><span class="line">                   kubernetes.io/cluster-service=<span class="literal">true</span></span><br><span class="line">                   kubernetes.io/name=KubeDNS</span><br><span class="line">Annotations:       prometheus.io/port: 9153</span><br><span class="line">                   prometheus.io/scrape: <span class="literal">true</span></span><br><span class="line">Selector:          k8s-app=kube-dns</span><br><span class="line">Type:              ClusterIP</span><br><span class="line">IP:                10.96.0.10</span><br><span class="line">Port:              dns  53/UDP</span><br><span class="line">TargetPort:        53/UDP</span><br><span class="line">Endpoints:         10.244.0.5:53,10.244.4.2:53</span><br><span class="line">Port:              dns-tcp  53/TCP</span><br><span class="line">TargetPort:        53/TCP</span><br><span class="line">Endpoints:         10.244.0.5:53,10.244.4.2:53</span><br><span class="line">Port:              metrics  9153/TCP</span><br><span class="line">TargetPort:        9153/TCP</span><br><span class="line">Endpoints:         10.244.0.5:9153,10.244.4.2:9153</span><br><span class="line">Session Affinity:  None</span><br><span class="line">Events:            &lt;none&gt;</span><br><span class="line"><span class="comment"># kubectl -n kube-system get pod</span></span><br><span class="line">NAME                               READY   STATUS    RESTARTS   AGE</span><br><span class="line">coredns-b64bd5cf5-9hclk            1/1     Running   0          78m</span><br><span class="line">coredns-b64bd5cf5-w9kcd            1/1     Running   0          78m</span><br><span class="line">[root@master01 ~]<span class="comment"># kubectl -n kube-system  logs coredns-b64bd5cf5-9hclk</span></span><br><span class="line">.:53</span><br><span class="line">[INFO] plugin/reload: Running configuration MD5 = 4e235fcc3696966e76816bcd9034ebc7</span><br><span class="line">CoreDNS-1.6.5</span><br><span class="line">linux/amd64, go1.13.4, c2fd1b2</span><br><span class="line">[ERROR] plugin/errors: 2 grafana.com.openstacklocal. A: <span class="built_in">read</span> udp 10.244.4.2:42525-&gt;202.96.128.166:53: i/o timeout</span><br><span class="line">[ERROR] plugin/errors: 2 grafana.com.openstacklocal. A: <span class="built_in">read</span> udp 10.244.4.2:38937-&gt;8.8.8.8:53: i/o timeout</span><br><span class="line">[ERROR] plugin/errors: 2 grafana.com.openstacklocal. A: <span class="built_in">read</span> udp 10.244.4.2:39620-&gt;202.96.128.166:53: i/o timeout</span><br><span class="line">[ERROR] plugin/errors: 2 grafana.com.openstacklocal. A: <span class="built_in">read</span> udp 10.244.4.2:60539-&gt;202.96.128.166:53: i/o timeout</span><br><span class="line">[ERROR] plugin/errors: 2 grafana.com.openstacklocal. A: <span class="built_in">read</span> udp 10.244.4.2:53063-&gt;202.96.128.166:53: i/o timeout</span><br><span class="line">[ERROR] plugin/errors: 2 grafana.com.openstacklocal. A: <span class="built_in">read</span> udp 10.244.4.2:40721-&gt;8.8.8.8:53: i/o timeout</span><br><span class="line">[ERROR] plugin/errors: 2 grafana.com.openstacklocal. A: <span class="built_in">read</span> udp 10.244.4.2:42136-&gt;8.8.8.8:53: i/o timeout</span><br><span class="line">[ERROR] plugin/errors: 2 grafana.com.openstacklocal. A: <span class="built_in">read</span> udp 10.244.4.2:36724-&gt;202.96.128.166:53: i/o timeout</span><br><span class="line">[root@master01 ~]<span class="comment"># kubectl -n kube-system  logs coredns-b64bd5cf5-w9kcd</span></span><br><span class="line">.:53</span><br><span class="line">[INFO] plugin/reload: Running configuration MD5 = 4e235fcc3696966e76816bcd9034ebc7</span><br><span class="line">CoreDNS-1.6.5</span><br><span class="line">linux/amd64, go1.13.4, c2fd1b2</span><br><span class="line">[ERROR] plugin/errors: 2 grafana.com.openstacklocal. A: <span class="built_in">read</span> udp 10.244.0.5:57431-&gt;8.8.8.8:53: i/o timeout</span><br><span class="line">[ERROR] plugin/errors: 2 grafana.com.openstacklocal. A: <span class="built_in">read</span> udp 10.244.0.5:37699-&gt;202.96.128.166:53: i/o timeout</span><br><span class="line">[ERROR] plugin/errors: 2 grafana.com.openstacklocal. A: <span class="built_in">read</span> udp 10.244.0.5:53511-&gt;202.96.128.166:53: i/o timeout</span><br><span class="line">[ERROR] plugin/errors: 2 grafana.com.openstacklocal. A: <span class="built_in">read</span> udp 10.244.0.5:55210-&gt;202.96.128.166:53: i/o timeout</span><br><span class="line">[ERROR] plugin/errors: 2 grafana.com.openstacklocal. A: <span class="built_in">read</span> udp 10.244.0.5:38446-&gt;202.96.128.166:53: i/o timeout</span><br><span class="line">[ERROR] plugin/errors: 2 grafana.com.openstacklocal. A: <span class="built_in">read</span> udp 10.244.0.5:55820-&gt;8.8.8.8:53: i/o timeout</span><br><span class="line">[ERROR] plugin/errors: 2 grafana.com.openstacklocal. A: <span class="built_in">read</span> udp 10.244.0.5:47388-&gt;8.8.8.8:53: i/o timeout</span><br><span class="line">[ERROR] plugin/errors: 2 grafana.com.openstacklocal. A: <span class="built_in">read</span> udp 10.244.0.5:42159-&gt;202.96.128.166:53: i/o timeout</span><br></pre></td></tr></table></figure>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl run curl --image=radial/busyboxplus:curl --rm -l kubernetes.io/hostname=node01 -i --tty</span><br></pre></td></tr></table></figure>
 <blockquote>
@@ -862,139 +666,53 @@
 <h4 id="新增POD无法通信"><a class="header-anchor" href="#新增POD无法通信">¶</a>新增POD无法通信</h4>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">iptables-save &gt;/data/iptables-bak</span><br><span class="line">iptables -P INPUT ACCEPT</span><br><span class="line">iptables -P FORWARD ACCEPT</span><br><span class="line">iptables -F</span><br><span class="line">iptables -L -n</span><br></pre></td></tr></table></figure>
 
-      
+            
+        </article>
     </div>
-
     
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+    <div class="nexmoe-post">
+        <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/kubesphere/">
+            
+                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 66.66666666666666%;"> 
+                    <img data-src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg" data-sizes="auto" alt="kubesphere.md" class="lazyload">
+                    <h1>kubesphere.md</h1>
+                </div>
+            
+        </a>
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/kubesphere/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="曾胜龙">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="蜷缩的蜗牛">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/kubesphere/" class="post-title-link" itemprop="url">kubesphere.md</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-05-14 22:16:05" itemprop="dateCreated datePublished" datetime="2020-05-14T22:16:05+08:00">2020-05-14</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Kubernetes/" itemprop="url" rel="index"><span itemprop="name">Kubernetes</span></a>
-                </span>
-            </span>
-
-          
-
+        <div class="nexmoe-post-meta nexmoe-rainbow">
+            <a><i class="nexmoefont icon-calendar-fill"></i>2020年05月14日</a>
+            <a><i class="nexmoefont icon-areachart"></i>292 字</a>
+            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 1 分钟</a>
         </div>
-      </header>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
+        <article>
+            
+                <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">kubectl get pods --all-namespaces -o jsonpath=<span class="string">"&#123;..image&#125;"</span> |tr -s <span class="string">'[[:space:]]'</span> <span class="string">'\n'</span> |sort|uniq</span><br><span class="line">calico/cni:v3.8.2</span><br><span class="line">calico/kube-controllers:v3.8.2</span><br><span class="line">calico/node:v3.8.2</span><br><span class="line">calico/pod2daemon-flexvol:v3.8.2</span><br><span class="line">eipsample/example-cloud-eureka:v1.0.0-alpha.1</span><br><span class="line">eipsample/example-db-example:v1.0.0-alpha.1</span><br><span class="line">eipsample/example-gateway-example:v1.0.0-alpha.1</span><br><span class="line">eipsample/example-svc-example:v1.0.0-alpha.1</span><br><span class="line">eipsample/example-web-example:v1.0.0-alpha.1</span><br><span class="line">eipwork/kuboard:latest</span><br><span class="line">eipwork/nfs-client-provisioner:v3.1.0-k8s1.11</span><br><span class="line">fanux/lvscare:latest</span><br><span class="line">k8s.gcr.io/coredns:1.6.7</span><br><span class="line">k8s.gcr.io/etcd:3.4.3-0</span><br><span class="line">k8s.gcr.io/kube-apiserver:v1.18.0</span><br><span class="line">k8s.gcr.io/kube-controller-manager:v1.18.0</span><br><span class="line">k8s.gcr.io/kube-proxy:v1.18.0</span><br><span class="line">k8s.gcr.io/kube-scheduler:v1.18.0</span><br><span class="line">nginx:1.7.9</span><br><span class="line">nginx/nginx-ingress:1.5.5</span><br><span class="line">redis:5.0.5</span><br><span class="line">registry.cn-hangzhou.aliyuncs.com/along-ocp/api-gateway</span><br><span class="line">registry.cn-hangzhou.aliyuncs.com/along-ocp/api-gateway:latest</span><br><span class="line">registry.cn-hangzhou.aliyuncs.com/along-ocp/auth-center-mysql</span><br><span class="line">registry.cn-hangzhou.aliyuncs.com/along-ocp/auth-center-mysql:latest</span><br><span class="line">registry.cn-hangzhou.aliyuncs.com/along-ocp/auth-server</span><br><span class="line">registry.cn-hangzhou.aliyuncs.com/along-ocp/auth-server:latest</span><br><span class="line">registry.cn-hangzhou.aliyuncs.com/along-ocp/back-center</span><br><span class="line">registry.cn-hangzhou.aliyuncs.com/along-ocp/back-center:latest</span><br><span class="line">registry.cn-hangzhou.aliyuncs.com/along-ocp/eureka-server</span><br><span class="line">registry.cn-hangzhou.aliyuncs.com/along-ocp/eureka-server:latest</span><br><span class="line">registry.cn-hangzhou.aliyuncs.com/along-ocp/<span class="built_in">log</span>-center-mysql</span><br><span class="line">registry.cn-hangzhou.aliyuncs.com/along-ocp/<span class="built_in">log</span>-center-mysql:latest</span><br><span class="line">registry.cn-hangzhou.aliyuncs.com/along-ocp/user-center</span><br><span class="line">registry.cn-hangzhou.aliyuncs.com/along-ocp/user-center:latest</span><br><span class="line">registry.cn-hangzhou.aliyuncs.com/along-ocp/user-center-mysql</span><br><span class="line">registry.cn-hangzhou.aliyuncs.com/along-ocp/user-center-mysql:latest</span><br><span class="line">registry.cn-hangzhou.aliyuncs.com/google_containers/metrics-server-amd64:v0.3.6</span><br></pre></td></tr></table></figure>
 
-      
-          <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">kubectl get pods --all-namespaces -o jsonpath=<span class="string">"&#123;..image&#125;"</span> |tr -s <span class="string">'[[:space:]]'</span> <span class="string">'\n'</span> |sort|uniq</span><br><span class="line">calico/cni:v3.8.2</span><br><span class="line">calico/kube-controllers:v3.8.2</span><br><span class="line">calico/node:v3.8.2</span><br><span class="line">calico/pod2daemon-flexvol:v3.8.2</span><br><span class="line">eipsample/example-cloud-eureka:v1.0.0-alpha.1</span><br><span class="line">eipsample/example-db-example:v1.0.0-alpha.1</span><br><span class="line">eipsample/example-gateway-example:v1.0.0-alpha.1</span><br><span class="line">eipsample/example-svc-example:v1.0.0-alpha.1</span><br><span class="line">eipsample/example-web-example:v1.0.0-alpha.1</span><br><span class="line">eipwork/kuboard:latest</span><br><span class="line">eipwork/nfs-client-provisioner:v3.1.0-k8s1.11</span><br><span class="line">fanux/lvscare:latest</span><br><span class="line">k8s.gcr.io/coredns:1.6.7</span><br><span class="line">k8s.gcr.io/etcd:3.4.3-0</span><br><span class="line">k8s.gcr.io/kube-apiserver:v1.18.0</span><br><span class="line">k8s.gcr.io/kube-controller-manager:v1.18.0</span><br><span class="line">k8s.gcr.io/kube-proxy:v1.18.0</span><br><span class="line">k8s.gcr.io/kube-scheduler:v1.18.0</span><br><span class="line">nginx:1.7.9</span><br><span class="line">nginx/nginx-ingress:1.5.5</span><br><span class="line">redis:5.0.5</span><br><span class="line">registry.cn-hangzhou.aliyuncs.com/along-ocp/api-gateway</span><br><span class="line">registry.cn-hangzhou.aliyuncs.com/along-ocp/api-gateway:latest</span><br><span class="line">registry.cn-hangzhou.aliyuncs.com/along-ocp/auth-center-mysql</span><br><span class="line">registry.cn-hangzhou.aliyuncs.com/along-ocp/auth-center-mysql:latest</span><br><span class="line">registry.cn-hangzhou.aliyuncs.com/along-ocp/auth-server</span><br><span class="line">registry.cn-hangzhou.aliyuncs.com/along-ocp/auth-server:latest</span><br><span class="line">registry.cn-hangzhou.aliyuncs.com/along-ocp/back-center</span><br><span class="line">registry.cn-hangzhou.aliyuncs.com/along-ocp/back-center:latest</span><br><span class="line">registry.cn-hangzhou.aliyuncs.com/along-ocp/eureka-server</span><br><span class="line">registry.cn-hangzhou.aliyuncs.com/along-ocp/eureka-server:latest</span><br><span class="line">registry.cn-hangzhou.aliyuncs.com/along-ocp/<span class="built_in">log</span>-center-mysql</span><br><span class="line">registry.cn-hangzhou.aliyuncs.com/along-ocp/<span class="built_in">log</span>-center-mysql:latest</span><br><span class="line">registry.cn-hangzhou.aliyuncs.com/along-ocp/user-center</span><br><span class="line">registry.cn-hangzhou.aliyuncs.com/along-ocp/user-center:latest</span><br><span class="line">registry.cn-hangzhou.aliyuncs.com/along-ocp/user-center-mysql</span><br><span class="line">registry.cn-hangzhou.aliyuncs.com/along-ocp/user-center-mysql:latest</span><br><span class="line">registry.cn-hangzhou.aliyuncs.com/google_containers/metrics-server-amd64:v0.3.6</span><br></pre></td></tr></table></figure>
-
-      
+            
+        </article>
     </div>
-
     
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+    <div class="nexmoe-post">
+        <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/KVM/%E8%B0%83%E4%BC%98/KVM%E6%80%BB%E7%BB%93-KVM%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B9%8BCPU%E4%BC%98%E5%8C%96/">
+            
+                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 66.66666666666666%;"> 
+                    <img data-src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg" data-sizes="auto" alt="KVM总结-KVM性能优化之CPU优化.md" class="lazyload">
+                    <h1>KVM总结-KVM性能优化之CPU优化.md</h1>
+                </div>
+            
+        </a>
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/KVM/%E8%B0%83%E4%BC%98/KVM%E6%80%BB%E7%BB%93-KVM%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B9%8BCPU%E4%BC%98%E5%8C%96/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="曾胜龙">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="蜷缩的蜗牛">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E8%99%9A%E6%8B%9F%E5%8C%96/KVM/%E8%B0%83%E4%BC%98/KVM%E6%80%BB%E7%BB%93-KVM%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B9%8BCPU%E4%BC%98%E5%8C%96/" class="post-title-link" itemprop="url">KVM总结-KVM性能优化之CPU优化.md</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-05-14 22:16:05" itemprop="dateCreated datePublished" datetime="2020-05-14T22:16:05+08:00">2020-05-14</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%B0%83%E4%BC%98/" itemprop="url" rel="index"><span itemprop="name">调优</span></a>
-                </span>
-            </span>
-
-          
-
+        <div class="nexmoe-post-meta nexmoe-rainbow">
+            <a><i class="nexmoefont icon-calendar-fill"></i>2020年05月14日</a>
+            <a><i class="nexmoefont icon-areachart"></i>4.8k 字</a>
+            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 20 分钟</a>
         </div>
-      </header>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="前言"><a class="header-anchor" href="#前言">¶</a>前言</h2>
+        <article>
+            
+                <h2 id="前言"><a class="header-anchor" href="#前言">¶</a>前言</h2>
 <p>任何平台根据场景的不同，都有相应的优化。不一样的硬件环境、网络环境，同样的一个平台，它跑出的效果也肯定不一样。就好比一辆法拉利，在高速公路里跑跟乡村街道跑，速度和激情肯定不同…</p>
 <p>所以，我们做运维工作，也是如此。首先你得充分了解你所用的软件平台，然后根据你现有的生产环境去充分的测试，最后得出结果，做最优的调整。</p>
 <p>KVM也是一样，首先要做的是充分的了解它，看看有哪些参数和设置我们可以做出调整，最终应用以求发挥最高的性能。</p>
@@ -1007,15 +725,15 @@
 <p>最开始是SMP技术，SMP（Symmetric Multi-Processing ）技术就是对称多处理结构，这种结构的最大特点就是CPU共享所有资源，比如总线，内存，IO系统等等。</p>
 <p>既然是共享所有的资源，所以，各个CPU之间是平等的关系，然后操作系统管理着这些CPU对资源的访问（通常是用队列的形式去管理）。每个CPU依次的去处理队列中的进程，如果两个CPU同时访问，那么一般是通过软件锁的机制去解决争夺的问题，软件锁这概念跟开发里的线程安全锁机制道理是一样的，当一个CPU处理着一进程，一般会先锁住，处理完再释放。</p>
 <p>所以说到这里，这里的对称指的就是CPU之间是平等的无主从，访问资源也是平等的。我们可以看下面这张图：<br>
-<img src="https://img-blog.csdn.net/20170504132503770?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<img data-sizes="auto" data-src="https://img-blog.csdn.net/20170504132503770?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述" class="lazyload"></p>
 <p>这个结构是最早出现的方案，但是就是因为最早出现，所以它的弊端很快就显现出来了，那就是它的扩展能力不强。我们看上面这张图就明显感觉到，如果服务器要提升性能增加CPU，那么内存（内存最大化的情况下）就明显不够了，因为是共享模式，多一个CPU就多一个吃内存数据的人… 因此多增加的CPU没法享受到内存的数据，就会停歇，这样就造成了CPU的浪费。</p>
 <p>有实验数据表明，SMP型的服务器CPU最好是2-4颗就OK了，多余的就浪费了。<br>
-<img src="https://img-blog.csdn.net/20170504132544068?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<img data-sizes="auto" data-src="https://img-blog.csdn.net/20170504132544068?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述" class="lazyload"></p>
 <p>由此可见，这种方式是有缺陷的。。。因此科学家又想到了另外一个结构方案，那就是NUMA。</p>
 <p><strong>2. NUMA技术</strong></p>
 <p>NUMA刚才我们在前面说了是非统一内存访问的意思，它的出现就很好的解决了SMP的扩展问题。有了NUMA技术那么就可以把几十个甚至上百个CPU组合在一个服务器內。<br>
 NUMA架构设计图：<br>
-<img src="https://img-blog.csdn.net/20170504132617052?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<img data-sizes="auto" data-src="https://img-blog.csdn.net/20170504132617052?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述" class="lazyload"></p>
 <p>从图中我们发现，每个CPU模块之间都是通过互联模块进行连接和信息交互，CPU都是互通互联的，同时，每个CPU模块平均划分为若干个Chip（不多于4个），每个Chip都有自己的内存控制器及内存插槽。</p>
 <p>在NUMA中还有三个节点的概念：<br>
 \1. 本地节点： 对于某个节点中的所有CPU，此节点称为本地节点。<br>
@@ -1023,7 +741,7 @@ NUMA架构设计图：<br>
 \3. 远端节点：非本地节点或邻居节点的节点，称为远端节点。<br>
 邻居节点和远端节点，都称作非本地节点(Off Node)。</p>
 <p>这里要注意的是，CPU访问不同类型节点内存的速度是不相同的，访问本地节点的速度最快，访问远端节点的速度最慢，即访问速度与节点的距离有关，距离越远访问速度越慢，此距离称作Node Distance。正是因为有这个特点，所以我们的应用程序要尽量的减少不同CPU模块之间的交互，也就是说，如果你的应用程序能有方法固定在一个CPU模块里，那么你的应用的性能将会有很大的提升。<br>
-<img src="https://img-blog.csdn.net/20170504132705209?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="访问速度：本地节点&gt;邻居节点&gt;远端节点"></p>
+<img data-sizes="auto" data-src="https://img-blog.csdn.net/20170504132705209?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="访问速度：本地节点&gt;邻居节点&gt;远端节点" class="lazyload"></p>
 <p>因此KVM也是一样，我们在CPU优化这块就是要让KVM绑定在指定的CPU上，这样减少跨CPU的交互使用，让KVM的性能提升。现在我们的服务器还有linux操作系统都是默认走NUMA模式，所以我们接下来说说如何去做CPU的绑定。</p>
 <p>那么具体如何操作？</p>
 <p><strong>3. numactl 命令讲解</strong></p>
@@ -1034,18 +752,18 @@ numactl 帮助命令，主要参数如下：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">--interleave&#x3D;nodes, -i nodes      </span><br><span class="line">这个选项用于设定内存的交织分配模式。 </span><br><span class="line">也就是说系统在为多个节点分配内存空间的时候，将会以轮询分发的方式被分配给这多个节点。如果在当前众多的交织分配内存节点中的目标节点无法正确的分配内存空间的话，内存空间将会由其他的节点来分配。多节点可以通过 --interleave , --membind 和 --cpunodebind 命令来指定。</span><br><span class="line"></span><br><span class="line">--membind&#x3D;nodes, -m nodes     </span><br><span class="line">选项 &#39;--membind&#39; 仅用来从节点中分配内存空间所用。 如果在这些节点中无法分配出所请求的空间大小的话该分配操作将会失败. </span><br><span class="line">上述命令中指定需要分配空间的 nodes 的方式可以遵照上述 N,N,N , N-N ,N 这种方式来指定.</span><br><span class="line"></span><br><span class="line">--cpunodebind&#x3D;nodes, -N nodes     </span><br><span class="line">这命令仅用于施加在运行与 cpu 上的进程。</span><br><span class="line">这个命令用于显示 cpu 的个数，cpu 数目信息同样记录在系统中的存放处理器领域信息的 &#x2F;proc&#x2F;cpuinfo 文件夹下，或者是按照关联的中央处理器信息 在当前的中央处理器集中所存放。</span><br><span class="line"></span><br><span class="line">--localalloc, -l     </span><br><span class="line">这个命令选项通常是为当前的节点分配内存的。</span><br><span class="line"></span><br><span class="line">--preferred&#x3D;node      </span><br><span class="line">该命令由于指定优先分配内存空间的节点，如果无法将空间分配给该节点的话，应该分配给该节点上的空间将会被分发到其他的节点上 。 </span><br><span class="line">该命令选项后面仅接收一个单独的节点标号.  相关的表示方式也可以使用。</span><br><span class="line"></span><br><span class="line">--show, -s      </span><br><span class="line">该命令用于显示 NUMA 机制作用在当前运行的那些进程上。</span><br><span class="line"></span><br><span class="line">--hardware, -H      </span><br><span class="line">该命令用于显示当前系统中有多少个可用的节点。</span><br><span class="line"></span><br><span class="line">--huge     </span><br><span class="line">当创建一个基于大内存页面的系统级的共享内存段的时候使用--huge 这个选项，注意这选项仅在 --shmid 或是 --shm 命令的后面使用才有效。</span><br><span class="line"></span><br><span class="line">--offset    </span><br><span class="line">该参数选项用于指定共享内存段中的位移量的偏移。 默认的情况下偏移量是 0 。 有效的偏移量单位是 m (用于表示 MB)  g (用于表示 GB) , k (用于表示 KB ), 其他没有指定的被认为是以字节为单位。</span><br><span class="line"></span><br><span class="line">--strict    </span><br><span class="line">这个参数选项 当施加了 NUMA 调度机制的共享内存段区域的页面被施加了另一个机制而导致错误的时候，使用 --strict 选项将会把错误信息显示出来. 默认情况是不使用该选项的。</span><br><span class="line"></span><br><span class="line">--shmmode shmmode    </span><br><span class="line">该选项仅在 --shmid 或是 --shm 之前使用才会生效。 </span><br><span class="line">当创建一个共享内存段的时候，通过整型数值来指定共享内存的共享的模式类型。</span><br><span class="line"></span><br><span class="line">--shmid id     </span><br><span class="line">通过ID 号码来创建或使用一个共享内存段。(如果共享内存段已经存在，那么通过 shmid 来指定下面要使用某个 ID 的共享内存段;如果该 ID 对应的共享内存段并不存在的话，那么就创建一个)。</span><br><span class="line"></span><br><span class="line">--shm shmkeyfile     </span><br><span class="line">通过存放在 shmkeyfile（共享内存-键文件）中的 ID 号码来创建或者是使用一个共享内存段。访问 shmkeyfile 文件的进程是通过 fork(3 arguments) 方法来实现的。</span><br><span class="line"></span><br><span class="line">--file tmpfsfile     </span><br><span class="line">将 numa 机制施加于文件上面, 这个文件属于 tmpfs或者是 hugetlbfs 这种特殊的文件系统。</span><br><span class="line"></span><br><span class="line">--touch      </span><br><span class="line">通过将 numa 机制施加于刚刚页面上来实现内存的早期 numa 化。默认情况下是不使用该选项，如果存在映射或是访问页面的应用的话，将会使用该早期实行 NUMA 机制的这种方法。</span><br><span class="line"></span><br><span class="line">--dump    </span><br><span class="line">该选项用于废除将已经 numa 化的特定区域上的 NUMA性质.</span><br><span class="line"></span><br><span class="line">--dump-nodes      </span><br><span class="line">nodes 所指定的节点以外的所有节点上的 NUMA 特性全都会被移除</span><br><span class="line">  all  用于将所有的节点上的 NUMA 特性移除</span><br><span class="line">  number  通过指定 node 后接的数值来废除该数字对应的 node </span><br><span class="line">  number1(number2)  node number1（node number2）上的 NUMA 特性将会被移除</span><br><span class="line">  number1-number2    node number1 -- node number2 区间上的所有存在的 node 的 NUMA 特性将会被移除</span><br><span class="line">  !nodes 除了 nodes 所指定的节点以外的所有节点上的 NUMA 特性全都会被移除123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960</span><br></pre></td></tr></table></figure>
 <p>以上是numactl的详细命令，那么接下来我们先看看当前服务器CPU的numa情况：</p>
 <p>我们执行lscpu命令可以查看到一些CPU信息：<br>
-<img src="https://img-blog.csdn.net/20170504133512354?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<img data-sizes="auto" data-src="https://img-blog.csdn.net/20170504133512354?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述" class="lazyload"></p>
 <p>我们用<code>numactl --hardware</code>可以查看，如这里我准备了两台IBM的服务器，一个3650M4另外一个是3850M2。</p>
 <p>我们可以从命令返回的情况看出，这台服务器numa有2个node（node0和node1)：<br>
-<img src="https://img-blog.csdn.net/20170504133550796?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<img data-sizes="auto" data-src="https://img-blog.csdn.net/20170504133550796?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述" class="lazyload"></p>
 <p>我们再看另外一个服务器，这是一台IBM 3850M2，那么它就只有一个node：<br>
-<img src="https://img-blog.csdn.net/20170504133615558?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<img data-sizes="auto" data-src="https://img-blog.csdn.net/20170504133615558?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述" class="lazyload"></p>
 <p>通过这个<code>numactl --hardware</code>命令，我们可以看出上面那台机器每个node有81894 MB的内存可以使用（大概79G），而IBM 3850M2这个服务器node有131070MB（120多G）内存可用（基本上是整个服务器的内存）<br>
 那么接下来我们可以看下cpu numa的调度分配情况：<br>
 我们运行numastat命令可以查到：<br>
-<img src="https://img-blog.csdn.net/20170504133636469?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<img data-sizes="auto" data-src="https://img-blog.csdn.net/20170504133636469?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述" class="lazyload"></p>
 <p>3650M4</p>
-<p><img src="https://img-blog.csdn.net/20170504133659126?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p><img data-sizes="auto" data-src="https://img-blog.csdn.net/20170504133659126?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述" class="lazyload"></p>
 <p>3850M2</p>
 <p>参数解释：<br>
 ● numa_hit 使用本节点内存次数<br>
@@ -1055,7 +773,7 @@ numactl 帮助命令，主要参数如下：</p>
 ● local_node 在本节点运行的程序使用本节点内存次数<br>
 ● NB other_node 在其他节点运行的程序使用本节点内存次数</p>
 <p>接着我们看下这个命令：numastat -c ， 这个命令c 后面跟上进程名就能看到相关进程的NUMA内存使用情况。比如：numastat -c qemu-kvm，这样我们就知道了qemu-kvm这个进程，它在node0 和node1上使用的内存大小，单位是MB：<br>
-<img src="https://img-blog.csdn.net/20170504133809043?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<img data-sizes="auto" data-src="https://img-blog.csdn.net/20170504133809043?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述" class="lazyload"></p>
 <p>通过这几个命令我们可以查看一些numa的基本状态和使用情况。那么针对CPU Numa技术，linux操作系统本身呢也有自身对这块的设计。拿linux来说，它默认使用的就是NUMA自动平衡策略，也就是说，系统会自动的调配numa的内存使用，以求一个平衡。</p>
 <p>当然，这个设置是可以用户自己控制的，如果我们想关闭，直接运行</p>
 <p><code># echo 0 &gt; /proc/sys/kernel/numa_balancing</code> 即可<br>
@@ -1063,304 +781,85 @@ numactl 帮助命令，主要参数如下：</p>
 <p><strong>4. CPU绑定操作</strong></p>
 <p>说到这，既然我们的操作系统还有CPU特性都采用了NUMA架构，那么我们完全可以通过调整KVM对应的NUMA关系来达到KVM CPU这方面的优化。这里，我们一般是通过CPU绑定的方法来做相关操作的。</p>
 <p>那么具体的操作是怎么样的呢？那么接下来我们通过一个例子来演示。这里是一台物理机，之前我们看过了，现在上面装好了KVM，然后运行着几个虚拟机，我们用 virsh list 命令可以查看到当前运行的虚拟机列表。<br>
-<img src="https://img-blog.csdn.net/20170504134117247?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<img data-sizes="auto" data-src="https://img-blog.csdn.net/20170504134117247?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述" class="lazyload"></p>
 <p>比如我们要看这个Win7-ent虚拟机里vCPU对应物理CPU的情况，那么可以运行：<br>
 <code># virsh vcpuinfo Win7-ent</code> 可以查看<br>
-<img src="https://img-blog.csdn.net/20170504134202352?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<img data-sizes="auto" data-src="https://img-blog.csdn.net/20170504134202352?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述" class="lazyload"></p>
 <p>这个虚拟机是2个vCPU 双核的，然后都是跑在了物理机的CPU8上，使用的时间是2964.6s。最后一个是CPU的亲和性，这个yyyyy 表示的是使用的物理CPU内部的逻辑核，一个y就代表其中一个CPU逻辑核。全部是y ，那么说明这台物理机的24个CPU核，这个CPU都能调度使用。</p>
 <p>当然，我们可以进入vrish ，然后运行emulatorpin Win7-ent， 通过这个命令我们可以更详细的得到这个虚拟机可以用哪几个核：<br>
-<img src="https://img-blog.csdn.net/20170504134049897?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<img data-sizes="auto" data-src="https://img-blog.csdn.net/20170504134049897?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述" class="lazyload"></p>
 <p>我们可以看到目前这个虚拟机0-23的CPU它都能调度使用。</p>
 <p>那么以上就是查看虚拟机CPU NUMA调度的信息，如果我们要把虚拟机绑定到固定的CPU上，我们就要做以下操作：<br>
 <code># virsh emulatorpin Win7-ent 18-23 --live</code><br>
 通过这个命令，我们把这个win7的虚拟机vCPU绑定在了18-23这6个CPU之间的核上。<br>
 我们用命令查看下<br>
 emulatorpin Win7-ent<br>
-<img src="https://img-blog.csdn.net/20170504134345530?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<img data-sizes="auto" data-src="https://img-blog.csdn.net/20170504134345530?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述" class="lazyload"></p>
 <p>我们也可以用virsh dumpxml Win7-ent 查看确认：<br>
-<img src="https://img-blog.csdn.net/20170504134407358?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<img data-sizes="auto" data-src="https://img-blog.csdn.net/20170504134407358?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述" class="lazyload"></p>
 <p>这是让虚拟机里的vCPU一起绑定的方法。<br>
 那么有的人会疑问，一个虚拟机我有两个vCPU, 比如这个win7 ，它就是双核的，我想让里面的vCPU1和vCPU2分别绑定在不同的物理CPU上可以吗？怎么操作呢？这也是可以的，我们通过下面的方法可以进行相关的vCPU分别绑定</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># virsh vcpupin Win7-ent 0 22</span><br><span class="line"># virsh vcpupin Win7-ent 1 23</span><br><span class="line"># virsh dumpxml Win7-ent123</span><br></pre></td></tr></table></figure>
-<p><img src="https://img-blog.csdn.net/20170504134509561?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p><img data-sizes="auto" data-src="https://img-blog.csdn.net/20170504134509561?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述" class="lazyload"></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># virsh vcpuinfo Win7-ent1</span><br></pre></td></tr></table></figure>
-<p><img src="https://img-blog.csdn.net/20170504134535998?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p><img data-sizes="auto" data-src="https://img-blog.csdn.net/20170504134535998?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述" class="lazyload"></p>
 <p>这里要注意的是，你把虚拟机用reboot重启，这个绑定配置还是生效的，但是你shutdown的话，CPU绑定的效果会失效。我们要让VM关机然后起来也生效，就必须把参数写入到虚拟机的XML里，然后保存，这样关机了也不会失效，这里要注意下</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># virsh edit vm11</span><br></pre></td></tr></table></figure>
 <p>添加：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;cputune&gt;</span><br><span class="line">    &lt;vcpupin vcpu&#x3D;&#39;0&#39; cpuset&#x3D;&#39;22&#39;&#x2F;&gt;</span><br><span class="line">    &lt;vcpupin vcpu&#x3D;&#39;1&#39; cpuset&#x3D;&#39;23&#39;&#x2F;&gt;</span><br><span class="line">&lt;&#x2F;cputune&gt;1234</span><br></pre></td></tr></table></figure>
-<p><img src="https://img-blog.csdn.net/20170504134714891?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p><img data-sizes="auto" data-src="https://img-blog.csdn.net/20170504134714891?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述" class="lazyload"></p>
 <p>以上就是CPU绑定技术的操作。通过这样的操作，我们可以在一台多CPU的物理机上固定几个CPU给虚拟机用。当然，至于为什么可以这样做，前面我们提到了关于NUMA的原理，如果固定了虚拟机的CPU，那么它就不会去找远端节点了，另外就是有些场景下，一物理机多个CPU，如果前面几个CPU负载很高，利用率大，后面几个CPU利用率低，那么我们可以协调下，做CPU的绑定，平衡下CPU的负载。</p>
 <p>以上是CPU的绑定，接下来我们讲讲CPU的热添加。</p>
 <p><strong>5. CPU 热添加</strong></p>
 <p>首先我们先了解下什么叫热添加，热添加就是在虚拟机运行不关机的情况下，做CPU的添加操作。那么要注意的是，这个热添加是在Redhat7.0以后才出现的，之前是没有的。所以要享用这功能那必须要求KVM宿主机和虚拟机都得在7.0版本以后。那么具体怎么操作我们通过一个演示给大家操作下。</p>
 <p>比如目前这个虚拟机，这是一个CentOS7.1的。我们先看下目前虚拟机的CPU的数值，我们可以进系统查看，<code>cat /proc/cpuinfo| grep &quot;processor&quot;| uniq| wc -l</code> ，我们看到当前是2个CPU：<br>
-<img src="https://img-blog.csdn.net/20170504134813641?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<img data-sizes="auto" data-src="https://img-blog.csdn.net/20170504134813641?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述" class="lazyload"></p>
 <p>然后我们解释下这个最大CPU分配数是怎么个意思，它的意思就是给这个虚拟机最大预留的CPU个数，这个设置很重要，如果你想给虚拟机热添加，那么这个设置必须写。比如我们这里写的4，那么我们可以给虚拟机最大热添加到4个CPU，而且4是上限。</p>
 <p>那么接下来说下，具体怎么热添加。我们先在宿主机里先给这个虚拟机添加第三个CPU，原来是2个，现在再添加一个变成3个：<br>
 <code>setvcpus VM3_CentOS7.1 3 --live</code><br>
 然后我们到虚拟机里面把这个CPU激活 ：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo 1 &gt;&#x2F;sys&#x2F;devices&#x2F;system&#x2F;cpu&#x2F;cpu2&#x2F;online1</span><br></pre></td></tr></table></figure>
-<p><img src="https://img-blog.csdn.net/20170504134923547?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p><img data-sizes="auto" data-src="https://img-blog.csdn.net/20170504134923547?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述" class="lazyload"></p>
 <p>我们再运行查看，发现已经变成3个了。</p>
 <p>如果要减少，那么只能在虚拟机里减少刚才的CPU</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># echo 0 &gt;&#x2F;sys&#x2F;devices&#x2F;system&#x2F;cpu&#x2F;cpu2&#x2F;online1</span><br></pre></td></tr></table></figure>
-<p><img src="https://img-blog.csdn.net/20170504135020863?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p><img data-sizes="auto" data-src="https://img-blog.csdn.net/20170504135020863?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述" class="lazyload"></p>
 <p>但是在宿主机层面看这个虚拟机的vCPU数还是3个，也就是说不支持热减少，我们运行</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vcpuinfo VM3_CentOS7.11</span><br></pre></td></tr></table></figure>
 <p>命令发现还是3个：<br>
-<img src="https://img-blog.csdn.net/20170504135110630?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<img data-sizes="auto" data-src="https://img-blog.csdn.net/20170504135110630?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZHlsbG92ZXlvdQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述" class="lazyload"></p>
 <p>同理，Windows的添加也是如此，直接在宿主机里添加第三个CPU即可</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># setvcpus VM4_Win2008 3 --live1</span><br></pre></td></tr></table></figure>
 <p>然后虚拟机里不用操作，它会自动刷新成3个CPU，我们也可以一个windows虚拟机做相关的演示，具体的可以由读者自己操作了。</p>
 <p>到这为止, 以上就是KVM CPU方面的优化。总结起来就两点，一个是CPU绑定，还有一个就是热添加。</p>
 <p>CPU绑定首先得了解NUMA技术，然后站在整个宿主机CPU资源的层面去调节。热添加，当你某个虚拟机正在运行，然后突然业务压力增大了，可以通过这方法达到0停机提升虚拟机CPU性能。</p>
 
-      
+            
+        </article>
     </div>
-
     
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
+</section>
+
+    <nav class="nexmoe-page-nav">
+      <a class="extend prev" rel="prev" href="/page/6/"><i class="nexmoefont icon-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/8/"><i class="nexmoefont icon-right"></i></a>
+    </nav>
   
-  
-  
-
-
-  
-  <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/6/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/8/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
-  </nav>
-
-
-
-          </div>
-          
-
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
-
-        </div>
-          
-  
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
-  </div>
-
-  <aside class="sidebar">
-    <div class="sidebar-inner">
-
-      <ul class="sidebar-nav motion-element">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-      </div>
-      <!--/noindex-->
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="曾胜龙"
-      src="/images/avatar.gif">
-  <p class="site-author-name" itemprop="name">曾胜龙</p>
-  <div class="site-description" itemprop="description"></div>
-</div>
-<div class="site-state-wrap motion-element">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives/">
-        
-          <span class="site-state-item-count">109</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-          
-        <span class="site-state-item-count">25</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-          
-        <span class="site-state-item-count">24</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
-</div>
-  <div class="links-of-author motion-element">
-      <span class="links-of-author-item">
-        <a href="https://github.com/kbsonlong" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kbsonlong" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
-      </span>
-  </div>
-  <div class="cc-license motion-element" itemprop="license">
-    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
-  </div>
-
-
-
-      </div>
-
     </div>
-  </aside>
-  <div id="sidebar-dimmer"></div>
-
-
-      </div>
-    </main>
-
-    <footer class="footer">
-      <div class="footer-inner">
-        
-
-        
-  <div class="beian"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank">粤ICP备18122209号 </a>
-      <img src="http://www.beian.gov.cn/portal/download" style="display: inline-block;">
   </div>
-
-<div class="copyright">
-  
-  &copy; 
-  <span itemprop="copyrightYear">2020</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">曾胜龙</span>
-</div>
-
-        
-<div class="busuanzi-count">
-  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-user"></i>
-      </span>
-      <span class="site-uv" title="总访客量">
-        <span id="busuanzi_value_site_uv"></span>
-      </span>
-    </span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-eye"></i>
-      </span>
-      <span class="site-pv" title="总访问量">
-        <span id="busuanzi_value_site_pv"></span>
-      </span>
-    </span>
-</div>
+  <script src="https://cdn.jsdelivr.net/combine/npm/lazysizes@5.1.0/lazysizes.min.js,gh/highlightjs/cdn-release@9.15.8/build/highlight.min.js,npm/mdui@0.4.3/dist/js/mdui.min.js?v=1"></script>
+<script >hljs.initHighlightingOnLoad();</script>
 
 
+    <script src="https://cdn.jsdelivr.net/gh/xtaodada/xtaodada.github.io@0.0.2/copy.js"></script>
 
 
-
-
-
-
-      </div>
-    </footer>
-  </div>
-
-  
-  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
-
-<script src="/js/utils.js"></script>
-
-<script src="/js/motion.js"></script>
-
-
-<script src="/js/schemes/pisces.js"></script>
-
-
-<script src="/js/next-boot.js"></script>
-
-<script src="/js/bookmark.js"></script>
-
-
-
-
-  
-  <script>
-    (function(){
-      var canonicalURL, curProtocol;
-      //Get the <link> tag
-      var x=document.getElementsByTagName("link");
-		//Find the last canonical URL
-		if(x.length > 0){
-			for (i=0;i<x.length;i++){
-				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
-					canonicalURL=x[i].href;
-				}
-			}
-		}
-    //Get protocol
-	    if (!canonicalURL){
-	    	curProtocol = window.location.protocol.split(':')[0];
-	    }
-	    else{
-	    	curProtocol = canonicalURL.split(':')[0];
-	    }
-      //Get current URL if the canonical URL does not exist
-	    if (!canonicalURL) canonicalURL = window.location.href;
-	    //Assign script content. Replace current URL with the canonical URL
-      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
-  </script>
-
-
-
-
-  
-<script src="/js/local-search.js"></script>
-
-
-
-
-
-
-
-
-
-
-
-
-
+<script src="/js/app.js?v=1589470542969"></script>
   
 
-  
+
+
+
 
 </body>
+
 </html>
