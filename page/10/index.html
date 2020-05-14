@@ -1256,7 +1256,7 @@ hg-mes:PRIMARY&gt;</p>
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/Untitled/">
+    <link itemprop="mainEntityOfPage" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/Prometheus/01%20%E9%85%8D%E7%BD%AE%E7%83%AD%E5%8A%A0%E8%BD%BD/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -1270,7 +1270,7 @@ hg-mes:PRIMARY&gt;</p>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/Untitled/" class="post-title-link" itemprop="url">运维/Untitled</a>
+            <a href="/2020/05/14/%E8%BF%90%E7%BB%B4/Prometheus/01%20%E9%85%8D%E7%BD%AE%E7%83%AD%E5%8A%A0%E8%BD%BD/" class="post-title-link" itemprop="url">运维/Prometheus/01 配置热加载</a>
         </h2>
 
         <div class="post-meta">
@@ -1294,7 +1294,12 @@ hg-mes:PRIMARY&gt;</p>
     <div class="post-body" itemprop="articleBody">
 
       
-          
+          <blockquote>
+<p>从 2.0 开始，hot reload 功能是默认关闭的，如需开启，需要在启动 Prometheus 的时候，添加 <code>--web.enable-lifecycle</code> 参数。</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -XPOST http://localhost:9090/-/reload</span><br></pre></td></tr></table></figure>
+
+
       
     </div>
 
@@ -1380,7 +1385,7 @@ hg-mes:PRIMARY&gt;</p>
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">110</span>
+          <span class="site-state-item-count">109</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
