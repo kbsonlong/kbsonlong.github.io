@@ -1,415 +1,92 @@
-<!DOCTYPE html>
-
-<html lang="zh-CN">
-
-<head>
-  
-  <title>分类：Mysql - 蜷缩的蜗牛</title>
-  <meta charset="UTF-8">
-  <meta name="description" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
-  
-  
-
-  <link rel="shortcut icon" href="/favicon.ico" type="image/png" />
-  <meta property="og:type" content="website">
-<meta property="og:title" content="蜷缩的蜗牛">
-<meta property="og:url" content="https://kbsonlong.github.io/categories/Mysql/index.html">
-<meta property="og:site_name" content="蜷缩的蜗牛">
-<meta property="og:locale" content="zh_CN">
-<meta property="article:author" content="曾胜龙">
-<meta property="article:tag" content="Devops Kubernetes Docker">
-<meta name="twitter:card" content="summary">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/gh/nexmoe/nexmoe.github.io@latest/css/style.css,npm/highlight.js@9.15.8/styles/atom-one-dark.css,gh/nexmoe/nexmoe.github.io@latest/lib/mdui_043tiny/css/mdui.css,gh/nexmoe/nexmoe.github.io@latest/lib/iconfont/iconfont.css" crossorigin>
-  
-  <!--<link rel="stylesheet" href="/css/style.css?v=1589470630863">-->
-<meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/atom.xml" title="蜷缩的蜗牛" type="application/atom+xml">
-</head>
-
-<body class="mdui-drawer-body-left">
-  
-  <div id="nexmoe-background">
-    <div class="nexmoe-bg" style="background-image: url(https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg)"></div>
-    <div class="mdui-appbar mdui-shadow-0">
-      <div class="mdui-toolbar">
-        <a mdui-drawer="{target: '#drawer', swipe: true}" title="menu" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon nexmoefont icon-menu"></i></a>
-        <div class="mdui-toolbar-spacer"></div>
-        <!--<a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">search</i></a>-->
-        <a href="/" title="曾胜龙" class="mdui-btn mdui-btn-icon"><img src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/avatar.png" alt="曾胜龙"></a>
-       </div>
-    </div>
-  </div>
-  <div id="nexmoe-header">
-      <div class="nexmoe-drawer mdui-drawer" id="drawer">
-    <div class="nexmoe-avatar mdui-ripple">
-        <a href="/" title="曾胜龙">
-            <img src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/avatar.png" alt="曾胜龙" alt="曾胜龙">
-        </a>
-    </div>
-    <div class="nexmoe-count">
-        <div><span>文章</span>109</div>
-        <div><span>标签</span>24</div>
-        <div><span>分类</span>25</div>
-    </div>
-    <div class="nexmoe-list mdui-list" mdui-collapse="{accordion: true}">
-        
-        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/" title="回到首页">
-            <i class="mdui-list-item-icon nexmoefont icon-home"></i>
-            <div class="mdui-list-item-content">
-                回到首页
-            </div>
-        </a>
-        
-        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/archives" title="文章归档">
-            <i class="mdui-list-item-icon nexmoefont icon-container"></i>
-            <div class="mdui-list-item-content">
-                文章归档
-            </div>
-        </a>
-        
-        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/about.html" title="关于博客">
-            <i class="mdui-list-item-icon nexmoefont icon-info-circle"></i>
-            <div class="mdui-list-item-content">
-                关于博客
-            </div>
-        </a>
-        
-        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/PY.html" title="我的朋友">
-            <i class="mdui-list-item-icon nexmoefont icon-unorderedlist"></i>
-            <div class="mdui-list-item-content">
-                我的朋友
-            </div>
-        </a>
-        
-    </div>
-    <aside id="nexmoe-sidebar">
-  
-  <div class="nexmoe-widget-wrap">
-    <div class="nexmoe-widget nexmoe-search">
-        <form id="search_form" action_e="https://cn.bing.com/search?q=site:nexmoe.com" onsubmit="return search();">
-            <label><input id="search_value" name="q" type="search" placeholder="搜索"></label>
-        </form>
-    </div>
-</div>
-  
-  <div class="nexmoe-widget-wrap">
-    <h3 class="nexmoe-widget-title">社交按钮</h3>
-    <div class="nexmoe-widget nexmoe-social">
-        <a class="mdui-ripple" href="https://space.bilibili.com/20238211" target="_blank" mdui-tooltip="{content: '哔哩哔哩'}" style="color: rgb(231, 106, 141);background-color: rgba(231, 106, 141, .15);">
-            <i class="nexmoefont icon-bilibili"></i>
-        </a><a class="mdui-ripple" href="https://github.com/nexmoe/" target="_blank" mdui-tooltip="{content: 'GitHub'}" style="color: rgb(25, 23, 23);background-color: rgba(25, 23, 23, .15);">
-            <i class="nexmoefont icon-github"></i>
-        </a>
-    </div>
-</div>
-  
-  
-  <div class="nexmoe-widget-wrap">
-    <h3 class="nexmoe-widget-title">文章分类</h3>
-    <div class="nexmoe-widget">
-
-      <ul class="category-list">
-
-        
-
-
-        
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/Ansible/">Ansible</a>
-          <span class="category-list-count">3</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/Bgp/">Bgp</a>
-          <span class="category-list-count">1</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/Docker/">Docker</a>
-          <span class="category-list-count">6</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/Elasticsearch/">Elasticsearch</a>
-          <span class="category-list-count">12</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/KVM/">KVM</a>
-          <span class="category-list-count">1</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/Kafka/">Kafka</a>
-          <span class="category-list-count">2</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/Kong/">Kong</a>
-          <span class="category-list-count">2</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/Kubernetes/">Kubernetes</a>
-          <span class="category-list-count">19</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/Mongodb/">Mongodb</a>
-          <span class="category-list-count">3</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/Mysql/">Mysql</a>
-          <span class="category-list-count">3</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/Prometheus/">Prometheus</a>
-          <span class="category-list-count">4</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/RabbitMQ/">RabbitMQ</a>
-          <span class="category-list-count">1</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/Redis/">Redis</a>
-          <span class="category-list-count">1</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/RocketMQ/">RocketMQ</a>
-          <span class="category-list-count">2</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/gitlab/">gitlab</a>
-          <span class="category-list-count">3</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/k8s安装实战/">k8s安装实战</a>
-          <span class="category-list-count">10</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/nacos/">nacos</a>
-          <span class="category-list-count">1</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/openLDAP/">openLDAP</a>
-          <span class="category-list-count">6</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/标准化及流程化/">标准化及流程化</a>
-          <span class="category-list-count">8</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/深入剖析Kubernetes/">深入剖析Kubernetes</a>
-          <span class="category-list-count">2</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/监控系统/">监控系统</a>
-          <span class="category-list-count">1</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/系统初始化/">系统初始化</a>
-          <span class="category-list-count">3</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/虚拟化/">虚拟化</a>
-          <span class="category-list-count">1</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/调优/">调优</a>
-          <span class="category-list-count">3</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/运维/">运维</a>
-          <span class="category-list-count">2</span>
-        </li>
-
-        
-      </ul>
-
-    </div>
-  </div>
-
-
-  
-  
-  <div class="nexmoe-widget-wrap">
-    <h3 class="nexmoe-widget-title">标签云</h3>
-    <div id="randomtagcloud" class="nexmoe-widget tagcloud nexmoe-rainbow">
-      <a href="/tags/Ansible/" style="font-size: 12.5px;">Ansible</a> <a href="/tags/Bgp/" style="font-size: 10px;">Bgp</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/Elasticsearch/" style="font-size: 18.75px;">Elasticsearch</a> <a href="/tags/KVM/" style="font-size: 10px;">KVM</a> <a href="/tags/Kafka/" style="font-size: 11.25px;">Kafka</a> <a href="/tags/Kong/" style="font-size: 11.25px;">Kong</a> <a href="/tags/Kubernetes/" style="font-size: 20px;">Kubernetes</a> <a href="/tags/Mongodb/" style="font-size: 12.5px;">Mongodb</a> <a href="/tags/Mysql/" style="font-size: 12.5px;">Mysql</a> <a href="/tags/Prometheus/" style="font-size: 13.75px;">Prometheus</a> <a href="/tags/RabbitMQ/" style="font-size: 10px;">RabbitMQ</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 11.25px;">RocketMQ</a> <a href="/tags/gitlab/" style="font-size: 12.5px;">gitlab</a> <a href="/tags/k8s%E5%AE%89%E8%A3%85%E5%AE%9E%E6%88%98/" style="font-size: 17.5px;">k8s安装实战</a> <a href="/tags/nacos/" style="font-size: 10px;">nacos</a> <a href="/tags/openLDAP/" style="font-size: 15px;">openLDAP</a> <a href="/tags/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/" style="font-size: 16.25px;">标准化及流程化</a> <a href="/tags/%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes/" style="font-size: 11.25px;">深入剖析Kubernetes</a> <a href="/tags/%E7%B3%BB%E7%BB%9F%E5%88%9D%E5%A7%8B%E5%8C%96/" style="font-size: 12.5px;">系统初始化</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96/" style="font-size: 10px;">虚拟化</a> <a href="/tags/%E8%B0%83%E4%BC%98/" style="font-size: 12.5px;">调优</a> <a href="/tags/%E8%BF%90%E7%BB%B4/" style="font-size: 11.25px;">运维</a>
-    </div>
-    
-  </div>
-
-  
-  
-  <div class="nexmoe-widget-wrap">
-    <h3 class="nexmoe-widget-title">文章归档</h3>
-    <div class="nexmoe-widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a></li></ul>
-    </div>
-  </div>
-
-
-  
-</aside>
-    <div class="nexmoe-copyright">
-        &copy; 2020 曾胜龙
-        Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-        & <a href="https://nexmoe.com/hexo-theme-nexmoe.html" target="_blank">Nexmoe</a>
-    </div>
-</div><!-- .nexmoe-drawer -->
-  </div>
-  <div id="nexmoe-content">
-    <div class="nexmoe-primary">
-        
-<section class="nexmoe-archives">
-
-    <article>
-        
-
-        
-            <h2>2020</h2>
-            <ul>
-            
-                <li><span>05-14</span><a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%95%B0%E6%8D%AE%E5%BA%93/Mysql/Mysql%E8%AF%AF%E5%88%A0%E9%99%A4%E6%93%8D%E4%BD%9C%E7%9A%84%E9%98%B5%E7%97%9B/" >Mysql误删除操作的阵痛.md</a></li>
-            
-                <li><span>05-14</span><a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%95%B0%E6%8D%AE%E5%BA%93/Mysql/mysql/" >mysql.md</a></li>
-            
-                <li><span>05-14</span><a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%95%B0%E6%8D%AE%E5%BA%93/Mysql/mysql%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98%E6%A6%82%E5%BF%B5/" >mysql性能调优概念.md</a></li>
-            
-            </ul>
-        
-    </article>
-</section>
-
-<style>
-.nexmoe-archives article > *:first-child {
-    margin-top: 0;
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>分类: Mysql | 蜷缩的蜗牛</title><meta name="description"><meta name="keywords" content="Devops Kubernetes Docker"><meta name="author" content="曾胜龙"><meta name="copyright" content="曾胜龙"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/img/favicon.png"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://fonts.googleapis.com" crossorigin="crossorigin"/><link rel="dns-prefetch" href="https://fonts.googleapis.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="dns-prefetch" href="//busuanzi.ibruce.info"/><meta name="twitter:card" content="summary"><meta name="twitter:title" content="分类: Mysql"><meta name="twitter:description"><meta name="twitter:image" content="https://kbsonlong.github.io/img/avatar.png"><meta property="og:type" content="website"><meta property="og:title" content="分类: Mysql"><meta property="og:url" content="https://kbsonlong.github.io/categories/Mysql/"><meta property="og:site_name" content="蜷缩的蜗牛"><meta property="og:description"><meta property="og:image" content="https://kbsonlong.github.io/img/avatar.png"><meta property="article:published_time" content="2020-05-14T22:38:32.988Z"><meta property="article:modified_time" content="2020-05-14T22:38:32.988Z"><script src="https://cdn.jsdelivr.net/npm/js-cookie/dist/js.cookie.min.js"></script><script>var autoChangeMode = '1'
+var t = Cookies.get("theme")
+if (autoChangeMode == '1'){
+  var isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
+  var isLightMode = window.matchMedia("(prefers-color-scheme: light)").matches
+  var isNotSpecified = window.matchMedia("(prefers-color-scheme: no-preference)").matches
+  var hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+  if (t === undefined){
+    if (isLightMode) activateLightMode()
+    else if (isDarkMode) activateDarkMode()
+    else if (isNotSpecified || hasNoSupport){
+      console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+      var now = new Date()
+      var hour = now.getHours()
+      var isNight = hour < 6 || hour >= 18
+      isNight ? activateDarkMode() : activateLightMode()
+  }
+  } else if (t == 'light') activateLightMode()
+  else activateDarkMode()
+
+} else if (autoChangeMode == '2'){
+  now = new Date();
+  hour = now.getHours();
+  isNight = hour < 6 || hour >= 18
+  if(t === undefined) isNight? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode() 
+} else {
+  if ( t == 'dark' ) activateDarkMode()
+  else if ( t == 'light') activateLightMode()
 }
-.nexmoe-archives article > *:last-child {
-    margin-bottom: 0;
-}
-.nexmoe-archives ul {
-    list-style: none;
-    padding-left: 0!important;
-}
-.nexmoe-archives li {
-    position: relative;
-    padding: 10px 0;
-}
-.nexmoe-archives li::before {
-    content: "";
-    width: 14px;
-    height: 14px;
-    background: #ff4e6a;
-    display: inline-block;
-    vertical-align: middle;
-    margin-top: -2px;
-    margin-right: 11px;
-    border-radius: 100%;
-    border: 3px solid #fff;
-    z-index: 100;
-    position: relative;
-}
-.nexmoe-archives li::after {
-    content: "";
-    height: 100%;
-    width: 2px;
-    background: rgba(255, 78, 106, 0.2);
-    position: absolute;
-    left: 6px;
-    top: 20px;
-}
-.nexmoe-archives li:last-child:after {
-    display: none;
-}
-.nexmoe-archives span {
-    margin-right: 15px;
-}
-</style>
-    </div>
-  </div>
-  <script src="https://cdn.jsdelivr.net/combine/npm/lazysizes@5.1.0/lazysizes.min.js,gh/highlightjs/cdn-release@9.15.8/build/highlight.min.js,npm/mdui@0.4.3/dist/js/mdui.min.js?v=1"></script>
-<script >hljs.initHighlightingOnLoad();</script>
 
-
-    <script src="https://cdn.jsdelivr.net/gh/xtaodada/xtaodada.github.io@0.0.2/copy.js"></script>
-
-
-<script src="/js/app.js?v=1589470630865"></script>
+function activateDarkMode(){
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+    document.querySelector('meta[name="theme-color"]').setAttribute('content','#000')
+  }
+}
+function activateLightMode(){
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+  document.querySelector('meta[name="theme-color"]').setAttribute('content','#fff')
+  }
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="canonical" href="https://kbsonlong.github.io/categories/Mysql/"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"cookieDomain":"https://xxx/","msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  runtime: true,
+  copyright: {"languages":{"author":"作者: 曾胜龙","link":"链接: ","source":"来源: 蜷缩的蜗牛","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  ClickShowText: undefined,
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: undefined,
+  baiduPush: false,
+  highlightCopy: true,
+  highlightLang: true,
+  highlightShrink: 'false',
+  isFontAwesomeV5: false,
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
   
-
-
-
-
-
-</body>
-
-</html>
+}</script><script>var GLOBAL_CONFIG_SITE = { 
+  isPost: false,
+  isHome: false,
+  isSidebar: false  
+  }</script><noscript><style>
+#page-header {
+  opacity: 1
+}
+.justified-gallery img{
+  opacity: 1
+}
+</style></noscript><meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/atom.xml" title="蜷缩的蜗牛" type="application/atom+xml">
+</head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">109</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">24</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">25</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page"><i class="fa-fw fa fa-list" aria-hidden="true"></i><span> 更多</span><i class="fa fa-chevron-down menus-expand" aria-hidden="true"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fa fa-music"></i><span> Music</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fa fa-film"></i><span> Movie</span></a></li></ul></div></div></div></div><div id="body-wrap"><div class="not-index-bg" id="nav" style="background-image: url(https://i.loli.net/2020/05/01/IuWi8QbHvzjlOPw.jpg)"><div id="page-header"><span class="pull_left" id="blog_name"><a class="blog_title" id="site-name" href="/">蜷缩的蜗牛</a></span><span class="pull_right menus"><div id="search_button"><a class="site-page social-icon search"><i class="fa fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page"><i class="fa-fw fa fa-list" aria-hidden="true"></i><span> 更多</span><i class="fa fa-chevron-down menus-expand" aria-hidden="true"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fa fa-music"></i><span> Music</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fa fa-film"></i><span> Movie</span></a></li></ul></div></div><span class="toggle-menu close"><a class="site-page"><i class="fa fa-bars fa-fw" aria-hidden="true"></i></a></span></span></div><div id="page_site-info"><h1 id="site_title">Mysql</h1></div></div><main class="layout_page" id="content-inner"><div id="category"><div class="article-sort-title">分类 - Mysql</div><div class="article-sort"><div class="article-sort-item year">2020</div><div class="article-sort-item"><div class="article-sort-post"><a class="article-sort-item__post" href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%95%B0%E6%8D%AE%E5%BA%93/Mysql/Mysql%E8%AF%AF%E5%88%A0%E9%99%A4%E6%93%8D%E4%BD%9C%E7%9A%84%E9%98%B5%E7%97%9B/"><i class="fa fa-clock-o" aria-hidden="true"></i><time class="article-sort-item__time" title="发表于 2020-05-14 22:16:04">2020-05-14</time><div class="article-sort-item__title">Mysql误删除操作的阵痛.md</div></a></div></div><div class="article-sort-item"><div class="article-sort-post"><a class="article-sort-item__post" href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%95%B0%E6%8D%AE%E5%BA%93/Mysql/mysql/"><i class="fa fa-clock-o" aria-hidden="true"></i><time class="article-sort-item__time" title="发表于 2020-05-14 22:16:04">2020-05-14</time><div class="article-sort-item__title">mysql.md</div></a></div></div><div class="article-sort-item"><div class="article-sort-post"><a class="article-sort-item__post" href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%95%B0%E6%8D%AE%E5%BA%93/Mysql/mysql%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98%E6%A6%82%E5%BF%B5/"><i class="fa fa-clock-o" aria-hidden="true"></i><time class="article-sort-item__time" title="发表于 2020-05-14 22:16:04">2020-05-14</time><div class="article-sort-item__title">mysql性能调优概念.md</div></a></div></div></div><nav id="pagination"><div class="pagination"><span class="page-number current">1</span></div></nav></div><div class="aside_content" id="aside_content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><img class="avatar-img" src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">曾胜龙</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives"><div class="headline">文章</div><div class="length_num">109</div></a></div><div class="card-info-data-item is-center">      <a href="/tags"><div class="headline">标签</div><div class="length_num">24</div></a></div><div class="card-info-data-item is-center">     <a href="/categories"><div class="headline">分类</div><div class="length_num">25</div></a></div></div><div class="card-info-bookmark is-center"><a class="bookmark button--primary button--animated" id="bookmark-it" href="javascript:;" title="加入书签" target="_self"><i class="fa fa-bookmark" aria-hidden="true"></i><span>加入书签</span></a></div><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/kbsonlong" target="_blank" title="Github"><i class="fa fa-github" aria-hidden="true"></i></a><a class="social-icon" href="mailto:kbsonlong@gmail.com" target="_blank" title="Email"><i class="fa fa-envelope" aria-hidden="true"></i></a><a class="social-icon" href="/atom.xml" target="_blank" title="RSS"><i class="fa fa-rss" aria-hidden="true"></i></a></div></div></div><div class="card-widget card-announcement"><div class="card-content"><div class="item-headline"><i class="fa fa-bullhorn card-announcement-animation" aria-hidden="true"></i><span>公告</span></div><div class="announcement_content">公告信息</div></div></div><div class="card-widget card-recent-post"><div class="card-content"><div class="item-headline"><i class="fa fa-history" aria-hidden="true"></i><span>最新文章</span></div><div class="aside-recent-item"><div class="aside-recent-post"><a href="/2020/05/14/%E8%BF%90%E7%BB%B4/Jenkins%E9%9B%86%E6%88%90sonarqube%E4%BB%A3%E7%A0%81%E8%B4%A8%E9%87%8F%E7%AE%A1%E7%90%86/"><div class="aside-post-title"><div class="aside-post_title" href="/2020/05/14/%E8%BF%90%E7%BB%B4/Jenkins%E9%9B%86%E6%88%90sonarqube%E4%BB%A3%E7%A0%81%E8%B4%A8%E9%87%8F%E7%AE%A1%E7%90%86/" title="Jenkins集成sonarqube代码质量管理.md">Jenkins集成sonarqube代码质量管理.md</div><time class="aside-post_meta post-meta__date" title="发表于 2020-05-14 22:16:06">2020-05-14</time></div></a></div><div class="aside-recent-post"><a href="/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/6.7.1/"><div class="aside-post-title"><div class="aside-post_title" href="/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/6.7.1/" title="6.7.1.md">6.7.1.md</div><time class="aside-post_meta post-meta__date" title="发表于 2020-05-14 22:16:06">2020-05-14</time></div></a></div><div class="aside-recent-post"><a href="/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/ES%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E7%AE%A1%E7%90%86/"><div class="aside-post-title"><div class="aside-post_title" href="/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/ES%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E7%AE%A1%E7%90%86/" title="ES生命周期管理.md">ES生命周期管理.md</div><time class="aside-post_meta post-meta__date" title="发表于 2020-05-14 22:16:06">2020-05-14</time></div></a></div><div class="aside-recent-post"><a href="/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/ElasticAlert/"><div class="aside-post-cover"><img class="aside-post-bg" src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" title="ElasticAlert.md" alt="ElasticAlert.md"/></div><div class="aside-post-title"><div class="aside-post_title" href="/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/ElasticAlert/" title="ElasticAlert.md">ElasticAlert.md</div><time class="aside-post_meta post-meta__date" title="发表于 2020-05-14 22:16:06">2020-05-14</time></div></a></div><div class="aside-recent-post"><a href="/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/Watcher/"><div class="aside-post-title"><div class="aside-post_title" href="/2020/05/14/%E8%BF%90%E7%BB%B4/Elasticsearch/Watcher/" title="Watcher.md">Watcher.md</div><time class="aside-post_meta post-meta__date" title="发表于 2020-05-14 22:16:06">2020-05-14</time></div></a></div></div></div></div><div class="card-widget card-categories"><div class="card-content"><div class="item-headline"><i class="fa fa-folder-open" aria-hidden="true"></i><span>分类</span></div><ul class="card-category-list">
+            <li class="card-category-list-item"><a class="card-category-list-link" href="/categories/Ansible/"><span class="card-category-list-name">Ansible</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/Bgp/"><span class="card-category-list-name">Bgp</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/Docker/"><span class="card-category-list-name">Docker</span><span class="card-category-list-count">6</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/Elasticsearch/"><span class="card-category-list-name">Elasticsearch</span><span class="card-category-list-count">12</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/KVM/"><span class="card-category-list-name">KVM</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/Kafka/"><span class="card-category-list-name">Kafka</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/Kong/"><span class="card-category-list-name">Kong</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/Kubernetes/"><span class="card-category-list-name">Kubernetes</span><span class="card-category-list-count">19</span></a></li>
+            <li class="card-category-list-item more is-center"><a class="card-category-list-link-more" href="/categories">
+                <span>查看更多</span><i class="fa fa-angle-right" aria-hidden="true"></i></a></li>           
+            </ul></div></div><div class="card-widget card-tags"><div class="card-content"><div class="item-headline"><i class="fa fa-tags" aria-hidden="true"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/Ansible/" style="font-size: 17.5px; color: #999da3">Ansible</a> <a href="/tags/Bgp/" style="font-size: 16px; color: #999">Bgp</a> <a href="/tags/Docker/" style="font-size: 19px; color: #99a1ac">Docker</a> <a href="/tags/Elasticsearch/" style="font-size: 21.25px; color: #99a7ba">Elasticsearch</a> <a href="/tags/KVM/" style="font-size: 16px; color: #999">KVM</a> <a href="/tags/Kafka/" style="font-size: 16.75px; color: #999b9e">Kafka</a> <a href="/tags/Kong/" style="font-size: 16.75px; color: #999b9e">Kong</a> <a href="/tags/Kubernetes/" style="font-size: 22px; color: #99a9bf">Kubernetes</a> <a href="/tags/Mongodb/" style="font-size: 17.5px; color: #999da3">Mongodb</a> <a href="/tags/Mysql/" style="font-size: 17.5px; color: #999da3">Mysql</a> <a href="/tags/Prometheus/" style="font-size: 18.25px; color: #999fa7">Prometheus</a> <a href="/tags/RabbitMQ/" style="font-size: 16px; color: #999">RabbitMQ</a> <a href="/tags/Redis/" style="font-size: 16px; color: #999">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 16.75px; color: #999b9e">RocketMQ</a> <a href="/tags/gitlab/" style="font-size: 17.5px; color: #999da3">gitlab</a> <a href="/tags/k8s%E5%AE%89%E8%A3%85%E5%AE%9E%E6%88%98/" style="font-size: 20.5px; color: #99a5b6">k8s安装实战</a> <a href="/tags/nacos/" style="font-size: 16px; color: #999">nacos</a> <a href="/tags/openLDAP/" style="font-size: 19px; color: #99a1ac">openLDAP</a> <a href="/tags/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/" style="font-size: 19.75px; color: #99a3b1">标准化及流程化</a> <a href="/tags/%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes/" style="font-size: 16.75px; color: #999b9e">深入剖析Kubernetes</a> <a href="/tags/%E7%B3%BB%E7%BB%9F%E5%88%9D%E5%A7%8B%E5%8C%96/" style="font-size: 17.5px; color: #999da3">系统初始化</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96/" style="font-size: 16px; color: #999">虚拟化</a> <a href="/tags/%E8%B0%83%E4%BC%98/" style="font-size: 17.5px; color: #999da3">调优</a> <a href="/tags/%E8%BF%90%E7%BB%B4/" style="font-size: 16.75px; color: #999b9e">运维</a></div></div></div><div class="card-widget card-archives"><div class="card-content"><div class="item-headline"><i class="fa fa-archive" aria-hidden="true"></i><span>归档</span></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2020/05/"><span class="card-archive-list-date">五月 2020</span><span class="card-archive-list-count">109</span></a></li></ul></div></div><div class="card-widget card-webinfo"><div class="card-content"><div class="item-headline"><i class="fa fa-line-chart" aria-hidden="true"></i><span>网站资讯</span></div><div class="webinfo"><div class="webinfo-item"><div class="webinfo-article-name">文章数目 :</div><div class="webinfo-article-count">109</div></div><div class="webinfo-item"><div class="webinfo-runtime-name">已运行时间 :</div><div class="webinfo-runtime-count" id="webinfo-runtime-count" start_date="6/7/2018 00:00:00">     </div></div><div class="webinfo-item"><div class="webinfo-site-wordcount-name">本站总字数 :</div><div class="webinfo-site-wordcount">122.3k</div></div><div class="webinfo-item">      <div class="webinfo-site-uv-name">本站访客数 :</div><div class="webinfo-site-uv-count" id="busuanzi_value_site_uv"></div></div><div class="webinfo-item"><div class="webinfo-site-name">本站总访问量 :</div><div class="webinfo-site-pv-count" id="busuanzi_value_site_pv"></div></div></div></div></div></div></main><footer id="footer" data-type="color"><div id="footer-wrap"><div class="copyright">&copy;2020 By 曾胜龙</div><div class="framework-info"><span>驱动 </span><a href="https://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" target="_blank" rel="noopener"><span>Butterfly</span></a></div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><a class="translate_chn_to_cht" id="translateLink" href="javascript:translatePage();" title="简繁转换" target="_self">繁</a><i class="darkmode fa fa-moon-o" id="darkmode" title="夜间模式"></i></div><div id="rightside-config-show"><div id="rightside_config" title="设置"><i class="fa fa-cog" aria-hidden="true"></i></div><i class="fa fa-arrow-up" id="go-up" title="回到顶部" aria-hidden="true"></i></div></section><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" target="_blank" rel="noopener" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page@latest/instantpage.min.js" type="module"></script><script src="/js/search/local-search.js"></script></body></html>

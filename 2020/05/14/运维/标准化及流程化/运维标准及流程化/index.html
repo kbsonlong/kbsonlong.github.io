@@ -1,368 +1,98 @@
-<!DOCTYPE html>
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>运维标准及流程化.md | 蜷缩的蜗牛</title><meta name="description" content="当下企业很多都热衷于建设运维自动化、智能化，通过技术革新代替繁杂的手工运维，提高生产效率的同时最大程度的减少人为失误。但是如何建设自动化运维，在不同的企业有着不同的建设方法和技术栈，虽然大多是以Python为主。一般说来，企业的运维发展由起步到成熟，大致要经过三个大阶段：运维无序化、运维标准化和流程化、运维自动化。  运维无序化主要表现在运维工作无规范统一，更多是团队成员依赖自身技术各自为战，着重"><meta name="keywords" content="标准化及流程化"><meta name="author" content="曾胜龙"><meta name="copyright" content="曾胜龙"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/img/favicon.png"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://fonts.googleapis.com" crossorigin="crossorigin"/><link rel="dns-prefetch" href="https://fonts.googleapis.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="dns-prefetch" href="//busuanzi.ibruce.info"/><meta name="twitter:card" content="summary"><meta name="twitter:title" content="运维标准及流程化.md"><meta name="twitter:description" content="当下企业很多都热衷于建设运维自动化、智能化，通过技术革新代替繁杂的手工运维，提高生产效率的同时最大程度的减少人为失误。但是如何建设自动化运维，在不同的企业有着不同的建设方法和技术栈，虽然大多是以Python为主。一般说来，企业的运维发展由起步到成熟，大致要经过三个大阶段：运维无序化、运维标准化和流程化、运维自动化。  运维无序化主要表现在运维工作无规范统一，更多是团队成员依赖自身技术各自为战，着重"><meta name="twitter:image" content="https://kbsonlong.github.io/img/avatar.png"><meta property="og:type" content="article"><meta property="og:title" content="运维标准及流程化.md"><meta property="og:url" content="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/%E8%BF%90%E7%BB%B4%E6%A0%87%E5%87%86%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/"><meta property="og:site_name" content="蜷缩的蜗牛"><meta property="og:description" content="当下企业很多都热衷于建设运维自动化、智能化，通过技术革新代替繁杂的手工运维，提高生产效率的同时最大程度的减少人为失误。但是如何建设自动化运维，在不同的企业有着不同的建设方法和技术栈，虽然大多是以Python为主。一般说来，企业的运维发展由起步到成熟，大致要经过三个大阶段：运维无序化、运维标准化和流程化、运维自动化。  运维无序化主要表现在运维工作无规范统一，更多是团队成员依赖自身技术各自为战，着重"><meta property="og:image" content="https://kbsonlong.github.io/img/avatar.png"><meta property="article:published_time" content="2020-05-14T14:16:05.000Z"><meta property="article:modified_time" content="2020-05-14T14:16:05.213Z"><script src="https://cdn.jsdelivr.net/npm/js-cookie/dist/js.cookie.min.js"></script><script>var autoChangeMode = '1'
+var t = Cookies.get("theme")
+if (autoChangeMode == '1'){
+  var isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
+  var isLightMode = window.matchMedia("(prefers-color-scheme: light)").matches
+  var isNotSpecified = window.matchMedia("(prefers-color-scheme: no-preference)").matches
+  var hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
 
-<html lang="zh-CN">
+  if (t === undefined){
+    if (isLightMode) activateLightMode()
+    else if (isDarkMode) activateDarkMode()
+    else if (isNotSpecified || hasNoSupport){
+      console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+      var now = new Date()
+      var hour = now.getHours()
+      var isNight = hour < 6 || hour >= 18
+      isNight ? activateDarkMode() : activateLightMode()
+  }
+  } else if (t == 'light') activateLightMode()
+  else activateDarkMode()
 
-<head>
+} else if (autoChangeMode == '2'){
+  now = new Date();
+  hour = now.getHours();
+  isNight = hour < 6 || hour >= 18
+  if(t === undefined) isNight? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode() 
+} else {
+  if ( t == 'dark' ) activateDarkMode()
+  else if ( t == 'light') activateLightMode()
+}
+
+function activateDarkMode(){
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+    document.querySelector('meta[name="theme-color"]').setAttribute('content','#000')
+  }
+}
+function activateLightMode(){
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+  document.querySelector('meta[name="theme-color"]').setAttribute('content','#fff')
+  }
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="canonical" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/%E8%BF%90%E7%BB%B4%E6%A0%87%E5%87%86%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/"><link rel="prev" title="资源申请规范.md" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/%E8%B5%84%E6%BA%90%E7%94%B3%E8%AF%B7%E8%A7%84%E8%8C%83/"><link rel="next" title="fail2ban.md" href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E7%B3%BB%E7%BB%9F%E5%88%9D%E5%A7%8B%E5%8C%96/fail2ban/"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js"></script><script src="https://cdn.jsdelivr.net/npm/blueimp-md5/js/md5.min.js"></script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"cookieDomain":"https://xxx/","msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  runtime: true,
+  copyright: {"languages":{"author":"作者: 曾胜龙","link":"链接: ","source":"来源: 蜷缩的蜗牛","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  ClickShowText: undefined,
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: undefined,
+  baiduPush: false,
+  highlightCopy: true,
+  highlightLang: true,
+  highlightShrink: 'false',
+  isFontAwesomeV5: false,
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
   
-  <title>运维标准及流程化.md - 蜷缩的蜗牛</title>
-  <meta charset="UTF-8">
-  <meta name="description" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
-  
-  
-
-  <link rel="shortcut icon" href="/favicon.ico" type="image/png" />
-  <meta name="description" content="当下企业很多都热衷于建设运维自动化、智能化，通过技术革新代替繁杂的手工运维，提高生产效率的同时最大程度的减少人为失误。但是如何建设自动化运维，在不同的企业有着不同的建设方法和技术栈，虽然大多是以Python为主。一般说来，企业的运维发展由起步到成熟，大致要经过三个大阶段：运维无序化、运维标准化和流程化、运维自动化。  运维无序化主要表现在运维工作无规范统一，更多是团队成员依赖自身技术各自为战，着重">
-<meta property="og:type" content="article">
-<meta property="og:title" content="运维标准及流程化.md">
-<meta property="og:url" content="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/%E8%BF%90%E7%BB%B4%E6%A0%87%E5%87%86%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/index.html">
-<meta property="og:site_name" content="蜷缩的蜗牛">
-<meta property="og:description" content="当下企业很多都热衷于建设运维自动化、智能化，通过技术革新代替繁杂的手工运维，提高生产效率的同时最大程度的减少人为失误。但是如何建设自动化运维，在不同的企业有着不同的建设方法和技术栈，虽然大多是以Python为主。一般说来，企业的运维发展由起步到成熟，大致要经过三个大阶段：运维无序化、运维标准化和流程化、运维自动化。  运维无序化主要表现在运维工作无规范统一，更多是团队成员依赖自身技术各自为战，着重">
-<meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/bFGx7h2f7WnDvbpyJXurp5EHu4cTqpgElJy054Bk81cJHRXs2nriaqHhhCDkl81q1uyoLco88MwwdzJUia8W9O0Q/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1">
-<meta property="og:image" content="http://typora.alongparty.cn/typora_img/20200317155414.png">
-<meta property="article:published_time" content="2020-05-14T14:16:05.000Z">
-<meta property="article:modified_time" content="2020-05-14T14:16:05.213Z">
-<meta property="article:author" content="曾胜龙">
-<meta property="article:tag" content="标准化及流程化">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://mmbiz.qpic.cn/mmbiz_png/bFGx7h2f7WnDvbpyJXurp5EHu4cTqpgElJy054Bk81cJHRXs2nriaqHhhCDkl81q1uyoLco88MwwdzJUia8W9O0Q/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/gh/nexmoe/nexmoe.github.io@latest/css/style.css,npm/highlight.js@9.15.8/styles/atom-one-dark.css,gh/nexmoe/nexmoe.github.io@latest/lib/mdui_043tiny/css/mdui.css,gh/nexmoe/nexmoe.github.io@latest/lib/iconfont/iconfont.css" crossorigin>
-  
-  <!--<link rel="stylesheet" href="/css/style.css?v=1589470630332">-->
-<meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/atom.xml" title="蜷缩的蜗牛" type="application/atom+xml">
-</head>
-
-<body class="mdui-drawer-body-left">
-  
-  <div id="nexmoe-background">
-    <div class="nexmoe-bg" style="background-image: url(https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg)"></div>
-    <div class="mdui-appbar mdui-shadow-0">
-      <div class="mdui-toolbar">
-        <a mdui-drawer="{target: '#drawer', swipe: true}" title="menu" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon nexmoefont icon-menu"></i></a>
-        <div class="mdui-toolbar-spacer"></div>
-        <!--<a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">search</i></a>-->
-        <a href="/" title="曾胜龙" class="mdui-btn mdui-btn-icon"><img src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/avatar.png" alt="曾胜龙"></a>
-       </div>
-    </div>
-  </div>
-  <div id="nexmoe-header">
-      <div class="nexmoe-drawer mdui-drawer" id="drawer">
-    <div class="nexmoe-avatar mdui-ripple">
-        <a href="/" title="曾胜龙">
-            <img src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/avatar.png" alt="曾胜龙" alt="曾胜龙">
-        </a>
-    </div>
-    <div class="nexmoe-count">
-        <div><span>文章</span>109</div>
-        <div><span>标签</span>24</div>
-        <div><span>分类</span>25</div>
-    </div>
-    <div class="nexmoe-list mdui-list" mdui-collapse="{accordion: true}">
-        
-        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/" title="回到首页">
-            <i class="mdui-list-item-icon nexmoefont icon-home"></i>
-            <div class="mdui-list-item-content">
-                回到首页
-            </div>
-        </a>
-        
-        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/archives" title="文章归档">
-            <i class="mdui-list-item-icon nexmoefont icon-container"></i>
-            <div class="mdui-list-item-content">
-                文章归档
-            </div>
-        </a>
-        
-        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/about.html" title="关于博客">
-            <i class="mdui-list-item-icon nexmoefont icon-info-circle"></i>
-            <div class="mdui-list-item-content">
-                关于博客
-            </div>
-        </a>
-        
-        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/PY.html" title="我的朋友">
-            <i class="mdui-list-item-icon nexmoefont icon-unorderedlist"></i>
-            <div class="mdui-list-item-content">
-                我的朋友
-            </div>
-        </a>
-        
-    </div>
-    <aside id="nexmoe-sidebar">
-  
-  <div class="nexmoe-widget-wrap">
-    <div class="nexmoe-widget nexmoe-search">
-        <form id="search_form" action_e="https://cn.bing.com/search?q=site:nexmoe.com" onsubmit="return search();">
-            <label><input id="search_value" name="q" type="search" placeholder="搜索"></label>
-        </form>
-    </div>
-</div>
-  
-  <div class="nexmoe-widget-wrap">
-    <h3 class="nexmoe-widget-title">社交按钮</h3>
-    <div class="nexmoe-widget nexmoe-social">
-        <a class="mdui-ripple" href="https://space.bilibili.com/20238211" target="_blank" mdui-tooltip="{content: '哔哩哔哩'}" style="color: rgb(231, 106, 141);background-color: rgba(231, 106, 141, .15);">
-            <i class="nexmoefont icon-bilibili"></i>
-        </a><a class="mdui-ripple" href="https://github.com/nexmoe/" target="_blank" mdui-tooltip="{content: 'GitHub'}" style="color: rgb(25, 23, 23);background-color: rgba(25, 23, 23, .15);">
-            <i class="nexmoefont icon-github"></i>
-        </a>
-    </div>
-</div>
-  
-  
-  <div class="nexmoe-widget-wrap">
-    <h3 class="nexmoe-widget-title">文章分类</h3>
-    <div class="nexmoe-widget">
-
-      <ul class="category-list">
-
-        
-
-
-        
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/Ansible/">Ansible</a>
-          <span class="category-list-count">3</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/Bgp/">Bgp</a>
-          <span class="category-list-count">1</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/Docker/">Docker</a>
-          <span class="category-list-count">6</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/Elasticsearch/">Elasticsearch</a>
-          <span class="category-list-count">12</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/KVM/">KVM</a>
-          <span class="category-list-count">1</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/Kafka/">Kafka</a>
-          <span class="category-list-count">2</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/Kong/">Kong</a>
-          <span class="category-list-count">2</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/Kubernetes/">Kubernetes</a>
-          <span class="category-list-count">19</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/Mongodb/">Mongodb</a>
-          <span class="category-list-count">3</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/Mysql/">Mysql</a>
-          <span class="category-list-count">3</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/Prometheus/">Prometheus</a>
-          <span class="category-list-count">4</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/RabbitMQ/">RabbitMQ</a>
-          <span class="category-list-count">1</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/Redis/">Redis</a>
-          <span class="category-list-count">1</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/RocketMQ/">RocketMQ</a>
-          <span class="category-list-count">2</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/gitlab/">gitlab</a>
-          <span class="category-list-count">3</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/k8s安装实战/">k8s安装实战</a>
-          <span class="category-list-count">10</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/nacos/">nacos</a>
-          <span class="category-list-count">1</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/openLDAP/">openLDAP</a>
-          <span class="category-list-count">6</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/标准化及流程化/">标准化及流程化</a>
-          <span class="category-list-count">8</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/深入剖析Kubernetes/">深入剖析Kubernetes</a>
-          <span class="category-list-count">2</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/监控系统/">监控系统</a>
-          <span class="category-list-count">1</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/系统初始化/">系统初始化</a>
-          <span class="category-list-count">3</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/虚拟化/">虚拟化</a>
-          <span class="category-list-count">1</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/调优/">调优</a>
-          <span class="category-list-count">3</span>
-        </li>
-
-        
-
-        <li class="category-list-item">
-          <a class="category-list-link" href="/categories/运维/">运维</a>
-          <span class="category-list-count">2</span>
-        </li>
-
-        
-      </ul>
-
-    </div>
-  </div>
-
-
-  
-  
-  <div class="nexmoe-widget-wrap">
-    <h3 class="nexmoe-widget-title">标签云</h3>
-    <div id="randomtagcloud" class="nexmoe-widget tagcloud nexmoe-rainbow">
-      <a href="/tags/Ansible/" style="font-size: 12.5px;">Ansible</a> <a href="/tags/Bgp/" style="font-size: 10px;">Bgp</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/Elasticsearch/" style="font-size: 18.75px;">Elasticsearch</a> <a href="/tags/KVM/" style="font-size: 10px;">KVM</a> <a href="/tags/Kafka/" style="font-size: 11.25px;">Kafka</a> <a href="/tags/Kong/" style="font-size: 11.25px;">Kong</a> <a href="/tags/Kubernetes/" style="font-size: 20px;">Kubernetes</a> <a href="/tags/Mongodb/" style="font-size: 12.5px;">Mongodb</a> <a href="/tags/Mysql/" style="font-size: 12.5px;">Mysql</a> <a href="/tags/Prometheus/" style="font-size: 13.75px;">Prometheus</a> <a href="/tags/RabbitMQ/" style="font-size: 10px;">RabbitMQ</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 11.25px;">RocketMQ</a> <a href="/tags/gitlab/" style="font-size: 12.5px;">gitlab</a> <a href="/tags/k8s%E5%AE%89%E8%A3%85%E5%AE%9E%E6%88%98/" style="font-size: 17.5px;">k8s安装实战</a> <a href="/tags/nacos/" style="font-size: 10px;">nacos</a> <a href="/tags/openLDAP/" style="font-size: 15px;">openLDAP</a> <a href="/tags/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/" style="font-size: 16.25px;">标准化及流程化</a> <a href="/tags/%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes/" style="font-size: 11.25px;">深入剖析Kubernetes</a> <a href="/tags/%E7%B3%BB%E7%BB%9F%E5%88%9D%E5%A7%8B%E5%8C%96/" style="font-size: 12.5px;">系统初始化</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96/" style="font-size: 10px;">虚拟化</a> <a href="/tags/%E8%B0%83%E4%BC%98/" style="font-size: 12.5px;">调优</a> <a href="/tags/%E8%BF%90%E7%BB%B4/" style="font-size: 11.25px;">运维</a>
-    </div>
-    
-  </div>
-
-  
-  
-  <div class="nexmoe-widget-wrap">
-    <h3 class="nexmoe-widget-title">文章归档</h3>
-    <div class="nexmoe-widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a></li></ul>
-    </div>
-  </div>
-
-
-  
-</aside>
-    <div class="nexmoe-copyright">
-        &copy; 2020 曾胜龙
-        Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-        & <a href="https://nexmoe.com/hexo-theme-nexmoe.html" target="_blank">Nexmoe</a>
-    </div>
-</div><!-- .nexmoe-drawer -->
-  </div>
-  <div id="nexmoe-content">
-    <div class="nexmoe-primary">
-        <div class="nexmoe-post">
-  
-      <div class="nexmoe-post-cover" style="padding-bottom: 66.66666666666666%;"> 
-          <img data-src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg" data-sizes="auto" alt="运维标准及流程化.md" class="lazyload">
-          <h1>运维标准及流程化.md</h1>
-      </div>
-  
-  
-  <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
-    <a><i class="nexmoefont icon-calendar-fill"></i>2020年05月14日</a>
-    <a><i class="nexmoefont icon-areachart"></i>4k 字</a>
-    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 16 分钟</a>
-</div>
-
-  <div class="nexmoe-post-right">
-    
-  </div>
-
-  <article>
-    <p>当下企业很多都热衷于建设运维自动化、智能化，通过技术革新代替繁杂的手工运维，提高生产效率的同时最大程度的减少人为失误。但是如何建设自动化运维，在不同的企业有着不同的建设方法和技术栈，虽然大多是以Python为主。一般说来，企业的运维发展由起步到成熟，大致要经过三个大阶段：运维无序化、运维标准化和流程化、运维自动化。</p>
-<p><img data-sizes="auto" data-src="https://mmbiz.qpic.cn/mmbiz_png/bFGx7h2f7WnDvbpyJXurp5EHu4cTqpgElJy054Bk81cJHRXs2nriaqHhhCDkl81q1uyoLco88MwwdzJUia8W9O0Q/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="img" class="lazyload"></p>
+}</script><script>var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isSidebar: true  
+  }</script><noscript><style>
+#page-header {
+  opacity: 1
+}
+.justified-gallery img{
+  opacity: 1
+}
+</style></noscript><meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/atom.xml" title="蜷缩的蜗牛" type="application/atom+xml">
+</head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">109</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">24</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">25</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page"><i class="fa-fw fa fa-list" aria-hidden="true"></i><span> 更多</span><i class="fa fa-chevron-down menus-expand" aria-hidden="true"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fa fa-music"></i><span> Music</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fa fa-film"></i><span> Movie</span></a></li></ul></div></div></div></div><i class="fa fa-arrow-right on" id="toggle-sidebar" aria-hidden="true">     </i><div id="sidebar"><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、运维工作梳理"><span class="toc-number">1.</span> <span class="toc-text">一、运维工作梳理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#数据中心运维"><span class="toc-number">1.1.</span> <span class="toc-text">数据中心运维</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IT资源运维"><span class="toc-number">1.2.</span> <span class="toc-text">IT资源运维</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#系统运维"><span class="toc-number">1.3.</span> <span class="toc-text">系统运维</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#事件管理"><span class="toc-number">1.4.</span> <span class="toc-text">事件管理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、运维标准化流程化文档"><span class="toc-number">2.</span> <span class="toc-text">二、运维标准化流程化文档</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#数据中心运维标准化和流程化"><span class="toc-number">2.1.</span> <span class="toc-text">数据中心运维标准化和流程化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IT资源运维标准化和流程化"><span class="toc-number">2.2.</span> <span class="toc-text">IT资源运维标准化和流程化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#服务运维标准化和流程化"><span class="toc-number">2.3.</span> <span class="toc-text">服务运维标准化和流程化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#事件管理标准化和流程化"><span class="toc-number">2.4.</span> <span class="toc-text">事件管理标准化和流程化</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三、标准流程化执行落地"><span class="toc-number">3.</span> <span class="toc-text">三、标准流程化执行落地</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#四、总结"><span class="toc-number">4.</span> <span class="toc-text">四、总结</span></a></li></ol></div></div></div><div id="body-wrap"><div class="post-bg" id="nav" style="background-image: url(https://i.loli.net/2020/05/01/IuWi8QbHvzjlOPw.jpg)"><div id="page-header"><span class="pull_left" id="blog_name"><a class="blog_title" id="site-name" href="/">蜷缩的蜗牛</a></span><span class="pull_right menus"><div id="search_button"><a class="site-page social-icon search"><i class="fa fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page"><i class="fa-fw fa fa-list" aria-hidden="true"></i><span> 更多</span><i class="fa fa-chevron-down menus-expand" aria-hidden="true"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fa fa-music"></i><span> Music</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fa fa-film"></i><span> Movie</span></a></li></ul></div></div><span class="toggle-menu close"><a class="site-page"><i class="fa fa-bars fa-fw" aria-hidden="true"></i></a></span></span></div><div id="post-info"><div id="post-title"><div class="posttitle">运维标准及流程化.md</div></div><div id="post-meta"><div class="meta-firstline"><time class="post-meta__date"><span class="post-meta__date-created" title="发表于 2020-05-14 22:16:05"><i class="fa fa-calendar" aria-hidden="true"></i> 发表于 2020-05-14</span><span class="post-meta__separator">|</span><span class="post-meta__date-updated" title="更新于 2020-05-14 22:16:05"><i class="fa fa-history" aria-hidden="true"></i> 更新于 2020-05-14</span></time><span class="post-meta__categories"><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/">标准化及流程化</a></span></div><div class="meta-secondline"> <span class="post-meta-wordcount"><i class="post-meta__icon fa fa-file-word-o" aria-hidden="true"></i><span>字数总计:</span><span class="word-count">4k</span><span class="post-meta__separator">|</span><i class="post-meta__icon fa fa-clock-o" aria-hidden="true"></i><span>阅读时长: 11 分钟</span></span></div><div class="meta-thirdline"><span class="post-meta-pv-cv"><span class="post-meta__separator">|</span><i class="fa fa-eye post-meta__icon" aria-hidden="true"> </i><span>阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-commentcount"></span></div></div></div></div><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><p>当下企业很多都热衷于建设运维自动化、智能化，通过技术革新代替繁杂的手工运维，提高生产效率的同时最大程度的减少人为失误。但是如何建设自动化运维，在不同的企业有着不同的建设方法和技术栈，虽然大多是以Python为主。一般说来，企业的运维发展由起步到成熟，大致要经过三个大阶段：运维无序化、运维标准化和流程化、运维自动化。</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/bFGx7h2f7WnDvbpyJXurp5EHu4cTqpgElJy054Bk81cJHRXs2nriaqHhhCDkl81q1uyoLco88MwwdzJUia8W9O0Q/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="img"></p>
 <p>运维无序化主要表现在运维工作无规范统一，更多是团队成员依赖自身技术各自为战，着重于眼前运维工作，过多处于被迫接受和疲惫应付工作的状态。运维无序阶段提升工作效率主要依赖加人和加班，而且此阶段运维工作效率低下，人为失误较多，故障排除难度较大。长时间的运维无序化，对内团队成员极度疲惫和不自信，对外主要表现为不再被各业务部门和其他IT兄弟团队所信任。一般创业初期的IT运维处于无序化较多，如何解决结束无序化的苦恼，解放生产力呢？答案更多被提及的是运维自动化。然而面对众说纷纭的运维自动化平台，如何结合自身条件进行落地实现呢？答案很多，有购买商业产品（价格真的不便宜），有自主研发，结合本人推行运维自动化的实际经验提醒各位，不管哪种方式，运维标准化和流程化一定是首先要做的，否则运维自动化只能是空中楼阁，欲求不得。</p>
 <p>什么是运维标准化和流程化呢？如果非要给出定义的话，那么我的定义是两个字：文档。</p>
 <p>运维的标准化和流程化首先要以文档的形式进行展示，并且能够指导日常运维工作。国有国法，家有家规，冰箱洗衣机都有说明书，运维标准化流程化就是运维工作的国法家规，运维工作如何进行的说明书。相比开发、测试等其他岗位，运维工作直面生产环境，每一步运维操作与生产系统能否正常运行息息相关，稍有不慎就易产生生产事故。并且运维自动化的落地实施也是要基于运维的标准化和流程化，所以作为运维管理的第一步，不可忽略。</p>
 <p>标准化和流程化的建设思路一般是包括三大部分：日常工作梳理、标准化和流程化制定、日常工作标准化和流程化执行。</p>
 <h2 id="一、运维工作梳理"><a class="header-anchor" href="#一、运维工作梳理">¶</a><strong>一、运维工作梳理</strong></h2>
 <p><strong>运维工作相对比较繁杂，结合实际运维工作，不同的公司又不同的划分方法，以某公司为例，大致分为数据中心（DC）运维、IT资源运维、服务运维、事件管理四个部分。</strong></p>
-<p><img data-sizes="auto" data-src="http://typora.alongparty.cn/typora_img/20200317155414.png" alt="" class="lazyload"></p>
+<p><img src="http://typora.alongparty.cn/typora_img/20200317155414.png" alt=""></p>
 <h3 id="数据中心运维"><a class="header-anchor" href="#数据中心运维">¶</a><strong>数据中心运维</strong></h3>
 <p>主要因为有自建IDC机房和部分托管在其他IDC机房的服务器，所以日常运维工作中有关于数据中心相关的工作，例如数据中心的设计和建设工作，数据中心日常巡检，数据中心权限管理、备件梳理管理、设备上下架等管理。如果是部署在云端的企业，对于数据中心的运维工作会少一些。</p>
 <h3 id="IT资源运维"><a class="header-anchor" href="#IT资源运维">¶</a><strong>IT资源运维</strong></h3>
@@ -802,65 +532,27 @@
 <p>标准化和流程化的落地，往往还会伴随着对已存在的系统部署方式进行迁移至标准化的操作。这其实要求我们在执行标准化和流程化以后的所有运维操作完全按照运维的标准和流程进行，对于执行以前的运维工作要进行迁移，目的是要实现所有系统和运维的标准、流程化。对于迁移，一般比较好的方案是：首先保留已存在非标准化系统，同时搭建标准化环境，进行已存在系统的部署并进行测试，测试无误后，与已存在非标准化系统并行运行，同时提供对外服务一段时间后，在评估，最后将已存在非标准化系统进行下线，以达到系统平滑得由非标准化迁移至标准化的目的。</p>
 <h2 id="四、总结"><a class="header-anchor" href="#四、总结">¶</a><strong>四、总结</strong></h2>
 <p><strong>标准化和流程化作为运维管理体系的基石和运维自动化的第一步，在进行运维管理工作中必不可少，而且要实现彻底的标准统一。在进行落地的过程中，要适当的与运维自动化并行，加快自动化的脚步，只有这样才能最大程度的减少人为失误，减少人力成本，提高运维的效率和质量。</strong></p>
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">曾胜龙</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/%E8%BF%90%E7%BB%B4%E6%A0%87%E5%87%86%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/">https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/%E8%BF%90%E7%BB%B4%E6%A0%87%E5%87%86%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://kbsonlong.github.io" target="_blank">蜷缩的蜗牛</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/">标准化及流程化</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"/><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js"></script></div></div><div class="post-reward"><a class="reward-button button--primary button--animated"> <i class="fa fa-qrcode"></i> 打赏<div class="reward-main"><ul class="reward-all"><li class="reward-item"><img class="post-qr-code__img" src="/img/wechat.jpg" alt="微信"/><div class="post-qr-code__desc">微信</div></li><li class="reward-item"><img class="post-qr-code__img" src="/img/alipay.jpg" alt="支付寶"/><div class="post-qr-code__desc">支付寶</div></li></ul></div></a></div><nav class="pagination_post" id="pagination"><div class="prev-post pull_left"><a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/%E8%B5%84%E6%BA%90%E7%94%B3%E8%AF%B7%E8%A7%84%E8%8C%83/"><img class="prev_cover" src="/" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">资源申请规范.md</div></div></a></div><div class="next-post pull_right"><a href="/2020/05/14/%E8%BF%90%E7%BB%B4/%E7%B3%BB%E7%BB%9F%E5%88%9D%E5%A7%8B%E5%8C%96/fail2ban/"><img class="next_cover" src="/" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">fail2ban.md</div></div></a></div></nav><div class="relatedPosts"><div class="relatedPosts_headline"><i class="fa fa-fw fa-thumbs-up" aria-hidden="true"></i><span> 相关推荐</span></div><div class="relatedPosts_list"><div class="relatedPosts_item"><a href="/2020/05/14/运维/标准化及流程化/Gitlab、Jenkins、Grafana统一使用OpenLDAP认证/" title="Gitlab、Jenkins、Grafana统一使用OpenLDAP认证.md"><img class="relatedPosts_cover" src="undefined"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-05-14</div><div class="relatedPosts_title">Gitlab、Jenkins、Grafana统一使用OpenLDAP认证.md</div></div></a></div><div class="relatedPosts_item"><a href="/2020/05/14/运维/标准化及流程化/服务下线规范/" title="服务下线规范.md"><img class="relatedPosts_cover" src="undefined"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-05-14</div><div class="relatedPosts_title">服务下线规范.md</div></div></a></div><div class="relatedPosts_item"><a href="/2020/05/14/运维/标准化及流程化/服务迁移规范/" title="服务迁移规范.md"><img class="relatedPosts_cover" src="undefined"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-05-14</div><div class="relatedPosts_title">服务迁移规范.md</div></div></a></div><div class="relatedPosts_item"><a href="/2020/05/14/运维/标准化及流程化/灰度发布/" title="灰度发布.md"><img class="relatedPosts_cover" src="undefined"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-05-14</div><div class="relatedPosts_title">灰度发布.md</div></div></a></div><div class="relatedPosts_item"><a href="/2020/05/14/运维/标准化及流程化/生产环境SQL脚本执行规范/" title="生产环境SQL脚本执行规范.md"><img class="relatedPosts_cover" src="undefined"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-05-14</div><div class="relatedPosts_title">生产环境SQL脚本执行规范.md</div></div></a></div><div class="relatedPosts_item"><a href="/2020/05/14/运维/标准化及流程化/资源使用标准/" title="资源使用标准.md"><img class="relatedPosts_cover" src="undefined"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-05-14</div><div class="relatedPosts_title">资源使用标准.md</div></div></a></div></div><div class="clear_both"></div></div><hr><div id="post-comment"><div class="comment_headling"><i class="fa fa-comments fa-fw" aria-hidden="true"></i><span> 评论</span></div><div id="gitalk-container"></div><script>var gitalk = new Gitalk({
+  clientID: '46d80275afea67e60437',
+  clientSecret: '520a5e4d143a3ffbdea4082c503a96c84cd6d736',
+  repo: 'kbsonlong.github.io',
+  owner: 'kbsonlong',
+  admin: ['kbsonlong'],
+  id: md5(decodeURI(location.pathname)),
+  language: 'zh-CN',
+  perPage: 10,
+  distractionFreeMode: false,
+  pagerDirection: 'last',
+  createIssueManually: false,
+  updateCountCallback: commentCount
+})
+gitalk.render('gitalk-container')
 
-  </article>
-
-  <div class="nexmoe-post-meta nexmoe-rainbow">
-    
-        <a class="nexmoefont icon-appstore-fill -link" href="/categories/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/">标准化及流程化</a>
-    
-    
-        <a class="nexmoefont icon-tag-fill -link" href="/tags/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/" rel="tag">标准化及流程化</a>
-    
-</div>
-
-  <div class="nexmoe-post-footer">
-    
-      
-  <div class="nexmoe-post-copyright">
-    <strong>本文作者：</strong>曾胜龙<br>
-    <strong>本文链接：</strong><a href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/%E8%BF%90%E7%BB%B4%E6%A0%87%E5%87%86%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96/" title="https:&#x2F;&#x2F;kbsonlong.github.io&#x2F;2020&#x2F;05&#x2F;14&#x2F;%E8%BF%90%E7%BB%B4&#x2F;%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96&#x2F;%E8%BF%90%E7%BB%B4%E6%A0%87%E5%87%86%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96&#x2F;" target="_blank" rel="noopener">https:&#x2F;&#x2F;kbsonlong.github.io&#x2F;2020&#x2F;05&#x2F;14&#x2F;%E8%BF%90%E7%BB%B4&#x2F;%E6%A0%87%E5%87%86%E5%8C%96%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96&#x2F;%E8%BF%90%E7%BB%B4%E6%A0%87%E5%87%86%E5%8F%8A%E6%B5%81%E7%A8%8B%E5%8C%96&#x2F;</a><br>
-    
-      <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
-    
-  </div>
-
-
-    
-    <section class="nexmoe-comment">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
-<div id="gitalk"></div>
-<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
-<script type="text/javascript">
-    var gitalk = new Gitalk({
-        clientID: '46d80275afea67e60437',
-        clientSecret: '520a5e4d143a3ffbdea4082c503a96c84cd6d736',
-        id: window.location.pathname,
-        repo: 'kbsonlong.github.io',
-        owner: 'kbsonlong',
-        admin: 'kbsonlong'
-    })
-    gitalk.render('gitalk')
-</script>
-</section>
-  </div>
-</div>
-    </div>
-  </div>
-  <script src="https://cdn.jsdelivr.net/combine/npm/lazysizes@5.1.0/lazysizes.min.js,gh/highlightjs/cdn-release@9.15.8/build/highlight.min.js,npm/mdui@0.4.3/dist/js/mdui.min.js?v=1"></script>
-<script >hljs.initHighlightingOnLoad();</script>
-
-
-    <script src="https://cdn.jsdelivr.net/gh/xtaodada/xtaodada.github.io@0.0.2/copy.js"></script>
-
-
-<script src="/js/app.js?v=1589470630336"></script>
-  
-
-
-
-
-
-</body>
-
-</html>
+function commentCount(n){
+  try {
+    document.getElementsByClassName('gitalk-comment-count')[0].innerHTML= n
+  } catch (e) {
+    return false
+  }
+}</script></div></article></main><footer id="footer" data-type="color"><div id="footer-wrap"><div class="copyright">&copy;2020 By 曾胜龙</div><div class="framework-info"><span>驱动 </span><a href="https://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" target="_blank" rel="noopener"><span>Butterfly</span></a></div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><i class="fa fa-book" id="readmode" title="阅读模式"></i><i class="fa fa-plus" id="font_plus" title="放大字体"></i><i class="fa fa-minus" id="font_minus" title="缩小字体"></i><a class="translate_chn_to_cht" id="translateLink" href="javascript:translatePage();" title="简繁转换" target="_self">繁</a><i class="darkmode fa fa-moon-o" id="darkmode" title="夜间模式"></i></div><div id="rightside-config-show"><div id="rightside_config" title="设置"><i class="fa fa-cog" aria-hidden="true"></i></div><a id="to_comment" href="#post-comment" title="直达评论"><i class="scroll_to_comment fa fa-comments">  </i></a><i class="fa fa-list-ul close" id="mobile-toc-button" title="目录" aria-hidden="true"></i><i class="fa fa-arrow-up" id="go-up" title="回到顶部" aria-hidden="true"></i></div></section><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" target="_blank" rel="noopener" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page@latest/instantpage.min.js" type="module"></script><script src="/js/search/local-search.js"></script></body></html>
