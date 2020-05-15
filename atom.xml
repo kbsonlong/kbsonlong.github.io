@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://kbsonlong.github.io/"/>
-  <updated>2020-05-14T14:16:06.159Z</updated>
+  <updated>2020-05-15T09:13:56.986Z</updated>
   <id>https://kbsonlong.github.io/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>README</title>
+    <link href="https://kbsonlong.github.io/2020/05/15/README/"/>
+    <id>https://kbsonlong.github.io/2020/05/15/README/</id>
+    <published>2020-05-15T09:13:56.986Z</published>
+    <updated>2020-05-15T09:13:56.986Z</updated>
+    
+    <content type="html"><![CDATA[<h1>ops_doc</h1><h4 id="介绍"><a class="header-anchor" href="#介绍">¶</a>介绍</h4><p>运维文档</p><h4 id="软件架构"><a class="header-anchor" href="#软件架构">¶</a>软件架构</h4><p>软件架构说明</p><h4 id="安装教程"><a class="header-anchor" href="#安装教程">¶</a>安装教程</h4><ol><li>xxxx</li><li>xxxx</li><li>xxxx</li></ol><h4 id="使用说明"><a class="header-anchor" href="#使用说明">¶</a>使用说明</h4><ol><li>xxxx</li><li>xxxx</li><li>xxxx</li></ol><h4 id="参与贡献"><a class="header-anchor" href="#参与贡献">¶</a>参与贡献</h4><ol><li>Fork 本仓库</li><li>新建 Feat_xxx 分支</li><li>提交代码</li><li>新建 Pull Request<br>add <a href="http://README.md" target="_blank" rel="noopener">README.md</a>.</li></ol><h4 id="码云特技"><a class="header-anchor" href="#码云特技">¶</a>码云特技</h4><ol><li>使用 Readme_XXX.md 来支持不同的语言，例如 Readme_en.md, Readme_zh.md</li><li>码云官方博客 <a href="https://blog.gitee.com" target="_blank" rel="noopener">blog.gitee.com</a></li><li>你可以 <a href="https://gitee.com/explore" target="_blank" rel="noopener">https://gitee.com/explore</a> 这个地址来了解码云上的优秀开源项目</li><li><a href="https://gitee.com/gvp" target="_blank" rel="noopener">GVP</a> 全称是码云最有价值开源项目，是码云综合评定出的优秀开源项目</li><li>码云官方提供的使用手册 <a href="https://gitee.com/help" target="_blank" rel="noopener">https://gitee.com/help</a></li><li>码云封面人物是一档用来展示码云会员风采的栏目 <a href="https://gitee.com/gitee-stars/" target="_blank" rel="noopener">https://gitee.com/gitee-stars/</a></li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1&gt;ops_doc&lt;/h1&gt;
+&lt;h4 id=&quot;介绍&quot;&gt;&lt;a class=&quot;header-anchor&quot; href=&quot;#介绍&quot;&gt;¶&lt;/a&gt;介绍&lt;/h4&gt;
+&lt;p&gt;运维文档&lt;/p&gt;
+&lt;h4 id=&quot;软件架构&quot;&gt;&lt;a class=&quot;header-anchor&quot; href=&quot;#软件架构
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
   
   <entry>
     <title>Jenkins集成sonarqube代码质量管理.md</title>
@@ -483,34 +508,6 @@
     </summary>
     
     
-    
-  </entry>
-  
-  <entry>
-    <title>summary.md</title>
-    <link href="https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/summary/"/>
-    <id>https://kbsonlong.github.io/2020/05/14/%E8%BF%90%E7%BB%B4/summary/</id>
-    <published>2020-05-14T14:16:05.000Z</published>
-    <updated>2020-05-14T14:16:05.093Z</updated>
-    
-    <content type="html"><![CDATA[<p>##消息系统中间件<br>###RabbitMQ<br><a href="%E6%B6%88%E6%81%AF%E7%B3%BB%E7%BB%9F%E4%B8%AD%E9%97%B4%E4%BB%B6/RabbitMQ/Rabbitmq%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2.md">Rabbitmq快速部署.md</a></p><p>###Kafka<br><a href="%E6%B6%88%E6%81%AF%E7%B3%BB%E7%BB%9F%E4%B8%AD%E9%97%B4%E4%BB%B6/Kafka/Kafka%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C.md">Kafka常用操作.md</a></p><p>###RocketMQ<br><a href="%E6%B6%88%E6%81%AF%E7%B3%BB%E7%BB%9F%E4%B8%AD%E9%97%B4%E4%BB%B6/RocketMQ/Rocketmq%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2.md">Rocketmq集群部署.md</a></p><p><a href="https://github.com/hailaz/gadmin" target="_blank" rel="noopener">https://github.com/hailaz/gadmin</a></p><p>##gitlab<br><a href="gitlab/Gitlab%E5%8D%87%E7%BA%A7%E8%BF%81%E7%A7%BB.md">Gitlab升级迁移.md</a><br><a href="gitlab/gitlab%E5%8D%87%E7%BA%A7%E8%BF%81%E7%A7%BB%E6%93%8D%E4%BD%9C.md">gitlab升级迁移操作.md</a></p><p>##系统初始化<br><a href="%E7%B3%BB%E7%BB%9F%E5%88%9D%E5%A7%8B%E5%8C%96/filebeat.md">filebeat.md</a><br><a href="%E7%B3%BB%E7%BB%9F%E5%88%9D%E5%A7%8B%E5%8C%96/openldap%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86.md">openldap用户管理.md</a><br><a href="%E7%B3%BB%E7%BB%9F%E5%88%9D%E5%A7%8B%E5%8C%96/fail2ban.md">fail2ban.md</a></p><p>##数据库<br>###Mongodb<br><a href="%E6%95%B0%E6%8D%AE%E5%BA%93/Mongodb/MongoDB%E5%A4%8D%E5%88%B6%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2.md">MongoDB复制集群部署.md</a><br><a href="%E6%95%B0%E6%8D%AE%E5%BA%93/Mongodb/Mongodb%E5%BC%80%E5%90%AF%E7%94%A8%E6%88%B7%E8%AE%A4%E8%AF%81.md">Mongodb开启用户认证.md</a><br><a href="%E6%95%B0%E6%8D%AE%E5%BA%93/Mongodb/Mongodb%E9%9B%86%E7%BE%A4%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4.md">Mongodb集群常用命令.md</a><br>###Mysql<br><a href="%E6%95%B0%E6%8D%AE%E5%BA%93/Mysql/mysql.md">mysql.md</a><br><a href="%E6%95%B0%E6%8D%AE%E5%BA%93/Mysql/Mysql%E8%AF%AF%E5%88%A0%E9%99%A4%E6%93%8D%E4%BD%9C%E7%9A%84%E9%98%B5%E7%97%9B.md">Mysql误删除操作的阵痛.md</a><br>##Kong<br><a href="Kong/Kong%E7%BD%91%E5%85%B3API%E7%AE%A1%E7%90%86.md">Kong网关API管理.md</a><br><a href="Kong/APIGateway-Kong.md">APIGateway-Kong.md</a><br>##虚拟化<br>###Docker<br><a href="%E8%99%9A%E6%8B%9F%E5%8C%96/Docker/Docker%E5%AE%89%E8%A3%85Kong.md">Docker安装Kong.md</a><br><a href="%E8%99%9A%E6%8B%9F%E5%8C%96/Docker/Docker%E5%BF%AB%E9%80%9F%E5%AE%89%E8%A3%85.md">Docker快速安装.md</a><br><a href="%E8%99%9A%E6%8B%9F%E5%8C%96/Docker/Docker%E9%83%A8%E7%BD%B2openldap.md">Docker部署openldap.md</a><br><a href="%E8%99%9A%E6%8B%9F%E5%8C%96/Docker/Sa.md">Sa.md</a><br><a href="%E8%99%9A%E6%8B%9F%E5%8C%96/Docker/Docker%E8%B5%84%E6%BA%90%E9%99%90%E5%88%B6.md">Docker资源限制.md</a><br><a href="%E8%99%9A%E6%8B%9F%E5%8C%96/Docker/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86.md">问题处理.md</a><br><a href="%E8%99%9A%E6%8B%9F%E5%8C%96/Docker/Docker">Docker</a><br><a href="pg%E4%B8%BB%E4%BB%8E.md">pg主从.md</a></p><p>###Kubernetes<br><a href="%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E9%83%A8%E7%BD%B2%E6%B5%81%E7%A8%8B.md">部署流程.md</a><br><a href="%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/kubesphere.md">kubesphere.md</a><br><a href="%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E5%90%8D%E8%AF%8D%E8%A7%A3%E9%87%8A.md">名词解释.md</a><br><a href="%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E6%A6%82%E5%BF%B5.md">概念.md</a><br><a href="%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/ConfigMap.md">ConfigMap.md</a><br><a href="%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/logstash.md">logstash.md</a><br><a href="Kubernetes.md">Kubernetes.md</a><br><a href="%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E6%97%A5%E5%BF%97%E9%87%87%E9%9B%86%E6%96%B9%E6%A1%88.md">日志采集方案.md</a><br><a href="%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E5%AE%89%E8%A3%85%E5%AE%9E%E6%88%98.md">安装实战.md</a><br><a href="%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/k8s%E9%83%A8%E7%BD%B2dubbo.md">k8s部署dubbo.md</a><br><a href="%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86.md">问题处理.md</a><br><a href="%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/Kubernetes%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2.md">Kubernetes集群部署.md</a><br><a href="%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/Kubernetes%E5%88%9B%E5%BB%BA%E5%8F%AA%E8%AF%BB%E7%94%A8%E6%88%B7.md">Kubernetes创建只读用户.md</a></p><p>###k8s安装实战<br><a href="%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/k8s%E5%AE%89%E8%A3%85%E5%AE%9E%E6%88%98/uninstall.md">uninstall.md</a><br><a href="%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/k8s%E5%AE%89%E8%A3%85%E5%AE%9E%E6%88%98/base_setting.md">base_setting.md</a><br><a href="%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/k8s%E5%AE%89%E8%A3%85%E5%AE%9E%E6%88%98/nginx-ingress.md">nginx-ingress.md</a><br><a href="%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/k8s%E5%AE%89%E8%A3%85%E5%AE%9E%E6%88%98/k8s%E6%97%A5%E5%BF%97%E9%87%87%E9%9B%86%E6%96%B9%E6%A1%88efk.md">k8s日志采集方案efk.md</a><br><a href="%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/k8s%E5%AE%89%E8%A3%85%E5%AE%9E%E6%88%98/k8s-setting.md">k8s-setting.md</a><br><a href="%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/k8s%E5%AE%89%E8%A3%85%E5%AE%9E%E6%88%98/kube-flannel.md">kube-flannel.md</a><br><a href="%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/k8s%E5%AE%89%E8%A3%85%E5%AE%9E%E6%88%98/03%E9%83%A8%E7%BD%B2Dubbo%E6%9C%8D%E5%8A%A1.md">03部署Dubbo服务.md</a><br><a href="%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/k8s%E5%AE%89%E8%A3%85%E5%AE%9E%E6%88%98/metrics-server%E5%AE%89%E8%A3%85.md">metrics-server安装.md</a><br><a href="%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/k8s%E5%AE%89%E8%A3%85%E5%AE%9E%E6%88%98/02%E6%B5%8B%E8%AF%95nginx-ingress.md">02测试nginx-ingress.md</a><br><a href="%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/k8s%E5%AE%89%E8%A3%85%E5%AE%9E%E6%88%98/01install.md">01install.md</a><br><a href="%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99.md">参考资料.md</a><br><a href="%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E5%AE%89%E8%A3%85etcd.md">安装etcd.md</a><br><a href="%E8%99%9A%E6%8B%9F%E5%8C%96/Kubernetes/%E5%AE%89%E8%A3%85.md">安装.md</a><br>###Prometheus<br><a href="Prometheus/%E8%87%AA%E5%8A%A8%E5%8F%91%E7%8E%B0.md">自动发现.md</a><br><a href="Prometheus/%E5%88%A9%E7%94%A8Prometheus%E6%89%93%E9%80%A0%E9%AB%98%E9%80%BC%E6%A0%BC%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F.md">利用Prometheus打造高逼格监控系统.md</a><br><a href="Prometheus/01">01</a><br><a href="%E9%85%8D%E7%BD%AE%E7%83%AD%E5%8A%A0%E8%BD%BD.md">配置热加载.md</a><br><a href="Prometheus/%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99.md">参考资料.md</a><br><a href="Prometheus/Grafana.md">Grafana.md</a><br>##Bgp<br><a href="Bgp/%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99.md">参考资料.md</a><br>##Elasticsearch<br><a href="Elasticsearch/es%E9%85%8D%E7%BD%AE%E8%A7%A3%E9%87%8A.md">es配置解释.md</a><br><a href="Elasticsearch/%E4%BC%98%E5%8C%96.md">优化.md</a><br><a href="Elasticsearch/ElasticAlert.md">ElasticAlert.md</a><br><a href="Elasticsearch/es%E7%9B%91%E6%8E%A7.md">es监控.md</a><br><a href="Elasticsearch/6.7.1.md">6.7.1.md</a><br><a href="Elasticsearch/%E6%97%A5%E5%BF%97%E5%91%8A%E8%AD%A6.md">日志告警.md</a><br><a href="Elasticsearch/%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99.md">参考资料.md</a><br><a href="Elasticsearch/es7.x.md">es7.x.md</a><br><a href="Elasticsearch/es%E5%8E%8B%E6%B5%8B.md">es压测.md</a></p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;##消息系统中间件&lt;br&gt;
-###RabbitMQ&lt;br&gt;
-&lt;a href=&quot;%E6%B6%88%E6%81%AF%E7%B3%BB%E7%BB%9F%E4%B8%AD%E9%97%B4%E4%BB%B6/RabbitMQ/Rabbitmq%E5%BF%AB%E9%80%9
-      
-    
-    </summary>
-    
-    
-      <category term="运维" scheme="https://kbsonlong.github.io/categories/%E8%BF%90%E7%BB%B4/"/>
-    
-    
-      <category term="运维" scheme="https://kbsonlong.github.io/tags/%E8%BF%90%E7%BB%B4/"/>
     
   </entry>
   
