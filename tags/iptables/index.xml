@@ -1,0 +1,50 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Iptables - 标签 - 蜷缩的蜗牛</title><link>https://www.kbsonlong.com/sre/tags/iptables/</link><description>Iptables - 标签 - 蜷缩的蜗牛</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>kbsonlong@gmail.com (kbsonlong)</managingEditor><webMaster>kbsonlong@gmail.com (kbsonlong)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Wed, 14 Sep 2022 10:13:20 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/sre/tags/iptables/" rel="self" type="application/rss+xml"/><item><title>Iptable的概念</title><link>https://www.kbsonlong.com/sre/posts/iptable-concept/</link><pubDate>Wed, 14 Sep 2022 10:13:20 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/sre/posts/iptable-concept/</guid><description><![CDATA[<h2 id="iptales四表五链">Iptales四表五链</h2>
+<h3 id="四表五链关系概览">四表五链关系概览</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>raw 表</th>
+<th>mangle 表</th>
+<th>nat 表</th>
+<th>filter 表</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PREROUTING 链</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>INPUT 链</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+<td>✔</td>
+</tr>
+<tr>
+<td>FORWARD 链</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>OUTPUT 链</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>POSTROUTING 链</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+</tr>
+</tbody>
+</table>]]></description></item></channel></rss>

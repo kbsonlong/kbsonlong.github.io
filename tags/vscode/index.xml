@@ -1,0 +1,14 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Vscode - 标签 - 蜷缩的蜗牛</title><link>https://www.kbsonlong.com/sre/tags/vscode/</link><description>Vscode - 标签 - 蜷缩的蜗牛</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>kbsonlong@gmail.com (kbsonlong)</managingEditor><webMaster>kbsonlong@gmail.com (kbsonlong)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 11 Sep 2022 10:34:10 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/sre/tags/vscode/" rel="self" type="application/rss+xml"/><item><title>VSCode 配置Markdown模板</title><link>https://www.kbsonlong.com/sre/posts/vscode-configuration-markdown-template/</link><pubDate>Sun, 11 Sep 2022 10:34:10 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/sre/posts/vscode-configuration-markdown-template/</guid><description><![CDATA[<h3 id="打开settingjson">打开setting.json</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="s2">&#34;[markdown]&#34;</span><span class="err">:</span>  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;editor.quickSuggestions&#34;</span><span class="p">:</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div>]]></description></item></channel></rss>

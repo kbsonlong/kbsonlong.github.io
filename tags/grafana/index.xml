@@ -1,0 +1,15 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Grafana - 标签 - 蜷缩的蜗牛</title><link>https://www.kbsonlong.com/sre/tags/grafana/</link><description>Grafana - 标签 - 蜷缩的蜗牛</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>kbsonlong@gmail.com (kbsonlong)</managingEditor><webMaster>kbsonlong@gmail.com (kbsonlong)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Thu, 15 Jun 2023 13:25:52 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/sre/tags/grafana/" rel="self" type="application/rss+xml"/><item><title>Loki快速使用</title><link>https://www.kbsonlong.com/sre/posts/loki-quickly-use/</link><pubDate>Thu, 15 Jun 2023 13:25:52 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/sre/posts/loki-quickly-use/</guid><description><![CDATA[<h1 id="轻量日志采集loki快速入门">轻量日志采集Loki快速入门</h1>
+<h2 id="安装-loki">安装 <code>Loki</code></h2>
+<h3 id="添加-helm-仓库">添加 <code>Helm</code> 仓库</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">helm repo add grafana https://grafana.github.io/helm-charts
+</span></span><span class="line"><span class="cl">helm repo update
+</span></span></code></pre></td></tr></table>
+</div>
+</div>]]></description></item><item><title>Loki系统架构</title><link>https://www.kbsonlong.com/sre/posts/loki-system-architecture/</link><pubDate>Thu, 15 Jun 2023 13:24:56 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/sre/posts/loki-system-architecture/</guid><description>&lt;h1 id="loki-系统架构">Loki 系统架构&lt;/h1>
+&lt;p>&lt;/p></description></item><item><title>Grafana Mimir 和 VictoriaMetrics 之间的性能测试</title><link>https://www.kbsonlong.com/sre/posts/performance-tests-between-grafana-mimir-and-victoriametrics/</link><pubDate>Wed, 14 Sep 2022 12:20:51 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/sre/posts/performance-tests-between-grafana-mimir-and-victoriametrics/</guid><description>Grafana 实验室的 Mimir 是一个在 AGPLv3 许可下新的时间序列数据库，该工程团队从 Cortex TSDB 中汲取精华，同时降低了复杂性并提高了可扩展性。 根据 Grafana 实验室的测试，Mimir</description></item></channel></rss>

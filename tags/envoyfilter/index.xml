@@ -1,0 +1,28 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Envoyfilter - 标签 - 蜷缩的蜗牛</title><link>https://www.kbsonlong.com/sre/tags/envoyfilter/</link><description>Envoyfilter - 标签 - 蜷缩的蜗牛</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>kbsonlong@gmail.com (kbsonlong)</managingEditor><webMaster>kbsonlong@gmail.com (kbsonlong)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 17 Mar 2023 13:57:26 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/sre/tags/envoyfilter/" rel="self" type="application/rss+xml"/><item><title>Istio Proxy Access日志</title><link>https://www.kbsonlong.com/sre/posts/deepen-the-istio-series--istio-project/</link><pubDate>Fri, 17 Mar 2023 13:57:26 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/sre/posts/deepen-the-istio-series--istio-project/</guid><description><![CDATA[<h2 id="开启-access-日志">开启 Access 日志</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ConfigMap</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">istio</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">istio-system</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">data</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">mesh</span><span class="p">:</span><span class="w"> </span><span class="p">|</span><span class="sd">
+</span></span></span><span class="line"><span class="cl"><span class="sd">    accessLogEncoding: JSON
+</span></span></span><span class="line"><span class="cl"><span class="sd">    accessLogFile: /dev/stdout
+</span></span></span><span class="line"><span class="cl"><span class="sd">    accessLogFormat: &#34;&#34;</span><span class="w">    
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div>]]></description></item></channel></rss>

@@ -1,0 +1,27 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Argo - 标签 - 蜷缩的蜗牛</title><link>https://www.kbsonlong.com/sre/tags/argo/</link><description>Argo - 标签 - 蜷缩的蜗牛</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>kbsonlong@gmail.com (kbsonlong)</managingEditor><webMaster>kbsonlong@gmail.com (kbsonlong)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 31 Mar 2023 12:02:11 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/sre/tags/argo/" rel="self" type="application/rss+xml"/><item><title>Argo全家桶之argo-workflow</title><link>https://www.kbsonlong.com/sre/posts/argo-workflow-of-argo/</link><pubDate>Fri, 31 Mar 2023 12:02:11 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/sre/posts/argo-workflow-of-argo/</guid><description><![CDATA[<h2 id="安装-argo-workflow">安装 <code>Argo workflow</code></h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">kubectl create namespace argo
+</span></span><span class="line"><span class="cl">kubectl apply -n argo -f https://github.com/argoproj/argo-workflows/releases/download/v3.4.9/install.yaml
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="安装-argo-events">安装 <code>Argo Events</code></h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">kubectl create namespace argo-events
+</span></span><span class="line"><span class="cl">kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-events/stable/manifests/install.yaml
+</span></span><span class="line"><span class="cl"><span class="c1"># Install with a validating admission controller</span>
+</span></span><span class="line"><span class="cl">kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-events/stable/manifests/install-validating-webhook.yaml
+</span></span></code></pre></td></tr></table>
+</div>
+</div>]]></description></item></channel></rss>

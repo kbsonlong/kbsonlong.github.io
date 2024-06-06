@@ -1,0 +1,21 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Envoy - 标签 - 蜷缩的蜗牛</title><link>https://www.kbsonlong.com/sre/tags/envoy/</link><description>Envoy - 标签 - 蜷缩的蜗牛</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>kbsonlong@gmail.com (kbsonlong)</managingEditor><webMaster>kbsonlong@gmail.com (kbsonlong)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 28 Mar 2023 15:10:12 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/sre/tags/envoy/" rel="self" type="application/rss+xml"/><item><title>深入Istio系列 - Envoy配置分析</title><link>https://www.kbsonlong.com/sre/posts/in--depth-istio-series--envoy-configuration-analysis/</link><pubDate>Tue, 28 Mar 2023 15:10:12 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/sre/posts/in--depth-istio-series--envoy-configuration-analysis/</guid><description><![CDATA[<h1 id="envoy-初始化配置文件">Envoy 初始化配置文件</h1>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">kubectl <span class="nb">exec</span> -ti productpage-v1-d4f8dfd97-p8xlb -c istio-proxy -- cat /etc/istio/proxy/envoy-rev.json
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>配置文件结构</p>
+<p></p>]]></description></item><item><title>Envoy性能指标</title><link>https://www.kbsonlong.com/sre/posts/envoy-performance-index/</link><pubDate>Tue, 13 Sep 2022 10:46:39 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/sre/posts/envoy-performance-index/</guid><description><![CDATA[<h1 id="envoy-指标">Envoy 指标</h1>
+<h2 id="envoy-指标概述">Envoy 指标概述</h2>
+<p>Envoy 的主要目标之一是使网络易于理解。 Envoy 会根据其配置方式产生大量统计信息。一般来说，统计数据(指标)分为三类：</p>
+<ul>
+<li><strong>Downstream</strong>：Downstream 指标与外来的连接/请求有关。它们由 <code>listener</code>、<code>HTTP connection manager(HCM)</code>、<code>TCP proxy filter</code> 等产生。</li>
+<li><strong>Upstream</strong>：Upstream 指标与外向的连接/请求有关。它们由 <code>connection pool</code>、<code>router filter</code>、<code>tcp proxy filter</code>等产生。</li>
+<li><strong>Server</strong>：<code>Server</code> 指标信息描述 Envoy 服务器实例的运作情况。服务器正常运行时间或分配的内存量等统计信息。</li>
+</ul>
+<p>在最简单场景下，单个 Envoy Proxy 通常涉及 <code>Downstream</code> 和 <code>Upstream</code> 统计数据。这两种指标反映了取该 <code>网络节点</code> 的运行情况。来自整个网格的统计数据提供了每个<code> 网络节点</code> 和整体网络健康状况的非常详细的汇总信息。Envoy 的文档对这些指标有一些简单的说明。</p>]]></description></item></channel></rss>

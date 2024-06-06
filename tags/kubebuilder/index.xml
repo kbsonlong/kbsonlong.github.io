@@ -1,0 +1,14 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Kubebuilder - 标签 - 蜷缩的蜗牛</title><link>https://www.kbsonlong.com/sre/tags/kubebuilder/</link><description>Kubebuilder - 标签 - 蜷缩的蜗牛</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>kbsonlong@gmail.com (kbsonlong)</managingEditor><webMaster>kbsonlong@gmail.com (kbsonlong)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 24 Oct 2023 14:41:48 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/sre/tags/kubebuilder/" rel="self" type="application/rss+xml"/><item><title>kubebuilder2.0学习笔记——进阶使用</title><link>https://www.kbsonlong.com/sre/posts/kubebuilder-2.0-learning-notes--advanced-use/</link><pubDate>Tue, 24 Oct 2023 14:41:48 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/sre/posts/kubebuilder-2.0-learning-notes--advanced-use/</guid><description>概述 本篇将继续深入学习kubebuilder开发，并介绍一些深入使用时遇到的问题。包括：finalizer、控制器对CRD的update st</description></item><item><title>kubebuilder开发operator</title><link>https://www.kbsonlong.com/sre/posts/kubebuilder-develops-operator/</link><pubDate>Thu, 21 Jul 2022 14:00:26 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/sre/posts/kubebuilder-develops-operator/</guid><description><![CDATA[<div class="featured-image">
+        <img src="https://imgapi.cn/api.php?zd=zsy&amp;fl=fengjing&amp;random=679403" referrerpolicy="no-referrer">
+      </div><h3 id="安装kubebuilder">安装kubebuilder</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">brew install kubebuilder
+</span></span><span class="line"><span class="cl">kubebuilder version
+</span></span></code></pre></td></tr></table>
+</div>
+</div>]]></description></item></channel></rss>

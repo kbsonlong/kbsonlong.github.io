@@ -1,0 +1,17 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Shell-Operator - 标签 - 蜷缩的蜗牛</title><link>https://www.kbsonlong.com/sre/tags/shell-operator/</link><description>Shell-Operator - 标签 - 蜷缩的蜗牛</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>kbsonlong@gmail.com (kbsonlong)</managingEditor><webMaster>kbsonlong@gmail.com (kbsonlong)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 19 Jun 2023 18:07:34 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/sre/tags/shell-operator/" rel="self" type="application/rss+xml"/><item><title>使用Shell实现Operaror</title><link>https://www.kbsonlong.com/sre/posts/use-shell-to-implement-operator/</link><pubDate>Mon, 19 Jun 2023 18:07:34 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/sre/posts/use-shell-to-implement-operator/</guid><description><![CDATA[<p></p>
+<p><a
+  href="https://github.com/flant/shell-operator#kubernetes"
+  
+  
+    
+    
+    target="_blank"
+  
+  
+    rel="external nofollow noopener noreferrer"
+  
+  
+  
+>Shell Operator</a> 是个冷僻又有点用的东西。方便运维监听kubernetes事件，并基于这些事件做一些简单任务处理；并且shell语言基本上大部分运维人员都懂，而不需要太高的学习成本。</p>
+<h2 id="运行原理">运行原理</h2>
+<p><code>shell-operator</code> 部署在 <code>Pod</code> 中。在 <code>Pod</code> 中有一个 <code>/hooks</code> 的一个子目录，其中存储了可执行文件，它们可以用 Bash、Python、Ruby等编写的，我们称这些可执行文件为hooks。<code>Shell-opeator</code> 订阅 <code>Kubernetes</code> 事件并执行这些钩子来响应我们感兴趣的事件。</p>]]></description></item></channel></rss>

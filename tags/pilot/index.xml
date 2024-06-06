@@ -1,0 +1,37 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Pilot - 标签 - 蜷缩的蜗牛</title><link>https://www.kbsonlong.com/sre/tags/pilot/</link><description>Pilot - 标签 - 蜷缩的蜗牛</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>kbsonlong@gmail.com (kbsonlong)</managingEditor><webMaster>kbsonlong@gmail.com (kbsonlong)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 16 Sep 2022 17:25:59 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/sre/tags/pilot/" rel="self" type="application/rss+xml"/><item><title>深入Istio系列-Pilot agent</title><link>https://www.kbsonlong.com/sre/posts/deepen-the-istio-series-pilot-agent/</link><pubDate>Fri, 16 Sep 2022 17:25:59 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/sre/posts/deepen-the-istio-series-pilot-agent/</guid><description><![CDATA[<h3 id="查看监听端口和进程">查看监听端口和进程</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">istio-proxy@istio-ingressgateway-799bbc9474-hf7kv:/$ ss -ntlp
+</span></span><span class="line"><span class="cl">State           Recv-Q          Send-Q                     Local Address:Port                      Peer Address:Port          Process                                       
+</span></span><span class="line"><span class="cl">LISTEN          <span class="m">0</span>               <span class="m">128</span>                            127.0.0.1:15000                          0.0.0.0:*              users:<span class="o">((</span><span class="s2">&#34;envoy&#34;</span>,pid<span class="o">=</span>16,fd<span class="o">=</span>18<span class="o">))</span>               
+</span></span><span class="line"><span class="cl">LISTEN          <span class="m">0</span>               <span class="m">128</span>                            127.0.0.1:15004                          0.0.0.0:*              users:<span class="o">((</span><span class="s2">&#34;pilot-agent&#34;</span>,pid<span class="o">=</span>1,fd<span class="o">=</span>15<span class="o">))</span>          
+</span></span><span class="line"><span class="cl">LISTEN          <span class="m">0</span>               <span class="m">128</span>                              0.0.0.0:15021                          0.0.0.0:*              users:<span class="o">((</span><span class="s2">&#34;envoy&#34;</span>,pid<span class="o">=</span>16,fd<span class="o">=</span>24<span class="o">))</span>               
+</span></span><span class="line"><span class="cl">LISTEN          <span class="m">0</span>               <span class="m">128</span>                              0.0.0.0:15021                          0.0.0.0:*              users:<span class="o">((</span><span class="s2">&#34;envoy&#34;</span>,pid<span class="o">=</span>16,fd<span class="o">=</span>23<span class="o">))</span>               
+</span></span><span class="line"><span class="cl">LISTEN          <span class="m">0</span>               <span class="m">128</span>                              0.0.0.0:8080                           0.0.0.0:*              users:<span class="o">((</span><span class="s2">&#34;envoy&#34;</span>,pid<span class="o">=</span>16,fd<span class="o">=</span>40<span class="o">))</span>               
+</span></span><span class="line"><span class="cl">LISTEN          <span class="m">0</span>               <span class="m">128</span>                              0.0.0.0:8080                           0.0.0.0:*              users:<span class="o">((</span><span class="s2">&#34;envoy&#34;</span>,pid<span class="o">=</span>16,fd<span class="o">=</span>39<span class="o">))</span>               
+</span></span><span class="line"><span class="cl">LISTEN          <span class="m">0</span>               <span class="m">128</span>                              0.0.0.0:15090                          0.0.0.0:*              users:<span class="o">((</span><span class="s2">&#34;envoy&#34;</span>,pid<span class="o">=</span>16,fd<span class="o">=</span>22<span class="o">))</span>               
+</span></span><span class="line"><span class="cl">LISTEN          <span class="m">0</span>               <span class="m">128</span>                              0.0.0.0:15090                          0.0.0.0:*              users:<span class="o">((</span><span class="s2">&#34;envoy&#34;</span>,pid<span class="o">=</span>16,fd<span class="o">=</span>21<span class="o">))</span>               
+</span></span><span class="line"><span class="cl">LISTEN          <span class="m">0</span>               <span class="m">128</span>                                    *:15020                                *:*              users:<span class="o">((</span><span class="s2">&#34;pilot-agent&#34;</span>,pid<span class="o">=</span>1,fd<span class="o">=</span>12<span class="o">))</span>          
+</span></span><span class="line"><span class="cl">istio-proxy@istio-ingressgateway-799bbc9474-hf7kv:/$ ps -ef <span class="p">|</span>grep pilot-agent
+</span></span><span class="line"><span class="cl">istio-p+     <span class="m">1</span>     <span class="m">0</span>  <span class="m">0</span> Sep14 ?        00:01:27 /usr/local/bin/pilot-agent proxy router --domain istio-system.svc.cluster.local --proxyLogLevel<span class="o">=</span>warning --proxyComponentLogLevel<span class="o">=</span>misc:error --log_output_level<span class="o">=</span>default:info
+</span></span><span class="line"><span class="cl">istio-p+    <span class="m">74</span>    <span class="m">30</span>  <span class="m">0</span> 09:37 pts/0    00:00:00 grep --color<span class="o">=</span>auto pilot-agent
+</span></span></code></pre></td></tr></table>
+</div>
+</div><figure>
+</figure>]]></description></item></channel></rss>

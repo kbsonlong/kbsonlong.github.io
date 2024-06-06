@@ -1,0 +1,72 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Ingress - 标签 - 蜷缩的蜗牛</title><link>https://www.kbsonlong.com/sre/tags/ingress/</link><description>Ingress - 标签 - 蜷缩的蜗牛</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>kbsonlong@gmail.com (kbsonlong)</managingEditor><webMaster>kbsonlong@gmail.com (kbsonlong)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 16 Sep 2022 12:08:40 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/sre/tags/ingress/" rel="self" type="application/rss+xml"/><item><title>深入Ingress - Ingress Controller源码解析</title><link>https://www.kbsonlong.com/sre/posts/ingress-controller-source-code-analysis/</link><pubDate>Fri, 16 Sep 2022 12:08:40 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/sre/posts/ingress-controller-source-code-analysis/</guid><description><![CDATA[<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># ss -ntlp</span>
+</span></span><span class="line"><span class="cl">State          Recv-Q          Send-Q                   Local Address:Port                    Peer Address:Port         Process                                                            
+</span></span><span class="line"><span class="cl">LISTEN         <span class="m">0</span>               <span class="m">4096</span>                         127.0.0.1:10245                        0.0.0.0:*             users:<span class="o">((</span><span class="s2">&#34;nginx-ingress-c&#34;</span>,pid<span class="o">=</span>2671,fd<span class="o">=</span>8<span class="o">))</span>                         
+</span></span><span class="line"><span class="cl">LISTEN         <span class="m">0</span>               <span class="m">511</span>                          127.0.0.1:10246                        0.0.0.0:*             users:<span class="o">((</span><span class="s2">&#34;nginx&#34;</span>,pid<span class="o">=</span>2783,fd<span class="o">=</span>17<span class="o">)</span>,<span class="o">(</span><span class="s2">&#34;nginx&#34;</span>,pid<span class="o">=</span>2738,fd<span class="o">=</span>17<span class="o">))</span>         
+</span></span><span class="line"><span class="cl">LISTEN         <span class="m">0</span>               <span class="m">511</span>                          127.0.0.1:10247                        0.0.0.0:*             users:<span class="o">((</span><span class="s2">&#34;nginx&#34;</span>,pid<span class="o">=</span>2783,fd<span class="o">=</span>18<span class="o">)</span>,<span class="o">(</span><span class="s2">&#34;nginx&#34;</span>,pid<span class="o">=</span>2738,fd<span class="o">=</span>18<span class="o">))</span>         
+</span></span><span class="line"><span class="cl">LISTEN         <span class="m">0</span>               <span class="m">4096</span>                           0.0.0.0:80                           0.0.0.0:*             users:<span class="o">((</span><span class="s2">&#34;nginx&#34;</span>,pid<span class="o">=</span>2783,fd<span class="o">=</span>11<span class="o">)</span>,<span class="o">(</span><span class="s2">&#34;nginx&#34;</span>,pid<span class="o">=</span>2738,fd<span class="o">=</span>11<span class="o">))</span>         
+</span></span><span class="line"><span class="cl">LISTEN         <span class="m">0</span>               <span class="m">4096</span>                           0.0.0.0:8181                         0.0.0.0:*             users:<span class="o">((</span><span class="s2">&#34;nginx&#34;</span>,pid<span class="o">=</span>2783,fd<span class="o">=</span>15<span class="o">)</span>,<span class="o">(</span><span class="s2">&#34;nginx&#34;</span>,pid<span class="o">=</span>2738,fd<span class="o">=</span>15<span class="o">))</span>         
+</span></span><span class="line"><span class="cl">LISTEN         <span class="m">0</span>               <span class="m">4096</span>                           0.0.0.0:443                          0.0.0.0:*             users:<span class="o">((</span><span class="s2">&#34;nginx&#34;</span>,pid<span class="o">=</span>2783,fd<span class="o">=</span>13<span class="o">)</span>,<span class="o">(</span><span class="s2">&#34;nginx&#34;</span>,pid<span class="o">=</span>2738,fd<span class="o">=</span>13<span class="o">))</span>         
+</span></span><span class="line"><span class="cl">LISTEN         <span class="m">0</span>               <span class="m">4096</span>                                 *:10254                              *:*             users:<span class="o">((</span><span class="s2">&#34;nginx-ingress-c&#34;</span>,pid<span class="o">=</span>2671,fd<span class="o">=</span>33<span class="o">))</span>                        
+</span></span><span class="line"><span class="cl">LISTEN         <span class="m">0</span>               <span class="m">4096</span>                              <span class="o">[</span>::<span class="o">]</span>:80                              <span class="o">[</span>::<span class="o">]</span>:*             users:<span class="o">((</span><span class="s2">&#34;nginx&#34;</span>,pid<span class="o">=</span>2783,fd<span class="o">=</span>12<span class="o">)</span>,<span class="o">(</span><span class="s2">&#34;nginx&#34;</span>,pid<span class="o">=</span>2738,fd<span class="o">=</span>12<span class="o">))</span>         
+</span></span><span class="line"><span class="cl">LISTEN         <span class="m">0</span>               <span class="m">4096</span>                              <span class="o">[</span>::<span class="o">]</span>:8181                            <span class="o">[</span>::<span class="o">]</span>:*             users:<span class="o">((</span><span class="s2">&#34;nginx&#34;</span>,pid<span class="o">=</span>2783,fd<span class="o">=</span>16<span class="o">)</span>,<span class="o">(</span><span class="s2">&#34;nginx&#34;</span>,pid<span class="o">=</span>2738,fd<span class="o">=</span>16<span class="o">))</span>         
+</span></span><span class="line"><span class="cl">LISTEN         <span class="m">0</span>               <span class="m">4096</span>                                 *:8443                               *:*             users:<span class="o">((</span><span class="s2">&#34;nginx-ingress-c&#34;</span>,pid<span class="o">=</span>2671,fd<span class="o">=</span>34<span class="o">))</span>                        
+</span></span><span class="line"><span class="cl">LISTEN         <span class="m">0</span>               <span class="m">4096</span>                              <span class="o">[</span>::<span class="o">]</span>:443                             <span class="o">[</span>::<span class="o">]</span>:*             users:<span class="o">((</span><span class="s2">&#34;nginx&#34;</span>,pid<span class="o">=</span>2783,fd<span class="o">=</span>14<span class="o">)</span>,<span class="o">(</span><span class="s2">&#34;nginx&#34;</span>,pid<span class="o">=</span>2738,fd<span class="o">=</span>14<span class="o">))</span> 
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">## nginx-ingress-controller进程</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ps aux |grep -w 2671</span>
+</span></span><span class="line"><span class="cl">_rpc        <span class="m">2671</span>  0.4  0.2 <span class="m">743856</span> <span class="m">42000</span> ?        Ssl  Sep15   5:06 /nginx-ingress-controller --publish-service<span class="o">=</span>ingress-nginx/ingress-nginx-controller --election-id<span class="o">=</span>ingress-controller-leader --controller-class<span class="o">=</span>k8s.io/ingress-nginx --ingress-class<span class="o">=</span>nginx --configmap<span class="o">=</span>ingress-nginx/ingress-nginx-controller --validating-webhook<span class="o">=</span>:8443 --validating-webhook-certificate<span class="o">=</span>/usr/local/certificates/cert --validating-webhook-key<span class="o">=</span>/usr/local/certificates/key
+</span></span><span class="line"><span class="cl">root      <span class="m">284760</span>  0.0  0.0   <span class="m">3100</span>   <span class="m">812</span> pts/1    S+   04:15   0:00 grep -w <span class="m">2671</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># </span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">## Nginx Master 进程</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ps aux |grep -w 2738</span>
+</span></span><span class="line"><span class="cl">_rpc        <span class="m">2738</span>  0.0  0.2 <span class="m">145128</span> <span class="m">35448</span> ?        S    Sep15   0:00 nginx: master process /usr/local/nginx/sbin/nginx -c /etc/nginx/nginx.conf
+</span></span><span class="line"><span class="cl">root      <span class="m">284662</span>  0.0  0.0   <span class="m">3100</span>   <span class="m">844</span> pts/1    S+   04:15   0:00 grep -w <span class="m">2738</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># </span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">## Nginx worker 进程</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ps aux |grep -w 2783</span>
+</span></span><span class="line"><span class="cl">_rpc        <span class="m">2783</span>  0.0  0.2 <span class="m">157240</span> <span class="m">41060</span> ?        Sl   Sep15   0:31 nginx: worker process
+</span></span><span class="line"><span class="cl">root      <span class="m">285147</span>  0.0  0.0   <span class="m">3100</span>   <span class="m">832</span> pts/1    S+   04:17   0:00 grep -w <span class="m">2783</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># </span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>从上面可以看出整个Ingress Nginx Controller Pod 包含两部分 nginx-ingress-controller 和 Nginx</p>
+</blockquote>
+<p></p>]]></description></item></channel></rss>

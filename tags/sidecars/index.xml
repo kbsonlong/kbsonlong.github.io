@@ -1,0 +1,27 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Sidecars - 标签 - 蜷缩的蜗牛</title><link>https://www.kbsonlong.com/sre/tags/sidecars/</link><description>Sidecars - 标签 - 蜷缩的蜗牛</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>kbsonlong@gmail.com (kbsonlong)</managingEditor><webMaster>kbsonlong@gmail.com (kbsonlong)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 24 Feb 2023 16:55:03 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/sre/tags/sidecars/" rel="self" type="application/rss+xml"/><item><title>深入Istio系列-Sidecar配置模板</title><link>https://www.kbsonlong.com/sre/posts/deepen-the-istio-series-sidecar-configuration-template/</link><pubDate>Fri, 24 Feb 2023 16:55:03 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/sre/posts/deepen-the-istio-series-sidecar-configuration-template/</guid><description><![CDATA[<p>本文不讲源码，来说说 istio sidecar 配置，从而灵活的控制 sidecar 注入、资源修改等场景。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">kubectl get cm -n istio-system istio-sidecar-injector -o yaml
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>先来预览一下 <code>istio-sidecar-injector</code>，主要包含 <code>config</code> 和 values
+</p>
+<h2 id="config">config</h2>
+<p>可以看到配置项有 默认模板 <code>defaultTemplates</code>、注入策略 <code>policy</code>、注入选择器 <code>alwaysInjectSelector</code>、 永不注入选择器 <code>neverInjectSelector</code>、<code>injectedAnnotations</code> 和 模板内容 <code>templates</code> 等</p>
+<p>关于注入策略(policy)、注入选择器(alwaysInjectSelector、neverInjectSelector)和注入注解(injectedAnnotations)可以查看 <a
+  href="https://devops.alongparty.cn/posts/dd0bd7/#injectrequired%E6%96%B9%E6%B3%95"
+  
+  
+    
+    
+    target="_blank"
+  
+  
+    rel="external nofollow noopener noreferrer"
+  
+  
+  
+>Sidecar 自动注入</a> 本文主要来了解 <code>Sidecar</code> 注入的模板，方便后续需要针对<code>Sidecar</code> 的部署调整</p>]]></description></item></channel></rss>

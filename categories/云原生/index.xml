@@ -1,0 +1,412 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>云原生 - 分类 - 蜷缩的蜗牛</title><link>https://www.kbsonlong.com/sre/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/</link><description>云原生 - 分类 - 蜷缩的蜗牛</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>kbsonlong@gmail.com (kbsonlong)</managingEditor><webMaster>kbsonlong@gmail.com (kbsonlong)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 04 Mar 2024 12:45:55 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/sre/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/" rel="self" type="application/rss+xml"/><item><title>Karmada多集群管理高可用部署</title><link>https://www.kbsonlong.com/sre/posts/karmada-multi--cluster-management-high-available-deployment/</link><pubDate>Mon, 04 Mar 2024 12:45:55 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/sre/posts/karmada-multi--cluster-management-high-available-deployment/</guid><description><![CDATA[<h1 id="karmada-多集群管理高可用部署"><code>Karmada</code> 多集群管理高可用部署</h1>
+<p>实验环境:</p>
+<ul>
+<li><code>kind</code> 创建两套<code>Kubernetes</code>集群</li>
+<li><code>docker</code> 运行一套额外的 <code>ETCD</code> 集群</li>
+</ul>
+<p></p>
+<p>从图中可以看到整个 <code>Karmada</code> 集群的单点是<code>ETCD</code>,实验环境部署单节点<code>ETCD</code>集群模拟实验，实际生产环境部署跨多可用区的<code>ETCD</code>集群，以保证高可用。</p>
+<h2 id="环境准备">环境准备</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">wget https://github.com/cloudflare/cfssl/releases/download/v1.6.4/cfssl_1.6.4_linux_amd64
+</span></span><span class="line"><span class="cl">wget https://github.com/cloudflare/cfssl/releases/download/v1.6.4/cfssljson_1.6.4_linux_amd64
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">chmod +x cfssl_1.6.4_linux_amd64 cfssljson_1.6.4_linux_amd64
+</span></span><span class="line"><span class="cl">mv cfssl_1.6.4_linux_amd64 /usr/local/bin/cfssl
+</span></span><span class="line"><span class="cl">mv cfssljson_1.6.4_linux_amd64 /usr/local/bin/cfssljson
+</span></span></code></pre></td></tr></table>
+</div>
+</div>]]></description></item><item><title>Karmada多集群管理方案</title><link>https://www.kbsonlong.com/sre/posts/karmada-multi--cluster-management-solution/</link><pubDate>Mon, 27 Nov 2023 18:19:26 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/sre/posts/karmada-multi--cluster-management-solution/</guid><description>Kubernetes 衍变 在云原生时代，Kubernetes 作为一项核心技术已成为现代应用程序架构的基础，越来越多的企业使用 Kubernetes 作为容器编排系统，其成为容器编排事</description></item><item><title>Karmada多集群部署</title><link>https://www.kbsonlong.com/sre/posts/karmada-multi--cluster-deployment/</link><pubDate>Tue, 31 Oct 2023 15:24:42 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/sre/posts/karmada-multi--cluster-deployment/</guid><description><![CDATA[20231031 快速建立karmada集群 20240304 补充手动注册集群方法 创建 Kind 集群 karmada 控制面 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 export VIP=172.26.145.27 cat &lt;&lt; EOF | kind create cluster --name=karmada-controller --kubeconfig=karmada-controller --config=- kind: Cluster apiVersion: &#34;kind.x-k8s.io/v1alpha4&#34; networking: apiServerAddress: &#34;${VIP}&#34; nodes: -]]></description></item><item><title>kubebuilder2.0学习笔记——进阶使用</title><link>https://www.kbsonlong.com/sre/posts/kubebuilder-2.0-learning-notes--advanced-use/</link><pubDate>Tue, 24 Oct 2023 14:41:48 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/sre/posts/kubebuilder-2.0-learning-notes--advanced-use/</guid><description>概述 本篇将继续深入学习kubebuilder开发，并介绍一些深入使用时遇到的问题。包括：finalizer、控制器对CRD的update st</description></item><item><title>Istio多集群系列-单控制面跨AZ集群区域负载均衡</title><link>https://www.kbsonlong.com/sre/posts/istio-multi-cluster-series-cross-az-cluster-area-load-balancing/</link><pubDate>Thu, 17 Aug 2023 09:50:13 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/sre/posts/istio-multi-cluster-series-cross-az-cluster-area-load-balancing/</guid><description><![CDATA[<p>基于安全容灾考虑，生产K8S集群是多可用区。多可用区集群必然涉及跨可用区调用，由于是海外业务，使用的是AWS云，AWS内部跨可用区流量不像国内云厂商跨可用区流量不收费，是需要收费而且特贵。</p>
+<p>基于成本和容灾考虑使用Istio的地域负载均衡功能，优先调度到同可用区，出现问题时调度到另一可用区。</p>
+<blockquote>
+<p>现使用 kind 在本地创建一套多节点集群，通过标签模拟多可用区场景。</p>
+<p>由于办公电脑是M1，而Istio1.13并不支持M1,所以选用Istio1.16，K8S1.24版本</p>
+</blockquote>
+<h2 id="创建多节点集群模拟跨az">创建多节点集群模拟跨AZ</h2>
+<h3 id="kind配置">kind配置</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">mkdir -p multicluster</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">cd multicluster</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">cat &lt;&lt; EOF &gt; kind-cluster1.yaml</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Cluster</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;kind.x-k8s.io/v1alpha4&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">networking</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">apiServerAddress</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;172.26.128.224&#34;</span><span class="w"> </span><span class="c"># 本机IP，可不设置。</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">podSubnet</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;10.10.0.0/16&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">serviceSubnet</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;10.11.0.0/16&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">nodes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">role</span><span class="p">:</span><span class="w"> </span><span class="l">control-plane</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">registry.cn-hangzhou.aliyuncs.com/seam/node:v1.24.15</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">role</span><span class="p">:</span><span class="w"> </span><span class="l">worker</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">registry.cn-hangzhou.aliyuncs.com/seam/node:v1.24.15</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">kubeadmConfigPatches</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="p">|</span><span class="sd">
+</span></span></span><span class="line"><span class="cl"><span class="sd">      kind: JoinConfiguration
+</span></span></span><span class="line"><span class="cl"><span class="sd">      nodeRegistration:
+</span></span></span><span class="line"><span class="cl"><span class="sd">        kubeletExtraArgs:
+</span></span></span><span class="line"><span class="cl"><span class="sd">          node-labels: &#34;topology.kubernetes.io/region=az01,topology.kubernetes.io/zone=az01&#34;</span><span class="w">      
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">role</span><span class="p">:</span><span class="w"> </span><span class="l">worker</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">registry.cn-hangzhou.aliyuncs.com/seam/node:v1.24.15</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">kubeadmConfigPatches</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="p">|</span><span class="sd">
+</span></span></span><span class="line"><span class="cl"><span class="sd">      kind: JoinConfiguration
+</span></span></span><span class="line"><span class="cl"><span class="sd">      nodeRegistration:
+</span></span></span><span class="line"><span class="cl"><span class="sd">        kubeletExtraArgs:
+</span></span></span><span class="line"><span class="cl"><span class="sd">          node-labels: &#34;topology.kubernetes.io/region=az02,topology.kubernetes.io/zone=az02&#34;</span><span class="w">      
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div>]]></description></item><item><title>Istio多集群系列-同一网络多控制面部署</title><link>https://www.kbsonlong.com/sre/posts/istio-multi-cluster-series-multi-control-powers-of-the-same-network/</link><pubDate>Wed, 16 Aug 2023 11:07:53 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/sre/posts/istio-multi-cluster-series-multi-control-powers-of-the-same-network/</guid><description><![CDATA[<p>(</p>
+<blockquote>
+<p>本文基于Istio 1.16.2，k8s 1.24</p>
+</blockquote>
+<h2 id="创建两套k8s集群">创建两套k8s集群</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">mkdir -p multicluster</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">cd multicluster</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">cat &lt;&lt; EOF &gt; kind-cluster1.yaml</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Cluster</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;kind.x-k8s.io/v1alpha4&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">networking</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">apiServerAddress</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;172.26.128.224&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">podSubnet</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;10.10.0.0/16&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">serviceSubnet</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;10.11.0.0/16&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">nodes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">role</span><span class="p">:</span><span class="w"> </span><span class="l">control-plane</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">registry.cn-hangzhou.aliyuncs.com/seam/node:v1.24.15</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">role</span><span class="p">:</span><span class="w"> </span><span class="l">worker</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">registry.cn-hangzhou.aliyuncs.com/seam/node:v1.24.15</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">kubeadmConfigPatches</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="p">|</span><span class="sd">
+</span></span></span><span class="line"><span class="cl"><span class="sd">      kind: JoinConfiguration
+</span></span></span><span class="line"><span class="cl"><span class="sd">      nodeRegistration:
+</span></span></span><span class="line"><span class="cl"><span class="sd">        kubeletExtraArgs:
+</span></span></span><span class="line"><span class="cl"><span class="sd">          node-labels: &#34;topology.kubernetes.io/region=sg,topology.kubernetes.io/zone=az01&#34;</span><span class="w">      
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">cat &lt;&lt; EOF &gt; kind-cluster2.yaml</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Cluster</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;kind.x-k8s.io/v1alpha4&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">networking</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">apiServerAddress</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;172.26.128.224&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">podSubnet</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;10.12.0.0/16&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">serviceSubnet</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;10.13.0.0/16&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">nodes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">role</span><span class="p">:</span><span class="w"> </span><span class="l">control-plane</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">registry.cn-hangzhou.aliyuncs.com/seam/node:v1.24.15</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">role</span><span class="p">:</span><span class="w"> </span><span class="l">worker</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">registry.cn-hangzhou.aliyuncs.com/seam/node:v1.24.15</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">kubeadmConfigPatches</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="p">|</span><span class="sd">
+</span></span></span><span class="line"><span class="cl"><span class="sd">      kind: JoinConfiguration
+</span></span></span><span class="line"><span class="cl"><span class="sd">      nodeRegistration:
+</span></span></span><span class="line"><span class="cl"><span class="sd">        kubeletExtraArgs:
+</span></span></span><span class="line"><span class="cl"><span class="sd">          node-labels: &#34;topology.kubernetes.io/region=sg,topology.kubernetes.io/zone=az02&#34;</span><span class="w">      
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">kind create cluster --name cluster1 --kubeconfig<span class="o">=</span>istio-multicluster --config<span class="o">=</span>kind-cluster1.yaml
+</span></span><span class="line"><span class="cl">kind create cluster --name cluster2 --kubeconfig<span class="o">=</span>istio-multicluster --config<span class="o">=</span>kind-cluster2.yaml
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">kubectl config rename-context kind-cluster1  cluster1 --kubeconfig istio-multicluster
+</span></span><span class="line"><span class="cl">kubectl config rename-context kind-cluster2  cluster2 --kubeconfig istio-multicluster
+</span></span></code></pre></td></tr></table>
+</div>
+</div>]]></description></item><item><title>基于Coredns多集群服务发现</title><link>https://www.kbsonlong.com/sre/posts/discovery-based-on-coredns-multi--cluster-service/</link><pubDate>Tue, 01 Aug 2023 17:38:45 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/sre/posts/discovery-based-on-coredns-multi--cluster-service/</guid><description><![CDATA[<p>在<a
+  href="https://kbsonlong.github.io/sre/posts/2296fc/"
+  
+  
+    
+    
+    target="_blank"
+  
+  
+    rel="external nofollow noopener noreferrer"
+  
+  
+  
+>Karmada 多集群服务发现</a>一文中跨集群调用时有个派生的前缀  <code>derived-&lt;service name&gt;</code>, 对于应用调用上有感知，本文介绍如何让应用在调用本地集群或者跨集群都是用同一个service。</p>
+<p>基础环境 <a
+  href="https://kbsonlong.github.io/sre/posts/2296fc/"
+  
+  
+    
+    
+    target="_blank"
+  
+  
+    rel="external nofollow noopener noreferrer"
+  
+  
+  
+>Karmada 多集群服务发现</a></p>]]></description></item><item><title>02-kube-controller-manager源码分析(主流程)</title><link>https://www.kbsonlong.com/sre/posts/02-kube-controller-manager-source-code-analysis-main-process/</link><pubDate>Fri, 28 Jul 2023 17:19:10 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/sre/posts/02-kube-controller-manager-source-code-analysis-main-process/</guid><description><![CDATA[<p>本文基于<a
+  href="https://github.com/kubernetes/kubernetes/tree/v1.29.0"
+  
+  
+    
+    
+    target="_blank"
+  
+  
+    rel="external nofollow noopener noreferrer"
+  
+  
+  
+>1.29.0</a>版本</p>
+<p>本文主要分析 kubernetes/cmd/kube-controller-manager 部分，该部分主要涉及各种类型的controller的参数解析，及初始化，例如 deployment controller 和statefulset controller。</p>
+<h2 id="代码结构">代码结构</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">tree  cmd/kube-controller-manager 
+</span></span><span class="line"><span class="cl">cmd/kube-controller-manager
+</span></span><span class="line"><span class="cl">├── OWNERS
+</span></span><span class="line"><span class="cl">├── app
+</span></span><span class="line"><span class="cl">│   ├── apps.go <span class="c1"># 包含:startDeploymentController、startReplicaSetController、startStatefulSetController、startDaemonSetController</span>
+</span></span><span class="line"><span class="cl">│   ├── autoscaling.go <span class="c1"># startHPAController</span>
+</span></span><span class="line"><span class="cl">│   ├── batch.go
+</span></span><span class="line"><span class="cl">│   ├── bootstrap.go
+</span></span><span class="line"><span class="cl">│   ├── certificates.go
+</span></span><span class="line"><span class="cl">│   ├── certificates_test.go
+</span></span><span class="line"><span class="cl">│   ├── cloudproviders.go
+</span></span><span class="line"><span class="cl">│   ├── config  <span class="c1"># config: controller manager执行的上下文</span>
+</span></span><span class="line"><span class="cl">│   │   └── config.go
+</span></span><span class="line"><span class="cl">│   ├── controllermanager.go
+</span></span><span class="line"><span class="cl">│   ├── controllermanager_test.go
+</span></span><span class="line"><span class="cl">│   ├── core.go
+</span></span><span class="line"><span class="cl">│   ├── core_test.go
+</span></span><span class="line"><span class="cl">│   ├── discovery.go
+</span></span><span class="line"><span class="cl">│   ├── flags_providerless.go
+</span></span><span class="line"><span class="cl">│   ├── flags_providers.go
+</span></span><span class="line"><span class="cl">│   ├── import_known_versions.go
+</span></span><span class="line"><span class="cl">│   ├── networking.go
+</span></span><span class="line"><span class="cl">│   ├── options   <span class="c1"># 包含不同controller的option参数</span>
+</span></span><span class="line"><span class="cl">│   │   ├── attachdetachcontroller.go
+</span></span><span class="line"><span class="cl">│   │   ├── cronjobcontroller.go
+</span></span><span class="line"><span class="cl">│   │   ├── csrsigningcontroller.go
+</span></span><span class="line"><span class="cl">│   │   ├── daemonsetcontroller.go
+</span></span><span class="line"><span class="cl">│   │   ├── deploymentcontroller.go
+</span></span><span class="line"><span class="cl">│   │   ├── deprecatedcontroller.go
+</span></span><span class="line"><span class="cl">│   │   ├── endpointcontroller.go
+</span></span><span class="line"><span class="cl">│   │   ├── endpointslicecontroller.go
+</span></span><span class="line"><span class="cl">│   │   ├── endpointslicemirroringcontroller.go
+</span></span><span class="line"><span class="cl">│   │   ├── ephemeralcontroller.go
+</span></span><span class="line"><span class="cl">│   │   ├── garbagecollectorcontroller.go
+</span></span><span class="line"><span class="cl">│   │   ├── hpacontroller.go
+</span></span><span class="line"><span class="cl">│   │   ├── jobcontroller.go
+</span></span><span class="line"><span class="cl">│   │   ├── legacyserviceaccounttokencleaner.go
+</span></span><span class="line"><span class="cl">│   │   ├── namespacecontroller.go
+</span></span><span class="line"><span class="cl">│   │   ├── nodeipamcontroller.go
+</span></span><span class="line"><span class="cl">│   │   ├── nodelifecyclecontroller.go
+</span></span><span class="line"><span class="cl">│   │   ├── options.go
+</span></span><span class="line"><span class="cl">│   │   ├── options_test.go
+</span></span><span class="line"><span class="cl">│   │   ├── persistentvolumebindercontroller.go
+</span></span><span class="line"><span class="cl">│   │   ├── podgccontroller.go
+</span></span><span class="line"><span class="cl">│   │   ├── replicasetcontroller.go
+</span></span><span class="line"><span class="cl">│   │   ├── replicationcontroller.go
+</span></span><span class="line"><span class="cl">│   │   ├── resourcequotacontroller.go
+</span></span><span class="line"><span class="cl">│   │   ├── serviceaccountcontroller.go
+</span></span><span class="line"><span class="cl">│   │   ├── statefulsetcontroller.go
+</span></span><span class="line"><span class="cl">│   │   ├── ttlafterfinishedcontroller.go
+</span></span><span class="line"><span class="cl">│   │   └── validatingadmissionpolicycontroller.go
+</span></span><span class="line"><span class="cl">│   ├── plugins.go
+</span></span><span class="line"><span class="cl">│   ├── plugins_providerless.go
+</span></span><span class="line"><span class="cl">│   ├── plugins_providers.go
+</span></span><span class="line"><span class="cl">│   ├── policy.go
+</span></span><span class="line"><span class="cl">│   ├── rbac.go
+</span></span><span class="line"><span class="cl">│   ├── testing
+</span></span><span class="line"><span class="cl">│   │   └── testserver.go
+</span></span><span class="line"><span class="cl">│   └── validatingadmissionpolicystatus.go
+</span></span><span class="line"><span class="cl">├── controller-manager.go   <span class="c1"># main入口函数</span>
+</span></span><span class="line"><span class="cl">└── names
+</span></span><span class="line"><span class="cl">    └── controller_names.go
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="m">5</span> directories, <span class="m">55</span> files
+</span></span></code></pre></td></tr></table>
+</div>
+</div>]]></description></item><item><title>istio常见问题</title><link>https://www.kbsonlong.com/sre/posts/common-problem/</link><pubDate>Wed, 26 Jul 2023 10:33:16 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/sre/posts/common-problem/</guid><description>503 UF TLS upstream_reset_before_response_started{connection_failure,TLS_error:_268435703:SSL_routines:OPENSSL_internal:WRONG_VERSION_NUMBER} 故障原因 默认情况下，Istio 使用 PERMISSIVE 模式配置目标工作负载。 当启用 PERMISSIVE 模式时，服务可以接受明文和双向 TLS 流量。当两边开启 istio-proxy 之后，Istio</description></item><item><title>istio全局配置</title><link>https://www.kbsonlong.com/sre/posts/istio-default-configuration/</link><pubDate>Mon, 17 Jul 2023 21:08:20 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/sre/posts/istio-default-configuration/</guid><description><![CDATA[<h3 id="全局关闭重试">全局关闭重试</h3>
+<p>istio默认重试2次</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">data</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">mesh</span><span class="p">:</span><span class="w"> </span><span class="l">|-</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">...</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">...</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">defaultHttpRetryPolicy</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">attempts</span><span class="p">:</span><span class="w"> </span><span class="m">0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">...</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">...</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div>]]></description></item></channel></rss>

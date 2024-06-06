@@ -1,0 +1,50 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Golang - 分类 - 蜷缩的蜗牛</title><link>https://www.kbsonlong.com/sre/categories/golang/</link><description>Golang - 分类 - 蜷缩的蜗牛</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>kbsonlong@gmail.com (kbsonlong)</managingEditor><webMaster>kbsonlong@gmail.com (kbsonlong)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 19 Sep 2022 15:30:40 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/sre/categories/golang/" rel="self" type="application/rss+xml"/><item><title>golang热加载工具</title><link>https://www.kbsonlong.com/sre/posts/golang-hot-loading-tool/</link><pubDate>Mon, 19 Sep 2022 15:30:40 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/sre/posts/golang-hot-loading-tool/</guid><description><![CDATA[<p>在用 Go 和 gin 框架开发网站时，gin 缺乏实时重载的功能是令人遗憾的,修改完代码之后经常需要 <code>ctrl + c</code> 结束服务，重新运行 <code>go run</code>,影响开发效率。
+<a
+  href="https://github.com/cosmtrek/air.git"
+  
+  
+    
+    
+    target="_blank"
+  
+  
+    rel="external nofollow noopener noreferrer"
+  
+  
+  
+>Air</a> 是为 Go 应用开发设计的另外一个热重载的命令行工具。只需在你的项目根目录下输入 air，然后把它放在一边，专注于你的代码即可</p>
+<h2 id="安装">安装</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># binary 文件会是在 $(go env GOPATH)/bin/air</span>
+</span></span><span class="line"><span class="cl">curl -sSfL https://raw.githubusercontent.com/cosmtrek/air/master/install.sh <span class="p">|</span> sh -s -- -b <span class="k">$(</span>go env GOPATH<span class="k">)</span>/bin
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 或者把它安装在 ./bin/ 路径下</span>
+</span></span><span class="line"><span class="cl">curl -sSfL https://raw.githubusercontent.com/cosmtrek/air/master/install.sh <span class="p">|</span> sh -s
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">air -v
+</span></span></code></pre></td></tr></table>
+</div>
+</div>]]></description></item><item><title>Gin中间件执行顺序</title><link>https://www.kbsonlong.com/sre/posts/gin-middleware-execution-order/</link><pubDate>Sun, 11 Sep 2022 10:30:09 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/sre/posts/gin-middleware-execution-order/</guid><description><![CDATA[<h3 id="初始化demo项目">初始化demo项目</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mkdir -p gin-middleware-demo
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> gin-middleware-demo
+</span></span><span class="line"><span class="cl">go mod init github.com/kbsonlong/gin-middleware-demo
+</span></span></code></pre></td></tr></table>
+</div>
+</div>]]></description></item></channel></rss>

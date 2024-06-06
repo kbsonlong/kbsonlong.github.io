@@ -1,0 +1,619 @@
+<!doctype html><html lang=zh-CN><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=2"><meta name=robots content="noodp"><meta http-equiv=X-UA-Compatible content="IE=edge, chrome=1"><title>Istio多集群系列-同一网络多控制面部署 - 蜷缩的蜗牛</title><meta name=author content="kbsonlong">
+<meta name=author-link content><meta name=description content='(
+
+本文基于Istio 1.16.2，k8s 1.24
+
+创建两套k8s集群
+
+
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+
+
+mkdir -p multicluster
+cd multicluster
+cat << EOF > kind-cluster1.yaml
+kind: Cluster
+apiVersion: "kind.x-k8s.io/v1alpha4"
+networking:
+  apiServerAddress: "172.26.128.224"
+  podSubnet: "10.10.0.0/16"
+  serviceSubnet: "10.11.0.0/16"
+nodes:
+  - role: control-plane
+    image: registry.cn-hangzhou.aliyuncs.com/seam/node:v1.24.15
+  - role: worker
+    image: registry.cn-hangzhou.aliyuncs.com/seam/node:v1.24.15
+    kubeadmConfigPatches:
+    - |
+      kind: JoinConfiguration
+      nodeRegistration:
+        kubeletExtraArgs:
+          node-labels: "topology.kubernetes.io/region=sg,topology.kubernetes.io/zone=az01"      
+EOF
+
+cat << EOF > kind-cluster2.yaml
+kind: Cluster
+apiVersion: "kind.x-k8s.io/v1alpha4"
+networking:
+  apiServerAddress: "172.26.128.224"
+  podSubnet: "10.12.0.0/16"
+  serviceSubnet: "10.13.0.0/16"
+nodes:
+  - role: control-plane
+    image: registry.cn-hangzhou.aliyuncs.com/seam/node:v1.24.15
+  - role: worker
+    image: registry.cn-hangzhou.aliyuncs.com/seam/node:v1.24.15
+    kubeadmConfigPatches:
+    - |
+      kind: JoinConfiguration
+      nodeRegistration:
+        kubeletExtraArgs:
+          node-labels: "topology.kubernetes.io/region=sg,topology.kubernetes.io/zone=az02"      
+EOF
+
+
+
+
+1
+2
+3
+4
+5
+
+
+kind create cluster --name cluster1 --kubeconfig=istio-multicluster --config=kind-cluster1.yaml
+kind create cluster --name cluster2 --kubeconfig=istio-multicluster --config=kind-cluster2.yaml
+
+kubectl config rename-context kind-cluster1  cluster1 --kubeconfig istio-multicluster
+kubectl config rename-context kind-cluster2  cluster2 --kubeconfig istio-multicluster
+
+
+'><meta name=keywords content='multicluster,istio'><meta itemprop=name content="Istio多集群系列-同一网络多控制面部署"><meta itemprop=description content='(
+本文基于Istio 1.16.2，k8s 1.24
+创建两套k8s集群 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 mkdir -p multicluster cd multicluster cat << EOF > kind-cluster1.yaml kind: Cluster apiVersion: "kind.x-k8s.io/v1alpha4" networking: apiServerAddress: "172.26.128.224" podSubnet: "10.10.0.0/16" serviceSubnet: "10.11.0.0/16" nodes: - role: control-plane image: registry.cn-hangzhou.aliyuncs.com/seam/node:v1.24.15 - role: worker image: registry.cn-hangzhou.aliyuncs.com/seam/node:v1.24.15 kubeadmConfigPatches: - | kind: JoinConfiguration nodeRegistration: kubeletExtraArgs: node-labels: "topology.kubernetes.io/region=sg,topology.kubernetes.io/zone=az01" EOF cat << EOF > kind-cluster2.yaml kind: Cluster apiVersion: "kind.x-k8s.io/v1alpha4" networking: apiServerAddress: "172.26.128.224" podSubnet: "10.12.0.0/16" serviceSubnet: "10.13.0.0/16" nodes: - role: control-plane image: registry.cn-hangzhou.aliyuncs.com/seam/node:v1.24.15 - role: worker image: registry.cn-hangzhou.aliyuncs.com/seam/node:v1.24.15 kubeadmConfigPatches: - | kind: JoinConfiguration nodeRegistration: kubeletExtraArgs: node-labels: "topology.kubernetes.io/region=sg,topology.kubernetes.io/zone=az02" EOF 1 2 3 4 5 kind create cluster --name cluster1 --kubeconfig=istio-multicluster --config=kind-cluster1.yaml kind create cluster --name cluster2 --kubeconfig=istio-multicluster --config=kind-cluster2.yaml kubectl config rename-context kind-cluster1 cluster1 --kubeconfig istio-multicluster kubectl config rename-context kind-cluster2 cluster2 --kubeconfig istio-multicluster '><meta itemprop=datePublished content="2023-08-16T11:07:53+08:00"><meta itemprop=dateModified content="2023-08-16T11:07:53+08:00"><meta itemprop=wordCount content="1605"><meta itemprop=image content="https://www.kbsonlong.com/sre/logo_transparent.png"><meta itemprop=keywords content="Multicluster,Istio"><meta property="og:url" content="https://www.kbsonlong.com/sre/posts/istio-multi-cluster-series-multi-control-powers-of-the-same-network/"><meta property="og:site_name" content="蜷缩的蜗牛"><meta property="og:title" content="Istio多集群系列-同一网络多控制面部署"><meta property="og:description" content='(
+本文基于Istio 1.16.2，k8s 1.24
+创建两套k8s集群 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 mkdir -p multicluster cd multicluster cat << EOF > kind-cluster1.yaml kind: Cluster apiVersion: "kind.x-k8s.io/v1alpha4" networking: apiServerAddress: "172.26.128.224" podSubnet: "10.10.0.0/16" serviceSubnet: "10.11.0.0/16" nodes: - role: control-plane image: registry.cn-hangzhou.aliyuncs.com/seam/node:v1.24.15 - role: worker image: registry.cn-hangzhou.aliyuncs.com/seam/node:v1.24.15 kubeadmConfigPatches: - | kind: JoinConfiguration nodeRegistration: kubeletExtraArgs: node-labels: "topology.kubernetes.io/region=sg,topology.kubernetes.io/zone=az01" EOF cat << EOF > kind-cluster2.yaml kind: Cluster apiVersion: "kind.x-k8s.io/v1alpha4" networking: apiServerAddress: "172.26.128.224" podSubnet: "10.12.0.0/16" serviceSubnet: "10.13.0.0/16" nodes: - role: control-plane image: registry.cn-hangzhou.aliyuncs.com/seam/node:v1.24.15 - role: worker image: registry.cn-hangzhou.aliyuncs.com/seam/node:v1.24.15 kubeadmConfigPatches: - | kind: JoinConfiguration nodeRegistration: kubeletExtraArgs: node-labels: "topology.kubernetes.io/region=sg,topology.kubernetes.io/zone=az02" EOF 1 2 3 4 5 kind create cluster --name cluster1 --kubeconfig=istio-multicluster --config=kind-cluster1.yaml kind create cluster --name cluster2 --kubeconfig=istio-multicluster --config=kind-cluster2.yaml kubectl config rename-context kind-cluster1 cluster1 --kubeconfig istio-multicluster kubectl config rename-context kind-cluster2 cluster2 --kubeconfig istio-multicluster '><meta property="og:locale" content="zh_CN"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2023-08-16T11:07:53+08:00"><meta property="article:modified_time" content="2023-08-16T11:07:53+08:00"><meta property="article:tag" content="Multicluster"><meta property="article:tag" content="Istio"><meta property="og:image" content="https://www.kbsonlong.com/sre/logo_transparent.png"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://www.kbsonlong.com/sre/logo_transparent.png"><meta name=twitter:title content="Istio多集群系列-同一网络多控制面部署"><meta name=twitter:description content='(
+本文基于Istio 1.16.2，k8s 1.24
+创建两套k8s集群 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 mkdir -p multicluster cd multicluster cat << EOF > kind-cluster1.yaml kind: Cluster apiVersion: "kind.x-k8s.io/v1alpha4" networking: apiServerAddress: "172.26.128.224" podSubnet: "10.10.0.0/16" serviceSubnet: "10.11.0.0/16" nodes: - role: control-plane image: registry.cn-hangzhou.aliyuncs.com/seam/node:v1.24.15 - role: worker image: registry.cn-hangzhou.aliyuncs.com/seam/node:v1.24.15 kubeadmConfigPatches: - | kind: JoinConfiguration nodeRegistration: kubeletExtraArgs: node-labels: "topology.kubernetes.io/region=sg,topology.kubernetes.io/zone=az01" EOF cat << EOF > kind-cluster2.yaml kind: Cluster apiVersion: "kind.x-k8s.io/v1alpha4" networking: apiServerAddress: "172.26.128.224" podSubnet: "10.12.0.0/16" serviceSubnet: "10.13.0.0/16" nodes: - role: control-plane image: registry.cn-hangzhou.aliyuncs.com/seam/node:v1.24.15 - role: worker image: registry.cn-hangzhou.aliyuncs.com/seam/node:v1.24.15 kubeadmConfigPatches: - | kind: JoinConfiguration nodeRegistration: kubeletExtraArgs: node-labels: "topology.kubernetes.io/region=sg,topology.kubernetes.io/zone=az02" EOF 1 2 3 4 5 kind create cluster --name cluster1 --kubeconfig=istio-multicluster --config=kind-cluster1.yaml kind create cluster --name cluster2 --kubeconfig=istio-multicluster --config=kind-cluster2.yaml kubectl config rename-context kind-cluster1 cluster1 --kubeconfig istio-multicluster kubectl config rename-context kind-cluster2 cluster2 --kubeconfig istio-multicluster '><meta name=application-name content="FixIt"><meta name=apple-mobile-web-app-title content="FixIt"><meta name=theme-color media="(prefers-color-scheme: light)" content="#ffffff"><meta name=theme-color media="(prefers-color-scheme: dark)" content="#252627"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://www.kbsonlong.com/sre/posts/istio-multi-cluster-series-multi-control-powers-of-the-same-network/><link rel=prev href=https://www.kbsonlong.com/sre/posts/the-relationship-between-sla-slo-and-sli/><link rel=next href=https://www.kbsonlong.com/sre/posts/istio-multi-cluster-series-cross-az-cluster-area-load-balancing/><link rel=stylesheet href=/sre/lib/normalize/normalize.min.css><link rel=stylesheet href=/sre/css/style.min.css><link rel=stylesheet href=/sre/lib/fontawesome-free/all.min.css><link rel=stylesheet href=/sre/lib/animate/animate.min.css><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Istio多集群系列-同一网络多控制面部署","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/www.kbsonlong.com\/sre\/posts\/istio-multi-cluster-series-multi-control-powers-of-the-same-network\/"},"genre":"posts","keywords":"multicluster, istio","wordcount":1605,"url":"https:\/\/www.kbsonlong.com\/sre\/posts\/istio-multi-cluster-series-multi-control-powers-of-the-same-network\/","datePublished":"2023-08-16T11:07:53+08:00","dateModified":"2023-08-16T11:07:53+08:00","license":"This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"kbsonlong"},"description":""}</script></head><body header-desktop=sticky header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":"auto"==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:"auto"==="dark")&&document.body.setAttribute("theme","dark")</script><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper github-corner=right><div class=header-title><a href=/sre/ title=蜷缩的蜗牛><img class="lazyload logo" src=/sre/svg/loading.min.svg data-src=/sre/logo_transparent.png data-srcset="/sre/logo_transparent.png, /sre/logo_transparent.png 1.5x, /sre/logo_transparent.png 2x" data-sizes=auto alt=蜷缩的蜗牛 title=蜷缩的蜗牛><span class=header-title-text>蜷缩的蜗牛</span></a><span class=header-subtitle></span></div><nav><ul class=menu><li class=menu-item><a class=menu-link href=/sre/posts/><i class='fa-solid fa-archive fa-fw fa-sm'></i> 文章</a></li><li class=menu-item><a class=menu-link href=/sre/categories/><i class='fa-solid fa-th fa-fw fa-sm'></i> 分类</a></li><li class=menu-item><a class=menu-link href=/sre/tags/><i class='fa-solid fa-tags fa-fw fa-sm'></i> 标签</a></li><li class=menu-item><a class=menu-link href=/sre/friends/ title=友情链接><i class='fa-solid fa-users fa-fw fa-sm'></i> 友链</a></li><li class=menu-item><a class=menu-link href=/sre/about/><i class='fa-solid fa-info-circle fa-fw fa-sm'></i> 关于</a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=https://github.com/kbsonlong/ title=GitHub rel="noopener noreferrer" target=_blank><i class='fa-brands fa-github fa-fw'></i></a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=/sre/messages/><i class='fa-solid fa-messages'></i> 留言板</a></li><li class=menu-item><a class=menu-link href=/sre/messages/ title=留言板>留言板</a></li><li class="menu-item delimiter"></li><li class="menu-item language"><span title=选择语言>简体中文<i class="dropdown-icon fa-solid fa-chevron-down"></i></span><ul class=sub-menu><li class=menu-item>没有更多翻译</li></ul></li><li class="menu-item search" id=search-desktop><input type=text placeholder="搜索文章标题或内容 ..." id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fa-solid fa-search fa-fw"></i>
+</a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fa-solid fa-times-circle fa-fw"></i>
+</a><span class="search-button search-loading" id=search-loading-desktop><i class="fa-solid fa-spinner fa-fw fa-spin"></i></span></li><li class="menu-item theme-switch" title=切换主题><i class="fa-solid fa-adjust fa-fw"></i></li></ul></nav></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/sre/ title=蜷缩的蜗牛><img class="lazyload logo" src=/sre/svg/loading.min.svg data-src=/sre/logo_transparent.png data-srcset="/sre/logo_transparent.png, /sre/logo_transparent.png 1.5x, /sre/logo_transparent.png 2x" data-sizes=auto alt=/sre/logo_transparent.png title=/sre/logo_transparent.png><span class=header-title-text>蜷缩的蜗牛</span></a><span class=header-subtitle></span></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><nav><ul class=menu id=menu-mobile><li class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder="搜索文章标题或内容 ..." id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fa-solid fa-search fa-fw"></i>
+</a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fa-solid fa-times-circle fa-fw"></i>
+</a><span class="search-button search-loading" id=search-loading-mobile><i class="fa-solid fa-spinner fa-fw fa-spin"></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></li><li class=menu-item><a class=menu-link href=/sre/posts/><i class='fa-solid fa-archive fa-fw fa-sm'></i> 文章</a></li><li class=menu-item><a class=menu-link href=/sre/categories/><i class='fa-solid fa-th fa-fw fa-sm'></i> 分类</a></li><li class=menu-item><a class=menu-link href=/sre/tags/><i class='fa-solid fa-tags fa-fw fa-sm'></i> 标签</a></li><li class=menu-item><a class=menu-link href=/sre/friends/ title=友情链接><i class='fa-solid fa-users fa-fw fa-sm'></i> 友链</a></li><li class=menu-item><a class=menu-link href=/sre/about/><i class='fa-solid fa-info-circle fa-fw fa-sm'></i> 关于</a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=https://github.com/kbsonlong/ title=GitHub rel="noopener noreferrer" target=_blank><i class='fa-brands fa-github fa-fw'></i></a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=/sre/messages/><i class='fa-solid fa-messages'></i> 留言板</a></li><li class=menu-item><a class=menu-link href=/sre/messages/ title=留言板>留言板</a></li><li class="menu-item theme-switch" title=切换主题><i class="fa-solid fa-adjust fa-fw"></i></li><li class="menu-item language"><span title=选择语言>简体中文<i class="dropdown-icon fa-solid fa-chevron-down"></i>
+</span><select class=language-select onchange="location=this.value"><option disabled>没有更多翻译</option></select></li></ul></nav></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=container page-style=normal><aside class=toc id=toc-auto><h2 class=toc-title>目录 <i class="toc-icon fa-solid fa-angle-down fa-fw"></i></h2><div class=toc-content id=toc-content-auto></div></aside><aside class=aside-custom></aside><article class="page single"><div class=header><h1 class="single-title animate__animated animate__flipInX"><span>Istio多集群系列-同一网络多控制面部署</span></h1></div><div class=post-meta><div class=post-meta-line><span class=post-author><span class=author><img class="lazyload avatar" src=/sre/svg/loading.min.svg data-src="https://gravatar.loli.net/avatar/598872715ec08296cf1e1806135cd518?s=32&amp;d=mp" data-srcset="https://gravatar.loli.net/avatar/598872715ec08296cf1e1806135cd518?s=32&amp;d=mp, https://gravatar.loli.net/avatar/598872715ec08296cf1e1806135cd518?s=32&amp;d=mp 1.5x, https://gravatar.loli.net/avatar/598872715ec08296cf1e1806135cd518?s=32&amp;d=mp 2x" data-sizes=auto alt=kbsonlong title=kbsonlong>&nbsp;kbsonlong</span></span>
+<span class=post-category>收录于 <a href=/sre/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/><i class="fa-regular fa-folder fa-fw"></i>&nbsp;云原生</a></span></div><div class=post-meta-line><span title="2023-08-16 11:07:53"><i class="fa-regular fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2023-08-16>2023-08-16</time>
+</span>&nbsp;<i class="fa-solid fa-pencil-alt fa-fw"></i>&nbsp;约 1605 字&nbsp;
+<i class="fa-regular fa-clock fa-fw"></i>&nbsp;预计阅读 4 分钟&nbsp;</div></div><div class="details toc" id=toc-static kept=false><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fa-solid fa-angle-right"></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#创建两套k8s集群>创建两套k8s集群</a></li><li><a href=#打通集群网络>打通集群网络</a></li><li><a href=#部署istio>部署Istio</a><ul><li><a href=#配置信任关系>配置信任关系</a><ul><li><a href=#生成根证书和密钥>生成根证书和密钥</a></li><li><a href=#每个集群为-istio-ca-生成一个中间证书和密钥>每个集群，为 Istio CA 生成一个中间证书和密钥</a></li><li><a href=#每个集群中创建一个私密-cacerts>每个集群中，创建一个私密 cacerts</a></li></ul></li><li><a href=#部署istio-1>部署Istio</a><ul><li><a href=#cluster1-设为主集群>cluster1 设为主集群</a></li><li><a href=#cluster2-设为主集群>cluster2 设为主集群</a></li></ul></li></ul></li><li><a href=#开启端点发现>开启端点发现</a></li><li><a href=#验证跨集群访问>验证跨集群访问</a><ul><li><a href=#部署-helloworld-服务>部署 helloworld 服务</a><ul><li><a href=#创建名称空间并开启自动注入>创建名称空间并开启自动注入</a></li><li><a href=#cluster1-部署v1版本>Cluster1 部署V1版本</a></li><li><a href=#cluster2-部署v2版本>Cluster2 部署V2版本</a></li></ul></li><li><a href=#部署-sleep-服务>部署 Sleep 服务</a><ul><li><a href=#每个集群部署>每个集群部署</a></li><li><a href=#确认服务正常>确认服务正常</a></li><li><a href=#查看endpoint>查看endpoint</a></li></ul></li><li><a href=#验证跨集群访问-1>验证跨集群访问</a><ul><li><a href=#开启access日志>开启Access日志</a></li></ul></li></ul></li><li><a href=#参考资料>参考资料</a></li></ul></nav></div></div><div class=content id=content><p>(<img class=lazyload src=/sre/svg/loading.min.svg data-src=https://raw.githubusercontent.com/kbsonlong/notes_statics/master/images/20230816174138.png data-srcset="https://raw.githubusercontent.com/kbsonlong/notes_statics/master/images/20230816174138.png, https://raw.githubusercontent.com/kbsonlong/notes_statics/master/images/20230816174138.png 1.5x, https://raw.githubusercontent.com/kbsonlong/notes_statics/master/images/20230816174138.png 2x" data-sizes=auto alt=https://raw.githubusercontent.com/kbsonlong/notes_statics/master/images/20230816174138.png title=多集群网络架构></p><blockquote><p>本文基于Istio 1.16.2，k8s 1.24</p></blockquote><h2 id=创建两套k8s集群>创建两套k8s集群</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=l>mkdir -p multicluster</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>cd multicluster</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>cat &lt;&lt; EOF &gt; kind-cluster1.yaml</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Cluster</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;kind.x-k8s.io/v1alpha4&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>networking</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>apiServerAddress</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;172.26.128.224&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>podSubnet</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;10.10.0.0/16&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>serviceSubnet</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;10.11.0.0/16&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>nodes</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>role</span><span class=p>:</span><span class=w> </span><span class=l>control-plane</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>image</span><span class=p>:</span><span class=w> </span><span class=l>registry.cn-hangzhou.aliyuncs.com/seam/node:v1.24.15</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>role</span><span class=p>:</span><span class=w> </span><span class=l>worker</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>image</span><span class=p>:</span><span class=w> </span><span class=l>registry.cn-hangzhou.aliyuncs.com/seam/node:v1.24.15</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>kubeadmConfigPatches</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=p>|</span><span class=sd>
+</span></span></span><span class=line><span class=cl><span class=sd>      kind: JoinConfiguration
+</span></span></span><span class=line><span class=cl><span class=sd>      nodeRegistration:
+</span></span></span><span class=line><span class=cl><span class=sd>        kubeletExtraArgs:
+</span></span></span><span class=line><span class=cl><span class=sd>          node-labels: &#34;topology.kubernetes.io/region=sg,topology.kubernetes.io/zone=az01&#34;</span><span class=w>      
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>EOF</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>cat &lt;&lt; EOF &gt; kind-cluster2.yaml</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Cluster</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;kind.x-k8s.io/v1alpha4&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>networking</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>apiServerAddress</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;172.26.128.224&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>podSubnet</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;10.12.0.0/16&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>serviceSubnet</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;10.13.0.0/16&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>nodes</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>role</span><span class=p>:</span><span class=w> </span><span class=l>control-plane</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>image</span><span class=p>:</span><span class=w> </span><span class=l>registry.cn-hangzhou.aliyuncs.com/seam/node:v1.24.15</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>role</span><span class=p>:</span><span class=w> </span><span class=l>worker</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>image</span><span class=p>:</span><span class=w> </span><span class=l>registry.cn-hangzhou.aliyuncs.com/seam/node:v1.24.15</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>kubeadmConfigPatches</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=p>|</span><span class=sd>
+</span></span></span><span class=line><span class=cl><span class=sd>      kind: JoinConfiguration
+</span></span></span><span class=line><span class=cl><span class=sd>      nodeRegistration:
+</span></span></span><span class=line><span class=cl><span class=sd>        kubeletExtraArgs:
+</span></span></span><span class=line><span class=cl><span class=sd>          node-labels: &#34;topology.kubernetes.io/region=sg,topology.kubernetes.io/zone=az02&#34;</span><span class=w>      
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>EOF</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kind create cluster --name cluster1 --kubeconfig<span class=o>=</span>istio-multicluster --config<span class=o>=</span>kind-cluster1.yaml
+</span></span><span class=line><span class=cl>kind create cluster --name cluster2 --kubeconfig<span class=o>=</span>istio-multicluster --config<span class=o>=</span>kind-cluster2.yaml
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>kubectl config rename-context kind-cluster1  cluster1 --kubeconfig istio-multicluster
+</span></span><span class=line><span class=cl>kubectl config rename-context kind-cluster2  cluster2 --kubeconfig istio-multicluster
+</span></span></code></pre></td></tr></table></div></div><h2 id=打通集群网络>打通集群网络</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=cp>#!/bin/bash
+</span></span></span><span class=line><span class=cl><span class=cp></span><span class=c1># add_routes will add routes for given kind cluster</span>
+</span></span><span class=line><span class=cl><span class=c1># Parameters:</span>
+</span></span><span class=line><span class=cl><span class=c1>#  - $1: name of the kind cluster want to add routes</span>
+</span></span><span class=line><span class=cl><span class=c1>#  - $2: the kubeconfig path of the cluster wanted to be connected</span>
+</span></span><span class=line><span class=cl><span class=c1>#  - $3: the context in kubeconfig of the cluster wanted to be connected</span>
+</span></span><span class=line><span class=cl><span class=k>function</span> add_routes<span class=o>()</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>  <span class=nb>unset</span> IFS
+</span></span><span class=line><span class=cl>  <span class=nv>routes</span><span class=o>=</span><span class=k>$(</span>kubectl --kubeconfig <span class=si>${</span><span class=nv>2</span><span class=si>}</span> --context <span class=si>${</span><span class=nv>3</span><span class=si>}</span> get nodes -o <span class=nv>jsonpath</span><span class=o>=</span><span class=s1>&#39;{range .items[*]}ip route add {.spec.podCIDR} via {.status.addresses[?(.type==&#34;InternalIP&#34;)].address}{&#34;\n&#34;}{end}&#39;</span><span class=k>)</span>
+</span></span><span class=line><span class=cl>  <span class=nb>echo</span> <span class=s2>&#34;Connecting cluster </span><span class=si>${</span><span class=nv>1</span><span class=si>}</span><span class=s2> to </span><span class=si>${</span><span class=nv>2</span><span class=si>}</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nv>IFS</span><span class=o>=</span><span class=s1>$&#39;\n&#39;</span>
+</span></span><span class=line><span class=cl>  <span class=k>for</span> n in <span class=k>$(</span>kind get nodes --name <span class=s2>&#34;</span><span class=si>${</span><span class=nv>1</span><span class=si>}</span><span class=s2>&#34;</span><span class=k>)</span><span class=p>;</span> <span class=k>do</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> r in <span class=nv>$routes</span><span class=p>;</span> <span class=k>do</span>
+</span></span><span class=line><span class=cl>      <span class=nb>echo</span> <span class=nv>$r</span>
+</span></span><span class=line><span class=cl>      <span class=nb>echo</span> <span class=s2>&#34;exec cmd in docker exec </span><span class=nv>$n</span><span class=s2> </span><span class=nv>$r</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl>      <span class=nb>eval</span> <span class=s2>&#34;docker exec </span><span class=nv>$n</span><span class=s2> </span><span class=nv>$r</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>done</span>
+</span></span><span class=line><span class=cl>  <span class=k>done</span>
+</span></span><span class=line><span class=cl>  <span class=nb>unset</span> IFS
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>add_routes cluster1 istio-multicluster cluster2
+</span></span><span class=line><span class=cl>add_routes cluster2 istio-multicluster cluster1
+</span></span></code></pre></td></tr></table></div></div><h2 id=部署istio>部署Istio</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=nb>cd</span> ../
+</span></span><span class=line><span class=cl><span class=nb>export</span> <span class=nv>KUBECONFIG</span><span class=o>=</span><span class=sb>`</span><span class=nb>pwd</span><span class=sb>`</span>/multicluster/istio-multicluster
+</span></span><span class=line><span class=cl><span class=nb>export</span> <span class=nv>CTX_CLUSTER1</span><span class=o>=</span>cluster1
+</span></span><span class=line><span class=cl><span class=nb>export</span> <span class=nv>CTX_CLUSTER2</span><span class=o>=</span>cluster2
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>curl -L https://istio.io/downloadIstio <span class=p>|</span> <span class=nv>ISTIO_VERSION</span><span class=o>=</span>1.16.2 sh -
+</span></span><span class=line><span class=cl><span class=nb>cd</span> istio-1.16.2
+</span></span><span class=line><span class=cl><span class=nb>export</span> <span class=nv>PATH</span><span class=o>=</span><span class=s2>&#34;</span><span class=nv>$PATH</span><span class=s2>:`pwd`/bin&#34;</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=配置信任关系>配置信任关系</h3><h4 id=生成根证书和密钥>生成根证书和密钥</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>mkdir -p certs
+</span></span><span class=line><span class=cl><span class=nb>pushd</span> certs
+</span></span><span class=line><span class=cl>make -f ../tools/certs/Makefile.selfsigned.mk root-ca
+</span></span></code></pre></td></tr></table></div></div><ul><li>root-cert.pem：生成的根证书</li><li>root-key.pem：生成的根密钥</li><li>root-ca.conf：生成根证书的 openssl 配置</li><li>root-cert.csr：为根证书生成的 CSR</li></ul><h4 id=每个集群为-istio-ca-生成一个中间证书和密钥>每个集群，为 Istio CA 生成一个中间证书和密钥</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>make -f ../tools/certs/Makefile.selfsigned.mk cluster1-cacerts
+</span></span><span class=line><span class=cl>make -f ../tools/certs/Makefile.selfsigned.mk cluster2-cacerts
+</span></span></code></pre></td></tr></table></div></div><ul><li>ca-cert.pem：生成的中间证书</li><li>ca-key.pem：生成的中间密钥</li><li>cert-chain.pem：istiod 使用的生成的证书链</li><li>root-cert.pem：根证书</li></ul><h4 id=每个集群中创建一个私密-cacerts>每个集群中，创建一个私密 cacerts</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>kubectl create namespace istio-system  --context cluster1
+</span></span><span class=line><span class=cl>kubectl create secret generic cacerts -n istio-system <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>      --from-file<span class=o>=</span>cluster1/ca-cert.pem <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>      --from-file<span class=o>=</span>cluster1/ca-key.pem <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>      --from-file<span class=o>=</span>cluster1/root-cert.pem <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>      --from-file<span class=o>=</span>cluster1/cert-chain.pem   --context cluster1
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>kubectl create namespace istio-system --context cluster2
+</span></span><span class=line><span class=cl>kubectl create secret generic cacerts -n istio-system <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>      --from-file<span class=o>=</span>cluster2/ca-cert.pem <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>      --from-file<span class=o>=</span>cluster2/ca-key.pem <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>      --from-file<span class=o>=</span>cluster2/root-cert.pem <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>      --from-file<span class=o>=</span>cluster2/cert-chain.pem   --context cluster2
+</span></span></code></pre></td></tr></table></div></div><h3 id=部署istio-1>部署Istio</h3><h4 id=cluster1-设为主集群>cluster1 设为主集群</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>cat <span class=s>&lt;&lt;EOF &gt; cluster1.yaml
+</span></span></span><span class=line><span class=cl><span class=s>apiVersion: install.istio.io/v1alpha1
+</span></span></span><span class=line><span class=cl><span class=s>kind: IstioOperator
+</span></span></span><span class=line><span class=cl><span class=s>spec:
+</span></span></span><span class=line><span class=cl><span class=s>  values:
+</span></span></span><span class=line><span class=cl><span class=s>    global:
+</span></span></span><span class=line><span class=cl><span class=s>      meshID: mesh1
+</span></span></span><span class=line><span class=cl><span class=s>      multiCluster:
+</span></span></span><span class=line><span class=cl><span class=s>        clusterName: cluster1
+</span></span></span><span class=line><span class=cl><span class=s>      network: network1
+</span></span></span><span class=line><span class=cl><span class=s>EOF</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>istioctl install --context<span class=o>=</span><span class=s2>&#34;</span><span class=si>${</span><span class=nv>CTX_CLUSTER1</span><span class=si>}</span><span class=s2>&#34;</span> -f cluster1.yaml
+</span></span></code></pre></td></tr></table></div></div><h4 id=cluster2-设为主集群>cluster2 设为主集群</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>cat &lt;&lt;EOF &gt; cluster2.yaml
+</span></span><span class=line><span class=cl>apiVersion: install.istio.io/v1alpha1
+</span></span><span class=line><span class=cl>kind: IstioOperator
+</span></span><span class=line><span class=cl>spec:
+</span></span><span class=line><span class=cl>  values:
+</span></span><span class=line><span class=cl>    global:
+</span></span><span class=line><span class=cl>      meshID: mesh1
+</span></span><span class=line><span class=cl>      multiCluster:
+</span></span><span class=line><span class=cl>        clusterName: cluster2
+</span></span><span class=line><span class=cl>      network: network1
+</span></span><span class=line><span class=cl>EOF
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>istioctl install --context=&#34;${CTX_CLUSTER2}&#34; -f cluster2.yaml
+</span></span></code></pre></td></tr></table></div></div><h2 id=开启端点发现>开启端点发现</h2><p>创建secret,包含远端集群的 <code>kubeconfig</code> 配置,istio通过 <code>istio/multiCluster=true</code> 确认发现远端集群</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>istioctl x create-remote-secret <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    --context<span class=o>=</span><span class=s2>&#34;</span><span class=si>${</span><span class=nv>CTX_CLUSTER1</span><span class=si>}</span><span class=s2>&#34;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    --name<span class=o>=</span>cluster1 <span class=p>|</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    kubectl apply -f - --context<span class=o>=</span><span class=s2>&#34;</span><span class=si>${</span><span class=nv>CTX_CLUSTER2</span><span class=si>}</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>istioctl x create-remote-secret <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    --context<span class=o>=</span><span class=s2>&#34;</span><span class=si>${</span><span class=nv>CTX_CLUSTER2</span><span class=si>}</span><span class=s2>&#34;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    --name<span class=o>=</span>cluster2 <span class=p>|</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    kubectl apply -f - --context<span class=o>=</span><span class=s2>&#34;</span><span class=si>${</span><span class=nv>CTX_CLUSTER1</span><span class=si>}</span><span class=s2>&#34;</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># kubectl get secret -n istio-system istio-remote-secret-cluster2 --show-labels --context cluster1</span>
+</span></span><span class=line><span class=cl>NAME                           TYPE     DATA   AGE   LABELS
+</span></span><span class=line><span class=cl>istio-remote-secret-cluster2   Opaque   <span class=m>1</span>      50s   istio/multiCluster<span class=o>=</span><span class=nb>true</span>
+</span></span><span class=line><span class=cl><span class=c1># kubectl get secret -n istio-system istio-remote-secret-cluster1 --show-labels --context cluster2</span>
+</span></span><span class=line><span class=cl>NAME                           TYPE     DATA   AGE   LABELS
+</span></span><span class=line><span class=cl>istio-remote-secret-cluster1   Opaque   <span class=m>1</span>      58s   istio/multiCluster<span class=o>=</span><span class=nb>true</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=验证跨集群访问>验证跨集群访问</h2><h3 id=部署-helloworld-服务>部署 helloworld 服务</h3><h4 id=创建名称空间并开启自动注入>创建名称空间并开启自动注入</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl create --context<span class=o>=</span><span class=s2>&#34;</span><span class=si>${</span><span class=nv>CTX_CLUSTER1</span><span class=si>}</span><span class=s2>&#34;</span> namespace sample
+</span></span><span class=line><span class=cl>kubectl create --context<span class=o>=</span><span class=s2>&#34;</span><span class=si>${</span><span class=nv>CTX_CLUSTER2</span><span class=si>}</span><span class=s2>&#34;</span> namespace sample
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>kubectl label --context<span class=o>=</span><span class=s2>&#34;</span><span class=si>${</span><span class=nv>CTX_CLUSTER1</span><span class=si>}</span><span class=s2>&#34;</span> namespace sample <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    istio-injection<span class=o>=</span>enabled
+</span></span><span class=line><span class=cl>kubectl label --context<span class=o>=</span><span class=s2>&#34;</span><span class=si>${</span><span class=nv>CTX_CLUSTER2</span><span class=si>}</span><span class=s2>&#34;</span> namespace sample <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    istio-injection<span class=o>=</span>enabled
+</span></span></code></pre></td></tr></table></div></div><h4 id=cluster1-部署v1版本>Cluster1 部署V1版本</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl apply --context<span class=o>=</span><span class=s2>&#34;</span><span class=si>${</span><span class=nv>CTX_CLUSTER1</span><span class=si>}</span><span class=s2>&#34;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    -f samples/helloworld/helloworld.yaml <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    -l <span class=nv>version</span><span class=o>=</span>v1 -n sample
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>kubectl get pod --context<span class=o>=</span><span class=s2>&#34;</span><span class=si>${</span><span class=nv>CTX_CLUSTER1</span><span class=si>}</span><span class=s2>&#34;</span> -n sample -l <span class=nv>app</span><span class=o>=</span>helloworld
+</span></span></code></pre></td></tr></table></div></div><h4 id=cluster2-部署v2版本>Cluster2 部署V2版本</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl apply --context<span class=o>=</span><span class=s2>&#34;</span><span class=si>${</span><span class=nv>CTX_CLUSTER2</span><span class=si>}</span><span class=s2>&#34;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    -f samples/helloworld/helloworld.yaml <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    -l <span class=nv>version</span><span class=o>=</span>v2 -n sample
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>kubectl get pod --context<span class=o>=</span><span class=s2>&#34;</span><span class=si>${</span><span class=nv>CTX_CLUSTER2</span><span class=si>}</span><span class=s2>&#34;</span> -n sample -l <span class=nv>app</span><span class=o>=</span>helloworld
+</span></span></code></pre></td></tr></table></div></div><h3 id=部署-sleep-服务>部署 Sleep 服务</h3><h4 id=每个集群部署>每个集群部署</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl apply --context<span class=o>=</span><span class=s2>&#34;</span><span class=si>${</span><span class=nv>CTX_CLUSTER1</span><span class=si>}</span><span class=s2>&#34;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    -f samples/sleep/sleep.yaml -n sample
+</span></span><span class=line><span class=cl>kubectl apply --context<span class=o>=</span><span class=s2>&#34;</span><span class=si>${</span><span class=nv>CTX_CLUSTER2</span><span class=si>}</span><span class=s2>&#34;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    -f samples/sleep/sleep.yaml -n sample
+</span></span></code></pre></td></tr></table></div></div><h4 id=确认服务正常>确认服务正常</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl get pod --context<span class=o>=</span><span class=s2>&#34;</span><span class=si>${</span><span class=nv>CTX_CLUSTER1</span><span class=si>}</span><span class=s2>&#34;</span> -n sample -l <span class=nv>app</span><span class=o>=</span>sleep
+</span></span><span class=line><span class=cl>kubectl get pod --context<span class=o>=</span><span class=s2>&#34;</span><span class=si>${</span><span class=nv>CTX_CLUSTER2</span><span class=si>}</span><span class=s2>&#34;</span> -n sample -l <span class=nv>app</span><span class=o>=</span>sleep
+</span></span></code></pre></td></tr></table></div></div><h4 id=查看endpoint>查看endpoint</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># istioctl ps</span>
+</span></span><span class=line><span class=cl>NAME                                      CLUSTER      CDS        LDS        EDS        RDS        ECDS         ISTIOD                    VERSION
+</span></span><span class=line><span class=cl>helloworld-v2-79bf565586-jq449.sample     cluster2     SYNCED     SYNCED     SYNCED     SYNCED     NOT SENT     istiod-bf55d77c-6ttql     1.16.2
+</span></span><span class=line><span class=cl>sleep-69cfb4968f-s5xtl.sample             cluster2     SYNCED     SYNCED     SYNCED     SYNCED     NOT SENT     istiod-bf55d77c-6ttql     1.16.2
+</span></span><span class=line><span class=cl><span class=c1># istioctl pc c helloworld-v2-79bf565586-jq449.sample --port 5000</span>
+</span></span><span class=line><span class=cl>SERVICE FQDN                            PORT     SUBSET     DIRECTION     TYPE             DESTINATION RULE
+</span></span><span class=line><span class=cl>                                        <span class=m>5000</span>     -          inbound       ORIGINAL_DST     helloworld.sample
+</span></span><span class=line><span class=cl>helloworld.sample.svc.cluster.local     <span class=m>5000</span>     -          outbound      EDS              helloworld.sample
+</span></span><span class=line><span class=cl><span class=c1># istioctl pc endpoint helloworld-v2-79bf565586-jq449.sample  --cluster &#34;outbound|5000||helloworld.sample.svc.cluster.local&#34;</span>
+</span></span><span class=line><span class=cl>ENDPOINT           STATUS      OUTLIER CHECK     CLUSTER
+</span></span><span class=line><span class=cl>10.10.0.7:5000     HEALTHY     OK                outbound<span class=p>|</span>5000<span class=o>||</span>helloworld.sample.svc.cluster.local
+</span></span><span class=line><span class=cl>10.12.0.7:5000     HEALTHY     OK                outbound<span class=p>|</span>5000<span class=o>||</span>helloworld.sample.svc.cluster.local
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># kubectl get pod -o wide -n sample --context cluster2 -l app=helloworld</span>
+</span></span><span class=line><span class=cl>NAME                             READY   STATUS    RESTARTS   AGE     IP          NODE                     NOMINATED NODE   READINESS GATES
+</span></span><span class=line><span class=cl>helloworld-v2-79bf565586-jq449   2/2     Running   <span class=m>0</span>          7h24m   10.12.0.7   cluster2-control-plane   &lt;none&gt;           &lt;none&gt;
+</span></span><span class=line><span class=cl><span class=c1># kubectl get pod -o wide -n sample --context cluster1 -l app=helloworld</span>
+</span></span><span class=line><span class=cl>NAME                             READY   STATUS    RESTARTS   AGE     IP          NODE                     NOMINATED NODE   READINESS GATES
+</span></span><span class=line><span class=cl>helloworld-v1-77cb56d4b4-pgzvf   2/2     Running   <span class=m>0</span>          7h24m   10.10.0.7   cluster1-control-plane   &lt;none&gt;           &lt;none&gt;
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=line><span class=cl><span class=err>#</span> <span class=err>istioctl</span> <span class=err>pc</span> <span class=err>endpoint</span> <span class=err>helloworld-v</span><span class=mi>2-79</span><span class=err>bf</span><span class=mi>565586</span><span class=err>-jq</span><span class=mi>449</span><span class=err>.sample</span>  <span class=err>--cluster</span> <span class=s2>&#34;outbound|5000||helloworld.sample.svc.cluster.local&#34;</span> <span class=err>-o</span> <span class=err>json</span>
+</span></span></code></pre></td></tr></table></div></div><p><img class=lazyload src=/sre/svg/loading.min.svg data-src=https://raw.githubusercontent.com/kbsonlong/notes_statics/main/images20230816210525.png data-srcset="https://raw.githubusercontent.com/kbsonlong/notes_statics/main/images20230816210525.png, https://raw.githubusercontent.com/kbsonlong/notes_statics/main/images20230816210525.png 1.5x, https://raw.githubusercontent.com/kbsonlong/notes_statics/main/images20230816210525.png 2x" data-sizes=auto alt=https://raw.githubusercontent.com/kbsonlong/notes_statics/main/images20230816210525.png title=endpoints></p><p>可以看到两个集群的pod已经注册到了istio</p><h3 id=验证跨集群访问-1>验证跨集群访问</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl <span class=nb>exec</span> --context<span class=o>=</span><span class=s2>&#34;</span><span class=si>${</span><span class=nv>CTX_CLUSTER1</span><span class=si>}</span><span class=s2>&#34;</span> -n sample -c sleep <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    <span class=s2>&#34;</span><span class=k>$(</span>kubectl get pod --context<span class=o>=</span><span class=s2>&#34;</span><span class=si>${</span><span class=nv>CTX_CLUSTER1</span><span class=si>}</span><span class=s2>&#34;</span> -n sample -l <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    <span class=nv>app</span><span class=o>=</span>sleep -o <span class=nv>jsonpath</span><span class=o>=</span><span class=s1>&#39;{.items[0].metadata.name}&#39;</span><span class=k>)</span><span class=s2>&#34;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    -- curl helloworld.sample:5000/hello
+</span></span></code></pre></td></tr></table></div></div><p><img class=lazyload src=/sre/svg/loading.min.svg data-src=https://raw.githubusercontent.com/kbsonlong/notes_statics/master/images/20230816140731.png data-srcset="https://raw.githubusercontent.com/kbsonlong/notes_statics/master/images/20230816140731.png, https://raw.githubusercontent.com/kbsonlong/notes_statics/master/images/20230816140731.png 1.5x, https://raw.githubusercontent.com/kbsonlong/notes_statics/master/images/20230816140731.png 2x" data-sizes=auto alt=https://raw.githubusercontent.com/kbsonlong/notes_statics/master/images/20230816140731.png title=跨集群访问></p><p>上图看到流量并不像 <code>Envoy</code> 官方文档[4]所说默认策略轮询</p><p><img class=lazyload src=/sre/svg/loading.min.svg data-src=https://raw.githubusercontent.com/kbsonlong/notes_statics/master/images/20230816182312.png data-srcset="https://raw.githubusercontent.com/kbsonlong/notes_statics/master/images/20230816182312.png, https://raw.githubusercontent.com/kbsonlong/notes_statics/master/images/20230816182312.png 1.5x, https://raw.githubusercontent.com/kbsonlong/notes_statics/master/images/20230816182312.png 2x" data-sizes=auto alt=https://raw.githubusercontent.com/kbsonlong/notes_statics/master/images/20230816182312.png title=lb_policy负载均衡策略></p><p>查看Envoy负载均衡策略为 <code>LEAST_REQUEST</code>。不知道什么原因Istio 1.16默认负载策略改为<code>LEAST_REQUEST</code>,查看生产环境1.13.4版本默认是没有配置lb_policy，那么就是Envoy默认策略为轮询。</p><h4 id=开启access日志>开启Access日志</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=l>export NAMESPACE=sample</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>export WORKLOAD=helloworld</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>cat &lt;&lt; EOF | kubectl apply -f - --context=&#34;${CTX_CLUSTER1}&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>networking.istio.io/v1alpha3</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>EnvoyFilter</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>enable-accesslog</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class=l>${NAMESPACE}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>configPatches</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>applyTo</span><span class=p>:</span><span class=w> </span><span class=l>NETWORK_FILTER</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>match</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>context</span><span class=p>:</span><span class=w> </span><span class=l>ANY</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>listener</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>filterChain</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>filter</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>envoy.filters.network.http_connection_manager</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>patch</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>operation</span><span class=p>:</span><span class=w> </span><span class=l>MERGE</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>value</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>typed_config</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>&#39;@type&#39;</span><span class=p>:</span><span class=w> </span><span class=l>type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>access_log</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span>- <span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>envoy.access_loggers.file</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>typed_config</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>              </span><span class=nt>&#39;@type&#39;</span><span class=p>:</span><span class=w> </span><span class=l>type.googleapis.com/envoy.extensions.access_loggers.file.v3.FileAccessLog</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>              </span><span class=nt>path</span><span class=p>:</span><span class=w> </span><span class=l>/dev/stdout</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>              </span><span class=nt>log_format</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=nt>json_format</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                  </span><span class=nt>authority</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;%REQ(:AUTHORITY)%&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                  </span><span class=nt>bytes_received</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;%BYTES_RECEIVED%&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                  </span><span class=nt>bytes_sent</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;%BYTES_SENT%&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                  </span><span class=nt>downstream_local_address</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;%DOWNSTREAM_LOCAL_ADDRESS%&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                  </span><span class=nt>downstream_remote_address</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;%DOWNSTREAM_REMOTE_ADDRESS%&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                  </span><span class=nt>duration</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;%DURATION%&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                  </span><span class=nt>method</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;%REQ(:METHOD)%&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                  </span><span class=nt>path</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;%REQ(X-ENVOY-ORIGINAL-PATH?:PATH)%&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                  </span><span class=nt>protocol</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;%PROTOCOL%&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                  </span><span class=nt>request_id</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;%REQ(X-REQUEST-ID)%&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                  </span><span class=nt>requested_server_name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;%REQUESTED_SERVER_NAME%&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                  </span><span class=nt>response_code</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;%RESPONSE_CODE%&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                  </span><span class=nt>response_flags</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;%RESPONSE_FLAGS%&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                  </span><span class=nt>route_name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;%ROUTE_NAME%&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                  </span><span class=nt>start_time</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;%START_TIME%&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                  </span><span class=nt>upstream_cluster</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;%UPSTREAM_CLUSTER%&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                  </span><span class=nt>upstream_host</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;%UPSTREAM_HOST%&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                  </span><span class=nt>upstream_local_address</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;%UPSTREAM_LOCAL_ADDRESS%&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                  </span><span class=nt>upstream_service_time</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;%RESP(X-ENVOY-UPSTREAM-SERVICE-TIME)%&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                  </span><span class=nt>upstream_transport_failure_reason</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;%UPSTREAM_TRANSPORT_FAILURE_REASON%&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                  </span><span class=nt>user_agent</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;%REQ(USER-AGENT)%&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                  </span><span class=nt>x_forwarded_for</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;%REQ(X-FORWARDED-FOR)%&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>workloadSelector</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>labels</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>app</span><span class=p>:</span><span class=w> </span><span class=l>${WORKLOAD}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>EOF</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h2 id=参考资料>参考资料</h2><ol><li><a href=https://istio.io/v1.16/zh/docs/setup/install/multicluster/multi-primary/ target=_blank rel="external nofollow noopener noreferrer">https://istio.io/v1.16/zh/docs/setup/install/multicluster/multi-primary/</a></li><li><a href=https://istio.io/v1.16/zh/docs/tasks/security/cert-management/plugin-ca-cert/ target=_blank rel="external nofollow noopener noreferrer">https://istio.io/v1.16/zh/docs/tasks/security/cert-management/plugin-ca-cert/</a></li><li><a href=https://istio.io/v1.16/zh/docs/setup/install/multicluster/verify/ target=_blank rel="external nofollow noopener noreferrer">https://istio.io/v1.16/zh/docs/setup/install/multicluster/verify/</a></li><li><a href=https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-enum-config-cluster-v3-cluster-lbpolicy target=_blank rel="external nofollow noopener noreferrer">https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-enum-config-cluster-v3-cluster-lbpolicy</a></li></ol></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span title="2023-08-16 11:07:53">更新于 2023-08-16</span></div><div class=post-info-license><span><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span></div></div><div class=post-info-line><div class=post-info-md><span><a href=/sre/posts/istio-multi-cluster-series-multi-control-powers-of-the-same-network/index.md title=阅读原始文档 class=link-to-markdown>阅读原始文档</a></span></div><div class=post-info-share><span><a href=javascript:void(0); title="分享到 Twitter" data-sharer=twitter data-url=https://www.kbsonlong.com/sre/posts/istio-multi-cluster-series-multi-control-powers-of-the-same-network/ data-title=Istio多集群系列-同一网络多控制面部署 data-hashtags=multicluster,istio><i class="fa-brands fa-twitter fa-fw"></i></a>
+<a href=javascript:void(0); title="分享到 Facebook" data-sharer=facebook data-url=https://www.kbsonlong.com/sre/posts/istio-multi-cluster-series-multi-control-powers-of-the-same-network/ data-hashtag=multicluster><i class="fa-brands fa-facebook-square fa-fw"></i></a>
+<a href=javascript:void(0); title="分享到 WhatsApp" data-sharer=whatsapp data-url=https://www.kbsonlong.com/sre/posts/istio-multi-cluster-series-multi-control-powers-of-the-same-network/ data-title=Istio多集群系列-同一网络多控制面部署 data-web><i class="fa-brands fa-whatsapp fa-fw"></i></a>
+<a href=javascript:void(0); title="分享到 Line" data-sharer=line data-url=https://www.kbsonlong.com/sre/posts/istio-multi-cluster-series-multi-control-powers-of-the-same-network/ data-title=Istio多集群系列-同一网络多控制面部署><i data-svg-src=/sre/lib/simple-icons/icons/line.min.svg></i></a>
+<a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://www.kbsonlong.com/sre/posts/istio-multi-cluster-series-multi-control-powers-of-the-same-network/ data-title=Istio多集群系列-同一网络多控制面部署><i class="fa-brands fa-weibo fa-fw"></i></a>
+<a href=javascript:void(0); title="分享到 Myspace" data-sharer=myspace data-url=https://www.kbsonlong.com/sre/posts/istio-multi-cluster-series-multi-control-powers-of-the-same-network/ data-title=Istio多集群系列-同一网络多控制面部署 data-description><i data-svg-src=/sre/lib/simple-icons/icons/myspace.min.svg></i></a>
+<a href=javascript:void(0); title="分享到 Blogger" data-sharer=blogger data-url=https://www.kbsonlong.com/sre/posts/istio-multi-cluster-series-multi-control-powers-of-the-same-network/ data-title=Istio多集群系列-同一网络多控制面部署 data-description><i class="fa-brands fa-blogger fa-fw"></i></a>
+<a href=javascript:void(0); title="分享到 Evernote" data-sharer=evernote data-url=https://www.kbsonlong.com/sre/posts/istio-multi-cluster-series-multi-control-powers-of-the-same-network/ data-title=Istio多集群系列-同一网络多控制面部署><i class="fa-brands fa-evernote fa-fw"></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fa-solid fa-tags fa-fw"></i>&nbsp;<a href=/sre/tags/multicluster/>Multicluster</a>,&nbsp;<a href=/sre/tags/istio/>Istio</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/sre/>主页</a></span></section></div><div class=post-nav><a href=/sre/posts/the-relationship-between-sla-slo-and-sli/ class=prev rel=prev title="SLA、SLO 和 SLI 的关系"><i class="fa-solid fa-angle-left fa-fw"></i>SLA、SLO 和 SLI 的关系</a>
+<a href=/sre/posts/istio-multi-cluster-series-cross-az-cluster-area-load-balancing/ class=next rel=next title=Istio多集群系列-单控制面跨AZ集群区域负载均衡>Istio多集群系列-单控制面跨AZ集群区域负载均衡<i class="fa-solid fa-angle-right fa-fw"></i></a></div></div><div id=comments><div id=giscus><script src=https://giscus.app/client.js data-repo=kbsonlong/devops.alongparty.cn data-repo-id=R_kgDOHE7F-Q data-category=Announcements data-category-id=DIC_kwDOHE7F-c4CPP5J data-mapping=title data-theme=preferred_color_scheme data-reactions-enabled=1 data-emit-metadata=0 data-input-position=bottom data-lang=zh-CN data-loading=lazy crossorigin=anonymous async defer></script><noscript>Please enable JavaScript to view the comments powered by <a href=https://giscus.app/ rel="external nofollow noopener noreferrer">giscus</a>.</noscript></div></div></article></main><footer class=footer><div class=footer-container><div class="footer-line copyright"><i class="fa-regular fa-copyright fa-fw"></i>
+<span itemprop=copyrightYear>2018 - 2024</span><span class=author itemprop=copyrightHolder>
+<a href=/sre/>kbsonlong</a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span></div><div class="footer-line statistics"></div><div class="footer-line ibruce"><span id=busuanzi_container_site_uv title=总访客数><i class="fa-regular fa-user fa-fw"></i>&nbsp;<span id=busuanzi_value_site_uv><i class="fa fa-spinner fa-spin fa-fw"></i></span></span><span id=busuanzi_container_site_pv class=footer-divider title=总访问量><i class="fa-regular fa-eye fa-fw"></i>&nbsp;<span id=busuanzi_value_site_pv><i class="fa fa-spinner fa-spin fa-fw"></i></span></span></div><div class="footer-line beian"><span class="icp footer-divider"><a target=_blank href=https://beian.miit.gov.cn/>粤ICP备18122209号</a></span></div></div></footer></div><div class=widgets><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fa-solid fa-arrow-up fa-fw"></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fa-solid fa-comment fa-fw"></i></a></div><a href=https://github.com/kbsonlong title="在 GitHub 上查看源代码" target=_blank rel="external nofollow noopener noreferrer" class="github-corner right d-none-mobile"><svg viewBox="0 0 250 250" aria-hidden="true"><path d="M0 0 115 115h15l12 27L250 250V0z"/><path d="M128.3 109C113.8 99.7 119 89.6 119 89.6 122 82.7 120.5 78.6 120.5 78.6 119.2 72 123.4 76.3 123.4 76.3 127.3 80.9 125.5 87.3 125.5 87.3 122.9 97.6 130.6 101.9 134.4 103.2" fill="currentcolor" style="transform-origin:130px 106px" class="octo-arm"/><path d="M115 115C114.9 115.1 118.7 116.5 119.8 115.4l13.9-13.8C136.9 99.2 139.9 98.4 142.2 98.6 133.8 88 127.5 74.4 143.8 58 148.5 53.4 154 51.2 159.7 51 160.3 49.4 163.2 43.6 171.4 40.1 171.4 40.1 176.1 42.5 178.8 56.2 183.1 58.6 187.2 61.8 190.9 65.4 194.5 69 197.7 73.2 200.1 77.6 213.8 80.2 216.3 84.9 216.3 84.9 212.7 93.1 206.9 96 205.4 96.6 205.1 102.4 203 107.8 198.3 112.5 181.9 128.9 168.3 122.5 157.7 114.1 157.9 116.9 156.7 120.9 152.7 124.9L141 136.5C139.8 137.7 141.6 141.9 141.8 141.8z" fill="currentcolor" class="octo-body"/></svg></a><div id=mask></div></div><link rel=stylesheet href=/sre/lib/katex/katex.min.css><link rel=stylesheet href=/sre/lib/katex/copy-tex.min.css><link rel=stylesheet href=/sre/lib/cookieconsent/cookieconsent.min.css><script type=text/javascript src=/sre/lib/autocomplete/autocomplete.min.js defer></script><script type=text/javascript src=/sre/lib/algoliasearch/algoliasearch-lite.umd.min.js defer></script><script type=text/javascript src=/sre/lib/lazysizes/lazysizes.min.js async defer></script><script type=text/javascript src=/sre/lib/sharer/sharer.min.js async defer></script><script type=text/javascript src=/sre/lib/katex/katex.min.js defer></script><script type=text/javascript src=/sre/lib/katex/auto-render.min.js defer></script><script type=text/javascript src=/sre/lib/katex/copy-tex.min.js defer></script><script type=text/javascript src=/sre/lib/katex/mhchem.min.js defer></script><script type=text/javascript src=/sre/lib/cookieconsent/cookieconsent.min.js defer></script><script type=text/javascript src=/sre/lib/pangu/pangu.min.js defer></script><script type=text/javascript src=/sre/lib/cell-watermark/watermark.min.js defer></script><script type=text/javascript src=//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js async defer></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",editLockTitle:"锁定可编辑代码块",editUnLockTitle:"解锁可编辑代码块",editable:!0,maxShownLines:10},comment:{giscus:{darkTheme:"dark",lightTheme:"light"}},cookieconsent:{content:{dismiss:"同意",link:"了解更多",message:"本网站使用 Cookies 来改善您的浏览体验。"},enable:!0,palette:{button:{background:"#f0f0f0"},popup:{background:"#1aa3ff"}},theme:"edgeless"},enablePWA:!0,enablePangu:!0,math:{delimiters:[{display:!0,left:"$$",right:"$$"},{display:!0,left:"\\[",right:"\\]"},{display:!1,left:"$",right:"$"},{display:!1,left:"\\(",right:"\\)"}],strict:!1},search:{algoliaAppID:"WFOR67TML1",algoliaIndex:"along",algoliaSearchKey:"ea1fe535f9a7ae353f3922489c829cc1",highlightTag:"em",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"algolia"},watermark:{appendto:".wrapper>main",colspacing:30,content:'<img class="fixit-icon" src="/favicon-16x16.png" alt="FixIt logo" /> FixIt 主题',enable:!0,fontfamily:"inherit",fontsize:.85,height:21,opacity:.0125,rotate:15,rowspacing:60,width:150}}</script><script type=text/javascript src=/sre/js/theme.min.js defer></script><script type=text/javascript src=/sre/js/_custom.min.js defer></script></body></html>

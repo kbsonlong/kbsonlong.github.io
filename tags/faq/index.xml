@@ -1,0 +1,274 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Faq - 标签 - 蜷缩的蜗牛</title><link>https://www.kbsonlong.com/sre/tags/faq/</link><description>Faq - 标签 - 蜷缩的蜗牛</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>kbsonlong@gmail.com (kbsonlong)</managingEditor><webMaster>kbsonlong@gmail.com (kbsonlong)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 31 Mar 2023 21:13:29 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/sre/tags/faq/" rel="self" type="application/rss+xml"/><item><title>Istio故障排除常用指令</title><link>https://www.kbsonlong.com/sre/posts/istio-failure-exclusion-common-instruction/</link><pubDate>Fri, 31 Mar 2023 21:13:29 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/sre/posts/istio-failure-exclusion-common-instruction/</guid><description><![CDATA[<h2 id="局部开启-access-日志">局部开启 Access 日志</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">NAMESPACE</span><span class="o">=</span>default
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">WORKLOAD</span><span class="o">=</span>details
+</span></span><span class="line"><span class="cl">cat <span class="s">&lt;&lt; EOF | kubectl apply -f -
+</span></span></span><span class="line"><span class="cl"><span class="s">apiVersion: networking.istio.io/v1alpha3
+</span></span></span><span class="line"><span class="cl"><span class="s">kind: EnvoyFilter
+</span></span></span><span class="line"><span class="cl"><span class="s">metadata:
+</span></span></span><span class="line"><span class="cl"><span class="s">  name: enable-accesslog
+</span></span></span><span class="line"><span class="cl"><span class="s">  namespace: ${NAMESPACE}
+</span></span></span><span class="line"><span class="cl"><span class="s">spec:
+</span></span></span><span class="line"><span class="cl"><span class="s">  configPatches:
+</span></span></span><span class="line"><span class="cl"><span class="s">  - applyTo: NETWORK_FILTER
+</span></span></span><span class="line"><span class="cl"><span class="s">    match:
+</span></span></span><span class="line"><span class="cl"><span class="s">      context: ANY
+</span></span></span><span class="line"><span class="cl"><span class="s">      listener:
+</span></span></span><span class="line"><span class="cl"><span class="s">        filterChain:
+</span></span></span><span class="line"><span class="cl"><span class="s">          filter:
+</span></span></span><span class="line"><span class="cl"><span class="s">            name: envoy.filters.network.http_connection_manager
+</span></span></span><span class="line"><span class="cl"><span class="s">    patch:
+</span></span></span><span class="line"><span class="cl"><span class="s">      operation: MERGE
+</span></span></span><span class="line"><span class="cl"><span class="s">      value:
+</span></span></span><span class="line"><span class="cl"><span class="s">        typed_config:
+</span></span></span><span class="line"><span class="cl"><span class="s">          &#39;@type&#39;: type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+</span></span></span><span class="line"><span class="cl"><span class="s">          access_log:
+</span></span></span><span class="line"><span class="cl"><span class="s">          - name: envoy.access_loggers.file
+</span></span></span><span class="line"><span class="cl"><span class="s">            typed_config:
+</span></span></span><span class="line"><span class="cl"><span class="s">              &#39;@type&#39;: type.googleapis.com/envoy.extensions.access_loggers.file.v3.FileAccessLog
+</span></span></span><span class="line"><span class="cl"><span class="s">              path: /dev/stdout
+</span></span></span><span class="line"><span class="cl"><span class="s">  workloadSelector:
+</span></span></span><span class="line"><span class="cl"><span class="s">    labels:
+</span></span></span><span class="line"><span class="cl"><span class="s">      app: ${WORKLOAD}
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="修改-envoy-日志级别">修改 Envoy 日志级别</h2>
+<h3 id="修改所有-logger">修改所有 logger</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">POD_NAME</span><span class="o">=</span>xxx
+</span></span><span class="line"><span class="cl">kubectl <span class="nb">exec</span> -ti -n <span class="si">${</span><span class="nv">NAMESPACE</span><span class="si">}</span> <span class="si">${</span><span class="nv">POD_NAME</span><span class="si">}</span> -c istio-proxy -- curl -X POST 127.0.0.1:15000/logging<span class="se">\?</span><span class="nv">level</span><span class="o">=</span>info
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">active loggers:
+</span></span><span class="line"><span class="cl">  admin: info
+</span></span><span class="line"><span class="cl">  alternate_protocols_cache: info
+</span></span><span class="line"><span class="cl">  aws: info
+</span></span><span class="line"><span class="cl">  assert: info
+</span></span><span class="line"><span class="cl">  backtrace: info
+</span></span><span class="line"><span class="cl">  cache_filter: info
+</span></span><span class="line"><span class="cl">  client: info
+</span></span><span class="line"><span class="cl">  config: info
+</span></span><span class="line"><span class="cl">  connection: info
+</span></span><span class="line"><span class="cl">  conn_handler: info
+</span></span><span class="line"><span class="cl">  decompression: info
+</span></span><span class="line"><span class="cl">  dns: info
+</span></span><span class="line"><span class="cl">  dubbo: info
+</span></span><span class="line"><span class="cl">  envoy_bug: info
+</span></span><span class="line"><span class="cl">  ext_authz: info
+</span></span><span class="line"><span class="cl">  rocketmq: info
+</span></span><span class="line"><span class="cl">  file: info
+</span></span><span class="line"><span class="cl">  filter: info
+</span></span><span class="line"><span class="cl">  forward_proxy: info
+</span></span><span class="line"><span class="cl">  grpc: info
+</span></span><span class="line"><span class="cl">  hc: info
+</span></span><span class="line"><span class="cl">  health_checker: info
+</span></span><span class="line"><span class="cl">  http: info
+</span></span><span class="line"><span class="cl">  http2: info
+</span></span><span class="line"><span class="cl">  hystrix: info
+</span></span><span class="line"><span class="cl">  init: info
+</span></span><span class="line"><span class="cl">  io: info
+</span></span><span class="line"><span class="cl">  jwt: info
+</span></span><span class="line"><span class="cl">  kafka: info
+</span></span><span class="line"><span class="cl">  key_value_store: info
+</span></span><span class="line"><span class="cl">  lua: info
+</span></span><span class="line"><span class="cl">  main: info
+</span></span><span class="line"><span class="cl">  matcher: info
+</span></span><span class="line"><span class="cl">  misc: info
+</span></span><span class="line"><span class="cl">  mongo: info
+</span></span><span class="line"><span class="cl">  quic: info
+</span></span><span class="line"><span class="cl">  quic_stream: info
+</span></span><span class="line"><span class="cl">  pool: info
+</span></span><span class="line"><span class="cl">  rbac: info
+</span></span><span class="line"><span class="cl">  redis: info
+</span></span><span class="line"><span class="cl">  router: info
+</span></span><span class="line"><span class="cl">  runtime: info
+</span></span><span class="line"><span class="cl">  stats: info
+</span></span><span class="line"><span class="cl">  secret: info
+</span></span><span class="line"><span class="cl">  tap: info
+</span></span><span class="line"><span class="cl">  testing: info
+</span></span><span class="line"><span class="cl">  thrift: info
+</span></span><span class="line"><span class="cl">  tracing: info
+</span></span><span class="line"><span class="cl">  upstream: info
+</span></span><span class="line"><span class="cl">  udp: info
+</span></span><span class="line"><span class="cl">  wasm: info
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="修改其中一个-logger-级别">修改其中一个 logger 级别</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">kubectl <span class="nb">exec</span> -ti -n <span class="si">${</span><span class="nv">NAMESPACE</span><span class="si">}</span> <span class="si">${</span><span class="nv">POD_NAME</span><span class="si">}</span> -c istio-proxy -- curl -X POST 127.0.0.1:15000/logging<span class="se">\?</span><span class="nv">http</span><span class="o">=</span>trace
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">active loggers:
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">  health_checker: warning
+</span></span><span class="line"><span class="cl">  http: trace
+</span></span><span class="line"><span class="cl">  http2: warning
+</span></span><span class="line"><span class="cl">  hystrix: warning
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">...
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nv">pod</span><span class="o">=</span><span class="sb">`</span>kubectl get pod -n istio-system -l <span class="nv">app</span><span class="o">=</span>istiod -o name<span class="sb">`</span>
+</span></span><span class="line"><span class="cl">kubectl <span class="nb">exec</span> <span class="nv">$pod</span> -n istio-system -- curl http://127.0.0.1:15014/debug/<span class="nv">$@</span>
+</span></span><span class="line"><span class="cl">kubectl <span class="nb">exec</span> <span class="nv">$pod</span> -n istio-system -- curl http://127.0.0.1:15014/debug/endpointz
+</span></span><span class="line"><span class="cl">kubectl <span class="nb">exec</span> <span class="nv">$pod</span> -n istio-system -- curl http://127.0.0.1:15014/debug/adsz
+</span></span><span class="line"><span class="cl">kubectl <span class="nb">exec</span> <span class="nv">$pod</span> -n istio-system -- curl http://127.0.0.1:15014/debug/registryz
+</span></span><span class="line"><span class="cl">kubectl <span class="nb">exec</span> <span class="nv">$pod</span> -n istio-system -- curl http://127.0.0.1:15014/debug/configz
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="常用脚本">常用脚本</h2>
+<p>由于线上主机初始化没有安装 <code>socat</code>, 在使用<code>istioctl</code>是无法转发端口,所以直接导出 <code>Envoy</code> 的配置，然后在使用 <code>istioctl</code>操作。</p>
+<h3 id="导出config">导出config</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">kubectl <span class="nb">exec</span> -ti -n zsl-test mydemo-my-demo-sgcanshu-4vb7b -c istio-proxy -- curl http://127.0.0.1:15000/config_dump &gt; config_dump.json
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="导出cluster">导出cluster</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">kubectl <span class="nb">exec</span> -ti -n zsl-test mydemo-my-demo-sgcanshu-4vb7b -c istio-proxy -- curl <span class="s2">&#34;http://127.0.0.1:15000/clusters?format=json&#34;</span> &gt; envoy-clusters.json
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="istioctl-分析文件">istioctl 分析文件</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">istioctl proxy-config listener -f config_dump.json --port <span class="m">5000</span>
+</span></span><span class="line"><span class="cl">istioctl proxy-config endpoints -f envoy-cluster.json --cluster <span class="s2">&#34;outbound|5000||helloworld.sample.svc.cluster.local&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div>]]></description></item></channel></rss>

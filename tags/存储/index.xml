@@ -1,0 +1,135 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>存储 - 标签 - 蜷缩的蜗牛</title><link>https://www.kbsonlong.com/sre/tags/%E5%AD%98%E5%82%A8/</link><description>存储 - 标签 - 蜷缩的蜗牛</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>kbsonlong@gmail.com (kbsonlong)</managingEditor><webMaster>kbsonlong@gmail.com (kbsonlong)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 18 Oct 2022 10:01:33 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/sre/tags/%E5%AD%98%E5%82%A8/" rel="self" type="application/rss+xml"/><item><title>FIO存储性能工具</title><link>https://www.kbsonlong.com/sre/posts/fio-storage-performance-testing-tool/</link><pubDate>Tue, 18 Oct 2022 10:01:33 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/sre/posts/fio-storage-performance-testing-tool/</guid><description><![CDATA[<h3 id="fio-介绍">FIO 介绍</h3>
+<p>fio 是一个常见的用于测试磁盘 I/O 性能的工具，支持 19 种不同的 I/O 引擎，包括：sync, mmap, libaio, posixaio, SG v3, splice, null, network, syslet, guasi, solarisaio 等等。fio 一直在更新，最新的版本是 v3.19，它的官网是 fio。</p>
+<h4 id="常用参数">常用参数</h4>
+<table>
+<thead>
+<tr>
+<th>常用参数</th>
+<th>参数说明</th>
+<th>参数取值(eg:)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>FIO 运行任务的名称 （可选）</td>
+<td>name=fio-test</td>
+</tr>
+<tr>
+<td>description</td>
+<td>FIO 运行时的描述 （可选）</td>
+<td>description=&ldquo;this is a test&rdquo;</td>
+</tr>
+<tr>
+<td>loops</td>
+<td>FIO 是否要循环执行该任务 （可选）</td>
+<td>loops=5</td>
+</tr>
+<tr>
+<td>numjobs</td>
+<td>每个FIO 任务要开启多少数量的线程</td>
+<td>numjobs=8</td>
+</tr>
+<tr>
+<td>runtime</td>
+<td>FIO 任务要执行的时间，单位为s</td>
+<td>runtime=300</td>
+</tr>
+<tr>
+<td>time_based</td>
+<td>设置后，即便FIO写完了整个磁盘，也不会退出任务。当任务的时间满足runtime设置的时间后，才会退出任务</td>
+<td>time_based</td>
+</tr>
+<tr>
+<td>startdelay</td>
+<td>延迟作业的启动时间。如果指定区间类型的数值，将从区间中选择一个随机值用来启动任务。单位为s</td>
+<td>startdelay=10</td>
+</tr>
+<tr>
+<td>ramp_time</td>
+<td>FIO 在执行任务时预热的时间。可以使性能测试的结果更加精确可靠。单位为s</td>
+<td>ramp_time=60</td>
+</tr>
+<tr>
+<td>filename</td>
+<td>测试文件的名称，通常为硬盘的盘符名称</td>
+<td>filename=/dev/sdd</td>
+</tr>
+<tr>
+<td>pre_read</td>
+<td>在FIO下发 I/O 前，文件会被加载到内存中。当 pre_read=true 时会清除掉磁盘中的元数据，默认为false</td>
+<td>pre_read=false</td>
+</tr>
+<tr>
+<td>max_open_zones</td>
+<td>FIO 执行随机写入任务时，允许写入/读取的磁盘的区域的最大数量。</td>
+<td>max_open_zones=1000000</td>
+</tr>
+<tr>
+<td>direct</td>
+<td>是否使用非缓冲I/O。默认为false</td>
+<td>direct=true</td>
+</tr>
+<tr>
+<td>readwrite</td>
+<td>I/O 模式。read、write、randwrite、randread、randrw。混合读写时默认读写比例为50%:50%</td>
+<td>readwrite=read</td>
+</tr>
+<tr>
+<td>percentage_random</td>
+<td>随机写入时包含多少的随机数据</td>
+<td>percentage_random=30%</td>
+</tr>
+<tr>
+<td>blocksize</td>
+<td>读取/写入时块的大小</td>
+<td>bs=1M</td>
+</tr>
+<tr>
+<td>zero_buffers</td>
+<td>初始化所有零的缓冲区。默认用随机数填充缓冲区</td>
+<td>zero_buffers</td>
+</tr>
+<tr>
+<td>rwmixread</td>
+<td>混合模式中读取所占的百分比</td>
+<td>rwmixread=30</td>
+</tr>
+<tr>
+<td>rwmixwrite</td>
+<td>混合模式中写入所占的百分比</td>
+<td>rwmixwrite=70</td>
+</tr>
+<tr>
+<td>refill_buffers</td>
+<td>FIO 在每次提交时重新填充 I/O 缓冲区。使用 zero_buffers 参数后，该参数会失效</td>
+<td>refill_buffers</td>
+</tr>
+<tr>
+<td>buffer_compress_percentage</td>
+<td>压缩 I/O 缓冲区的百分比，配合 refill_buffers 可以降低硬盘中相邻块中数据的一致性</td>
+<td>buffer_compress_percentage=70</td>
+</tr>
+<tr>
+<td>size</td>
+<td>FIO 执行任务时要读取或写入的数据总和。size为百分比时将按照硬盘容量 * percentage</td>
+<td>size=300G or size=50%</td>
+</tr>
+<tr>
+<td>ioengine</td>
+<td>FIO 任务工具时的引擎，sync, libaio, rdma&hellip;</td>
+<td>ioengine=libaio</td>
+</tr>
+<tr>
+<td>iodepth</td>
+<td>任务执行时的 I/O 队列深度的单元数。任务的线程数 = numjobs * iodepth</td>
+<td>iodepth=16</td>
+</tr>
+</tbody>
+</table>]]></description></item><item><title>全网最全的云原生存储 OpenEBS 使用指南</title><link>https://www.kbsonlong.com/sre/posts/the-most-comprehensive-yunyuan-pymalist-openebs-usage-guidelines-on-the-entire-network/</link><pubDate>Sat, 15 Oct 2022 18:57:37 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/sre/posts/the-most-comprehensive-yunyuan-pymalist-openebs-usage-guidelines-on-the-entire-network/</guid><description><![CDATA[<blockquote>
+<p><strong>简介</strong></p>
+</blockquote>
+<h3 id="openebs-是什么"><strong>OpenEBS 是什么？</strong></h3>
+<p><code>OpenEBS</code> 是一种开源云原生存储解决方案，托管于 <code>CNCF</code> 基金会，目前该项目处于沙箱阶段。</p>
+<p>OpenEBS 是一组存储引擎，允许您为有状态工作负载 (StatefulSet) 和 Kubernetes 平台类型选择正确的存储解决方案。在高层次上，OpenEBS 支持两大类卷——本地卷和复制卷。</p>
+<p>OpenEBS 是 Kubernetes 本地超融合存储解决方案，它管理节点可用的本地存储，并为有状态工作负载提供本地或高可用的分布式持久卷。作为一个完全的 Kubernetes 原生解决方案的另一个优势是，管理员和开发人员可以使用 kubectl、Helm、 Prometheus、Grafana、Weave Scope 等 Kubernetes 可用的所有优秀工具来交互和管理 OpenEBS。</p>]]></description></item></channel></rss>
