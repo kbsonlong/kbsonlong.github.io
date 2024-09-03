@@ -207,7 +207,7 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div>]]></description></item><item><title>基于Coredns多集群服务发现</title><link>https://www.kbsonlong.com/posts/discovery-based-on-coredns-multi--cluster-service/</link><pubDate>Tue, 01 Aug 2023 17:38:45 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/posts/discovery-based-on-coredns-multi--cluster-service/</guid><description><![CDATA[<p>在<a
-  href="https://kbsonlong.github.io/sre/posts/2296fc/"
+  href="https://kbsonlong.github.io/posts/2296fc/"
   
   
     
@@ -221,7 +221,7 @@
   
 >Karmada 多集群服务发现</a>一文中跨集群调用时有个派生的前缀  <code>derived-&lt;service name&gt;</code>, 对于应用调用上有感知，本文介绍如何让应用在调用本地集群或者跨集群都是用同一个service。</p>
 <p>基础环境 <a
-  href="https://kbsonlong.github.io/sre/posts/2296fc/"
+  href="https://kbsonlong.github.io/posts/2296fc/"
   
   
     

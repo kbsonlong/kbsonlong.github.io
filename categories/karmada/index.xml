@@ -40,7 +40,7 @@
   
   
 >集群联邦v2</a>，目前是cncf的sandbox开源项目。</p>]]></description></item><item><title>Karmada多集群部署</title><link>https://www.kbsonlong.com/posts/karmada-multi--cluster-deployment/</link><pubDate>Tue, 31 Oct 2023 15:24:42 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/posts/karmada-multi--cluster-deployment/</guid><description><![CDATA[20231031 快速建立karmada集群 20240304 补充手动注册集群方法 创建 Kind 集群 karmada 控制面 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 export VIP=172.26.145.27 cat &lt;&lt; EOF | kind create cluster --name=karmada-controller --kubeconfig=karmada-controller --config=- kind: Cluster apiVersion: &#34;kind.x-k8s.io/v1alpha4&#34; networking: apiServerAddress: &#34;${VIP}&#34; nodes: -]]></description></item><item><title>基于Coredns多集群服务发现</title><link>https://www.kbsonlong.com/posts/discovery-based-on-coredns-multi--cluster-service/</link><pubDate>Tue, 01 Aug 2023 17:38:45 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/posts/discovery-based-on-coredns-multi--cluster-service/</guid><description><![CDATA[<p>在<a
-  href="https://kbsonlong.github.io/sre/posts/2296fc/"
+  href="https://kbsonlong.github.io/posts/2296fc/"
   
   
     
@@ -54,7 +54,7 @@
   
 >Karmada 多集群服务发现</a>一文中跨集群调用时有个派生的前缀  <code>derived-&lt;service name&gt;</code>, 对于应用调用上有感知，本文介绍如何让应用在调用本地集群或者跨集群都是用同一个service。</p>
 <p>基础环境 <a
-  href="https://kbsonlong.github.io/sre/posts/2296fc/"
+  href="https://kbsonlong.github.io/posts/2296fc/"
   
   
     
