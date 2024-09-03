@@ -1,4 +1,4 @@
-<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Multicluster - 标签 - 蜷缩的蜗牛</title><link>https://www.kbsonlong.com/sre/tags/multicluster/</link><description>Multicluster - 标签 - 蜷缩的蜗牛</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>kbsonlong@gmail.com (kbsonlong)</managingEditor><webMaster>kbsonlong@gmail.com (kbsonlong)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 04 Mar 2024 12:45:55 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/sre/tags/multicluster/" rel="self" type="application/rss+xml"/><item><title>Karmada多集群管理高可用部署</title><link>https://www.kbsonlong.com/sre/posts/karmada-multi--cluster-management-high-available-deployment/</link><pubDate>Mon, 04 Mar 2024 12:45:55 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/sre/posts/karmada-multi--cluster-management-high-available-deployment/</guid><description><![CDATA[<h1 id="karmada-多集群管理高可用部署"><code>Karmada</code> 多集群管理高可用部署</h1>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Multicluster - 标签 - 蜷缩的蜗牛</title><link>https://www.kbsonlong.com/tags/multicluster/</link><description>Multicluster - 标签 - 蜷缩的蜗牛</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>kbsonlong@gmail.com (kbsonlong)</managingEditor><webMaster>kbsonlong@gmail.com (kbsonlong)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 04 Mar 2024 12:45:55 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/tags/multicluster/" rel="self" type="application/rss+xml"/><item><title>Karmada多集群管理高可用部署</title><link>https://www.kbsonlong.com/posts/karmada-multi--cluster-management-high-available-deployment/</link><pubDate>Mon, 04 Mar 2024 12:45:55 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/posts/karmada-multi--cluster-management-high-available-deployment/</guid><description><![CDATA[<h1 id="karmada-多集群管理高可用部署"><code>Karmada</code> 多集群管理高可用部署</h1>
 <p>实验环境:</p>
 <ul>
 <li><code>kind</code> 创建两套<code>Kubernetes</code>集群</li>
@@ -25,7 +25,7 @@
 </span></span><span class="line"><span class="cl">mv cfssljson_1.6.4_linux_amd64 /usr/local/bin/cfssljson
 </span></span></code></pre></td></tr></table>
 </div>
-</div>]]></description></item><item><title>Karmada多集群MultiClusterService服务治理尝鲜</title><link>https://www.kbsonlong.com/sre/posts/karmada-multi--cluster-multiclusservice-service-governance/</link><pubDate>Tue, 26 Dec 2023 10:14:22 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/sre/posts/karmada-multi--cluster-multiclusservice-service-governance/</guid><description>最近一直在关注 Karmada 社区针对多集群服务治理的发展,在1.7版本之前,社区的方案是通过 Karmada-Controller 组件来实现多集群的服务治理,但是在1.7版本之后,社区提出</description></item><item><title>Istio多集群系列-单控制面跨AZ集群区域负载均衡</title><link>https://www.kbsonlong.com/sre/posts/istio-multi-cluster-series-cross-az-cluster-area-load-balancing/</link><pubDate>Thu, 17 Aug 2023 09:50:13 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/sre/posts/istio-multi-cluster-series-cross-az-cluster-area-load-balancing/</guid><description><![CDATA[<p>基于安全容灾考虑，生产K8S集群是多可用区。多可用区集群必然涉及跨可用区调用，由于是海外业务，使用的是AWS云，AWS内部跨可用区流量不像国内云厂商跨可用区流量不收费，是需要收费而且特贵。</p>
+</div>]]></description></item><item><title>Karmada多集群MultiClusterService服务治理尝鲜</title><link>https://www.kbsonlong.com/posts/karmada-multi--cluster-multiclusservice-service-governance/</link><pubDate>Tue, 26 Dec 2023 10:14:22 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/posts/karmada-multi--cluster-multiclusservice-service-governance/</guid><description>最近一直在关注 Karmada 社区针对多集群服务治理的发展,在1.7版本之前,社区的方案是通过 Karmada-Controller 组件来实现多集群的服务治理,但是在1.7版本之后,社区提出</description></item><item><title>Istio多集群系列-单控制面跨AZ集群区域负载均衡</title><link>https://www.kbsonlong.com/posts/istio-multi-cluster-series-cross-az-cluster-area-load-balancing/</link><pubDate>Thu, 17 Aug 2023 09:50:13 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/posts/istio-multi-cluster-series-cross-az-cluster-area-load-balancing/</guid><description><![CDATA[<p>基于安全容灾考虑，生产K8S集群是多可用区。多可用区集群必然涉及跨可用区调用，由于是海外业务，使用的是AWS云，AWS内部跨可用区流量不像国内云厂商跨可用区流量不收费，是需要收费而且特贵。</p>
 <p>基于成本和容灾考虑使用Istio的地域负载均衡功能，优先调度到同可用区，出现问题时调度到另一可用区。</p>
 <blockquote>
 <p>现使用 kind 在本地创建一套多节点集群，通过标签模拟多可用区场景。</p>
@@ -97,7 +97,7 @@
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span><span class="w">
 </span></span></span></code></pre></td></tr></table>
 </div>
-</div>]]></description></item><item><title>Istio多集群系列-同一网络多控制面部署</title><link>https://www.kbsonlong.com/sre/posts/istio-multi-cluster-series-multi-control-powers-of-the-same-network/</link><pubDate>Wed, 16 Aug 2023 11:07:53 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/sre/posts/istio-multi-cluster-series-multi-control-powers-of-the-same-network/</guid><description><![CDATA[<p>(</p>
+</div>]]></description></item><item><title>Istio多集群系列-同一网络多控制面部署</title><link>https://www.kbsonlong.com/posts/istio-multi-cluster-series-multi-control-powers-of-the-same-network/</link><pubDate>Wed, 16 Aug 2023 11:07:53 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/posts/istio-multi-cluster-series-multi-control-powers-of-the-same-network/</guid><description><![CDATA[<p>(</p>
 <blockquote>
 <p>本文基于Istio 1.16.2，k8s 1.24</p>
 </blockquote>
@@ -206,7 +206,7 @@
 </span></span><span class="line"><span class="cl">kubectl config rename-context kind-cluster2  cluster2 --kubeconfig istio-multicluster
 </span></span></code></pre></td></tr></table>
 </div>
-</div>]]></description></item><item><title>基于Coredns多集群服务发现</title><link>https://www.kbsonlong.com/sre/posts/discovery-based-on-coredns-multi--cluster-service/</link><pubDate>Tue, 01 Aug 2023 17:38:45 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/sre/posts/discovery-based-on-coredns-multi--cluster-service/</guid><description><![CDATA[<p>在<a
+</div>]]></description></item><item><title>基于Coredns多集群服务发现</title><link>https://www.kbsonlong.com/posts/discovery-based-on-coredns-multi--cluster-service/</link><pubDate>Tue, 01 Aug 2023 17:38:45 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/posts/discovery-based-on-coredns-multi--cluster-service/</guid><description><![CDATA[<p>在<a
   href="https://kbsonlong.github.io/sre/posts/2296fc/"
   
   
@@ -233,7 +233,7 @@
   
   
   
->Karmada 多集群服务发现</a></p>]]></description></item><item><title>karmada快速体验</title><link>https://www.kbsonlong.com/sre/posts/karmada-fast-experience/</link><pubDate>Fri, 30 Jun 2023 10:31:21 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/sre/posts/karmada-fast-experience/</guid><description><![CDATA[<h2 id="环境准备">环境准备</h2>
+>Karmada 多集群服务发现</a></p>]]></description></item><item><title>karmada快速体验</title><link>https://www.kbsonlong.com/posts/karmada-fast-experience/</link><pubDate>Fri, 30 Jun 2023 10:31:21 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/posts/karmada-fast-experience/</guid><description><![CDATA[<h2 id="环境准备">环境准备</h2>
 <p>利用 <code>kind</code> 快速创建 <code>kubernetes</code> 集群环境</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -403,4 +403,4 @@
 </span></span><span class="line"><span class="cl">kind get kubeconfig --name<span class="o">=</span>member2 &gt; member2.conf
 </span></span></code></pre></td></tr></table>
 </div>
-</div>]]></description></item><item><title>Karmada 多集群服务发现</title><link>https://www.kbsonlong.com/sre/posts/multi--cluster-service-discovery/</link><pubDate>Thu, 29 Jun 2023 17:25:45 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/sre/posts/multi--cluster-service-discovery/</guid><description>安装 Karmada 可以通过参考快速开始来安装Karmada 成员集群网络 确保至少有两个集群被添加到 Karmada，并且成员集群之间的容器网络可相互连接。 如</description></item></channel></rss>
+</div>]]></description></item><item><title>Karmada 多集群服务发现</title><link>https://www.kbsonlong.com/posts/multi--cluster-service-discovery/</link><pubDate>Thu, 29 Jun 2023 17:25:45 +0800</pubDate><author>kbsonlong</author><guid>https://www.kbsonlong.com/posts/multi--cluster-service-discovery/</guid><description>安装 Karmada 可以通过参考快速开始来安装Karmada 成员集群网络 确保至少有两个集群被添加到 Karmada，并且成员集群之间的容器网络可相互连接。 如</description></item></channel></rss>
