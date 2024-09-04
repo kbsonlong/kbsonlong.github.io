@@ -1,0 +1,82 @@
+{
+  "type": "excalidraw",
+  "version": 2,
+  "source": "https://marketplace.visualstudio.com/items?itemName=pomdtr.excalidraw-editor",
+  "elements": [
+    {
+      "id": "xdDZdrqRKSD8lNGfPl6e5",
+      "type": "rectangle",
+      "x": 443.953125,
+      "y": 249.203125,
+      "width": 220.2890625,
+      "height": 40.8046875,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "roundness": {
+        "type": 3
+      },
+      "seed": 729586065,
+      "version": 17,
+      "versionNonce": 751096881,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "type": "text",
+          "id": "d5mllf504g4I15glAVaok"
+        }
+      ],
+      "updated": 1725420719515,
+      "link": null,
+      "locked": false
+    },
+    {
+      "id": "d5mllf504g4I15glAVaok",
+      "type": "text",
+      "x": 505.1776885986328,
+      "y": 257.10546875,
+      "width": 97.83993530273438,
+      "height": 25,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "roundness": null,
+      "seed": 1232290623,
+      "version": 20,
+      "versionNonce": 1199783391,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1725420727478,
+      "link": null,
+      "locked": false,
+      "text": "ping 容器ip",
+      "fontSize": 20,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "baseline": 18,
+      "containerId": "xdDZdrqRKSD8lNGfPl6e5",
+      "originalText": "ping 容器ip",
+      "lineHeight": 1.25
+    }
+  ],
+  "appState": {
+    "gridSize": null,
+    "viewBackgroundColor": "#ffffff"
+  },
+  "files": {}
+}
