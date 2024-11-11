@@ -251,7 +251,7 @@
 <pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">kubectl <span class="nb">exec</span> -ti -n zsl-test mydemo-my-demo-sgcanshu-4vb7b -c istio-proxy -- curl http://127.0.0.1:15000/config_dump &gt; config_dump.json
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h3 id="导出cluster">导出cluster</h3>
+</div><h3 id="导出clusterendpoint">导出cluster,(endpoint)</h3>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
