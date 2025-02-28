@@ -1199,10 +1199,7 @@ istioctl proxy-config endpoints -f envoy-cluster.json --cluster &#34;outbound|50
 </span></span><span class=line><span class=cl>-A ISTIO_OUTPUT -p tcp -m tcp --dport <span class=m>80</span> -j ISTIO_REDIRECT
 </span></span><span class=line><span class=cl>-A ISTIO_OUTPUT -d 192.168.0.1/32 -j ISTIO_REDIRECT
 </span></span><span class=line><span class=cl>-A ISTIO_OUTPUT -j RETURN
-</span></span></code></pre></td></tr></table></div></div><blockquote><p>当单独设置 <code>traffic.sidecar.istio.io/includeOutboundPorts</code> 时会跟预想存在区别
-因为默认全部流量都被劫持到Envoy, -A ISTIO_OUTPUT -j ISTIO_REDIRECT,
-当设置指定IP地址段拦截 <code>traffic.sidecar.istio.io/includeOutboundIPRanges</code> 时,其他流量都不被重定向
--A ISTIO_OUTPUT -j RETURN,所以当需要劫持指定出站端口,并且其他流量不被劫持时两者配合使用可以达到奇效。</p></blockquote><h3 id=全局禁用mtls>全局禁用<code>mTLS</code></h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></span></code></pre></td></tr></table></div></div><blockquote><p>当单独设置 <code>traffic.sidecar.istio.io/includeOutboundPorts</code> 时会跟预想存在区别</p><p>因为默认全部流量都被劫持到Envoy, -A ISTIO_OUTPUT -j ISTIO_REDIRECT,</p><p>当设置指定IP地址段拦截 <code>traffic.sidecar.istio.io/includeOutboundIPRanges</code> 时,其他流量都不被重定向</p><p>-A ISTIO_OUTPUT -j RETURN,所以当需要劫持指定出站端口,并且其他流量不被劫持时两者配合使用可以达到奇效。</p></blockquote><h3 id=全局禁用mtls>全局禁用<code>mTLS</code></h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
 </span><span class=lnt>2
 </span><span class=lnt>3
 </span><span class=lnt>4
