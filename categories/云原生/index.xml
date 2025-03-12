@@ -1939,9 +1939,15 @@
 &lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
 &lt;/span>&lt;/code>&lt;/pre>&lt;/td>
 &lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">kubectl &lt;span class="nb">exec&lt;/span> -ti -n zsl-test mydemo-my-demo-sgcanshu-4vb7b -c istio-proxy -- curl http://127.0.0.1:15000/config_dump &amp;gt; config_dump.json&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">namespace&lt;/span>&lt;span class="o">=&lt;/span>zsl-test
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">pod_name&lt;/span>&lt;span class="o">=&lt;/span>mydemo-my-demo-sgcanshu-4vb7b
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kubectl &lt;span class="nb">exec&lt;/span> -ti -n &lt;span class="si">${&lt;/span>&lt;span class="nv">namespace&lt;/span>&lt;span class="si">}&lt;/span> &lt;span class="si">${&lt;/span>&lt;span class="nv">pod_name&lt;/span>&lt;span class="si">}&lt;/span> -c istio-proxy -- curl http://127.0.0.1:15000/config_dump &amp;gt; config_dump.json&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;h3 id="导出clusterendpoint" class="heading-element">&lt;span>导出cluster,(endpoint)&lt;/span>
  &lt;a href="#%e5%af%bc%e5%87%baclusterendpoint" class="heading-mark">
@@ -1952,7 +1958,7 @@
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;/code>&lt;/pre>&lt;/td>
 &lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">kubectl &lt;span class="nb">exec&lt;/span> -ti -n zsl-test mydemo-my-demo-sgcanshu-4vb7b -c istio-proxy -- curl &lt;span class="s2">&amp;#34;http://127.0.0.1:15000/clusters?format=json&amp;#34;&lt;/span> &amp;gt; envoy-clusters.json&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">kubectl &lt;span class="nb">exec&lt;/span> -ti -n &lt;span class="si">${&lt;/span>&lt;span class="nv">namespace&lt;/span>&lt;span class="si">}&lt;/span> &lt;span class="si">${&lt;/span>&lt;span class="nv">pod_name&lt;/span>&lt;span class="si">}&lt;/span> -c istio-proxy -- curl &lt;span class="s2">&amp;#34;http://127.0.0.1:15000/clusters?format=json&amp;#34;&lt;/span> &amp;gt; envoy-clusters.json&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;h3 id="istioctl-分析文件" class="heading-element">&lt;span>istioctl 分析文件&lt;/span>
  &lt;a href="#istioctl-%e5%88%86%e6%9e%90%e6%96%87%e4%bb%b6" class="heading-mark">
@@ -1962,10 +1968,14 @@
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
 &lt;/span>&lt;/code>&lt;/pre>&lt;/td>
 &lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">istioctl proxy-config listener -f config_dump.json --port &lt;span class="m">5000&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">istioctl proxy-config endpoints -f envoy-cluster.json --cluster &lt;span class="s2">&amp;#34;outbound|5000||helloworld.sample.svc.cluster.local&amp;#34;&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">istioctl proxy-config endpoints -f envoy-cluster.json --cluster &lt;span class="s2">&amp;#34;outbound|5000||helloworld.sample.svc.cluster.local&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 过滤存在多版本的Endpoint&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">istioctl proxy-config endpoints -f envoy-clusters.json &lt;span class="p">|&lt;/span> awk -F&lt;span class="s1">&amp;#39;[ ]+&amp;#39;&lt;/span> &lt;span class="s1">&amp;#39;$NF ~ /outbound\|[0-9]+\|[^|]+\|/ {print $0}&amp;#39;&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div></description></item><item><title>Istio Ambient 模式使用</title><link>https://www.kbsonlong.com/posts/istio-ambient-mode-use/</link><pubDate>Wed, 29 Mar 2023 14:04:34 +0800</pubDate><guid>https://www.kbsonlong.com/posts/istio-ambient-mode-use/</guid><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><description>&lt;h2 id="下载-ambient-mesh-预览版" class="heading-element">&lt;span>下载 Ambient Mesh 预览版&lt;/span>
  &lt;a href="#%e4%b8%8b%e8%bd%bd-ambient-mesh-%e9%a2%84%e8%a7%88%e7%89%88" class="heading-mark">
