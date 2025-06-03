@@ -1,9 +1,9 @@
 <!doctype html><html itemscope itemtype=http://schema.org/WebPage lang=zh-CN><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=2"><meta name=robots content="noodp"><title>Istio全局配置 - 蜷缩的蜗牛</title><meta name=author content="kbsonlong">
 <meta name=description content="全局关闭重试 istio默认重试2次
 1 2 3 4 5 6 7 8 9 apiVersion: v1 data: mesh: |- ... ... defaultHttpRetryPolicy: attempts: 0 ... ... "><meta name=keywords content='istio'><meta itemprop=name content="istio全局配置"><meta itemprop=description content="全局关闭重试 istio默认重试2次
-1 2 3 4 5 6 7 8 9 apiVersion: v1 data: mesh: |- ... ... defaultHttpRetryPolicy: attempts: 0 ... ..."><meta itemprop=datePublished content="2023-07-17T21:08:20+08:00"><meta itemprop=dateModified content="2023-07-17T21:08:20+08:00"><meta itemprop=wordCount content="460"><meta itemprop=image content="https://www.kbsonlong.com/logo_transparent.png"><meta itemprop=keywords content="Istio"><meta property="og:url" content="https://www.kbsonlong.com/posts/istio-default-configuration/"><meta property="og:site_name" content="蜷缩的蜗牛"><meta property="og:title" content="istio全局配置"><meta property="og:description" content="全局关闭重试 istio默认重试2次
+1 2 3 4 5 6 7 8 9 apiVersion: v1 data: mesh: |- ... ... defaultHttpRetryPolicy: attempts: 0 ... ..."><meta itemprop=datePublished content="2023-07-17T21:08:20+08:00"><meta itemprop=dateModified content="2023-07-17T21:08:20+08:00"><meta itemprop=wordCount content="1004"><meta itemprop=image content="https://www.kbsonlong.com/logo_transparent.png"><meta itemprop=keywords content="Istio"><meta property="og:url" content="https://www.kbsonlong.com/posts/istio-default-configuration/"><meta property="og:site_name" content="蜷缩的蜗牛"><meta property="og:title" content="istio全局配置"><meta property="og:description" content="全局关闭重试 istio默认重试2次
 1 2 3 4 5 6 7 8 9 apiVersion: v1 data: mesh: |- ... ... defaultHttpRetryPolicy: attempts: 0 ... ..."><meta property="og:locale" content="zh_CN"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2023-07-17T21:08:20+08:00"><meta property="article:modified_time" content="2023-07-17T21:08:20+08:00"><meta property="article:tag" content="Istio"><meta property="og:image" content="https://www.kbsonlong.com/logo_transparent.png"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://www.kbsonlong.com/logo_transparent.png"><meta name=twitter:title content="istio全局配置"><meta name=twitter:description content="全局关闭重试 istio默认重试2次
-1 2 3 4 5 6 7 8 9 apiVersion: v1 data: mesh: |- ... ... defaultHttpRetryPolicy: attempts: 0 ... ..."><meta name=application-name content="FixIt"><meta name=apple-mobile-web-app-title content="FixIt"><meta name=theme-color data-light=#ffffff data-dark=#252627 content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical type=text/html href=https://www.kbsonlong.com/posts/istio-default-configuration/ title="istio全局配置 - 蜷缩的蜗牛"><link rel=prev type=text/html href=https://www.kbsonlong.com/posts/01-use-vscode-and-kind-to-build-kubernetes-development-environment/ title=01-利用vscode与kind搭建kubernetes开发环境><link rel=next type=text/html href=https://www.kbsonlong.com/posts/common-problem/ title=istio常见问题><link rel=alternate type=text/markdown href=https://www.kbsonlong.com/posts/istio-default-configuration/index.md title="istio全局配置 - 蜷缩的蜗牛"><link rel=stylesheet href=/css/style.min.css><link rel=preload href=/lib/fontawesome-free/all.min.css as=style onload='this.removeAttribute("onload"),this.rel="stylesheet"'><noscript><link rel=stylesheet href=/lib/fontawesome-free/all.min.css></noscript><link rel=preload href=/lib/animate/animate.min.css as=style onload='this.removeAttribute("onload"),this.rel="stylesheet"'><noscript><link rel=stylesheet href=/lib/animate/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"istio全局配置","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/www.kbsonlong.com\/posts\/istio-default-configuration\/"},"genre":"posts","keywords":"istio","wordcount":460,"url":"https:\/\/www.kbsonlong.com\/posts\/istio-default-configuration\/","datePublished":"2023-07-17T21:08:20+08:00","dateModified":"2023-07-17T21:08:20+08:00","license":"This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"kbsonlong"},"description":""}</script><script src=/js/head/color-scheme.min.js></script></head><body data-header-desktop=sticky data-header-mobile=auto><div class=wrapper data-page-style=normal><header class="desktop animate__faster" id=header-desktop><div class=header-wrapper data-github-corner=right><div class=header-title><a href=/ title=蜷缩的蜗牛><img loading=lazy src=/logo_transparent.png alt=蜷缩的蜗牛 data-title=蜷缩的蜗牛 width=26 height=26 class=logo style="background:url(/images/loading.min.svg)no-repeat 50%" onload='this.title=this.dataset.title;for(const e of["style","data-title","onerror","onload"])this.removeAttribute(e);this.dataset.lazyloaded=""' onerror='this.title=this.dataset.title;for(const e of["style","data-title","onerror","onload"])this.removeAttribute(e)'><span class=header-title-text>蜷缩的蜗牛</span></a><span class=header-subtitle></span></div><nav><ul class=menu><li class=menu-item><a class=menu-link href=/posts/><i class='fa-solid fa-archive fa-fw fa-sm'></i> 文章</a></li><li class=menu-item><a class=menu-link href=/categories/><i class='fa-solid fa-th fa-fw fa-sm'></i> 分类</a></li><li class=menu-item><a class=menu-link href=/tags/><i class='fa-solid fa-tags fa-fw fa-sm'></i> 标签</a></li><li class=menu-item><a class=menu-link href=/friends/ title=友情链接><i class='fa-solid fa-users fa-fw fa-sm'></i> 友链</a></li><li class=menu-item><a class=menu-link href=/about/><i class='fa-solid fa-info-circle fa-fw fa-sm'></i> 关于</a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=https://github.com/kbsonlong/ title=GitHub rel="noopener noreferrer" target=_blank><i class='fa-brands fa-github fa-fw'></i></a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=/messages/><i class='fa-solid fa-messages'></i> 留言板</a></li><li class=menu-item><a class=menu-link href=/messages/ title=留言板>留言板</a></li><li class="menu-item delimiter"></li><li class="menu-item search" id=search-desktop><input type=text placeholder=搜索文章标题或内容…… id=search-input-desktop>
+1 2 3 4 5 6 7 8 9 apiVersion: v1 data: mesh: |- ... ... defaultHttpRetryPolicy: attempts: 0 ... ..."><meta name=application-name content="FixIt"><meta name=apple-mobile-web-app-title content="FixIt"><meta name=theme-color data-light=#ffffff data-dark=#252627 content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical type=text/html href=https://www.kbsonlong.com/posts/istio-default-configuration/ title="istio全局配置 - 蜷缩的蜗牛"><link rel=prev type=text/html href=https://www.kbsonlong.com/posts/01-use-vscode-and-kind-to-build-kubernetes-development-environment/ title=01-利用vscode与kind搭建kubernetes开发环境><link rel=next type=text/html href=https://www.kbsonlong.com/posts/common-problem/ title=istio常见问题><link rel=alternate type=text/markdown href=https://www.kbsonlong.com/posts/istio-default-configuration/index.md title="istio全局配置 - 蜷缩的蜗牛"><link rel=stylesheet href=/css/style.min.css><link rel=preload href=/lib/fontawesome-free/all.min.css as=style onload='this.removeAttribute("onload"),this.rel="stylesheet"'><noscript><link rel=stylesheet href=/lib/fontawesome-free/all.min.css></noscript><link rel=preload href=/lib/animate/animate.min.css as=style onload='this.removeAttribute("onload"),this.rel="stylesheet"'><noscript><link rel=stylesheet href=/lib/animate/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"istio全局配置","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/www.kbsonlong.com\/posts\/istio-default-configuration\/"},"genre":"posts","keywords":"istio","wordcount":1004,"url":"https:\/\/www.kbsonlong.com\/posts\/istio-default-configuration\/","datePublished":"2023-07-17T21:08:20+08:00","dateModified":"2023-07-17T21:08:20+08:00","license":"This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"kbsonlong"},"description":""}</script><script src=/js/head/color-scheme.min.js></script></head><body data-header-desktop=sticky data-header-mobile=auto><div class=wrapper data-page-style=normal><header class="desktop animate__faster" id=header-desktop><div class=header-wrapper data-github-corner=right><div class=header-title><a href=/ title=蜷缩的蜗牛><img loading=lazy src=/logo_transparent.png alt=蜷缩的蜗牛 data-title=蜷缩的蜗牛 width=26 height=26 class=logo style="background:url(/images/loading.min.svg)no-repeat 50%" onload='this.title=this.dataset.title;for(const e of["style","data-title","onerror","onload"])this.removeAttribute(e);this.dataset.lazyloaded=""' onerror='this.title=this.dataset.title;for(const e of["style","data-title","onerror","onload"])this.removeAttribute(e)'><span class=header-title-text>蜷缩的蜗牛</span></a><span class=header-subtitle></span></div><nav><ul class=menu><li class=menu-item><a class=menu-link href=/posts/><i class='fa-solid fa-archive fa-fw fa-sm'></i> 文章</a></li><li class=menu-item><a class=menu-link href=/categories/><i class='fa-solid fa-th fa-fw fa-sm'></i> 分类</a></li><li class=menu-item><a class=menu-link href=/tags/><i class='fa-solid fa-tags fa-fw fa-sm'></i> 标签</a></li><li class=menu-item><a class=menu-link href=/friends/ title=友情链接><i class='fa-solid fa-users fa-fw fa-sm'></i> 友链</a></li><li class=menu-item><a class=menu-link href=/about/><i class='fa-solid fa-info-circle fa-fw fa-sm'></i> 关于</a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=https://github.com/kbsonlong/ title=GitHub rel="noopener noreferrer" target=_blank><i class='fa-brands fa-github fa-fw'></i></a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=/messages/><i class='fa-solid fa-messages'></i> 留言板</a></li><li class=menu-item><a class=menu-link href=/messages/ title=留言板>留言板</a></li><li class="menu-item delimiter"></li><li class="menu-item search" id=search-desktop><input type=text placeholder=搜索文章标题或内容…… id=search-input-desktop>
 <a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fa-solid fa-search fa-fw" aria-hidden=true></i>
 </a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fa-solid fa-times-circle fa-fw" aria-hidden=true></i>
 </a><span class="search-button search-loading" id=search-loading-desktop><i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></li><li class="menu-item theme-switch" title=切换主题><i class="fa-solid fa-adjust fa-fw" aria-hidden=true></i></li><li class="menu-item language-switch"><span role=button aria-label=选择语言 title=选择语言><i class="fa-solid fa-language fa-fw" aria-hidden=true></i></span><ul class=sub-menu><li class=menu-item>没有更多翻译</li></ul></li></ul></nav></div></header><header class="mobile animate__faster" id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title=蜷缩的蜗牛><img loading=lazy src=/logo_transparent.png alt=蜷缩的蜗牛 data-title=蜷缩的蜗牛 width=26 height=26 class=logo style="background:url(/images/loading.min.svg)no-repeat 50%" onload='this.title=this.dataset.title;for(const e of["style","data-title","onerror","onload"])this.removeAttribute(e);this.dataset.lazyloaded=""' onerror='this.title=this.dataset.title;for(const e of["style","data-title","onerror","onload"])this.removeAttribute(e)'><span class=header-title-text>蜷缩的蜗牛</span></a><span class=header-subtitle></span></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><nav><ul class=menu id=menu-mobile><li class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容…… id=search-input-mobile>
@@ -12,9 +12,9 @@
 </a><span class="search-button search-loading" id=search-loading-mobile><i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></li><li class=menu-item><a class=menu-link href=/posts/><i class='fa-solid fa-archive fa-fw fa-sm'></i> 文章</a></li><li class=menu-item><a class=menu-link href=/categories/><i class='fa-solid fa-th fa-fw fa-sm'></i> 分类</a></li><li class=menu-item><a class=menu-link href=/tags/><i class='fa-solid fa-tags fa-fw fa-sm'></i> 标签</a></li><li class=menu-item><a class=menu-link href=/friends/ title=友情链接><i class='fa-solid fa-users fa-fw fa-sm'></i> 友链</a></li><li class=menu-item><a class=menu-link href=/about/><i class='fa-solid fa-info-circle fa-fw fa-sm'></i> 关于</a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=https://github.com/kbsonlong/ title=GitHub rel="noopener noreferrer" target=_blank><i class='fa-brands fa-github fa-fw'></i></a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=/messages/><i class='fa-solid fa-messages'></i> 留言板</a></li><li class=menu-item><a class=menu-link href=/messages/ title=留言板>留言板</a></li><li class="menu-item menu-system"><span class="menu-system-item theme-switch" title=切换主题><i class="fa-solid fa-adjust fa-fw" aria-hidden=true></i></span><span class="menu-system-item language-switch">
 <span role=button aria-label=选择语言 title=选择语言>简体中文<i class="dropdown-icon fa-solid fa-chevron-down" aria-hidden=true></i></span>
 <select class=language-select onchange="location=this.value"><option disabled>没有更多翻译</option></select></span></li></ul></nav></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=container><aside class="aside-collection animate__animated animate__fadeIn animate__faster" aria-label=合集></aside><article class="page single"><div class=header><h1 class="single-title animate__animated animate__flipInX"><span>Istio全局配置</span></h1></div><div class=post-meta><div class=post-meta-line><span class=post-author><span class=author><i class="fa-solid fa-user-circle" aria-hidden=true></i>
-kbsonlong</span></span><span class=post-included-in>&nbsp;收录于 <a href=/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/ class=post-category title="分类 - 云原生"><i class="fa-regular fa-folder fa-fw" aria-hidden=true></i> 云原生</a></span></div><div class=post-meta-line><span title="发布于 2023-07-17 21:08:20"><i class="fa-solid fa-calendar-days fa-fw me-1" aria-hidden=true></i><time datetime=2023-07-17>2023-07-17</time></span>&nbsp;<span title="460 字"><i class="fa-solid fa-pencil-alt fa-fw me-1" aria-hidden=true></i>约 500 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw me-1" aria-hidden=true></i>预计阅读 1 分钟</span>&nbsp;<span id=busuanzi_container_page_pv class="busuanzi_visitors comment-visitors" data-flag-title=Istio全局配置><i class="fa-regular fa-eye fa-fw me-1" aria-hidden=true></i><span id=busuanzi_value_page_pv>-</span>&nbsp;次阅读
+kbsonlong</span></span><span class=post-included-in>&nbsp;收录于 <a href=/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/ class=post-category title="分类 - 云原生"><i class="fa-regular fa-folder fa-fw" aria-hidden=true></i> 云原生</a></span></div><div class=post-meta-line><span title="发布于 2023-07-17 21:08:20"><i class="fa-solid fa-calendar-days fa-fw me-1" aria-hidden=true></i><time datetime=2023-07-17>2023-07-17</time></span>&nbsp;<span title="1004 字"><i class="fa-solid fa-pencil-alt fa-fw me-1" aria-hidden=true></i>约 1100 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw me-1" aria-hidden=true></i>预计阅读 3 分钟</span>&nbsp;<span id=busuanzi_container_page_pv class="busuanzi_visitors comment-visitors" data-flag-title=Istio全局配置><i class="fa-regular fa-eye fa-fw me-1" aria-hidden=true></i><span id=busuanzi_value_page_pv>-</span>&nbsp;次阅读
 </span>&nbsp;</div></div><div class="details toc" id=toc-static data-kept=false><div class="details-summary toc-title"><span>目录</span>
-<span><i class="details-icon fa-solid fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><ul><li><a href=#全局关闭重试>全局关闭重试</a></li><li><a href=#全局配置access-log>全局配置Access log</a></li><li><a href=#sidecar-生命周期>Sidecar 生命周期</a><ul><li><a href=#istio-中-envoy-就绪后启动应用容器>Istio 中 Envoy 就绪后启动应用容器</a></li><li><a href=#istio-中-envoy-的退出机制以及配置优雅退出>Istio 中 Envoy 的退出机制以及配置优雅退出</a></li></ul></li></ul></li></ul></nav></div></div><div class=content id=content><h3 id=全局关闭重试 class=heading-element><span>全局关闭重试</span>
+<span><i class="details-icon fa-solid fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><ul><li><a href=#全局关闭重试>全局关闭重试</a></li><li><a href=#全局配置access-log>全局配置Access log</a></li><li><a href=#sidecar-生命周期>Sidecar 生命周期</a><ul><li><a href=#istio-中-envoy-就绪后启动应用容器>Istio 中 Envoy 就绪后启动应用容器</a></li><li><a href=#istio-中-envoy-的退出机制以及配置优雅退出>Istio 中 Envoy 的退出机制以及配置优雅退出</a></li></ul></li><li><a href=#istio-负载均衡策略>Istio 负载均衡策略</a><ul><li><a href=#istio-中-配置负载均衡策略>Istio 中 配置负载均衡策略</a></li></ul></li></ul></li></ul></nav></div></div><div class=content id=content><h3 id=全局关闭重试 class=heading-element><span>全局关闭重试</span>
 <a href=#%e5%85%a8%e5%b1%80%e5%85%b3%e9%97%ad%e9%87%8d%e8%af%95 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><p>istio默认重试2次</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
 </span><span class=lnt>2
 </span><span class=lnt>3
@@ -62,7 +62,348 @@ kbsonlong</span></span><span class=post-included-in>&nbsp;收录于 <a href=/cat
 </span></span></span><span class=line><span class=cl><span class=sd>    defaultConfig:
 </span></span></span><span class=line><span class=cl><span class=sd>      holdApplicationUntilProxyStarts: true
 </span></span></span><span class=line><span class=cl><span class=sd>      proxyMetadata:
-</span></span></span><span class=line><span class=cl><span class=sd>        EXIT_ON_ZERO_ACTIVE_CONNECTIONS: &#34;true&#34;</span></span></span></code></pre></td></tr></table></div></div><p><a href=https://istio.io/latest/docs/reference/config/istio.mesh.v1alpha1 target=_blank rel="external nofollow noopener noreferrer">istio全局配置</a></p></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span title="更新于 2023-07-17 21:08:20">更新于 2023-07-17&nbsp;</span></div><div class=post-info-license><span><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span></div></div><div class=post-info-line><div class=post-info-md><span><a href=/posts/istio-default-configuration/index.md title=阅读原始文档 class=link-to-markdown>阅读原始文档</a></span></div><div class=post-info-share><span><a href=javascript:void(0); title="分享到 X" data-sharer=twitter data-url=https://www.kbsonlong.com/posts/istio-default-configuration/ data-title=Istio全局配置 data-hashtags=istio><i class="fa-brands fa-x-twitter fa-fw" aria-hidden=true></i></a>
+</span></span></span><span class=line><span class=cl><span class=sd>        EXIT_ON_ZERO_ACTIVE_CONNECTIONS: &#34;true&#34;</span></span></span></code></pre></td></tr></table></div></div><h3 id=istio-负载均衡策略 class=heading-element><span>Istio 负载均衡策略</span>
+<a href=#istio-%e8%b4%9f%e8%bd%bd%e5%9d%87%e8%a1%a1%e7%ad%96%e7%95%a5 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><h4 id=istio-中-配置负载均衡策略 class=heading-element><span>Istio 中 配置负载均衡策略</span>
+<a href=#istio-%e4%b8%ad-%e9%85%8d%e7%bd%ae%e8%b4%9f%e8%bd%bd%e5%9d%87%e8%a1%a1%e7%ad%96%e7%95%a5 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h4><p>istio 默认负载均衡策略是 <code>ROUND_ROBIN</code>，可以通过 <code>DestinationRule</code> 来配置负载均衡策略。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>networking.istio.io/v1beta1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>DestinationRule</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>mydemo-test-ps</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class=l>zsl-test</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>host</span><span class=p>:</span><span class=w> </span><span class=l>mydemo-test-ps.zsl-test.svc.cluster.local</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>subsets</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>labels</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>publish-no</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;5865185&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>v1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>trafficPolicy</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>loadBalancer</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>simple</span><span class=p>:</span><span class=w> </span><span class=l>LEAST_CONN</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>trafficPolicy</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>loadBalancer</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>simple</span><span class=p>:</span><span class=w> </span><span class=l>RANDOM</span></span></span></code></pre></td></tr></table></div></div><p><code>host: mydemo-test-ps.zsl-test.svc.cluster.local</code> 默认为随机 <code>RANDOM</code>, <code>v1</code> 版本为最小连接 <code>LEAST_CONN</code>,
+接下来看对应的 <code>Envoy</code> 配置</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span><span class=lnt>118
+</span><span class=lnt>119
+</span><span class=lnt>120
+</span><span class=lnt>121
+</span><span class=lnt>122
+</span><span class=lnt>123
+</span><span class=lnt>124
+</span><span class=lnt>125
+</span><span class=lnt>126
+</span><span class=lnt>127
+</span><span class=lnt>128
+</span><span class=lnt>129
+</span><span class=lnt>130
+</span><span class=lnt>131
+</span><span class=lnt>132
+</span><span class=lnt>133
+</span><span class=lnt>134
+</span><span class=lnt>135
+</span><span class=lnt>136
+</span><span class=lnt>137
+</span><span class=lnt>138
+</span><span class=lnt>139
+</span><span class=lnt>140
+</span><span class=lnt>141
+</span><span class=lnt>142
+</span><span class=lnt>143
+</span><span class=lnt>144
+</span><span class=lnt>145
+</span><span class=lnt>146
+</span><span class=lnt>147
+</span><span class=lnt>148
+</span><span class=lnt>149
+</span><span class=lnt>150
+</span><span class=lnt>151
+</span><span class=lnt>152
+</span><span class=lnt>153
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl>- <span class=nt>circuitBreakers</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>thresholds</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>maxConnections</span><span class=p>:</span><span class=w> </span><span class=m>4294967295</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>maxPendingRequests</span><span class=p>:</span><span class=w> </span><span class=m>4294967295</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>maxRequests</span><span class=p>:</span><span class=w> </span><span class=m>4294967295</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>maxRetries</span><span class=p>:</span><span class=w> </span><span class=m>4294967295</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>trackRemaining</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>connectTimeout</span><span class=p>:</span><span class=w> </span><span class=l>10s</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>edsClusterConfig</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>edsConfig</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>ads</span><span class=p>:</span><span class=w> </span>{}<span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>initialFetchTimeout</span><span class=p>:</span><span class=w> </span><span class=l>0s</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>resourceApiVersion</span><span class=p>:</span><span class=w> </span><span class=l>V3</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>serviceName</span><span class=p>:</span><span class=w> </span><span class=l>outbound|13750||mydemo-test-ps.zsl-test.svc.cluster.local</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>filters</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>istio.metadata_exchange</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>typedConfig</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>&#39;@type&#39;</span><span class=p>:</span><span class=w> </span><span class=l>type.googleapis.com/envoy.tcp.metadataexchange.config.MetadataExchange</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>protocol</span><span class=p>:</span><span class=w> </span><span class=l>istio-peer-exchange</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>lbPolicy</span><span class=p>:</span><span class=w> </span><span class=l>RANDOM</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>filterMetadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>istio</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>config</span><span class=p>:</span><span class=w> </span><span class=l>/apis/networking.istio.io/v1alpha3/namespaces/zsl-test/destination-rule/mydemo-test-ps</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>default_original_port</span><span class=p>:</span><span class=w> </span><span class=m>13750</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>services</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span>- <span class=nt>host</span><span class=p>:</span><span class=w> </span><span class=l>mydemo-test-ps.zsl-test.svc.cluster.local</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>mydemo-test-ps</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class=l>zsl-test</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>outbound|13750||mydemo-test-ps.zsl-test.svc.cluster.local</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>transportSocketMatches</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>match</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>tlsMode</span><span class=p>:</span><span class=w> </span><span class=l>istio</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>tlsMode-istio</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>transportSocket</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>envoy.transport_sockets.tls</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>typedConfig</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>&#39;@type&#39;</span><span class=p>:</span><span class=w> </span><span class=l>type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.UpstreamTlsContext</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>commonTlsContext</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>alpnProtocols</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span>- <span class=l>istio-peer-exchange</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span>- <span class=l>istio</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>combinedValidationContext</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>defaultValidationContext</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>              </span><span class=nt>matchSubjectAltNames</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>              </span>- <span class=nt>exact</span><span class=p>:</span><span class=w> </span><span class=l>spiffe://cluster.local/ns/zsl-test/sa/default</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>validationContextSdsSecretConfig</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>              </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>ROOTCA</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>              </span><span class=nt>sdsConfig</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=nt>apiConfigSource</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                  </span><span class=nt>apiType</span><span class=p>:</span><span class=w> </span><span class=l>GRPC</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                  </span><span class=nt>grpcServices</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                  </span>- <span class=nt>envoyGrpc</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                      </span><span class=nt>clusterName</span><span class=p>:</span><span class=w> </span><span class=l>sds-grpc</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                  </span><span class=nt>setNodeOnFirstMessageOnly</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                  </span><span class=nt>transportApiVersion</span><span class=p>:</span><span class=w> </span><span class=l>V3</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=nt>initialFetchTimeout</span><span class=p>:</span><span class=w> </span><span class=l>0s</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=nt>resourceApiVersion</span><span class=p>:</span><span class=w> </span><span class=l>V3</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>tlsCertificateSdsSecretConfigs</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span>- <span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>default</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>sdsConfig</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>              </span><span class=nt>apiConfigSource</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=nt>apiType</span><span class=p>:</span><span class=w> </span><span class=l>GRPC</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=nt>grpcServices</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span>- <span class=nt>envoyGrpc</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                    </span><span class=nt>clusterName</span><span class=p>:</span><span class=w> </span><span class=l>sds-grpc</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=nt>setNodeOnFirstMessageOnly</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=nt>transportApiVersion</span><span class=p>:</span><span class=w> </span><span class=l>V3</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>              </span><span class=nt>initialFetchTimeout</span><span class=p>:</span><span class=w> </span><span class=l>0s</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>              </span><span class=nt>resourceApiVersion</span><span class=p>:</span><span class=w> </span><span class=l>V3</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>sni</span><span class=p>:</span><span class=w> </span><span class=l>outbound_.13750_._.mydemo-test-ps.zsl-test.svc.cluster.local</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>match</span><span class=p>:</span><span class=w> </span>{}<span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>tlsMode-disabled</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>transportSocket</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>envoy.transport_sockets.raw_buffer</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=l>EDS</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span>- <span class=nt>circuitBreakers</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>thresholds</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>maxConnections</span><span class=p>:</span><span class=w> </span><span class=m>4294967295</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>maxPendingRequests</span><span class=p>:</span><span class=w> </span><span class=m>4294967295</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>maxRequests</span><span class=p>:</span><span class=w> </span><span class=m>4294967295</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>maxRetries</span><span class=p>:</span><span class=w> </span><span class=m>4294967295</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>trackRemaining</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>connectTimeout</span><span class=p>:</span><span class=w> </span><span class=l>10s</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>edsClusterConfig</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>edsConfig</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>ads</span><span class=p>:</span><span class=w> </span>{}<span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>initialFetchTimeout</span><span class=p>:</span><span class=w> </span><span class=l>0s</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>resourceApiVersion</span><span class=p>:</span><span class=w> </span><span class=l>V3</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>serviceName</span><span class=p>:</span><span class=w> </span><span class=l>outbound|13750|v1|mydemo-test-ps.zsl-test.svc.cluster.local</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>filters</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>istio.metadata_exchange</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>typedConfig</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>&#39;@type&#39;</span><span class=p>:</span><span class=w> </span><span class=l>type.googleapis.com/envoy.tcp.metadataexchange.config.MetadataExchange</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>protocol</span><span class=p>:</span><span class=w> </span><span class=l>istio-peer-exchange</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>lbPolicy</span><span class=p>:</span><span class=w> </span><span class=l>LEAST_REQUEST</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>filterMetadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>istio</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>config</span><span class=p>:</span><span class=w> </span><span class=l>/apis/networking.istio.io/v1alpha3/namespaces/zsl-test/destination-rule/mydemo-test-ps</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>default_original_port</span><span class=p>:</span><span class=w> </span><span class=m>13750</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>services</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span>- <span class=nt>host</span><span class=p>:</span><span class=w> </span><span class=l>mydemo-test-ps.zsl-test.svc.cluster.local</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>mydemo-test-ps</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class=l>zsl-test</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>subset</span><span class=p>:</span><span class=w> </span><span class=l>v1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>outbound|13750|v1|mydemo-test-ps.zsl-test.svc.cluster.local</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>transportSocketMatches</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>match</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>tlsMode</span><span class=p>:</span><span class=w> </span><span class=l>istio</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>tlsMode-istio</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>transportSocket</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>envoy.transport_sockets.tls</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>typedConfig</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>&#39;@type&#39;</span><span class=p>:</span><span class=w> </span><span class=l>type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.UpstreamTlsContext</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>commonTlsContext</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>alpnProtocols</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span>- <span class=l>istio-peer-exchange</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span>- <span class=l>istio</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>combinedValidationContext</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>defaultValidationContext</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>              </span><span class=nt>matchSubjectAltNames</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>              </span>- <span class=nt>exact</span><span class=p>:</span><span class=w> </span><span class=l>spiffe://cluster.local/ns/zsl-test/sa/default</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>validationContextSdsSecretConfig</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>              </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>ROOTCA</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>              </span><span class=nt>sdsConfig</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=nt>apiConfigSource</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                  </span><span class=nt>apiType</span><span class=p>:</span><span class=w> </span><span class=l>GRPC</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                  </span><span class=nt>grpcServices</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                  </span>- <span class=nt>envoyGrpc</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                      </span><span class=nt>clusterName</span><span class=p>:</span><span class=w> </span><span class=l>sds-grpc</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                  </span><span class=nt>setNodeOnFirstMessageOnly</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                  </span><span class=nt>transportApiVersion</span><span class=p>:</span><span class=w> </span><span class=l>V3</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=nt>initialFetchTimeout</span><span class=p>:</span><span class=w> </span><span class=l>0s</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=nt>resourceApiVersion</span><span class=p>:</span><span class=w> </span><span class=l>V3</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>tlsCertificateSdsSecretConfigs</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span>- <span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>default</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>sdsConfig</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>              </span><span class=nt>apiConfigSource</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=nt>apiType</span><span class=p>:</span><span class=w> </span><span class=l>GRPC</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=nt>grpcServices</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span>- <span class=nt>envoyGrpc</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                    </span><span class=nt>clusterName</span><span class=p>:</span><span class=w> </span><span class=l>sds-grpc</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=nt>setNodeOnFirstMessageOnly</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=nt>transportApiVersion</span><span class=p>:</span><span class=w> </span><span class=l>V3</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>              </span><span class=nt>initialFetchTimeout</span><span class=p>:</span><span class=w> </span><span class=l>0s</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>              </span><span class=nt>resourceApiVersion</span><span class=p>:</span><span class=w> </span><span class=l>V3</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>sni</span><span class=p>:</span><span class=w> </span><span class=l>outbound_.13750_.v1_.mydemo-test-ps.zsl-test.svc.cluster.local</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>match</span><span class=p>:</span><span class=w> </span>{}<span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>tlsMode-disabled</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>transportSocket</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>envoy.transport_sockets.raw_buffer</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=l>EDS</span></span></span></code></pre></td></tr></table></div></div><p><img loading=lazy src=https://raw.githubusercontent.com/kbsonlong/notes_statics/master/images/202505151117095.png alt=202505151117095 srcset="https://raw.githubusercontent.com/kbsonlong/notes_statics/master/images/202505151117095.png?size=small, https://raw.githubusercontent.com/kbsonlong/notes_statics/master/images/202505151117095.png?size=medium 1.5x, https://raw.githubusercontent.com/kbsonlong/notes_statics/master/images/202505151117095.png?size=large 2x" data-title=202505151117095 style="background:url(/images/loading.min.svg)no-repeat 50%" onload='this.title=this.dataset.title;for(const e of["style","data-title","onerror","onload"])this.removeAttribute(e);this.dataset.lazyloaded=""' onerror='this.title=this.dataset.title;for(const e of["style","data-title","onerror","onload"])this.removeAttribute(e)'></p><p><a href=https://istio.io/latest/docs/reference/config/istio.mesh.v1alpha1 target=_blank rel="external nofollow noopener noreferrer">istio全局配置</a></p></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span title="更新于 2023-07-17 21:08:20">更新于 2023-07-17&nbsp;</span></div><div class=post-info-license><span><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span></div></div><div class=post-info-line><div class=post-info-md><span><a href=/posts/istio-default-configuration/index.md title=阅读原始文档 class=link-to-markdown>阅读原始文档</a></span></div><div class=post-info-share><span><a href=javascript:void(0); title="分享到 X" data-sharer=twitter data-url=https://www.kbsonlong.com/posts/istio-default-configuration/ data-title=Istio全局配置 data-hashtags=istio><i class="fa-brands fa-x-twitter fa-fw" aria-hidden=true></i></a>
 <a href=javascript:void(0); title="分享到 Facebook" data-sharer=facebook data-url=https://www.kbsonlong.com/posts/istio-default-configuration/ data-hashtag=istio><i class="fa-brands fa-facebook-square fa-fw" aria-hidden=true></i></a>
 <a href=javascript:void(0); title="分享到 WhatsApp" data-sharer=whatsapp data-url=https://www.kbsonlong.com/posts/istio-default-configuration/ data-title=Istio全局配置 data-web><i class="fa-brands fa-whatsapp fa-fw" aria-hidden=true></i></a>
 <a href=javascript:void(0); title="分享到 Line" data-sharer=line data-url=https://www.kbsonlong.com/posts/istio-default-configuration/ data-title=Istio全局配置><svg class="icon" role="img" viewBox="0 0 24 24"><title>LINE</title><path d="M19.365 9.863c.349.0.63.285.63.631.0.345-.281.63-.63.63H17.61v1.125h1.755c.349.0.63.283.63.63.0.344-.281.629-.63.629h-2.386c-.345.0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346.0.627.285.627.63.0.349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211.0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346.0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195.0.375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345.0.63.285.63.63v4.771zm-5.741.0c0 .344-.282.629-.631.629-.345.0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346.0.628.285.628.63v4.771zm-2.466.629H4.917c-.345.0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348.0.63.285.63.63v4.141h1.756c.348.0.629.283.629.63.0.344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943.0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg></a>
