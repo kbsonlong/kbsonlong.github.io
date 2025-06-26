@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Karmada - 分类 - 蜷缩的蜗牛</title><link>https://www.kbsonlong.com/categories/karmada/</link><description>云原生时代运维</description><generator>Hugo 0.145.0 &amp; FixIt v0.3.20</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 04 Mar 2024 12:45:55 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/categories/karmada/index.xml" rel="self" type="application/rss+xml"/><item><title>Karmada多集群管理高可用部署</title><link>https://www.kbsonlong.com/posts/karmada-multi--cluster-management-high-available-deployment/</link><pubDate>Mon, 04 Mar 2024 12:45:55 +0800</pubDate><guid>https://www.kbsonlong.com/posts/karmada-multi--cluster-management-high-available-deployment/</guid><category domain="https://www.kbsonlong.com/categories/karmada/">Karmada</category><category domain="https://www.kbsonlong.com/categories/%E5%A4%9A%E9%9B%86%E7%BE%A4/">多集群</category><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><description>&lt;h2 class="heading-element" id="karmada-多集群管理高可用部署">&lt;span>&lt;code>Karmada&lt;/code> 多集群管理高可用部署&lt;/span>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Karmada - 分类 - 蜷缩的蜗牛</title><link>https://www.kbsonlong.com/categories/karmada/</link><description>云原生时代运维</description><generator>Hugo 0.145.0 &amp; FixIt v0.3.16</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 04 Mar 2024 12:45:55 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/categories/karmada/index.xml" rel="self" type="application/rss+xml"/><item><title>Karmada多集群管理高可用部署</title><link>https://www.kbsonlong.com/posts/karmada-multi--cluster-management-high-available-deployment/</link><pubDate>Mon, 04 Mar 2024 12:45:55 +0800</pubDate><guid>https://www.kbsonlong.com/posts/karmada-multi--cluster-management-high-available-deployment/</guid><category domain="https://www.kbsonlong.com/categories/karmada/">Karmada</category><category domain="https://www.kbsonlong.com/categories/%E5%A4%9A%E9%9B%86%E7%BE%A4/">多集群</category><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><description>&lt;h2 id="karmada-多集群管理高可用部署" class="heading-element">&lt;span>&lt;code>Karmada&lt;/code> 多集群管理高可用部署&lt;/span>
  &lt;a href="#karmada-%e5%a4%9a%e9%9b%86%e7%be%a4%e7%ae%a1%e7%90%86%e9%ab%98%e5%8f%af%e7%94%a8%e9%83%a8%e7%bd%b2" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -7,9 +7,9 @@
 &lt;li>&lt;code>kind&lt;/code> 创建两套&lt;code>Kubernetes&lt;/code>集群&lt;/li>
 &lt;li>&lt;code>docker&lt;/code> 运行一套额外的 &lt;code>ETCD&lt;/code> 集群&lt;/li>
 &lt;/ul>
-&lt;p>&lt;img loading="lazy" src='https://raw.githubusercontent.com/kbsonlong/notes_statics/master/images/202403051623549.png' alt="Karmada Ha">&lt;/p>
+&lt;p>&lt;img loading="lazy" src="https://raw.githubusercontent.com/kbsonlong/notes_statics/master/images/202403051623549.png" alt="Karmada Ha" srcset="https://raw.githubusercontent.com/kbsonlong/notes_statics/master/images/202403051623549.png?size=small, https://raw.githubusercontent.com/kbsonlong/notes_statics/master/images/202403051623549.png?size=medium 1.5x, https://raw.githubusercontent.com/kbsonlong/notes_statics/master/images/202403051623549.png?size=large 2x" data-title="Karmada Ha" style="background: url(/images/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;for(const i of ['style', 'data-title','onerror','onload']){this.removeAttribute(i);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;for(const i of ['style', 'data-title','onerror','onload']){this.removeAttribute(i);}"/>&lt;/p>
 &lt;p>从图中可以看到整个 &lt;code>Karmada&lt;/code> 集群的单点是&lt;code>ETCD&lt;/code>,实验环境部署单节点&lt;code>ETCD&lt;/code>集群模拟实验，实际生产环境部署跨多可用区的&lt;code>ETCD&lt;/code>集群，以保证高可用。&lt;/p>
-&lt;h2 class="heading-element" id="环境准备">&lt;span>环境准备&lt;/span>
+&lt;h2 id="环境准备" class="heading-element">&lt;span>环境准备&lt;/span>
  &lt;a href="#%e7%8e%af%e5%a2%83%e5%87%86%e5%a4%87" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -30,11 +30,11 @@
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mv cfssl_1.6.4_linux_amd64 /usr/local/bin/cfssl
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mv cfssljson_1.6.4_linux_amd64 /usr/local/bin/cfssljson&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div></description></item><item><title>Karmada多集群管理方案</title><link>https://www.kbsonlong.com/posts/karmada-multi--cluster-management-solution/</link><pubDate>Mon, 27 Nov 2023 18:19:26 +0800</pubDate><guid>https://www.kbsonlong.com/posts/karmada-multi--cluster-management-solution/</guid><category domain="https://www.kbsonlong.com/categories/karmada/">Karmada</category><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><description>&lt;h2 class="heading-element" id="kubernetes-衍变">&lt;span>&lt;code>Kubernetes&lt;/code> 衍变&lt;/span>
+&lt;/div></description></item><item><title>Karmada多集群管理方案</title><link>https://www.kbsonlong.com/posts/karmada-multi--cluster-management-solution/</link><pubDate>Mon, 27 Nov 2023 18:19:26 +0800</pubDate><guid>https://www.kbsonlong.com/posts/karmada-multi--cluster-management-solution/</guid><category domain="https://www.kbsonlong.com/categories/karmada/">Karmada</category><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><description>&lt;h2 id="kubernetes-衍变" class="heading-element">&lt;span>&lt;code>Kubernetes&lt;/code> 衍变&lt;/span>
  &lt;a href="#kubernetes-%e8%a1%8d%e5%8f%98" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
-&lt;/h2>&lt;p>在云原生时代，&lt;code>Kubernetes&lt;/code> 作为一项核心技术已成为现代应用程序架构的基础，越来越多的企业使用 &lt;code>Kubernetes&lt;/code> 作为容器编排系统，其成为容器编排事实标准得益于 &lt;code>Kubernetes&lt;/code> 的主要有以下几个原因：&lt;/p></description></item><item><title>karmada作为集群资源同步工具在灾备系统中的实践</title><link>https://www.kbsonlong.com/posts/camp/</link><pubDate>Mon, 27 Nov 2023 15:57:25 +0800</pubDate><guid>https://www.kbsonlong.com/posts/camp/</guid><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><category domain="https://www.kbsonlong.com/categories/karmada/">Karmada</category><description>&lt;h2 class="heading-element" id="karmada是什么">&lt;span>karmada是什么？&lt;/span>
+&lt;/h2>&lt;p>在云原生时代，&lt;code>Kubernetes&lt;/code> 作为一项核心技术已成为现代应用程序架构的基础，越来越多的企业使用 &lt;code>Kubernetes&lt;/code> 作为容器编排系统，其成为容器编排事实标准得益于 &lt;code>Kubernetes&lt;/code> 的主要有以下几个原因：&lt;/p></description></item><item><title>karmada作为集群资源同步工具在灾备系统中的实践</title><link>https://www.kbsonlong.com/posts/camp/</link><pubDate>Mon, 27 Nov 2023 15:57:25 +0800</pubDate><guid>https://www.kbsonlong.com/posts/camp/</guid><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><category domain="https://www.kbsonlong.com/categories/karmada/">Karmada</category><description>&lt;h2 id="karmada是什么" class="heading-element">&lt;span>karmada是什么？&lt;/span>
  &lt;a href="#karmada%e6%98%af%e4%bb%80%e4%b9%88" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -43,11 +43,11 @@
 &lt;li>20231031 快速建立karmada集群&lt;/li>
 &lt;li>20240304 补充手动注册集群方法&lt;/li>
 &lt;/ol>&lt;/blockquote>
-&lt;h3 class="heading-element" id="创建-kind-集群">&lt;span>创建 Kind 集群&lt;/span>
+&lt;h3 id="创建-kind-集群" class="heading-element">&lt;span>创建 Kind 集群&lt;/span>
  &lt;a href="#%e5%88%9b%e5%bb%ba-kind-%e9%9b%86%e7%be%a4" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
-&lt;/h3>&lt;h4 class="heading-element" id="karmada-控制面">&lt;span>karmada 控制面&lt;/span>
+&lt;/h3>&lt;h4 id="karmada-控制面" class="heading-element">&lt;span>karmada 控制面&lt;/span>
  &lt;a href="#karmada-%e6%8e%a7%e5%88%b6%e9%9d%a2" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -86,11 +86,11 @@
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">listenAddress&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s2">&amp;#34;${VIP}&amp;#34;&lt;/span>&lt;span class="w">
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="l">EOF&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h4 class="heading-element" id="创建-karmada-成员集群">&lt;span>创建 karmada 成员集群&lt;/span>
+&lt;/div>&lt;h4 id="创建-karmada-成员集群" class="heading-element">&lt;span>创建 karmada 成员集群&lt;/span>
  &lt;a href="#%e5%88%9b%e5%bb%ba-karmada-%e6%88%90%e5%91%98%e9%9b%86%e7%be%a4" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
-&lt;/h4>&lt;h5 class="heading-element" id="member1">&lt;span>member1&lt;/span>
+&lt;/h4>&lt;h5 id="member1" class="heading-element">&lt;span>member1&lt;/span>
  &lt;a href="#member1" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -121,7 +121,7 @@
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">image&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">registry.cn-hangzhou.aliyuncs.com/seam/node:v1.26.0&lt;/span>&lt;span class="w">
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="l">EOF&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h5 class="heading-element" id="member2">&lt;span>member2&lt;/span>
+&lt;/div>&lt;h5 id="member2" class="heading-element">&lt;span>member2&lt;/span>
  &lt;a href="#member2" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -152,7 +152,7 @@
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">image&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">registry.cn-hangzhou.aliyuncs.com/seam/node:v1.26.0&lt;/span>&lt;span class="w">
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="l">EOF&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h5 class="heading-element" id="member3">&lt;span>member3&lt;/span>
+&lt;/div>&lt;h5 id="member3" class="heading-element">&lt;span>member3&lt;/span>
  &lt;a href="#member3" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -183,7 +183,7 @@
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">image&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">registry.cn-hangzhou.aliyuncs.com/seam/node:v1.23.0&lt;/span>&lt;span class="w">
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="l">EOF&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h3 class="heading-element" id="安装-karmada-operator">&lt;span>安装 Karmada Operator&lt;/span>
+&lt;/div>&lt;h3 id="安装-karmada-operator" class="heading-element">&lt;span>安装 Karmada Operator&lt;/span>
  &lt;a href="#%e5%ae%89%e8%a3%85-karmada-operator" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -194,7 +194,7 @@
 &lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">helm install karmada-operator -n karmada-system --create-namespace --dependency-update ./charts/karmada-operator --kubeconfig karmada-controller&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h3 class="heading-element" id="创建-karmada">&lt;span>创建 Karmada&lt;/span>
+&lt;/div>&lt;h3 id="创建-karmada" class="heading-element">&lt;span>创建 Karmada&lt;/span>
  &lt;a href="#%e5%88%9b%e5%bb%ba-karmada" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -233,11 +233,11 @@
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="s2">&amp;#34;${VIP}&amp;#34;&lt;/span>&lt;span class="w">
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="l">EOF&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h3 class="heading-element" id="通过-helm-安装-karmada">&lt;span>通过 Helm 安装 Karmada&lt;/span>
+&lt;/div>&lt;h3 id="通过-helm-安装-karmada" class="heading-element">&lt;span>通过 Helm 安装 Karmada&lt;/span>
  &lt;a href="#%e9%80%9a%e8%bf%87-helm-%e5%ae%89%e8%a3%85-karmada" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
-&lt;/h3>&lt;h4 class="heading-element" id="karmada-配置">&lt;span>karmada 配置&lt;/span>
+&lt;/h3>&lt;h4 id="karmada-配置" class="heading-element">&lt;span>karmada 配置&lt;/span>
  &lt;a href="#karmada-%e9%85%8d%e7%bd%ae" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -444,11 +444,11 @@
 &lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">kubectl get secret -n karmada-system karmada-admin-config -o &lt;span class="nv">jsonpath&lt;/span>&lt;span class="o">={&lt;/span>.data.kubeconfig&lt;span class="o">}&lt;/span> &lt;span class="p">|&lt;/span> base64 -d &lt;span class="p">|&lt;/span> sed &lt;span class="s2">&amp;#34;s/karmada-apiserver.karmada-system.svc.cluster.local/&lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nv">VIP&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="s2">/&amp;#34;&lt;/span> &amp;gt; karmada-api&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h3 class="heading-element" id="注册成员集群">&lt;span>注册成员集群&lt;/span>
+&lt;/div>&lt;h3 id="注册成员集群" class="heading-element">&lt;span>注册成员集群&lt;/span>
  &lt;a href="#%e6%b3%a8%e5%86%8c%e6%88%90%e5%91%98%e9%9b%86%e7%be%a4" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
-&lt;/h3>&lt;h4 class="heading-element" id="安装-karmada-客户端">&lt;span>安装 karmada 客户端&lt;/span>
+&lt;/h3>&lt;h4 id="安装-karmada-客户端" class="heading-element">&lt;span>安装 karmada 客户端&lt;/span>
  &lt;a href="#%e5%ae%89%e8%a3%85-karmada-%e5%ae%a2%e6%88%b7%e7%ab%af" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -459,7 +459,7 @@
 &lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">kubectl krew install karmada&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h4 class="heading-element" id="加入集群">&lt;span>加入集群&lt;/span>
+&lt;/div>&lt;h4 id="加入集群" class="heading-element">&lt;span>加入集群&lt;/span>
  &lt;a href="#%e5%8a%a0%e5%85%a5%e9%9b%86%e7%be%a4" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -551,7 +551,7 @@
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">member1 v1.26.0 Push True 93s
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">member2 v1.26.0 Push True 4s&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h4 class="heading-element" id="手动加入集群">&lt;span>手动加入集群&lt;/span>
+&lt;/div>&lt;h4 id="手动加入集群" class="heading-element">&lt;span>手动加入集群&lt;/span>
  &lt;a href="#%e6%89%8b%e5%8a%a8%e5%8a%a0%e5%85%a5%e9%9b%86%e7%be%a4" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -1143,7 +1143,7 @@
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">member3 v1.29.0 Push True 2d18h&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div></description></item><item><title>基于Coredns多集群服务发现</title><link>https://www.kbsonlong.com/posts/discovery-based-on-coredns-multi--cluster-service/</link><pubDate>Tue, 01 Aug 2023 17:38:45 +0800</pubDate><guid>https://www.kbsonlong.com/posts/discovery-based-on-coredns-multi--cluster-service/</guid><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><category domain="https://www.kbsonlong.com/categories/karmada/">Karmada</category><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><description>&lt;p>在&lt;a href="https://kbsonlong.github.io/posts/2296fc/"target="_blank" rel="external nofollow noopener noreferrer">Karmada 多集群服务发现&lt;/a>一文中跨集群调用时有个派生的前缀 &lt;code>derived-&amp;lt;service name&amp;gt;&lt;/code>, 对于应用调用上有感知，本文介绍如何让应用在调用本地集群或者跨集群都是用同一个service。&lt;/p>
-&lt;p>基础环境 &lt;a href="https://kbsonlong.github.io/posts/2296fc/"target="_blank" rel="external nofollow noopener noreferrer">Karmada 多集群服务发现&lt;/a>&lt;/p></description></item><item><title>karmada快速体验</title><link>https://www.kbsonlong.com/posts/karmada-fast-experience/</link><pubDate>Fri, 30 Jun 2023 10:31:21 +0800</pubDate><guid>https://www.kbsonlong.com/posts/karmada-fast-experience/</guid><category domain="https://www.kbsonlong.com/categories/karmada/">Karmada</category><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><description>&lt;h2 class="heading-element" id="环境准备">&lt;span>环境准备&lt;/span>
+&lt;p>基础环境 &lt;a href="https://kbsonlong.github.io/posts/2296fc/"target="_blank" rel="external nofollow noopener noreferrer">Karmada 多集群服务发现&lt;/a>&lt;/p></description></item><item><title>karmada快速体验</title><link>https://www.kbsonlong.com/posts/karmada-fast-experience/</link><pubDate>Fri, 30 Jun 2023 10:31:21 +0800</pubDate><guid>https://www.kbsonlong.com/posts/karmada-fast-experience/</guid><category domain="https://www.kbsonlong.com/categories/karmada/">Karmada</category><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><description>&lt;h2 id="环境准备" class="heading-element">&lt;span>环境准备&lt;/span>
  &lt;a href="#%e7%8e%af%e5%a2%83%e5%87%86%e5%a4%87" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -1155,7 +1155,7 @@
 &lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">LOCAL_IP&lt;/span>&lt;span class="o">=&lt;/span>172.25.163.181&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h3 class="heading-element" id="创建控制面集群">&lt;span>创建控制面集群&lt;/span>
+&lt;/div>&lt;h3 id="创建控制面集群" class="heading-element">&lt;span>创建控制面集群&lt;/span>
  &lt;a href="#%e5%88%9b%e5%bb%ba%e6%8e%a7%e5%88%b6%e9%9d%a2%e9%9b%86%e7%be%a4" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -1212,7 +1212,7 @@
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="l">kind create cluster --name controler --config=controler.yaml&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h3 class="heading-element" id="创建成员member1集群">&lt;span>创建成员(member1)集群&lt;/span>
+&lt;/div>&lt;h3 id="创建成员member1集群" class="heading-element">&lt;span>创建成员(member1)集群&lt;/span>
  &lt;a href="#%e5%88%9b%e5%bb%ba%e6%88%90%e5%91%98member1%e9%9b%86%e7%be%a4" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -1261,7 +1261,7 @@
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="l">kind create cluster --name member1 --config=member1.yaml&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h3 class="heading-element" id="创建成员member2集群">&lt;span>创建成员(member2)集群&lt;/span>
+&lt;/div>&lt;h3 id="创建成员member2集群" class="heading-element">&lt;span>创建成员(member2)集群&lt;/span>
  &lt;a href="#%e5%88%9b%e5%bb%ba%e6%88%90%e5%91%98member2%e9%9b%86%e7%be%a4" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -1310,7 +1310,7 @@
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="l">kind create cluster --name member2 --config=member2.yaml&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h3 class="heading-element" id="获取集群kubeconfig">&lt;span>获取集群kubeconfig&lt;/span>
+&lt;/div>&lt;h3 id="获取集群kubeconfig" class="heading-element">&lt;span>获取集群kubeconfig&lt;/span>
  &lt;a href="#%e8%8e%b7%e5%8f%96%e9%9b%86%e7%be%a4kubeconfig" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -1323,7 +1323,7 @@
 &lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">kind get kubeconfig --name&lt;span class="o">=&lt;/span>member1 &amp;gt; member1.conf
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kind get kubeconfig --name&lt;span class="o">=&lt;/span>member2 &amp;gt; member2.conf&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div></description></item><item><title>Karmada 多集群服务发现</title><link>https://www.kbsonlong.com/posts/multi--cluster-service-discovery/</link><pubDate>Thu, 29 Jun 2023 17:25:45 +0800</pubDate><guid>https://www.kbsonlong.com/posts/multi--cluster-service-discovery/</guid><category domain="https://www.kbsonlong.com/categories/karmada/">Karmada</category><description>&lt;h2 class="heading-element" id="安装-karmada">&lt;span>安装 Karmada&lt;/span>
+&lt;/div></description></item><item><title>Karmada 多集群服务发现</title><link>https://www.kbsonlong.com/posts/multi--cluster-service-discovery/</link><pubDate>Thu, 29 Jun 2023 17:25:45 +0800</pubDate><guid>https://www.kbsonlong.com/posts/multi--cluster-service-discovery/</guid><category domain="https://www.kbsonlong.com/categories/karmada/">Karmada</category><description>&lt;h2 id="安装-karmada" class="heading-element">&lt;span>安装 Karmada&lt;/span>
  &lt;a href="#%e5%ae%89%e8%a3%85-karmada" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
