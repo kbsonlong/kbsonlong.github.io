@@ -4117,4 +4117,9 @@ SLA是Service-Level Agreement的缩写，意思是服务等级协议，一般是
  &lt;/a>
 &lt;/h2>&lt;ul>
 &lt;li>&lt;a href="https://www.ruanyifeng.com/blog/2011/07/linux_load_average_explained.html"target="_blank" rel="external nofollow noopener noreferrer">Linux load average 详解&lt;/a>&lt;/li>
-&lt;/ul></description></item></channel></rss>
+&lt;/ul>
+&lt;h2 class="heading-element" id="进程线程数统计与分析">&lt;span>进程线程数统计与分析&lt;/span>
+ &lt;a href="#%e8%bf%9b%e7%a8%8b%e7%ba%bf%e7%a8%8b%e6%95%b0%e7%bb%9f%e8%ae%a1%e4%b8%8e%e5%88%86%e6%9e%90" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>在排查高 load、上下文切换频繁等问题时，统计系统中各进程的线程数非常重要。线程数异常往往是高 load 的直接原因。&lt;/p></description></item></channel></rss>
