@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alloy-config
+  namespace: monitoring
+  labels:
+    app: alloy
+
+data:
+  alloy.yaml: |
+    discovery.kubernetes "pods" {
+      role = "pod"
+      selectors {
+        role = "pod"
+        label = "app.kubernetes.io/name=flog"
+      }
+    }
+    
+    loki.source.kubernetes "pods" {
+      targets = discovery.kubernetes.pods.targets
+      forward_to = [loki.write.vlinsert.receiver]
+    }
+    
+    loki.write "vlinsert" {
+      endpoint {
+        url = "http://vlinsert.monitoring.svc.kubeyy.com:8480/insert/loki/api/v1/push"
+      }
+    }

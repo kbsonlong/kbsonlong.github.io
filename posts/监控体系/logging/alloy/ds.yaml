@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: alloy
+  namespace: monitoring
+spec:
+  selector:
+    matchLabels:
+      app: alloy
+  template:
+    metadata:
+      labels:
+        app: alloy
+    spec:
+      containers:
+        - name: alloy
+          image: registry.cn-hangzhou.aliyuncs.com/seam/alloy:v1.9.2
+          args:
+            - run
+            - /etc/alloy/alloy.yaml
+          volumeMounts:
+            - name: config
+              mountPath: /etc/alloy
+      nodeSelector:
+          biz.type: victorialogs
+      volumes:
+        - name: config
+          configMap:
+            name: alloy-config
