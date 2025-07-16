@@ -9,6 +9,9 @@ spec:
       app: alloy
   template:
     metadata:
+      annotations:
+        prometheus.vm/scrape: "true"
+        prometheus.vm/port: "12345"
       labels:
         app: alloy
     spec:
