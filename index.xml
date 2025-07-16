@@ -2539,6 +2539,65 @@ Lima 是一个轻量级的虚拟机管理工具，可以在 Mac 上运行 Linux 
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h3>&lt;p>A: 1. 检查 RBAC 权限；2. 验证标签选择器；3. 查看 Alloy 日志；4. 使用 &lt;code>/api/v0/component&lt;/code> 端点检查发现的目标。&lt;/p>
+&lt;h2 class="heading-element" id="实时调试服务配置">&lt;span>实时调试服务配置&lt;/span>
+ &lt;a href="#%e5%ae%9e%e6%97%b6%e8%b0%83%e8%af%95%e6%9c%8d%e5%8a%a1%e9%85%8d%e7%bd%ae" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;h3 class="heading-element" id="启用-live-debugging">&lt;span>启用 Live Debugging&lt;/span>
+ &lt;a href="#%e5%90%af%e7%94%a8-live-debugging" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;p>如果在使用 Alloy UI 时遇到 &amp;ldquo;the live debugging service is disabled&amp;rdquo; 错误，需要在配置文件中启用实时调试功能：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-hcl" data-lang="hcl">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 在配置文件顶部添加 livedebugging 块
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="k">livedebugging&lt;/span> {
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n"> enabled&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="kt">true&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">discovery&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="k">kubernetes&lt;/span> &lt;span class="s2">&amp;#34;pods&amp;#34;&lt;/span> {
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n"> role&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s2">&amp;#34;pod&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">selectors&lt;/span> {
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n"> role&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s2">&amp;#34;pod&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n"> label&lt;/span> &lt;span class="o">=&lt;/span>&lt;span class="n"> &amp;#34;app.kubernetes.io/name&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="k">flog&lt;/span>&lt;span class="err">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> }
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">}&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 class="heading-element" id="安全注意事项">&lt;span>安全注意事项&lt;/span>
+ &lt;a href="#%e5%ae%89%e5%85%a8%e6%b3%a8%e6%84%8f%e4%ba%8b%e9%a1%b9" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;p>&lt;mcreference link="https://grafana.com/docs/alloy/latest/troubleshoot/debug/" index="1">1&lt;/mcreference> 实时调试功能默认被禁用，以避免意外显示敏感的遥测数据。启用时请确保：&lt;/p>
+&lt;ol>
+&lt;li>&lt;strong>配置 TLS 加密&lt;/strong>：在生产环境中使用 &lt;code>http&lt;/code> 块配置 TLS&lt;/li>
+&lt;li>&lt;strong>限制访问权限&lt;/strong>：确保只有授权用户能访问 Alloy UI&lt;/li>
+&lt;li>&lt;strong>网络隔离&lt;/strong>：在非容器化平台上，Alloy 默认监听 localhost&lt;/li>
+&lt;/ol>
+&lt;h3 class="heading-element" id="访问-alloy-ui">&lt;span>访问 Alloy UI&lt;/span>
+ &lt;a href="#%e8%ae%bf%e9%97%ae-alloy-ui" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;p>&lt;mcreference link="https://grafana.com/docs/alloy/latest/troubleshoot/debug/" index="1">1&lt;/mcreference> Alloy UI 默认在 &lt;code>http://localhost:12345&lt;/code> 提供服务，包含以下功能：&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>组件健康状态&lt;/strong>：查看所有组件的运行状态&lt;/li>
+&lt;li>&lt;strong>实时数据流&lt;/strong>：观察组件间的数据流动&lt;/li>
+&lt;li>&lt;strong>配置验证&lt;/strong>：检查组件参数和导出值&lt;/li>
+&lt;li>&lt;strong>调试信息&lt;/strong>：获取详细的组件调试数据&lt;/li>
+&lt;/ul>
 &lt;h2 class="heading-element" id="参考资料">&lt;span>参考资料&lt;/span>
  &lt;a href="#%e5%8f%82%e8%80%83%e8%b5%84%e6%96%99" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
@@ -2546,6 +2605,8 @@ Lima 是一个轻量级的虚拟机管理工具，可以在 Mac 上运行 Linux 
 &lt;/h2>&lt;ul>
 &lt;li>&lt;a href="https://grafana.com/docs/alloy/latest/"target="_blank" rel="external nofollow noopener noreferrer">Grafana Alloy 官方文档&lt;/a>&lt;/li>
 &lt;li>&lt;a href="https://grafana.com/docs/alloy/latest/reference/components/discovery.kubernetes/"target="_blank" rel="external nofollow noopener noreferrer">discovery.kubernetes 组件文档&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://grafana.com/docs/alloy/latest/reference/config-blocks/livedebugging/"target="_blank" rel="external nofollow noopener noreferrer">livedebugging 配置文档&lt;/a> &lt;mcreference link="https://grafana.com/docs/alloy/latest/reference/config-blocks/livedebugging/" index="2">2&lt;/mcreference>&lt;/li>
+&lt;li>&lt;a href="https://grafana.com/docs/alloy/latest/troubleshoot/debug/"target="_blank" rel="external nofollow noopener noreferrer">Alloy 调试指南&lt;/a> &lt;mcreference link="https://grafana.com/docs/alloy/latest/troubleshoot/debug/" index="1">1&lt;/mcreference>&lt;/li>
 &lt;li>&lt;a href="https://kubernetes.io/docs/concepts/services-networking/service/"target="_blank" rel="external nofollow noopener noreferrer">Kubernetes 服务发现最佳实践&lt;/a>&lt;/li>
 &lt;/ul>
 &lt;h2 class="heading-element" id="总结">&lt;span>总结&lt;/span>

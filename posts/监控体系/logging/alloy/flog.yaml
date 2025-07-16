@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: flog
+  namespace: monitoring
+spec:
+  selector:
+    matchLabels:
+      app: flog
+  template:
+    metadata:
+      labels:
+        app: flog
+    spec:
+      containers:
+        - name: flog
+          image: registry.cn-hangzhou.aliyuncs.com/seam/flog:0.4.3
+          args: ["-f", "json", "-l"]
+          resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+      nodeSelector:
+          biz.type: victorialogs

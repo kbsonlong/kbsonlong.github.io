@@ -8,11 +8,15 @@ metadata:
 
 data:
   alloy.yaml: |
+    livedebugging {
+      enabled = true
+    }
+    
     discovery.kubernetes "pods" {
       role = "pod"
       selectors {
         role = "pod"
-        label = "app.kubernetes.io/name=flog"
+        label = "app=flog"
       }
     }
     
@@ -23,6 +27,6 @@ data:
     
     loki.write "vlinsert" {
       endpoint {
-        url = "http://vlinsert.monitoring.svc.kubeyy.com:8480/insert/loki/api/v1/push"
+        url = "http://vlinsert.monitoring.svc.kubeyy.com:9481/insert/loki/api/v1/push"
       }
     }
