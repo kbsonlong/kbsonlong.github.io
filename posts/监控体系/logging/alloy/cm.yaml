@@ -27,6 +27,6 @@ data:
     
     loki.write "vlinsert" {
       endpoint {
-        url = "http://vlinsert.monitoring.svc.kubeyy.com:9481/insert/loki/api/v1/push"
+        url = "http://vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com:9481/insert/loki/api/v1/push"
       }
     }
