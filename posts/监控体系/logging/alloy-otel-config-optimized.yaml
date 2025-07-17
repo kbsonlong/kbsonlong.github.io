@@ -1,0 +1,177 @@
+# Alloy 优化配置 - 使用 OpenTelemetry Collector 协议输出
+# 启用实时调试
+livedebugging {
+  enabled = true
+}
+
+# 日志配置
+logging {
+  level  = "info"
+  format = "logfmt"
+}
+
+# Kubernetes Pod 服务发现
+discovery.kubernetes "pods" {
+  role = "pod"
+  
+  selectors {
+    role  = "pod"
+    label = "app=flog"
+  }
+  
+  # 可选：指定命名空间
+  namespaces {
+    names = ["default", "monitoring"]
+  }
+}
+
+# 从 Kubernetes Pod 收集日志
+loki.source.kubernetes "pods" {
+  targets = discovery.kubernetes.pods.targets
+  
+  # 日志收集配置
+  forward_to = [loki.process.parse_logs.receiver]
+}
+
+# 日志处理和解析
+loki.process "parse_logs" {
+  forward_to = [otelcol.receiver.loki.default.receiver]
+  
+  # JSON 解析
+  stage.json {
+    expressions = {
+      level     = "level",
+      message   = "msg",
+      timestamp = "time",
+    }
+  }
+  
+  # 添加标签
+  stage.labels {
+    values = {
+      level = "",
+    }
+  }
+  
+  # 时间戳解析
+  stage.timestamp {
+    source = "timestamp"
+    format = "RFC3339"
+  }
+}
+
+# OpenTelemetry Collector Loki 接收器
+otelcol.receiver.loki "default" {
+  output {
+    logs = [otelcol.processor.attributes.add_metadata.input]
+  }
+}
+
+# 添加属性处理器
+otelcol.processor.attributes "add_metadata" {
+  action {
+    key    = "service.name"
+    action = "insert"
+    value  = "kubernetes-logs"
+  }
+  
+  action {
+    key    = "service.version"
+    action = "insert"
+    value  = "1.0.0"
+  }
+  
+  action {
+    key    = "deployment.environment"
+    action = "insert"
+    value  = "production"
+  }
+  
+  action {
+    key    = "k8s.cluster.name"
+    action = "insert"
+    value  = "production-cluster"
+  }
+  
+  output {
+    logs = [otelcol.processor.resource.default.input]
+  }
+}
+
+# 资源处理器
+otelcol.processor.resource "default" {
+  attributes {
+    key    = "telemetry.sdk.name"
+    action = "insert"
+    value  = "grafana-alloy"
+  }
+  
+  attributes {
+    key    = "telemetry.sdk.version"
+    action = "insert"
+    value  = "v1.9.2"
+  }
+  
+  output {
+    logs = [otelcol.processor.batch.default.input]
+  }
+}
+
+# OpenTelemetry Collector 批处理器
+otelcol.processor.batch "default" {
+  send_batch_size     = 1024
+  send_batch_max_size = 2048
+  timeout             = "5s"
+  
+  output {
+    logs = [otelcol.exporter.otlphttp.default.input]
+  }
+}
+
+# OpenTelemetry Collector OTLP HTTP 导出器
+otelcol.exporter.otlphttp "default" {
+  client {
+    endpoint = "http://vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com:9481/insert/opentelemetry/v1/logs"
+    timeout  = "30s"
+    compression = "gzip"
+    
+    # 请求头配置
+    headers = {
+      "Content-Type" = "application/x-protobuf"
+    }
+    
+    retry_on_failure {
+      enabled         = true
+      initial_interval = "1s"
+      max_interval    = "30s"
+      max_elapsed_time = "300s"
+    }
+    
+    sending_queue {
+      enabled      = true
+      num_consumers = 10
+      queue_size   = 1000
+    }
+  }
+}
+
+# 可选：添加 Prometheus 指标导出
+prometheus.exporter.self "alloy_metrics" {}
+
+prometheus.scrape "alloy_metrics" {
+  targets    = prometheus.exporter.self.alloy_metrics.targets
+  forward_to = [prometheus.remote_write.default.receiver]
+}
+
+# 可选：Prometheus 远程写入（如果需要监控 Alloy 本身）
+prometheus.remote_write "default" {
+  endpoint {
+    url = "http://prometheus.monitoring.svc.cluster.local:9090/api/v1/write"
+    
+    # 可选：认证配置
+    # basic_auth {
+    #   username = "admin"
+    #   password = "password"
+    # }
+  }
+}
