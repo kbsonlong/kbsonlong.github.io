@@ -1,0 +1,384 @@
+# HELP alloy_build_info A metric with a constant '1' value labeled by version, revision, branch, goversion from which alloy was built, and the goos and goarch for the build.
+# TYPE alloy_build_info gauge
+alloy_build_info{branch="HEAD",goarch="amd64",goos="linux",goversion="go1.24.4",revision="30277f7",tags="netgo,builtinassets,promtail_journal_enabled",version="v1.9.2"} 1
+# HELP alloy_component_controller_evaluating Tracks if the controller is currently in the middle of a graph evaluation
+# TYPE alloy_component_controller_evaluating gauge
+alloy_component_controller_evaluating{controller_id="",controller_path="/"} 0
+alloy_component_controller_evaluating{controller_id="remotecfg",controller_path="/"} 0
+# HELP alloy_component_controller_running_components Total number of running components.
+# TYPE alloy_component_controller_running_components gauge
+alloy_component_controller_running_components{controller_id="",controller_path="/",health_type="healthy"} 3
+# HELP alloy_component_dependencies_wait_seconds Time spent by components waiting to be evaluated after their dependency is updated.
+# TYPE alloy_component_dependencies_wait_seconds histogram
+alloy_component_dependencies_wait_seconds_bucket{controller_id="",controller_path="/",le="0.005"} 2
+alloy_component_dependencies_wait_seconds_bucket{controller_id="",controller_path="/",le="0.025"} 2
+alloy_component_dependencies_wait_seconds_bucket{controller_id="",controller_path="/",le="0.1"} 2
+alloy_component_dependencies_wait_seconds_bucket{controller_id="",controller_path="/",le="0.5"} 2
+alloy_component_dependencies_wait_seconds_bucket{controller_id="",controller_path="/",le="1"} 2
+alloy_component_dependencies_wait_seconds_bucket{controller_id="",controller_path="/",le="5"} 2
+alloy_component_dependencies_wait_seconds_bucket{controller_id="",controller_path="/",le="10"} 2
+alloy_component_dependencies_wait_seconds_bucket{controller_id="",controller_path="/",le="30"} 2
+alloy_component_dependencies_wait_seconds_bucket{controller_id="",controller_path="/",le="60"} 2
+alloy_component_dependencies_wait_seconds_bucket{controller_id="",controller_path="/",le="120"} 2
+alloy_component_dependencies_wait_seconds_bucket{controller_id="",controller_path="/",le="300"} 2
+alloy_component_dependencies_wait_seconds_bucket{controller_id="",controller_path="/",le="600"} 2
+alloy_component_dependencies_wait_seconds_bucket{controller_id="",controller_path="/",le="+Inf"} 2
+alloy_component_dependencies_wait_seconds_sum{controller_id="",controller_path="/"} 0.001895891
+alloy_component_dependencies_wait_seconds_count{controller_id="",controller_path="/"} 2
+alloy_component_dependencies_wait_seconds_bucket{controller_id="remotecfg",controller_path="/",le="0.005"} 0
+alloy_component_dependencies_wait_seconds_bucket{controller_id="remotecfg",controller_path="/",le="0.025"} 0
+alloy_component_dependencies_wait_seconds_bucket{controller_id="remotecfg",controller_path="/",le="0.1"} 0
+alloy_component_dependencies_wait_seconds_bucket{controller_id="remotecfg",controller_path="/",le="0.5"} 0
+alloy_component_dependencies_wait_seconds_bucket{controller_id="remotecfg",controller_path="/",le="1"} 0
+alloy_component_dependencies_wait_seconds_bucket{controller_id="remotecfg",controller_path="/",le="5"} 0
+alloy_component_dependencies_wait_seconds_bucket{controller_id="remotecfg",controller_path="/",le="10"} 0
+alloy_component_dependencies_wait_seconds_bucket{controller_id="remotecfg",controller_path="/",le="30"} 0
+alloy_component_dependencies_wait_seconds_bucket{controller_id="remotecfg",controller_path="/",le="60"} 0
+alloy_component_dependencies_wait_seconds_bucket{controller_id="remotecfg",controller_path="/",le="120"} 0
+alloy_component_dependencies_wait_seconds_bucket{controller_id="remotecfg",controller_path="/",le="300"} 0
+alloy_component_dependencies_wait_seconds_bucket{controller_id="remotecfg",controller_path="/",le="600"} 0
+alloy_component_dependencies_wait_seconds_bucket{controller_id="remotecfg",controller_path="/",le="+Inf"} 0
+alloy_component_dependencies_wait_seconds_sum{controller_id="remotecfg",controller_path="/"} 0
+alloy_component_dependencies_wait_seconds_count{controller_id="remotecfg",controller_path="/"} 0
+# HELP alloy_component_evaluation_queue_size Tracks the number of components waiting to be evaluated in the worker pool
+# TYPE alloy_component_evaluation_queue_size gauge
+alloy_component_evaluation_queue_size{controller_id="",controller_path="/"} 1
+alloy_component_evaluation_queue_size{controller_id="remotecfg",controller_path="/"} 0
+# HELP alloy_component_evaluation_seconds Time spent performing component evaluation
+# TYPE alloy_component_evaluation_seconds histogram
+alloy_component_evaluation_seconds_bucket{controller_id="",controller_path="/",le="0.005"} 2
+alloy_component_evaluation_seconds_bucket{controller_id="",controller_path="/",le="0.025"} 2
+alloy_component_evaluation_seconds_bucket{controller_id="",controller_path="/",le="0.1"} 2
+alloy_component_evaluation_seconds_bucket{controller_id="",controller_path="/",le="0.5"} 2
+alloy_component_evaluation_seconds_bucket{controller_id="",controller_path="/",le="1"} 2
+alloy_component_evaluation_seconds_bucket{controller_id="",controller_path="/",le="5"} 2
+alloy_component_evaluation_seconds_bucket{controller_id="",controller_path="/",le="10"} 2
+alloy_component_evaluation_seconds_bucket{controller_id="",controller_path="/",le="30"} 2
+alloy_component_evaluation_seconds_bucket{controller_id="",controller_path="/",le="60"} 2
+alloy_component_evaluation_seconds_bucket{controller_id="",controller_path="/",le="120"} 2
+alloy_component_evaluation_seconds_bucket{controller_id="",controller_path="/",le="300"} 2
+alloy_component_evaluation_seconds_bucket{controller_id="",controller_path="/",le="600"} 2
+alloy_component_evaluation_seconds_bucket{controller_id="",controller_path="/",le="+Inf"} 2
+alloy_component_evaluation_seconds_sum{controller_id="",controller_path="/"} 0.000859182
+alloy_component_evaluation_seconds_count{controller_id="",controller_path="/"} 2
+alloy_component_evaluation_seconds_bucket{controller_id="remotecfg",controller_path="/",le="0.005"} 0
+alloy_component_evaluation_seconds_bucket{controller_id="remotecfg",controller_path="/",le="0.025"} 0
+alloy_component_evaluation_seconds_bucket{controller_id="remotecfg",controller_path="/",le="0.1"} 0
+alloy_component_evaluation_seconds_bucket{controller_id="remotecfg",controller_path="/",le="0.5"} 0
+alloy_component_evaluation_seconds_bucket{controller_id="remotecfg",controller_path="/",le="1"} 0
+alloy_component_evaluation_seconds_bucket{controller_id="remotecfg",controller_path="/",le="5"} 0
+alloy_component_evaluation_seconds_bucket{controller_id="remotecfg",controller_path="/",le="10"} 0
+alloy_component_evaluation_seconds_bucket{controller_id="remotecfg",controller_path="/",le="30"} 0
+alloy_component_evaluation_seconds_bucket{controller_id="remotecfg",controller_path="/",le="60"} 0
+alloy_component_evaluation_seconds_bucket{controller_id="remotecfg",controller_path="/",le="120"} 0
+alloy_component_evaluation_seconds_bucket{controller_id="remotecfg",controller_path="/",le="300"} 0
+alloy_component_evaluation_seconds_bucket{controller_id="remotecfg",controller_path="/",le="600"} 0
+alloy_component_evaluation_seconds_bucket{controller_id="remotecfg",controller_path="/",le="+Inf"} 0
+alloy_component_evaluation_seconds_sum{controller_id="remotecfg",controller_path="/"} 0
+alloy_component_evaluation_seconds_count{controller_id="remotecfg",controller_path="/"} 0
+# HELP alloy_config_hash Hash of the currently active config file.
+# TYPE alloy_config_hash gauge
+alloy_config_hash{cluster_name="",sha256="d9c2272a88ea08d0ee0e95f352077329357cad4408c066378360bf27808cb2ac"} 1
+# HELP alloy_config_last_load_success_timestamp_seconds Timestamp of the last successful configuration load.
+# TYPE alloy_config_last_load_success_timestamp_seconds gauge
+alloy_config_last_load_success_timestamp_seconds 1.7526530693099432e+09
+# HELP alloy_config_last_load_successful Config loaded successfully.
+# TYPE alloy_config_last_load_successful gauge
+alloy_config_last_load_successful 1
+# HELP alloy_config_load_failures_total Configuration load failures.
+# TYPE alloy_config_load_failures_total counter
+alloy_config_load_failures_total 0
+# HELP alloy_labelstore_global_ids_count Total number of global ids.
+# TYPE alloy_labelstore_global_ids_count gauge
+alloy_labelstore_global_ids_count 0
+# HELP alloy_labelstore_last_stale_check_timestamp Last time stale check was ran expressed in unix timestamp.
+# TYPE alloy_labelstore_last_stale_check_timestamp gauge
+alloy_labelstore_last_stale_check_timestamp 1.752717869e+09
+# HELP alloy_resources_machine_rx_bytes_total Total bytes, host-wide, received across all network interfaces.
+# TYPE alloy_resources_machine_rx_bytes_total counter
+alloy_resources_machine_rx_bytes_total 3.87777615344e+11
+# HELP alloy_resources_machine_tx_bytes_total Total bytes, host-wide, sent across all given network interface.
+# TYPE alloy_resources_machine_tx_bytes_total counter
+alloy_resources_machine_tx_bytes_total 1.06780165711e+11
+# HELP alloy_resources_process_cpu_seconds_total Total user and system CPU time spent in seconds.
+# TYPE alloy_resources_process_cpu_seconds_total counter
+alloy_resources_process_cpu_seconds_total 35217.79
+# HELP alloy_resources_process_resident_memory_bytes Current resident memory size in bytes.
+# TYPE alloy_resources_process_resident_memory_bytes gauge
+alloy_resources_process_resident_memory_bytes 2.31657472e+08
+# HELP alloy_resources_process_start_time_seconds Start time of the process since Unix epoch in seconds.
+# TYPE alloy_resources_process_start_time_seconds gauge
+alloy_resources_process_start_time_seconds 1.752653069e+09
+# HELP alloy_resources_process_virtual_memory_bytes Current virtual memory size in bytes.
+# TYPE alloy_resources_process_virtual_memory_bytes gauge
+alloy_resources_process_virtual_memory_bytes 3.355598848e+09
+# HELP deprecated_flags_inuse_total The number of deprecated flags currently set.
+# TYPE deprecated_flags_inuse_total counter
+deprecated_flags_inuse_total 0
+# HELP go_gc_duration_seconds A summary of the wall-time pause (stop-the-world) duration in garbage collection cycles.
+# TYPE go_gc_duration_seconds summary
+go_gc_duration_seconds{quantile="0"} 6.5492e-05
+go_gc_duration_seconds{quantile="0.25"} 0.000112523
+go_gc_duration_seconds{quantile="0.5"} 0.000149737
+go_gc_duration_seconds{quantile="0.75"} 0.000195752
+go_gc_duration_seconds{quantile="1"} 0.000502392
+go_gc_duration_seconds_sum 12.243380006
+go_gc_duration_seconds_count 70436
+# HELP go_gc_gogc_percent Heap size target percentage configured by the user, otherwise 100. This value is set by the GOGC environment variable, and the runtime/debug.SetGCPercent function. Sourced from /gc/gogc:percent.
+# TYPE go_gc_gogc_percent gauge
+go_gc_gogc_percent 100
+# HELP go_gc_gomemlimit_bytes Go runtime memory limit configured by the user, otherwise math.MaxInt64. This value is set by the GOMEMLIMIT environment variable, and the runtime/debug.SetMemoryLimit function. Sourced from /gc/gomemlimit:bytes.
+# TYPE go_gc_gomemlimit_bytes gauge
+go_gc_gomemlimit_bytes 9.223372036854776e+18
+# HELP go_goroutines Number of goroutines that currently exist.
+# TYPE go_goroutines gauge
+go_goroutines 96
+# HELP go_info Information about the Go environment.
+# TYPE go_info gauge
+go_info{version="go1.24.4"} 1
+# HELP go_memstats_alloc_bytes Number of bytes allocated in heap and currently in use. Equals to /memory/classes/heap/objects:bytes.
+# TYPE go_memstats_alloc_bytes gauge
+go_memstats_alloc_bytes 5.0047336e+07
+# HELP go_memstats_alloc_bytes_total Total number of bytes allocated in heap until now, even if released already. Equals to /gc/heap/allocs:bytes.
+# TYPE go_memstats_alloc_bytes_total counter
+go_memstats_alloc_bytes_total 1.731869402952e+12
+# HELP go_memstats_buck_hash_sys_bytes Number of bytes used by the profiling bucket hash table. Equals to /memory/classes/profiling/buckets:bytes.
+# TYPE go_memstats_buck_hash_sys_bytes gauge
+go_memstats_buck_hash_sys_bytes 1.852778e+06
+# HELP go_memstats_frees_total Total number of heap objects frees. Equals to /gc/heap/frees:objects + /gc/heap/tiny/allocs:objects.
+# TYPE go_memstats_frees_total counter
+go_memstats_frees_total 8.664100845e+09
+# HELP go_memstats_gc_sys_bytes Number of bytes used for garbage collection system metadata. Equals to /memory/classes/metadata/other:bytes.
+# TYPE go_memstats_gc_sys_bytes gauge
+go_memstats_gc_sys_bytes 4.333432e+06
+# HELP go_memstats_heap_alloc_bytes Number of heap bytes allocated and currently in use, same as go_memstats_alloc_bytes. Equals to /memory/classes/heap/objects:bytes.
+# TYPE go_memstats_heap_alloc_bytes gauge
+go_memstats_heap_alloc_bytes 5.0047336e+07
+# HELP go_memstats_heap_idle_bytes Number of heap bytes waiting to be used. Equals to /memory/classes/heap/released:bytes + /memory/classes/heap/free:bytes.
+# TYPE go_memstats_heap_idle_bytes gauge
+go_memstats_heap_idle_bytes 1.7219584e+07
+# HELP go_memstats_heap_inuse_bytes Number of heap bytes that are in use. Equals to /memory/classes/heap/objects:bytes + /memory/classes/heap/unused:bytes
+# TYPE go_memstats_heap_inuse_bytes gauge
+go_memstats_heap_inuse_bytes 5.6672256e+07
+# HELP go_memstats_heap_objects Number of currently allocated objects. Equals to /gc/heap/objects:objects.
+# TYPE go_memstats_heap_objects gauge
+go_memstats_heap_objects 233785
+# HELP go_memstats_heap_released_bytes Number of heap bytes released to OS. Equals to /memory/classes/heap/released:bytes.
+# TYPE go_memstats_heap_released_bytes gauge
+go_memstats_heap_released_bytes 1.29024e+07
+# HELP go_memstats_heap_sys_bytes Number of heap bytes obtained from system. Equals to /memory/classes/heap/objects:bytes + /memory/classes/heap/unused:bytes + /memory/classes/heap/released:bytes + /memory/classes/heap/free:bytes.
+# TYPE go_memstats_heap_sys_bytes gauge
+go_memstats_heap_sys_bytes 7.389184e+07
+# HELP go_memstats_last_gc_time_seconds Number of seconds since 1970 of last garbage collection.
+# TYPE go_memstats_last_gc_time_seconds gauge
+go_memstats_last_gc_time_seconds 1.7527180907687938e+09
+# HELP go_memstats_mallocs_total Total number of heap objects allocated, both live and gc-ed. Semantically a counter version for go_memstats_heap_objects gauge. Equals to /gc/heap/allocs:objects + /gc/heap/tiny/allocs:objects.
+# TYPE go_memstats_mallocs_total counter
+go_memstats_mallocs_total 8.66433463e+09
+# HELP go_memstats_mcache_inuse_bytes Number of bytes in use by mcache structures. Equals to /memory/classes/metadata/mcache/inuse:bytes.
+# TYPE go_memstats_mcache_inuse_bytes gauge
+go_memstats_mcache_inuse_bytes 19328
+# HELP go_memstats_mcache_sys_bytes Number of bytes used for mcache structures obtained from system. Equals to /memory/classes/metadata/mcache/inuse:bytes + /memory/classes/metadata/mcache/free:bytes.
+# TYPE go_memstats_mcache_sys_bytes gauge
+go_memstats_mcache_sys_bytes 31408
+# HELP go_memstats_mspan_inuse_bytes Number of bytes in use by mspan structures. Equals to /memory/classes/metadata/mspan/inuse:bytes.
+# TYPE go_memstats_mspan_inuse_bytes gauge
+go_memstats_mspan_inuse_bytes 751200
+# HELP go_memstats_mspan_sys_bytes Number of bytes used for mspan structures obtained from system. Equals to /memory/classes/metadata/mspan/inuse:bytes + /memory/classes/metadata/mspan/free:bytes.
+# TYPE go_memstats_mspan_sys_bytes gauge
+go_memstats_mspan_sys_bytes 897600
+# HELP go_memstats_next_gc_bytes Number of heap bytes when next garbage collection will take place. Equals to /gc/heap/goal:bytes.
+# TYPE go_memstats_next_gc_bytes gauge
+go_memstats_next_gc_bytes 5.3414458e+07
+# HELP go_memstats_other_sys_bytes Number of bytes used for other system allocations. Equals to /memory/classes/other:bytes.
+# TYPE go_memstats_other_sys_bytes gauge
+go_memstats_other_sys_bytes 3.19879e+06
+# HELP go_memstats_stack_inuse_bytes Number of bytes obtained from system for stack allocator in non-CGO environments. Equals to /memory/classes/heap/stacks:bytes.
+# TYPE go_memstats_stack_inuse_bytes gauge
+go_memstats_stack_inuse_bytes 1.605632e+06
+# HELP go_memstats_stack_sys_bytes Number of bytes obtained from system for stack allocator. Equals to /memory/classes/heap/stacks:bytes + /memory/classes/os-stacks:bytes.
+# TYPE go_memstats_stack_sys_bytes gauge
+go_memstats_stack_sys_bytes 1.605632e+06
+# HELP go_memstats_sys_bytes Number of bytes obtained from system. Equals to /memory/classes/total:byte.
+# TYPE go_memstats_sys_bytes gauge
+go_memstats_sys_bytes 8.581148e+07
+# HELP go_sched_gomaxprocs_threads The current runtime.GOMAXPROCS setting, or the number of operating system threads that can execute user-level Go code simultaneously. Sourced from /sched/gomaxprocs:threads.
+# TYPE go_sched_gomaxprocs_threads gauge
+go_sched_gomaxprocs_threads 16
+# HELP go_threads Number of OS threads created.
+# TYPE go_threads gauge
+go_threads 24
+# HELP loki_experimental_features_in_use_total The number of experimental features in use.
+# TYPE loki_experimental_features_in_use_total counter
+loki_experimental_features_in_use_total 0
+# HELP loki_logql_querystats_duplicates_total Total count of duplicates found while executing LogQL queries.
+# TYPE loki_logql_querystats_duplicates_total counter
+loki_logql_querystats_duplicates_total 0
+# HELP loki_logql_querystats_ingester_sent_lines_total Total count of lines sent from ingesters while executing LogQL queries.
+# TYPE loki_logql_querystats_ingester_sent_lines_total counter
+loki_logql_querystats_ingester_sent_lines_total 0
+# HELP loki_panic_total The total number of panic triggered
+# TYPE loki_panic_total counter
+loki_panic_total 0
+# HELP loki_querier_index_cache_corruptions_total The number of cache corruptions for the index cache.
+# TYPE loki_querier_index_cache_corruptions_total counter
+loki_querier_index_cache_corruptions_total 0
+# HELP loki_querier_index_cache_encode_errors_total The number of errors for the index cache while encoding the body.
+# TYPE loki_querier_index_cache_encode_errors_total counter
+loki_querier_index_cache_encode_errors_total 0
+# HELP loki_querier_index_cache_gets_total The number of gets for the index cache.
+# TYPE loki_querier_index_cache_gets_total counter
+loki_querier_index_cache_gets_total 0
+# HELP loki_querier_index_cache_hits_total The number of cache hits for the index cache.
+# TYPE loki_querier_index_cache_hits_total counter
+loki_querier_index_cache_hits_total 0
+# HELP loki_querier_index_cache_puts_total The number of puts for the index cache.
+# TYPE loki_querier_index_cache_puts_total counter
+loki_querier_index_cache_puts_total 0
+# HELP loki_write_batch_retries_total Number of times batches has had to be retried.
+# TYPE loki_write_batch_retries_total counter
+loki_write_batch_retries_total{component_id="loki.write.vlinsert",component_path="/",host="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com:9481",tenant=""} 0
+# HELP loki_write_dropped_bytes_total Number of bytes dropped because failed to be sent to the ingester after all retries.
+# TYPE loki_write_dropped_bytes_total counter
+loki_write_dropped_bytes_total{component_id="loki.write.vlinsert",component_path="/",host="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com:9481",reason="ingester_error",tenant=""} 0
+loki_write_dropped_bytes_total{component_id="loki.write.vlinsert",component_path="/",host="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com:9481",reason="line_too_long",tenant=""} 0
+loki_write_dropped_bytes_total{component_id="loki.write.vlinsert",component_path="/",host="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com:9481",reason="rate_limited",tenant=""} 0
+loki_write_dropped_bytes_total{component_id="loki.write.vlinsert",component_path="/",host="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com:9481",reason="stream_limited",tenant=""} 0
+# HELP loki_write_dropped_entries_total Number of log entries dropped because failed to be sent to the ingester after all retries.
+# TYPE loki_write_dropped_entries_total counter
+loki_write_dropped_entries_total{component_id="loki.write.vlinsert",component_path="/",host="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com:9481",reason="ingester_error",tenant=""} 0
+loki_write_dropped_entries_total{component_id="loki.write.vlinsert",component_path="/",host="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com:9481",reason="line_too_long",tenant=""} 0
+loki_write_dropped_entries_total{component_id="loki.write.vlinsert",component_path="/",host="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com:9481",reason="rate_limited",tenant=""} 0
+loki_write_dropped_entries_total{component_id="loki.write.vlinsert",component_path="/",host="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com:9481",reason="stream_limited",tenant=""} 0
+# HELP loki_write_encoded_bytes_total Number of bytes encoded and ready to send.
+# TYPE loki_write_encoded_bytes_total counter
+loki_write_encoded_bytes_total{component_id="loki.write.vlinsert",component_path="/",host="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com:9481",tenant=""} 7.6874800441e+10
+# HELP loki_write_mutated_bytes_total The total number of bytes that have been mutated.
+# TYPE loki_write_mutated_bytes_total counter
+loki_write_mutated_bytes_total{component_id="loki.write.vlinsert",component_path="/",host="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com:9481",reason="ingester_error",tenant=""} 0
+loki_write_mutated_bytes_total{component_id="loki.write.vlinsert",component_path="/",host="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com:9481",reason="line_too_long",tenant=""} 0
+loki_write_mutated_bytes_total{component_id="loki.write.vlinsert",component_path="/",host="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com:9481",reason="rate_limited",tenant=""} 0
+loki_write_mutated_bytes_total{component_id="loki.write.vlinsert",component_path="/",host="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com:9481",reason="stream_limited",tenant=""} 0
+# HELP loki_write_mutated_entries_total The total number of log entries that have been mutated.
+# TYPE loki_write_mutated_entries_total counter
+loki_write_mutated_entries_total{component_id="loki.write.vlinsert",component_path="/",host="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com:9481",reason="ingester_error",tenant=""} 0
+loki_write_mutated_entries_total{component_id="loki.write.vlinsert",component_path="/",host="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com:9481",reason="line_too_long",tenant=""} 0
+loki_write_mutated_entries_total{component_id="loki.write.vlinsert",component_path="/",host="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com:9481",reason="rate_limited",tenant=""} 0
+loki_write_mutated_entries_total{component_id="loki.write.vlinsert",component_path="/",host="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com:9481",reason="stream_limited",tenant=""} 0
+# HELP loki_write_request_duration_seconds Duration of send requests.
+# TYPE loki_write_request_duration_seconds histogram
+loki_write_request_duration_seconds_bucket{component_id="loki.write.vlinsert",component_path="/",host="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com:9481",status_code="204",tenant="",le="0.005"} 111420
+loki_write_request_duration_seconds_bucket{component_id="loki.write.vlinsert",component_path="/",host="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com:9481",status_code="204",tenant="",le="0.01"} 160696
+loki_write_request_duration_seconds_bucket{component_id="loki.write.vlinsert",component_path="/",host="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com:9481",status_code="204",tenant="",le="0.025"} 189450
+loki_write_request_duration_seconds_bucket{component_id="loki.write.vlinsert",component_path="/",host="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com:9481",status_code="204",tenant="",le="0.05"} 232763
+loki_write_request_duration_seconds_bucket{component_id="loki.write.vlinsert",component_path="/",host="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com:9481",status_code="204",tenant="",le="0.1"} 232841
+loki_write_request_duration_seconds_bucket{component_id="loki.write.vlinsert",component_path="/",host="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com:9481",status_code="204",tenant="",le="0.25"} 232843
+loki_write_request_duration_seconds_bucket{component_id="loki.write.vlinsert",component_path="/",host="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com:9481",status_code="204",tenant="",le="0.5"} 232843
+loki_write_request_duration_seconds_bucket{component_id="loki.write.vlinsert",component_path="/",host="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com:9481",status_code="204",tenant="",le="1"} 232843
+loki_write_request_duration_seconds_bucket{component_id="loki.write.vlinsert",component_path="/",host="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com:9481",status_code="204",tenant="",le="2.5"} 232843
+loki_write_request_duration_seconds_bucket{component_id="loki.write.vlinsert",component_path="/",host="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com:9481",status_code="204",tenant="",le="5"} 232843
+loki_write_request_duration_seconds_bucket{component_id="loki.write.vlinsert",component_path="/",host="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com:9481",status_code="204",tenant="",le="10"} 232843
+loki_write_request_duration_seconds_bucket{component_id="loki.write.vlinsert",component_path="/",host="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com:9481",status_code="204",tenant="",le="+Inf"} 232843
+loki_write_request_duration_seconds_sum{component_id="loki.write.vlinsert",component_path="/",host="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com:9481",status_code="204",tenant=""} 2747.6818620659915
+loki_write_request_duration_seconds_count{component_id="loki.write.vlinsert",component_path="/",host="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com:9481",status_code="204",tenant=""} 232843
+# HELP loki_write_sent_bytes_total Number of bytes sent.
+# TYPE loki_write_sent_bytes_total counter
+loki_write_sent_bytes_total{component_id="loki.write.vlinsert",component_path="/",host="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com:9481",tenant=""} 7.6874800441e+10
+# HELP loki_write_sent_entries_total Number of log entries sent to the ingester.
+# TYPE loki_write_sent_entries_total counter
+loki_write_sent_entries_total{component_id="loki.write.vlinsert",component_path="/",host="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com:9481",tenant=""} 8.74177408e+08
+# HELP net_conntrack_dialer_conn_attempted_total Total number of connections attempted by the given dialer a given name.
+# TYPE net_conntrack_dialer_conn_attempted_total counter
+net_conntrack_dialer_conn_attempted_total{dialer_name="Alloy"} 513
+# HELP net_conntrack_dialer_conn_closed_total Total number of connections closed which originated from the dialer of a given name.
+# TYPE net_conntrack_dialer_conn_closed_total counter
+net_conntrack_dialer_conn_closed_total{dialer_name="Alloy"} 512
+# HELP net_conntrack_dialer_conn_established_total Total number of connections successfully established by the given dialer a given name.
+# TYPE net_conntrack_dialer_conn_established_total counter
+net_conntrack_dialer_conn_established_total{dialer_name="Alloy"} 513
+# HELP net_conntrack_dialer_conn_failed_total Total number of connections failed to dial by the dialer a given name.
+# TYPE net_conntrack_dialer_conn_failed_total counter
+net_conntrack_dialer_conn_failed_total{dialer_name="Alloy",reason="refused"} 0
+net_conntrack_dialer_conn_failed_total{dialer_name="Alloy",reason="resolution"} 0
+net_conntrack_dialer_conn_failed_total{dialer_name="Alloy",reason="timeout"} 0
+net_conntrack_dialer_conn_failed_total{dialer_name="Alloy",reason="unknown"} 0
+# HELP postgres_exporter_config_last_reload_success_timestamp_seconds Timestamp of the last successful configuration reload.
+# TYPE postgres_exporter_config_last_reload_success_timestamp_seconds gauge
+postgres_exporter_config_last_reload_success_timestamp_seconds 0
+# HELP postgres_exporter_config_last_reload_successful Postgres exporter config loaded successfully.
+# TYPE postgres_exporter_config_last_reload_successful gauge
+postgres_exporter_config_last_reload_successful 0
+# HELP process_cpu_seconds_total Total user and system CPU time spent in seconds.
+# TYPE process_cpu_seconds_total counter
+process_cpu_seconds_total 35217.79
+# HELP process_max_fds Maximum number of open file descriptors.
+# TYPE process_max_fds gauge
+process_max_fds 262140
+# HELP process_network_receive_bytes_total Number of bytes received by the process over the network.
+# TYPE process_network_receive_bytes_total counter
+process_network_receive_bytes_total 3.75049260438e+11
+# HELP process_network_transmit_bytes_total Number of bytes sent by the process over the network.
+# TYPE process_network_transmit_bytes_total counter
+process_network_transmit_bytes_total 1.0117610225e+11
+# HELP process_open_fds Number of open file descriptors.
+# TYPE process_open_fds gauge
+process_open_fds 12
+# HELP process_resident_memory_bytes Resident memory size in bytes.
+# TYPE process_resident_memory_bytes gauge
+process_resident_memory_bytes 2.31657472e+08
+# HELP process_start_time_seconds Start time of the process since unix epoch in seconds.
+# TYPE process_start_time_seconds gauge
+process_start_time_seconds 1.75265306914e+09
+# HELP process_virtual_memory_bytes Virtual memory size in bytes.
+# TYPE process_virtual_memory_bytes gauge
+process_virtual_memory_bytes 3.355598848e+09
+# HELP process_virtual_memory_max_bytes Maximum amount of virtual memory available in bytes.
+# TYPE process_virtual_memory_max_bytes gauge
+process_virtual_memory_max_bytes 1.8446744073709552e+19
+# HELP prometheus_remote_storage_exemplars_in_total Exemplars in to remote storage, compare to exemplars out for queue managers.
+# TYPE prometheus_remote_storage_exemplars_in_total counter
+prometheus_remote_storage_exemplars_in_total 0
+# HELP prometheus_remote_storage_histograms_in_total HistogramSamples in to remote storage, compare to histograms out for queue managers.
+# TYPE prometheus_remote_storage_histograms_in_total counter
+prometheus_remote_storage_histograms_in_total 0
+# HELP prometheus_remote_storage_samples_in_total Samples in to remote storage, compare to samples out for queue managers.
+# TYPE prometheus_remote_storage_samples_in_total counter
+prometheus_remote_storage_samples_in_total 0
+# HELP prometheus_remote_storage_string_interner_zero_reference_releases_total The number of times release has been called for strings that are not interned.
+# TYPE prometheus_remote_storage_string_interner_zero_reference_releases_total counter
+prometheus_remote_storage_string_interner_zero_reference_releases_total 0
+# HELP prometheus_sd_kubernetes_events_total The number of Kubernetes events handled.
+# TYPE prometheus_sd_kubernetes_events_total counter
+prometheus_sd_kubernetes_events_total{component_id="discovery.kubernetes.pods",component_path="/",event="add",role="endpoints"} 0
+prometheus_sd_kubernetes_events_total{component_id="discovery.kubernetes.pods",component_path="/",event="add",role="endpointslice"} 0
+prometheus_sd_kubernetes_events_total{component_id="discovery.kubernetes.pods",component_path="/",event="add",role="ingress"} 0
+prometheus_sd_kubernetes_events_total{component_id="discovery.kubernetes.pods",component_path="/",event="add",role="node"} 0
+prometheus_sd_kubernetes_events_total{component_id="discovery.kubernetes.pods",component_path="/",event="add",role="pod"} 3
+prometheus_sd_kubernetes_events_total{component_id="discovery.kubernetes.pods",component_path="/",event="add",role="service"} 0
+prometheus_sd_kubernetes_events_total{component_id="discovery.kubernetes.pods",component_path="/",event="delete",role="endpoints"} 0
+prometheus_sd_kubernetes_events_total{component_id="discovery.kubernetes.pods",component_path="/",event="delete",role="endpointslice"} 0
+prometheus_sd_kubernetes_events_total{component_id="discovery.kubernetes.pods",component_path="/",event="delete",role="ingress"} 0
+prometheus_sd_kubernetes_events_total{component_id="discovery.kubernetes.pods",component_path="/",event="delete",role="node"} 0
+prometheus_sd_kubernetes_events_total{component_id="discovery.kubernetes.pods",component_path="/",event="delete",role="pod"} 0
+prometheus_sd_kubernetes_events_total{component_id="discovery.kubernetes.pods",component_path="/",event="delete",role="service"} 0
+prometheus_sd_kubernetes_events_total{component_id="discovery.kubernetes.pods",component_path="/",event="update",role="endpoints"} 0
+prometheus_sd_kubernetes_events_total{component_id="discovery.kubernetes.pods",component_path="/",event="update",role="endpointslice"} 0
+prometheus_sd_kubernetes_events_total{component_id="discovery.kubernetes.pods",component_path="/",event="update",role="ingress"} 0
+prometheus_sd_kubernetes_events_total{component_id="discovery.kubernetes.pods",component_path="/",event="update",role="node"} 0
+prometheus_sd_kubernetes_events_total{component_id="discovery.kubernetes.pods",component_path="/",event="update",role="pod"} 0
+prometheus_sd_kubernetes_events_total{component_id="discovery.kubernetes.pods",component_path="/",event="update",role="service"} 0
+# HELP prometheus_sd_kubernetes_failures_total The number of failed WATCH/LIST requests.
+# TYPE prometheus_sd_kubernetes_failures_total counter
+prometheus_sd_kubernetes_failures_total{component_id="discovery.kubernetes.pods",component_path="/"} 0
+# HELP prometheus_template_text_expansion_failures_total The total number of template text expansion failures.
+# TYPE prometheus_template_text_expansion_failures_total counter
+prometheus_template_text_expansion_failures_total 0
+# HELP prometheus_template_text_expansions_total The total number of template text expansions.
+# TYPE prometheus_template_text_expansions_total counter
+prometheus_template_text_expansions_total 0
+# HELP prometheus_treecache_watcher_goroutines The current number of watcher goroutines.
+# TYPE prometheus_treecache_watcher_goroutines gauge
+prometheus_treecache_watcher_goroutines 0
+# HELP prometheus_treecache_zookeeper_failures_total The total number of ZooKeeper failures.
+# TYPE prometheus_treecache_zookeeper_failures_total counter
+prometheus_treecache_zookeeper_failures_total 0
