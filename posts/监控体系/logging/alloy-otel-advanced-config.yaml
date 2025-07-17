@@ -123,7 +123,69 @@ otelcol.exporter.otlphttp "default" {
   }
 }
 
-# 可选：添加 Prometheus 指标导出
+# Kubernetes Pod 服务发现 - 用于 Prometheus 指标采集
+discovery.kubernetes "prometheus_pods" {
+  role = "pod"
+  
+  # 选择带有 prometheus.vm/scrape: true 注解的 Pod
+  selectors {
+    role = "pod"
+    label = "prometheus.vm/scrape=true"
+  }
+}
+
+# Prometheus 指标采集 - 采集带有注解的 Pod
+prometheus.scrape "annotated_pods" {
+  targets = discovery.kubernetes.prometheus_pods.targets
+  
+  # 使用注解中的端口信息
+  relabel_configs {
+    source_labels = ["__meta_kubernetes_pod_annotation_prometheus_vm_port"]
+    target_label  = "__address__"
+    regex         = "(.+)"
+    replacement   = "${1}:${__meta_kubernetes_pod_annotation_prometheus_vm_port}"
+  }
+  
+  # 设置 metrics 路径
+  relabel_configs {
+    source_labels = ["__meta_kubernetes_pod_annotation_prometheus_vm_path"]
+    target_label  = "__metrics_path__"
+    regex         = "(.+)"
+    replacement   = "${1}"
+  }
+  
+  # 如果没有指定路径，使用默认的 /metrics
+  relabel_configs {
+    source_labels = ["__metrics_path__"]
+    target_label  = "__metrics_path__"
+    regex         = "^$"
+    replacement   = "/metrics"
+  }
+  
+  # 添加 Pod 相关标签
+  relabel_configs {
+    source_labels = ["__meta_kubernetes_pod_name"]
+    target_label  = "pod"
+  }
+  
+  relabel_configs {
+    source_labels = ["__meta_kubernetes_namespace"]
+    target_label  = "namespace"
+  }
+  
+  relabel_configs {
+    source_labels = ["__meta_kubernetes_pod_label_app"]
+    target_label  = "app"
+  }
+  
+  # 设置采集间隔
+  scrape_interval = "15s"
+  scrape_timeout  = "10s"
+  
+  forward_to = [prometheus.remote_write.default.receiver]
+}
+
+# Alloy 自身指标导出
 prometheus.exporter.self "alloy_metrics" {}
 
 prometheus.scrape "alloy_metrics" {
@@ -131,15 +193,31 @@ prometheus.scrape "alloy_metrics" {
   forward_to = [prometheus.remote_write.default.receiver]
 }
 
-# 可选：Prometheus 远程写入
+# Prometheus 远程写入
 prometheus.remote_write "default" {
   endpoint {
     url = "http://prometheus.monitoring.svc.cluster.local:9090/api/v1/write"
+    
+    # 写入配置优化
+    queue_config {
+      capacity             = 10000
+      max_shards          = 200
+      min_shards          = 1
+      max_samples_per_send = 2000
+      batch_send_deadline  = "5s"
+      min_backoff         = "30ms"
+      max_backoff         = "100ms"
+    }
     
     # 可选：认证配置
     # basic_auth {
     #   username = "admin"
     #   password = "password"
+    # }
+    
+    # 可选：TLS 配置
+    # tls_config {
+    #   insecure_skip_verify = true
     # }
   }
 }
