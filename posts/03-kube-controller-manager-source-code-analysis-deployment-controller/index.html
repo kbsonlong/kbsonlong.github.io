@@ -1,0 +1,1289 @@
+<!doctype html><html itemscope itemtype=http://schema.org/WebPage lang=zh-CN><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=2"><meta name=robots content="noodp"><title>03-Kube-Controller-Manager源码分析(Deployment控制器) - 蜷缩的蜗牛</title><meta name=author content="kbsonlong">
+<meta name=description content="本文基于1.29.0版本
+kube-controller-manager pkg/controller目录结构,包含各控制器的具体实现
+"><meta name=keywords content='kubernetes,kube-controller-manager'><meta itemprop=name content="03-kube-controller-manager源码分析(Deployment控制器)"><meta itemprop=description content="本文基于1.29.0版本
+kube-controller-manager pkg/controller目录结构,包含各控制器的具体实现"><meta itemprop=datePublished content="2023-07-28T17:18:49+08:00"><meta itemprop=dateModified content="2023-07-28T17:18:49+08:00"><meta itemprop=wordCount content="5335"><meta itemprop=image content="https://www.kbsonlong.com/logo_transparent.png"><meta itemprop=keywords content="Kubernetes,Kube-Controller-Manager"><meta property="og:url" content="https://www.kbsonlong.com/posts/03-kube-controller-manager-source-code-analysis-deployment-controller/"><meta property="og:site_name" content="蜷缩的蜗牛"><meta property="og:title" content="03-kube-controller-manager源码分析(Deployment控制器)"><meta property="og:description" content="本文基于1.29.0版本
+kube-controller-manager pkg/controller目录结构,包含各控制器的具体实现"><meta property="og:locale" content="zh_CN"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2023-07-28T17:18:49+08:00"><meta property="article:modified_time" content="2023-07-28T17:18:49+08:00"><meta property="article:tag" content="Kubernetes"><meta property="article:tag" content="Kube-Controller-Manager"><meta property="og:image" content="https://www.kbsonlong.com/logo_transparent.png"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://www.kbsonlong.com/logo_transparent.png"><meta name=twitter:title content="03-kube-controller-manager源码分析(Deployment控制器)"><meta name=twitter:description content="本文基于1.29.0版本
+kube-controller-manager pkg/controller目录结构,包含各控制器的具体实现"><meta name=application-name content="FixIt"><meta name=apple-mobile-web-app-title content="FixIt"><meta name=theme-color data-light=#ffffff data-dark=#252627 content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical type=text/html href=https://www.kbsonlong.com/posts/03-kube-controller-manager-source-code-analysis-deployment-controller/ title="03-kube-controller-manager源码分析(Deployment控制器) - 蜷缩的蜗牛"><link rel=prev type=text/html href=https://www.kbsonlong.com/posts/common-problem/ title=istio常见问题><link rel=next type=text/html href=https://www.kbsonlong.com/posts/02-kube-controller-manager-source-code-analysis-main-process/ title=02-kube-controller-manager源码分析(主流程)><link rel=alternate type=text/markdown href=https://www.kbsonlong.com/posts/03-kube-controller-manager-source-code-analysis-deployment-controller/index.md title="03-kube-controller-manager源码分析(Deployment控制器) - 蜷缩的蜗牛"><link rel=stylesheet href=/css/style.min.css><link rel=preload href=/lib/fontawesome-free/all.min.css as=style onload='this.removeAttribute("onload"),this.rel="stylesheet"'><noscript><link rel=stylesheet href=/lib/fontawesome-free/all.min.css></noscript><link rel=preload href=/lib/animate/animate.min.css as=style onload='this.removeAttribute("onload"),this.rel="stylesheet"'><noscript><link rel=stylesheet href=/lib/animate/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"03-kube-controller-manager源码分析(Deployment控制器)","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/www.kbsonlong.com\/posts\/03-kube-controller-manager-source-code-analysis-deployment-controller\/"},"genre":"posts","keywords":"kubernetes, kube-controller-manager","wordcount":5335,"url":"https:\/\/www.kbsonlong.com\/posts\/03-kube-controller-manager-source-code-analysis-deployment-controller\/","datePublished":"2023-07-28T17:18:49+08:00","dateModified":"2023-07-28T17:18:49+08:00","license":"This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"kbsonlong"},"description":""}</script><script src=/js/head/color-scheme.min.js></script></head><body data-header-desktop=sticky data-header-mobile=auto><div class=wrapper data-page-style=normal><header class="desktop animate__faster" id=header-desktop><div class=header-wrapper data-github-corner=right><div class=header-title><a href=/ title=蜷缩的蜗牛><img class=logo src=/logo_transparent.png alt=蜷缩的蜗牛 height=32 width=32><span class=header-title-text>蜷缩的蜗牛</span></a><span class=header-subtitle></span></div><nav><ul class=menu><li class=menu-item><a class=menu-link href=/posts/><i class='fa-solid fa-archive fa-fw fa-sm'></i> 文章</a></li><li class=menu-item><a class=menu-link href=/categories/><i class='fa-solid fa-th fa-fw fa-sm'></i> 分类</a></li><li class=menu-item><a class=menu-link href=/tags/><i class='fa-solid fa-tags fa-fw fa-sm'></i> 标签</a></li><li class=menu-item><a class=menu-link href=/friends/ title=友情链接><i class='fa-solid fa-users fa-fw fa-sm'></i> 友链</a></li><li class=menu-item><a class=menu-link href=/about/><i class='fa-solid fa-info-circle fa-fw fa-sm'></i> 关于</a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=https://github.com/kbsonlong/ title=GitHub rel="noopener noreferrer" target=_blank><i class='fa-brands fa-github fa-fw'></i></a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=/messages/><i class='fa-solid fa-messages'></i> 留言板</a></li><li class=menu-item><a class=menu-link href=/messages/ title=留言板>留言板</a></li><li class="menu-item delimiter"></li><li class="menu-item search" id=search-desktop><input type=text placeholder=搜索文章标题或内容…… id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fa-solid fa-search fa-fw" aria-hidden=true></i>
+</a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fa-solid fa-times-circle fa-fw" aria-hidden=true></i>
+</a><span class="search-button search-loading" id=search-loading-desktop><i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></li><li class="menu-item theme-switch" title=切换主题><i class="fa-solid fa-adjust fa-fw" aria-hidden=true></i></li><li class="menu-item language-switch"><span role=button aria-label=选择语言 title=选择语言><i class="fa-solid fa-language fa-fw" aria-hidden=true></i></span><ul class=sub-menu><li class=menu-item>没有更多翻译</li></ul></li></ul></nav></div></header><header class="mobile animate__faster" id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title=蜷缩的蜗牛><img class=logo src=/logo_transparent.png alt=蜷缩的蜗牛 height=26 width=26><span class=header-title-text>蜷缩的蜗牛</span></a><span class=header-subtitle></span></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><nav><ul class=menu id=menu-mobile><li class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容…… id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fa-solid fa-search fa-fw" aria-hidden=true></i>
+</a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fa-solid fa-times-circle fa-fw" aria-hidden=true></i>
+</a><span class="search-button search-loading" id=search-loading-mobile><i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></li><li class=menu-item><a class=menu-link href=/posts/><i class='fa-solid fa-archive fa-fw fa-sm'></i> 文章</a></li><li class=menu-item><a class=menu-link href=/categories/><i class='fa-solid fa-th fa-fw fa-sm'></i> 分类</a></li><li class=menu-item><a class=menu-link href=/tags/><i class='fa-solid fa-tags fa-fw fa-sm'></i> 标签</a></li><li class=menu-item><a class=menu-link href=/friends/ title=友情链接><i class='fa-solid fa-users fa-fw fa-sm'></i> 友链</a></li><li class=menu-item><a class=menu-link href=/about/><i class='fa-solid fa-info-circle fa-fw fa-sm'></i> 关于</a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=https://github.com/kbsonlong/ title=GitHub rel="noopener noreferrer" target=_blank><i class='fa-brands fa-github fa-fw'></i></a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=/messages/><i class='fa-solid fa-messages'></i> 留言板</a></li><li class=menu-item><a class=menu-link href=/messages/ title=留言板>留言板</a></li><li class="menu-item menu-system"><span class="menu-system-item theme-switch" title=切换主题><i class="fa-solid fa-adjust fa-fw" aria-hidden=true></i></span><span class="menu-system-item language-switch">
+<span role=button aria-label=选择语言 title=选择语言>简体中文<i class="dropdown-icon fa-solid fa-chevron-down" aria-hidden=true></i></span>
+<select class=language-select onchange="location=this.value"><option disabled>没有更多翻译</option></select></span></li></ul></nav></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=container><aside class="aside-collection animate__animated animate__fadeIn animate__faster" aria-label=合集></aside><article class="page single"><div class=header><h1 class="single-title animate__animated animate__flipInX"><span>03-Kube-Controller-Manager源码分析(Deployment控制器)</span></h1></div><div class=post-meta><div class=post-meta-line><span class=post-author><span class=author><i class="fa-solid fa-user-circle" aria-hidden=true></i>
+kbsonlong</span></span><span class=post-included-in>&nbsp;收录于 <a href=/categories/kubernetes/ class=post-category title="分类 - Kubernetes"><i class="fa-regular fa-folder fa-fw" aria-hidden=true></i> Kubernetes</a>&ensp;<a href=/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/ class=post-category title="分类 - 源码分析"><i class="fa-regular fa-folder fa-fw" aria-hidden=true></i> 源码分析</a></span></div><div class=post-meta-line><span title="发布于 2023-07-28 17:18:49"><i class="fa-solid fa-calendar-days fa-fw me-1" aria-hidden=true></i><time datetime=2023-07-28>2023-07-28</time></span>&nbsp;<span title="5335 字"><i class="fa-solid fa-pencil-alt fa-fw me-1" aria-hidden=true></i>约 5400 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw me-1" aria-hidden=true></i>预计阅读 11 分钟</span>&nbsp;<span id=busuanzi_container_page_pv class="busuanzi_visitors comment-visitors" data-flag-title=03-Kube-Controller-Manager源码分析(Deployment控制器)><i class="fa-regular fa-eye fa-fw me-1" aria-hidden=true></i><span id=busuanzi_value_page_pv>-</span>&nbsp;次阅读
+</span>&nbsp;</div></div><div class="details toc" id=toc-static data-kept=false><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fa-solid fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#kube-controller-manager>kube-controller-manager</a></li><li><a href=#newdeploymentcontrollerdescriptor>newDeploymentControllerDescriptor</a></li><li><a href=#startdeploymentcontroller>startDeploymentController</a></li><li><a href=#newdeploymentcontroller>NewDeploymentController</a></li><li><a href=#run>Run</a></li><li><a href=#核心方法-syncdeployment>核心方法 <code>syncDeployment</code></a><ul><li><a href=#删除-deployment-操作>删除 <code>Deployment</code> 操作</a></li><li><a href=#扩缩容-deployment>扩缩容 <code>Deployment</code></a></li><li><a href=#升级deployment>升级<code>Deployment</code></a><ul><li><a href=#重新创建>重新创建</a></li><li><a href=#滚动更新>滚动更新</a></li></ul></li></ul></li></ul></nav></div></div><div class=content id=content><p>本文基于<a href=https://github.com/kubernetes/kubernetes/tree/v1.29.0 target=_blank rel="external nofollow noopener noreferrer">1.29.0</a>版本</p><h2 class=heading-element id=kube-controller-manager><span>kube-controller-manager</span>
+<a href=#kube-controller-manager class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p>pkg/controller目录结构,包含各控制器的具体实现</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>pkg/controller
+</span></span><span class=line><span class=cl>├── OWNERS
+</span></span><span class=line><span class=cl>├── apis
+</span></span><span class=line><span class=cl>├── bootstrap
+</span></span><span class=line><span class=cl>├── certificates
+</span></span><span class=line><span class=cl>├── clusterroleaggregation
+</span></span><span class=line><span class=cl>├── controller_ref_manager.go
+</span></span><span class=line><span class=cl>├── controller_utils.go
+</span></span><span class=line><span class=cl>├── cronjob
+</span></span><span class=line><span class=cl>├── daemon
+</span></span><span class=line><span class=cl>├── deployment
+</span></span><span class=line><span class=cl>├── disruption
+</span></span><span class=line><span class=cl>├── doc.go
+</span></span><span class=line><span class=cl>├── endpoint
+</span></span><span class=line><span class=cl>├── endpointslice
+</span></span><span class=line><span class=cl>├── endpointslicemirroring
+</span></span><span class=line><span class=cl>├── garbagecollector
+</span></span><span class=line><span class=cl>├── <span class=nb>history</span>
+</span></span><span class=line><span class=cl>├── job
+</span></span><span class=line><span class=cl>├── namespace
+</span></span><span class=line><span class=cl>├── nodeipam
+</span></span><span class=line><span class=cl>├── nodelifecycle
+</span></span><span class=line><span class=cl>├── podautoscaler
+</span></span><span class=line><span class=cl>├── podgc
+</span></span><span class=line><span class=cl>├── replicaset
+</span></span><span class=line><span class=cl>├── replication
+</span></span><span class=line><span class=cl>├── resourceclaim
+</span></span><span class=line><span class=cl>├── resourcequota
+</span></span><span class=line><span class=cl>├── serviceaccount
+</span></span><span class=line><span class=cl>├── servicecidrs
+</span></span><span class=line><span class=cl>├── statefulset
+</span></span><span class=line><span class=cl>├── storageversiongc
+</span></span><span class=line><span class=cl>├── tainteviction
+</span></span><span class=line><span class=cl>├── ttl
+</span></span><span class=line><span class=cl>├── ttlafterfinished
+</span></span><span class=line><span class=cl>├── util
+</span></span><span class=line><span class=cl>├── validatingadmissionpolicystatus
+</span></span><span class=line><span class=cl>└── volume
+</span></span><span class=line><span class=cl><span class=m>34</span> directories, <span class=m>6</span> files</span></span></code></pre></td></tr></table></div></div><p>cmd/kube-controller-manager/app/apps.go</p><h2 class=heading-element id=newdeploymentcontrollerdescriptor><span>newDeploymentControllerDescriptor</span>
+<a href=#newdeploymentcontrollerdescriptor class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=nf>newDeploymentControllerDescriptor</span><span class=p>()</span> <span class=o>*</span><span class=nx>ControllerDescriptor</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl> <span class=k>return</span> <span class=o>&amp;</span><span class=nx>ControllerDescriptor</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>name</span><span class=p>:</span>     <span class=nx>names</span><span class=p>.</span><span class=nx>DeploymentController</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nx>aliases</span><span class=p>:</span>  <span class=p>[]</span><span class=kt>string</span><span class=p>{</span><span class=s>&#34;deployment&#34;</span><span class=p>},</span>
+</span></span><span class=line><span class=cl>  <span class=nx>initFunc</span><span class=p>:</span> <span class=nx>startDeploymentController</span><span class=p>,</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><h2 class=heading-element id=startdeploymentcontroller><span>startDeploymentController</span>
+<a href=#startdeploymentcontroller class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p>startDeploymentController 里实例化 deployment controller 控制器对象, 并且启动控制器.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=nf>startDeploymentController</span><span class=p>(</span><span class=nx>ctx</span> <span class=nx>context</span><span class=p>.</span><span class=nx>Context</span><span class=p>,</span> <span class=nx>controllerContext</span> <span class=nx>ControllerContext</span><span class=p>,</span> <span class=nx>controllerName</span> <span class=kt>string</span><span class=p>)</span> <span class=p>(</span><span class=nx>controller</span><span class=p>.</span><span class=nx>Interface</span><span class=p>,</span> <span class=kt>bool</span><span class=p>,</span> <span class=kt>error</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl> <span class=nx>dc</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>deployment</span><span class=p>.</span><span class=nf>NewDeploymentController</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>  <span class=nx>ctx</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nx>controllerContext</span><span class=p>.</span><span class=nx>InformerFactory</span><span class=p>.</span><span class=nf>Apps</span><span class=p>().</span><span class=nf>V1</span><span class=p>().</span><span class=nf>Deployments</span><span class=p>(),</span>
+</span></span><span class=line><span class=cl>  <span class=nx>controllerContext</span><span class=p>.</span><span class=nx>InformerFactory</span><span class=p>.</span><span class=nf>Apps</span><span class=p>().</span><span class=nf>V1</span><span class=p>().</span><span class=nf>ReplicaSets</span><span class=p>(),</span>
+</span></span><span class=line><span class=cl>  <span class=nx>controllerContext</span><span class=p>.</span><span class=nx>InformerFactory</span><span class=p>.</span><span class=nf>Core</span><span class=p>().</span><span class=nf>V1</span><span class=p>().</span><span class=nf>Pods</span><span class=p>(),</span>
+</span></span><span class=line><span class=cl>  <span class=nx>controllerContext</span><span class=p>.</span><span class=nx>ClientBuilder</span><span class=p>.</span><span class=nf>ClientOrDie</span><span class=p>(</span><span class=s>&#34;deployment-controller&#34;</span><span class=p>),</span>
+</span></span><span class=line><span class=cl> <span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=kc>nil</span><span class=p>,</span> <span class=kc>true</span><span class=p>,</span> <span class=nx>fmt</span><span class=p>.</span><span class=nf>Errorf</span><span class=p>(</span><span class=s>&#34;error creating Deployment controller: %v&#34;</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=k>go</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>Run</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nb>int</span><span class=p>(</span><span class=nx>controllerContext</span><span class=p>.</span><span class=nx>ComponentConfig</span><span class=p>.</span><span class=nx>DeploymentController</span><span class=p>.</span><span class=nx>ConcurrentDeploymentSyncs</span><span class=p>))</span>
+</span></span><span class=line><span class=cl> <span class=k>return</span> <span class=kc>nil</span><span class=p>,</span> <span class=kc>true</span><span class=p>,</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><h2 class=heading-element id=newdeploymentcontroller><span>NewDeploymentController</span>
+<a href=#newdeploymentcontroller class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p>DeploymentController 控制器内通过 informer 监听 deployment, replicaset, pod 三个资源的事件.</p><p>pkg/controller/deployment/deployment_controller.go</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=nf>NewDeploymentController</span><span class=p>(</span><span class=nx>ctx</span> <span class=nx>context</span><span class=p>.</span><span class=nx>Context</span><span class=p>,</span> <span class=nx>dInformer</span> <span class=nx>appsinformers</span><span class=p>.</span><span class=nx>DeploymentInformer</span><span class=p>,</span> <span class=nx>rsInformer</span> <span class=nx>appsinformers</span><span class=p>.</span><span class=nx>ReplicaSetInformer</span><span class=p>,</span> <span class=nx>podInformer</span> <span class=nx>coreinformers</span><span class=p>.</span><span class=nx>PodInformer</span><span class=p>,</span> <span class=nx>client</span> <span class=nx>clientset</span><span class=p>.</span><span class=nx>Interface</span><span class=p>)</span> <span class=p>(</span><span class=o>*</span><span class=nx>DeploymentController</span><span class=p>,</span> <span class=kt>error</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl> <span class=o>...</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 实例化 `DeploymentController` 资源对象</span>
+</span></span><span class=line><span class=cl> <span class=nx>dc</span> <span class=o>:=</span> <span class=o>&amp;</span><span class=nx>DeploymentController</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>client</span><span class=p>:</span>           <span class=nx>client</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nx>eventBroadcaster</span><span class=p>:</span> <span class=nx>eventBroadcaster</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nx>eventRecorder</span><span class=p>:</span>    <span class=nx>eventBroadcaster</span><span class=p>.</span><span class=nf>NewRecorder</span><span class=p>(</span><span class=nx>scheme</span><span class=p>.</span><span class=nx>Scheme</span><span class=p>,</span> <span class=nx>v1</span><span class=p>.</span><span class=nx>EventSource</span><span class=p>{</span><span class=nx>Component</span><span class=p>:</span> <span class=s>&#34;deployment-controller&#34;</span><span class=p>}),</span>
+</span></span><span class=line><span class=cl>  <span class=nx>queue</span><span class=p>:</span>            <span class=nx>workqueue</span><span class=p>.</span><span class=nf>NewNamedRateLimitingQueue</span><span class=p>(</span><span class=nx>workqueue</span><span class=p>.</span><span class=nf>DefaultControllerRateLimiter</span><span class=p>(),</span> <span class=s>&#34;deployment&#34;</span><span class=p>),</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=nx>dc</span><span class=p>.</span><span class=nx>rsControl</span> <span class=p>=</span> <span class=nx>controller</span><span class=p>.</span><span class=nx>RealRSControl</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>KubeClient</span><span class=p>:</span> <span class=nx>client</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nx>Recorder</span><span class=p>:</span>   <span class=nx>dc</span><span class=p>.</span><span class=nx>eventRecorder</span><span class=p>,</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=o>...</span>
+</span></span><span class=line><span class=cl>    <span class=c1>//  监听Deployment资源的增删改事件变更</span>
+</span></span><span class=line><span class=cl> <span class=nx>dInformer</span><span class=p>.</span><span class=nf>Informer</span><span class=p>().</span><span class=nf>AddEventHandler</span><span class=p>(</span><span class=nx>cache</span><span class=p>.</span><span class=nx>ResourceEventHandlerFuncs</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>AddFunc</span><span class=p>:</span> <span class=kd>func</span><span class=p>(</span><span class=nx>obj</span> <span class=kd>interface</span><span class=p>{})</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=nx>dc</span><span class=p>.</span><span class=nf>addDeployment</span><span class=p>(</span><span class=nx>logger</span><span class=p>,</span> <span class=nx>obj</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>},</span>
+</span></span><span class=line><span class=cl>  <span class=nx>UpdateFunc</span><span class=p>:</span> <span class=kd>func</span><span class=p>(</span><span class=nx>oldObj</span><span class=p>,</span> <span class=nx>newObj</span> <span class=kd>interface</span><span class=p>{})</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=nx>dc</span><span class=p>.</span><span class=nf>updateDeployment</span><span class=p>(</span><span class=nx>logger</span><span class=p>,</span> <span class=nx>oldObj</span><span class=p>,</span> <span class=nx>newObj</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>},</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// This will enter the sync loop and no-op, because the deployment has been deleted from the store.</span>
+</span></span><span class=line><span class=cl>  <span class=nx>DeleteFunc</span><span class=p>:</span> <span class=kd>func</span><span class=p>(</span><span class=nx>obj</span> <span class=kd>interface</span><span class=p>{})</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=nx>dc</span><span class=p>.</span><span class=nf>deleteDeployment</span><span class=p>(</span><span class=nx>logger</span><span class=p>,</span> <span class=nx>obj</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>},</span>
+</span></span><span class=line><span class=cl> <span class=p>})</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 监听ReplicaSet资源的增删改事件变更</span>
+</span></span><span class=line><span class=cl> <span class=nx>rsInformer</span><span class=p>.</span><span class=nf>Informer</span><span class=p>().</span><span class=nf>AddEventHandler</span><span class=p>(</span><span class=nx>cache</span><span class=p>.</span><span class=nx>ResourceEventHandlerFuncs</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>AddFunc</span><span class=p>:</span> <span class=kd>func</span><span class=p>(</span><span class=nx>obj</span> <span class=kd>interface</span><span class=p>{})</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=nx>dc</span><span class=p>.</span><span class=nf>addReplicaSet</span><span class=p>(</span><span class=nx>logger</span><span class=p>,</span> <span class=nx>obj</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>},</span>
+</span></span><span class=line><span class=cl>  <span class=nx>UpdateFunc</span><span class=p>:</span> <span class=kd>func</span><span class=p>(</span><span class=nx>oldObj</span><span class=p>,</span> <span class=nx>newObj</span> <span class=kd>interface</span><span class=p>{})</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=nx>dc</span><span class=p>.</span><span class=nf>updateReplicaSet</span><span class=p>(</span><span class=nx>logger</span><span class=p>,</span> <span class=nx>oldObj</span><span class=p>,</span> <span class=nx>newObj</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>},</span>
+</span></span><span class=line><span class=cl>  <span class=nx>DeleteFunc</span><span class=p>:</span> <span class=kd>func</span><span class=p>(</span><span class=nx>obj</span> <span class=kd>interface</span><span class=p>{})</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=nx>dc</span><span class=p>.</span><span class=nf>deleteReplicaSet</span><span class=p>(</span><span class=nx>logger</span><span class=p>,</span> <span class=nx>obj</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>},</span>
+</span></span><span class=line><span class=cl> <span class=p>})</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 监听Pod资源的删除事件变更</span>
+</span></span><span class=line><span class=cl> <span class=nx>podInformer</span><span class=p>.</span><span class=nf>Informer</span><span class=p>().</span><span class=nf>AddEventHandler</span><span class=p>(</span><span class=nx>cache</span><span class=p>.</span><span class=nx>ResourceEventHandlerFuncs</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>DeleteFunc</span><span class=p>:</span> <span class=kd>func</span><span class=p>(</span><span class=nx>obj</span> <span class=kd>interface</span><span class=p>{})</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=nx>dc</span><span class=p>.</span><span class=nf>deletePod</span><span class=p>(</span><span class=nx>logger</span><span class=p>,</span> <span class=nx>obj</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>},</span>
+</span></span><span class=line><span class=cl> <span class=p>})</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//  核心逻辑, 处理队列里的数据</span>
+</span></span><span class=line><span class=cl> <span class=nx>dc</span><span class=p>.</span><span class=nx>syncHandler</span> <span class=p>=</span> <span class=nx>dc</span><span class=p>.</span><span class=nx>syncDeployment</span>
+</span></span><span class=line><span class=cl> <span class=nx>dc</span><span class=p>.</span><span class=nx>enqueueDeployment</span> <span class=p>=</span> <span class=nx>dc</span><span class=p>.</span><span class=nx>enqueue</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=nx>dc</span><span class=p>.</span><span class=nx>dLister</span> <span class=p>=</span> <span class=nx>dInformer</span><span class=p>.</span><span class=nf>Lister</span><span class=p>()</span>
+</span></span><span class=line><span class=cl> <span class=nx>dc</span><span class=p>.</span><span class=nx>rsLister</span> <span class=p>=</span> <span class=nx>rsInformer</span><span class=p>.</span><span class=nf>Lister</span><span class=p>()</span>
+</span></span><span class=line><span class=cl> <span class=nx>dc</span><span class=p>.</span><span class=nx>podLister</span> <span class=p>=</span> <span class=nx>podInformer</span><span class=p>.</span><span class=nf>Lister</span><span class=p>()</span>
+</span></span><span class=line><span class=cl> <span class=nx>dc</span><span class=p>.</span><span class=nx>dListerSynced</span> <span class=p>=</span> <span class=nx>dInformer</span><span class=p>.</span><span class=nf>Informer</span><span class=p>().</span><span class=nx>HasSynced</span>
+</span></span><span class=line><span class=cl> <span class=nx>dc</span><span class=p>.</span><span class=nx>rsListerSynced</span> <span class=p>=</span> <span class=nx>rsInformer</span><span class=p>.</span><span class=nf>Informer</span><span class=p>().</span><span class=nx>HasSynced</span>
+</span></span><span class=line><span class=cl> <span class=nx>dc</span><span class=p>.</span><span class=nx>podListerSynced</span> <span class=p>=</span> <span class=nx>podInformer</span><span class=p>.</span><span class=nf>Informer</span><span class=p>().</span><span class=nx>HasSynced</span>
+</span></span><span class=line><span class=cl> <span class=k>return</span> <span class=nx>dc</span><span class=p>,</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><h2 class=heading-element id=run><span>Run</span>
+<a href=#run class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p><code>Run</code> 启动控制器, 阻塞等待 <code>informer</code> 的缓存同步完毕, 启动 <code>workers</code> 数量的 <code>worker</code> 协程, 默认为 5 个.</p><p><code>worker</code> 循环的从队列获取数据, 然后交给 <code>syncHandler</code> 处理. 队列里的数据是由 <code>informer</code> 注册的 <code>eventHandler</code> 写入的.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>dc</span> <span class=o>*</span><span class=nx>DeploymentController</span><span class=p>)</span> <span class=nf>Run</span><span class=p>(</span><span class=nx>ctx</span> <span class=nx>context</span><span class=p>.</span><span class=nx>Context</span><span class=p>,</span> <span class=nx>workers</span> <span class=kt>int</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl> <span class=o>...</span>
+</span></span><span class=line><span class=cl> <span class=c1>// 等待 `informer cache` 更新完毕</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=p>!</span><span class=nx>cache</span><span class=p>.</span><span class=nf>WaitForNamedCacheSync</span><span class=p>(</span><span class=s>&#34;deployment&#34;</span><span class=p>,</span> <span class=nx>ctx</span><span class=p>.</span><span class=nf>Done</span><span class=p>(),</span> <span class=nx>dc</span><span class=p>.</span><span class=nx>dListerSynced</span><span class=p>,</span> <span class=nx>dc</span><span class=p>.</span><span class=nx>rsListerSynced</span><span class=p>,</span> <span class=nx>dc</span><span class=p>.</span><span class=nx>podListerSynced</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 默认启动 5 个 `worker`</span>
+</span></span><span class=line><span class=cl> <span class=k>for</span> <span class=nx>i</span> <span class=o>:=</span> <span class=mi>0</span><span class=p>;</span> <span class=nx>i</span> <span class=p>&lt;</span> <span class=nx>workers</span><span class=p>;</span> <span class=nx>i</span><span class=o>++</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>go</span> <span class=nx>wait</span><span class=p>.</span><span class=nf>UntilWithContext</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>dc</span><span class=p>.</span><span class=nx>worker</span><span class=p>,</span> <span class=nx>time</span><span class=p>.</span><span class=nx>Second</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=o>&lt;-</span><span class=nx>ctx</span><span class=p>.</span><span class=nf>Done</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>dc</span> <span class=o>*</span><span class=nx>DeploymentController</span><span class=p>)</span> <span class=nf>worker</span><span class=p>(</span><span class=nx>ctx</span> <span class=nx>context</span><span class=p>.</span><span class=nx>Context</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl> <span class=k>for</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>processNextWorkItem</span><span class=p>(</span><span class=nx>ctx</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>dc</span> <span class=o>*</span><span class=nx>DeploymentController</span><span class=p>)</span> <span class=nf>processNextWorkItem</span><span class=p>(</span><span class=nx>ctx</span> <span class=nx>context</span><span class=p>.</span><span class=nx>Context</span><span class=p>)</span> <span class=kt>bool</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl> <span class=c1>// 从队列获取任务, 拿不到任务就阻塞在条件变量上.</span>
+</span></span><span class=line><span class=cl> <span class=nx>key</span><span class=p>,</span> <span class=nx>quit</span> <span class=o>:=</span> <span class=nx>dc</span><span class=p>.</span><span class=nx>queue</span><span class=p>.</span><span class=nf>Get</span><span class=p>()</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>quit</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=kc>false</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=k>defer</span> <span class=nx>dc</span><span class=p>.</span><span class=nx>queue</span><span class=p>.</span><span class=nf>Done</span><span class=p>(</span><span class=nx>key</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=c1>// 调用 `syncHandler` 处理</span>
+</span></span><span class=line><span class=cl> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>syncHandler</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>key</span><span class=p>.(</span><span class=kt>string</span><span class=p>))</span>
+</span></span><span class=line><span class=cl> <span class=nx>dc</span><span class=p>.</span><span class=nf>handleErr</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>err</span><span class=p>,</span> <span class=nx>key</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=k>return</span> <span class=kc>true</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><h2 class=heading-element id=核心方法-syncdeployment><span>核心方法 <code>syncDeployment</code></span>
+<a href=#%e6%a0%b8%e5%bf%83%e6%96%b9%e6%b3%95-syncdeployment class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p><code>syncDeployment</code> 在每个阶段都定义了相关操作, <code>syncStatusOnly</code> 处理删除操作, <code>sync</code> 处理状态为 <code>pause</code> 暂停的操作, <code>rollback</code> 处理回滚版本的操作, 最后由 <code>rolloutRecreate</code> 和 <code>rolloutRolling</code> 实现升级操作</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>dc</span> <span class=o>*</span><span class=nx>DeploymentController</span><span class=p>)</span> <span class=nf>syncDeployment</span><span class=p>(</span><span class=nx>ctx</span> <span class=nx>context</span><span class=p>.</span><span class=nx>Context</span><span class=p>,</span> <span class=nx>key</span> <span class=kt>string</span><span class=p>)</span> <span class=kt>error</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl> <span class=nx>logger</span> <span class=o>:=</span> <span class=nx>klog</span><span class=p>.</span><span class=nf>FromContext</span><span class=p>(</span><span class=nx>ctx</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=c1>// 从 `key` 中解析出 `namespace` 和 `name` 信息</span>
+</span></span><span class=line><span class=cl> <span class=nx>namespace</span><span class=p>,</span> <span class=nx>name</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>cache</span><span class=p>.</span><span class=nf>SplitMetaNamespaceKey</span><span class=p>(</span><span class=nx>key</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>logger</span><span class=p>.</span><span class=nf>Error</span><span class=p>(</span><span class=nx>err</span><span class=p>,</span> <span class=s>&#34;Failed to split meta namespace cache key&#34;</span><span class=p>,</span> <span class=s>&#34;cacheKey&#34;</span><span class=p>,</span> <span class=nx>key</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=nx>startTime</span> <span class=o>:=</span> <span class=nx>time</span><span class=p>.</span><span class=nf>Now</span><span class=p>()</span>
+</span></span><span class=line><span class=cl> <span class=nx>logger</span><span class=p>.</span><span class=nf>V</span><span class=p>(</span><span class=mi>4</span><span class=p>).</span><span class=nf>Info</span><span class=p>(</span><span class=s>&#34;Started syncing deployment&#34;</span><span class=p>,</span> <span class=s>&#34;deployment&#34;</span><span class=p>,</span> <span class=nx>klog</span><span class=p>.</span><span class=nf>KRef</span><span class=p>(</span><span class=nx>namespace</span><span class=p>,</span> <span class=nx>name</span><span class=p>),</span> <span class=s>&#34;startTime&#34;</span><span class=p>,</span> <span class=nx>startTime</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=k>defer</span> <span class=kd>func</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>logger</span><span class=p>.</span><span class=nf>V</span><span class=p>(</span><span class=mi>4</span><span class=p>).</span><span class=nf>Info</span><span class=p>(</span><span class=s>&#34;Finished syncing deployment&#34;</span><span class=p>,</span> <span class=s>&#34;deployment&#34;</span><span class=p>,</span> <span class=nx>klog</span><span class=p>.</span><span class=nf>KRef</span><span class=p>(</span><span class=nx>namespace</span><span class=p>,</span> <span class=nx>name</span><span class=p>),</span> <span class=s>&#34;duration&#34;</span><span class=p>,</span> <span class=nx>time</span><span class=p>.</span><span class=nf>Since</span><span class=p>(</span><span class=nx>startTime</span><span class=p>))</span>
+</span></span><span class=line><span class=cl> <span class=p>}()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// 从 informer cache 中获取指定 `namespace` 和 `name` 的 `deployment` 对象</span>
+</span></span><span class=line><span class=cl> <span class=nx>deployment</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>dc</span><span class=p>.</span><span class=nx>dLister</span><span class=p>.</span><span class=nf>Deployments</span><span class=p>(</span><span class=nx>namespace</span><span class=p>).</span><span class=nf>Get</span><span class=p>(</span><span class=nx>name</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>errors</span><span class=p>.</span><span class=nf>IsNotFound</span><span class=p>(</span><span class=nx>err</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>logger</span><span class=p>.</span><span class=nf>V</span><span class=p>(</span><span class=mi>2</span><span class=p>).</span><span class=nf>Info</span><span class=p>(</span><span class=s>&#34;Deployment has been deleted&#34;</span><span class=p>,</span> <span class=s>&#34;deployment&#34;</span><span class=p>,</span> <span class=nx>klog</span><span class=p>.</span><span class=nf>KRef</span><span class=p>(</span><span class=nx>namespace</span><span class=p>,</span> <span class=nx>name</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// Deep-copy otherwise we are mutating our cache.</span>
+</span></span><span class=line><span class=cl> <span class=c1>// TODO: Deep-copy only when needed.</span>
+</span></span><span class=line><span class=cl> <span class=c1>// 拷贝 `deployment` 对象</span>
+</span></span><span class=line><span class=cl> <span class=nx>d</span> <span class=o>:=</span> <span class=nx>deployment</span><span class=p>.</span><span class=nf>DeepCopy</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// 判断 `Selector` 是否为空</span>
+</span></span><span class=line><span class=cl> <span class=nx>everything</span> <span class=o>:=</span> <span class=nx>metav1</span><span class=p>.</span><span class=nx>LabelSelector</span><span class=p>{}</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>reflect</span><span class=p>.</span><span class=nf>DeepEqual</span><span class=p>(</span><span class=nx>d</span><span class=p>.</span><span class=nx>Spec</span><span class=p>.</span><span class=nx>Selector</span><span class=p>,</span> <span class=o>&amp;</span><span class=nx>everything</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>dc</span><span class=p>.</span><span class=nx>eventRecorder</span><span class=p>.</span><span class=nf>Eventf</span><span class=p>(</span><span class=nx>d</span><span class=p>,</span> <span class=nx>v1</span><span class=p>.</span><span class=nx>EventTypeWarning</span><span class=p>,</span> <span class=s>&#34;SelectingAll&#34;</span><span class=p>,</span> <span class=s>&#34;This deployment is selecting all pods. A non-empty selector is required.&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=nx>d</span><span class=p>.</span><span class=nx>Status</span><span class=p>.</span><span class=nx>ObservedGeneration</span> <span class=p>&lt;</span> <span class=nx>d</span><span class=p>.</span><span class=nx>Generation</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=nx>d</span><span class=p>.</span><span class=nx>Status</span><span class=p>.</span><span class=nx>ObservedGeneration</span> <span class=p>=</span> <span class=nx>d</span><span class=p>.</span><span class=nx>Generation</span>
+</span></span><span class=line><span class=cl>   <span class=nx>dc</span><span class=p>.</span><span class=nx>client</span><span class=p>.</span><span class=nf>AppsV1</span><span class=p>().</span><span class=nf>Deployments</span><span class=p>(</span><span class=nx>d</span><span class=p>.</span><span class=nx>Namespace</span><span class=p>).</span><span class=nf>UpdateStatus</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>d</span><span class=p>,</span> <span class=nx>metav1</span><span class=p>.</span><span class=nx>UpdateOptions</span><span class=p>{})</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// List ReplicaSets owned by this Deployment, while reconciling ControllerRef</span>
+</span></span><span class=line><span class=cl> <span class=c1>// through adoption/orphaning.</span>
+</span></span><span class=line><span class=cl> <span class=c1>// 获取 deployment 对应的所有 rs, 通过 LabelSelector 进行匹配</span>
+</span></span><span class=line><span class=cl> <span class=nx>rsList</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>getReplicaSetsForDeployment</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>d</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=c1>// List all Pods owned by this Deployment, grouped by their ReplicaSet.</span>
+</span></span><span class=line><span class=cl> <span class=c1>// Current uses of the podMap are:</span>
+</span></span><span class=line><span class=cl> <span class=c1>//</span>
+</span></span><span class=line><span class=cl> <span class=c1>// * check if a Pod is labeled correctly with the pod-template-hash label.</span>
+</span></span><span class=line><span class=cl> <span class=c1>// * check that no old Pods are running in the middle of Recreate Deployments.</span>
+</span></span><span class=line><span class=cl> <span class=c1>// 获取当前 Deployment 对象关联的 pod</span>
+</span></span><span class=line><span class=cl> <span class=nx>podMap</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>getPodMapForDeployment</span><span class=p>(</span><span class=nx>d</span><span class=p>,</span> <span class=nx>rsList</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// 如果该 deployment 处于删除状态，则更新其 status</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>d</span><span class=p>.</span><span class=nx>DeletionTimestamp</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>syncStatusOnly</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>d</span><span class=p>,</span> <span class=nx>rsList</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// Update deployment conditions with an Unknown condition when pausing/resuming</span>
+</span></span><span class=line><span class=cl> <span class=c1>// a deployment. In this way, we can be sure that we won&#39;t timeout when a user</span>
+</span></span><span class=line><span class=cl> <span class=c1>// resumes a Deployment with a set progressDeadlineSeconds.</span>
+</span></span><span class=line><span class=cl> <span class=c1>// 检查 pause 状态</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>err</span> <span class=p>=</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>checkPausedConditions</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>d</span><span class=p>);</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// 如果是 pause 状态则进行 sync 同步.</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>d</span><span class=p>.</span><span class=nx>Spec</span><span class=p>.</span><span class=nx>Paused</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>sync</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>d</span><span class=p>,</span> <span class=nx>rsList</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// rollback is not re-entrant in case the underlying replica sets are updated with a new</span>
+</span></span><span class=line><span class=cl> <span class=c1>// revision so we should ensure that we won&#39;t proceed to update replica sets until we</span>
+</span></span><span class=line><span class=cl> <span class=c1>// make sure that the deployment has cleaned up its rollback spec in subsequent enqueues.</span>
+</span></span><span class=line><span class=cl> <span class=c1>// 检查是否为回滚操作</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nf>getRollbackTo</span><span class=p>(</span><span class=nx>d</span><span class=p>)</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>rollback</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>d</span><span class=p>,</span> <span class=nx>rsList</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=c1>// 检查 deployment 是否处于 scale 状态</span>
+</span></span><span class=line><span class=cl> <span class=nx>scalingEvent</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>isScalingEvent</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>d</span><span class=p>,</span> <span class=nx>rsList</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>scalingEvent</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>sync</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>d</span><span class=p>,</span> <span class=nx>rsList</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// 更新操作</span>
+</span></span><span class=line><span class=cl> <span class=k>switch</span> <span class=nx>d</span><span class=p>.</span><span class=nx>Spec</span><span class=p>.</span><span class=nx>Strategy</span><span class=p>.</span><span class=nx>Type</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl> <span class=k>case</span> <span class=nx>apps</span><span class=p>.</span><span class=nx>RecreateDeploymentStrategyType</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// 重建模式</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>rolloutRecreate</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>d</span><span class=p>,</span> <span class=nx>rsList</span><span class=p>,</span> <span class=nx>podMap</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=k>case</span> <span class=nx>apps</span><span class=p>.</span><span class=nx>RollingUpdateDeploymentStrategyType</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// 滚动更新模式</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>rolloutRolling</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>d</span><span class=p>,</span> <span class=nx>rsList</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=k>return</span> <span class=nx>fmt</span><span class=p>.</span><span class=nf>Errorf</span><span class=p>(</span><span class=s>&#34;unexpected deployment strategy type: %s&#34;</span><span class=p>,</span> <span class=nx>d</span><span class=p>.</span><span class=nx>Spec</span><span class=p>.</span><span class=nx>Strategy</span><span class=p>.</span><span class=nx>Type</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><h3 class=heading-element id=删除-deployment-操作><span>删除 <code>Deployment</code> 操作</span>
+<a href=#%e5%88%a0%e9%99%a4-deployment-%e6%93%8d%e4%bd%9c class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><p>当 <code>DeletionTimestamp</code> 不为 <code>nil</code>时,就意味着需要删除该 <code>deployment</code>,</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>dc</span> <span class=o>*</span><span class=nx>DeploymentController</span><span class=p>)</span> <span class=nf>syncStatusOnly</span><span class=p>(</span><span class=nx>ctx</span> <span class=nx>context</span><span class=p>.</span><span class=nx>Context</span><span class=p>,</span> <span class=nx>d</span> <span class=o>*</span><span class=nx>apps</span><span class=p>.</span><span class=nx>Deployment</span><span class=p>,</span> <span class=nx>rsList</span> <span class=p>[]</span><span class=o>*</span><span class=nx>apps</span><span class=p>.</span><span class=nx>ReplicaSet</span><span class=p>)</span> <span class=kt>error</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl> <span class=nx>newRS</span><span class=p>,</span> <span class=nx>oldRSs</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>getAllReplicaSetsAndSyncRevision</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>d</span><span class=p>,</span> <span class=nx>rsList</span><span class=p>,</span> <span class=kc>false</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=nx>allRSs</span> <span class=o>:=</span> <span class=nb>append</span><span class=p>(</span><span class=nx>oldRSs</span><span class=p>,</span> <span class=nx>newRS</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=k>return</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>syncDeploymentStatus</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>allRSs</span><span class=p>,</span> <span class=nx>newRS</span><span class=p>,</span> <span class=nx>d</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>dc</span> <span class=o>*</span><span class=nx>DeploymentController</span><span class=p>)</span> <span class=nf>syncDeploymentStatus</span><span class=p>(</span><span class=nx>ctx</span> <span class=nx>context</span><span class=p>.</span><span class=nx>Context</span><span class=p>,</span> <span class=nx>allRSs</span> <span class=p>[]</span><span class=o>*</span><span class=nx>apps</span><span class=p>.</span><span class=nx>ReplicaSet</span><span class=p>,</span> <span class=nx>newRS</span> <span class=o>*</span><span class=nx>apps</span><span class=p>.</span><span class=nx>ReplicaSet</span><span class=p>,</span> <span class=nx>d</span> <span class=o>*</span><span class=nx>apps</span><span class=p>.</span><span class=nx>Deployment</span><span class=p>)</span> <span class=kt>error</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl> <span class=nx>newStatus</span> <span class=o>:=</span> <span class=nf>calculateStatus</span><span class=p>(</span><span class=nx>allRSs</span><span class=p>,</span> <span class=nx>newRS</span><span class=p>,</span> <span class=nx>d</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>reflect</span><span class=p>.</span><span class=nf>DeepEqual</span><span class=p>(</span><span class=nx>d</span><span class=p>.</span><span class=nx>Status</span><span class=p>,</span> <span class=nx>newStatus</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=nx>newDeployment</span> <span class=o>:=</span> <span class=nx>d</span>
+</span></span><span class=line><span class=cl> <span class=nx>newDeployment</span><span class=p>.</span><span class=nx>Status</span> <span class=p>=</span> <span class=nx>newStatus</span>
+</span></span><span class=line><span class=cl> <span class=nx>_</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>dc</span><span class=p>.</span><span class=nx>client</span><span class=p>.</span><span class=nf>AppsV1</span><span class=p>().</span><span class=nf>Deployments</span><span class=p>(</span><span class=nx>newDeployment</span><span class=p>.</span><span class=nx>Namespace</span><span class=p>).</span><span class=nf>UpdateStatus</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>newDeployment</span><span class=p>,</span> <span class=nx>metav1</span><span class=p>.</span><span class=nx>UpdateOptions</span><span class=p>{})</span>
+</span></span><span class=line><span class=cl> <span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><ol><li>获取此部署目标的所有旧RS，并计算其中的最大修订号（maxOldV）。</li><li>获取此部署目标的新 RS（其 Pod 模板与部署的匹配），并将新 RS 的修订号更新为 (maxOldV + 1)，仅当其修订号小于 (maxOldV + 1) 时。如果此步骤失败，我们将在下一个部署同步循环中更新它。</li><li>将新 RS 的修订号复制到部署的状态中（更新部署的修订版）。如果此步骤失败，我们将在下一个部署同步循环中更新它。</li><li><code>syncDeploymentStatus</code> 通过 <code>newRS</code> 和 <code>allRSs</code> 检查 <code>Deployment</code> 状态是否是最新,如果有差异则更新<code>Deployment</code>的状态。</li></ol><blockquote><p>注意: 真正的删除 deployment, rs, pods 操作是放在垃圾回收控制器 garbagecollector controller 完成的. 在其他控制里的删除只是配置 DeletionTimestamp 字段，并标记 orphan、background 或者 foreground 删除标签.</p></blockquote><h3 class=heading-element id=扩缩容-deployment><span>扩缩容 <code>Deployment</code></span>
+<a href=#%e6%89%a9%e7%bc%a9%e5%ae%b9-deployment class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><p>当执行 scale 操作时，首先会通过 isScalingEvent 方法判断是否为扩缩容操作，然后通过 dc.sync 方法来执行实际的扩缩容动作。</p><ol><li>获取所有的 rs</li><li>过滤出 activeRS, rs.Spec.Replicas > 0 的为 activeRS</li><li>判断 rs 的 desired 值是否等于 deployment.Spec.Replicas, 若不等于则需要为 rs 进行 scale 操作.</li></ol><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>dc</span> <span class=o>*</span><span class=nx>DeploymentController</span><span class=p>)</span> <span class=nf>isScalingEvent</span><span class=p>(</span><span class=nx>ctx</span> <span class=nx>context</span><span class=p>.</span><span class=nx>Context</span><span class=p>,</span> <span class=nx>d</span> <span class=o>*</span><span class=nx>apps</span><span class=p>.</span><span class=nx>Deployment</span><span class=p>,</span> <span class=nx>rsList</span> <span class=p>[]</span><span class=o>*</span><span class=nx>apps</span><span class=p>.</span><span class=nx>ReplicaSet</span><span class=p>)</span> <span class=p>(</span><span class=kt>bool</span><span class=p>,</span> <span class=kt>error</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl> <span class=c1>// 获取新旧所有 `RS` 对象</span>
+</span></span><span class=line><span class=cl> <span class=nx>newRS</span><span class=p>,</span> <span class=nx>oldRSs</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>getAllReplicaSetsAndSyncRevision</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>d</span><span class=p>,</span> <span class=nx>rsList</span><span class=p>,</span> <span class=kc>false</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=kc>false</span><span class=p>,</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=nx>allRSs</span> <span class=o>:=</span> <span class=nb>append</span><span class=p>(</span><span class=nx>oldRSs</span><span class=p>,</span> <span class=nx>newRS</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=nx>logger</span> <span class=o>:=</span> <span class=nx>klog</span><span class=p>.</span><span class=nf>FromContext</span><span class=p>(</span><span class=nx>ctx</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=k>for</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>rs</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>controller</span><span class=p>.</span><span class=nf>FilterActiveReplicaSets</span><span class=p>(</span><span class=nx>allRSs</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>desired</span><span class=p>,</span> <span class=nx>ok</span> <span class=o>:=</span> <span class=nx>deploymentutil</span><span class=p>.</span><span class=nf>GetDesiredReplicasAnnotation</span><span class=p>(</span><span class=nx>logger</span><span class=p>,</span> <span class=nx>rs</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=p>!</span><span class=nx>ok</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=k>continue</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// 如果不是 `Replicas` 结构，则需要扩锁容</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=nx>desired</span> <span class=o>!=</span> <span class=o>*</span><span class=p>(</span><span class=nx>d</span><span class=p>.</span><span class=nx>Spec</span><span class=p>.</span><span class=nx>Replicas</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=k>return</span> <span class=kc>true</span><span class=p>,</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=k>return</span> <span class=kc>false</span><span class=p>,</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><p>获取新旧两个 replicaset 副本集, newRs 是预期的, oldRss 为当前的存在副本集, 调用 scale 扩缩容方法, 最后同步当前的状态.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>dc</span> <span class=o>*</span><span class=nx>DeploymentController</span><span class=p>)</span> <span class=nf>sync</span><span class=p>(</span><span class=nx>ctx</span> <span class=nx>context</span><span class=p>.</span><span class=nx>Context</span><span class=p>,</span> <span class=nx>d</span> <span class=o>*</span><span class=nx>apps</span><span class=p>.</span><span class=nx>Deployment</span><span class=p>,</span> <span class=nx>rsList</span> <span class=p>[]</span><span class=o>*</span><span class=nx>apps</span><span class=p>.</span><span class=nx>ReplicaSet</span><span class=p>)</span> <span class=kt>error</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl> <span class=nx>newRS</span><span class=p>,</span> <span class=nx>oldRSs</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>getAllReplicaSetsAndSyncRevision</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>d</span><span class=p>,</span> <span class=nx>rsList</span><span class=p>,</span> <span class=kc>false</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=c1>// `Scale` 扩缩容</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>scale</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>d</span><span class=p>,</span> <span class=nx>newRS</span><span class=p>,</span> <span class=nx>oldRSs</span><span class=p>);</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// If we get an error while trying to scale, the deployment will be requeued</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// so we can abort this resync</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// Clean up the deployment when it&#39;s paused and no rollback is in flight.</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>d</span><span class=p>.</span><span class=nx>Spec</span><span class=p>.</span><span class=nx>Paused</span> <span class=o>&amp;&amp;</span> <span class=nf>getRollbackTo</span><span class=p>(</span><span class=nx>d</span><span class=p>)</span> <span class=o>==</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>cleanupDeployment</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>oldRSs</span><span class=p>,</span> <span class=nx>d</span><span class=p>);</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=nx>allRSs</span> <span class=o>:=</span> <span class=nb>append</span><span class=p>(</span><span class=nx>oldRSs</span><span class=p>,</span> <span class=nx>newRS</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=c1>// 更新状态</span>
+</span></span><span class=line><span class=cl> <span class=k>return</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>syncDeploymentStatus</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>allRSs</span><span class=p>,</span> <span class=nx>newRS</span><span class=p>,</span> <span class=nx>d</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><p><code>scale</code> 方法首先求出需要扩缩容的 <code>pod</code> 数量, 按照策略对 <code>rs</code> 数组进行新旧排序, 为了让每个 <code>rs</code> 都扩缩点, 经过一轮 <code>proportion</code> 计算再对 <code>rs</code> 进行 <code>scale</code> 扩缩容.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span><span class=lnt>118
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>dc</span> <span class=o>*</span><span class=nx>DeploymentController</span><span class=p>)</span> <span class=nf>scale</span><span class=p>(</span><span class=nx>ctx</span> <span class=nx>context</span><span class=p>.</span><span class=nx>Context</span><span class=p>,</span> <span class=nx>deployment</span> <span class=o>*</span><span class=nx>apps</span><span class=p>.</span><span class=nx>Deployment</span><span class=p>,</span> <span class=nx>newRS</span> <span class=o>*</span><span class=nx>apps</span><span class=p>.</span><span class=nx>ReplicaSet</span><span class=p>,</span> <span class=nx>oldRSs</span> <span class=p>[]</span><span class=o>*</span><span class=nx>apps</span><span class=p>.</span><span class=nx>ReplicaSet</span><span class=p>)</span> <span class=kt>error</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl> <span class=c1>// If there is only one active replica set then we should scale that up to the full count of the</span>
+</span></span><span class=line><span class=cl> <span class=c1>// deployment. If there is no active replica set, then we should scale up the newest replica set.</span>
+</span></span><span class=line><span class=cl> <span class=c1>//返回唯一的活动或最新副本集（如果最多有一个活动副本集）</span>
+</span></span><span class=line><span class=cl> <span class=c1>//副本集。如果有更多的活动副本集，那么我们应该按比例缩放它们。</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>activeOrLatest</span> <span class=o>:=</span> <span class=nx>deploymentutil</span><span class=p>.</span><span class=nf>FindActiveOrLatest</span><span class=p>(</span><span class=nx>newRS</span><span class=p>,</span> <span class=nx>oldRSs</span><span class=p>);</span> <span class=nx>activeOrLatest</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=o>*</span><span class=p>(</span><span class=nx>activeOrLatest</span><span class=p>.</span><span class=nx>Spec</span><span class=p>.</span><span class=nx>Replicas</span><span class=p>)</span> <span class=o>==</span> <span class=o>*</span><span class=p>(</span><span class=nx>deployment</span><span class=p>.</span><span class=nx>Spec</span><span class=p>.</span><span class=nx>Replicas</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=k>return</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=nx>_</span><span class=p>,</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>scaleReplicaSetAndRecordEvent</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>activeOrLatest</span><span class=p>,</span> <span class=o>*</span><span class=p>(</span><span class=nx>deployment</span><span class=p>.</span><span class=nx>Spec</span><span class=p>.</span><span class=nx>Replicas</span><span class=p>),</span> <span class=nx>deployment</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// If the new replica set is saturated, old replica sets should be fully scaled down.</span>
+</span></span><span class=line><span class=cl> <span class=c1>// This case handles replica set adoption during a saturated new replica set.</span>
+</span></span><span class=line><span class=cl> <span class=c1>//通过将新副本集的大小与其部署大小进行比较来检查新副本集是否饱和。</span>
+</span></span><span class=line><span class=cl> <span class=c1>//部署和副本集都必须相信该副本集可以拥有所有所需的`Replicas`,</span>
+</span></span><span class=line><span class=cl> <span class=c1>// 可以通过注解&#34;deployment.kubernetes.io/desired-replicas&#34;来实现。</span>
+</span></span><span class=line><span class=cl> <span class=c1>//ReplicaSet 的所有 pod需要可用。</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>deploymentutil</span><span class=p>.</span><span class=nf>IsSaturated</span><span class=p>(</span><span class=nx>deployment</span><span class=p>,</span> <span class=nx>newRS</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>for</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>old</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>controller</span><span class=p>.</span><span class=nf>FilterActiveReplicaSets</span><span class=p>(</span><span class=nx>oldRSs</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=k>if</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>scaleReplicaSetAndRecordEvent</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>old</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=nx>deployment</span><span class=p>);</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl>   <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// There are old replica sets with pods and the new replica set is not saturated.</span>
+</span></span><span class=line><span class=cl> <span class=c1>// We need to proportionally scale all replica sets (new and old) in case of a</span>
+</span></span><span class=line><span class=cl> <span class=c1>// rolling deployment.</span>
+</span></span><span class=line><span class=cl> <span class=c1>// 如果 `Deployment` 有配置滚动更新策略, 那么就需要按照策略去对 `rs` 进行扩缩容</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>deploymentutil</span><span class=p>.</span><span class=nf>IsRollingUpdate</span><span class=p>(</span><span class=nx>deployment</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>allRSs</span> <span class=o>:=</span> <span class=nx>controller</span><span class=p>.</span><span class=nf>FilterActiveReplicaSets</span><span class=p>(</span><span class=nb>append</span><span class=p>(</span><span class=nx>oldRSs</span><span class=p>,</span> <span class=nx>newRS</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>  <span class=nx>allRSsReplicas</span> <span class=o>:=</span> <span class=nx>deploymentutil</span><span class=p>.</span><span class=nf>GetReplicaCountForReplicaSets</span><span class=p>(</span><span class=nx>allRSs</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// 计算最大可以创建出的 pod 数</span>
+</span></span><span class=line><span class=cl>  <span class=nx>allowedSize</span> <span class=o>:=</span> <span class=nb>int32</span><span class=p>(</span><span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=o>*</span><span class=p>(</span><span class=nx>deployment</span><span class=p>.</span><span class=nx>Spec</span><span class=p>.</span><span class=nx>Replicas</span><span class=p>)</span> <span class=p>&gt;</span> <span class=mi>0</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=c1>// 预期的副本数加上 maxSurge 为最大允许数</span>
+</span></span><span class=line><span class=cl>   <span class=nx>allowedSize</span> <span class=p>=</span> <span class=o>*</span><span class=p>(</span><span class=nx>deployment</span><span class=p>.</span><span class=nx>Spec</span><span class=p>.</span><span class=nx>Replicas</span><span class=p>)</span> <span class=o>+</span> <span class=nx>deploymentutil</span><span class=p>.</span><span class=nf>MaxSurge</span><span class=p>(</span><span class=o>*</span><span class=nx>deployment</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// Number of additional replicas that can be either added or removed from the total</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// replicas count. These replicas should be distributed proportionally to the active</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// replica sets.</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// 计算需要扩容的 pod 数</span>
+</span></span><span class=line><span class=cl>  <span class=nx>deploymentReplicasToAdd</span> <span class=o>:=</span> <span class=nx>allowedSize</span> <span class=o>-</span> <span class=nx>allRSsReplicas</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// The additional replicas should be distributed proportionally amongst the active</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// replica sets from the larger to the smaller in size replica set. Scaling direction</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// drives what happens in case we are trying to scale replica sets of the same size.</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// In such a case when scaling up, we should scale up newer replica sets first, and</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// when scaling down, we should scale down older replica sets first.</span>
+</span></span><span class=line><span class=cl>  <span class=kd>var</span> <span class=nx>scalingOperation</span> <span class=kt>string</span>
+</span></span><span class=line><span class=cl>  <span class=k>switch</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>case</span> <span class=nx>deploymentReplicasToAdd</span> <span class=p>&gt;</span> <span class=mi>0</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>   <span class=c1>// 若需要添加的副本数大于 0, 按照新旧进行排序，把新的 rs 放到前面, 这样对较新的 rs 扩容更多的 pod</span>
+</span></span><span class=line><span class=cl>   <span class=nx>sort</span><span class=p>.</span><span class=nf>Sort</span><span class=p>(</span><span class=nx>controller</span><span class=p>.</span><span class=nf>ReplicaSetsBySizeNewer</span><span class=p>(</span><span class=nx>allRSs</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>   <span class=c1>// 扩容操作</span>
+</span></span><span class=line><span class=cl>   <span class=nx>scalingOperation</span> <span class=p>=</span> <span class=s>&#34;up&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=k>case</span> <span class=nx>deploymentReplicasToAdd</span> <span class=p>&lt;</span> <span class=mi>0</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>   <span class=c1>// 若需要添加的副本数大于 0, 按照新旧进行排序，旧的`RS`放前面, 这样可以删除一些较旧的 pod</span>
+</span></span><span class=line><span class=cl>   <span class=nx>sort</span><span class=p>.</span><span class=nf>Sort</span><span class=p>(</span><span class=nx>controller</span><span class=p>.</span><span class=nf>ReplicaSetsBySizeOlder</span><span class=p>(</span><span class=nx>allRSs</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>   <span class=c1>// 缩容操作</span>
+</span></span><span class=line><span class=cl>   <span class=nx>scalingOperation</span> <span class=p>=</span> <span class=s>&#34;down&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// Iterate over all active replica sets and estimate proportions for each of them.</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// The absolute value of deploymentReplicasAdded should never exceed the absolute</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// value of deploymentReplicasToAdd.</span>
+</span></span><span class=line><span class=cl>  <span class=nx>deploymentReplicasAdded</span> <span class=o>:=</span> <span class=nb>int32</span><span class=p>(</span><span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nx>nameToSize</span> <span class=o>:=</span> <span class=nb>make</span><span class=p>(</span><span class=kd>map</span><span class=p>[</span><span class=kt>string</span><span class=p>]</span><span class=kt>int32</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nx>logger</span> <span class=o>:=</span> <span class=nx>klog</span><span class=p>.</span><span class=nf>FromContext</span><span class=p>(</span><span class=nx>ctx</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// 遍历所有的 rs, 计算每个 rs 需要扩容或者缩容到的期望副本数</span>
+</span></span><span class=line><span class=cl>  <span class=k>for</span> <span class=nx>i</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>allRSs</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=nx>rs</span> <span class=o>:=</span> <span class=nx>allRSs</span><span class=p>[</span><span class=nx>i</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>   <span class=c1>// Estimate proportions if we have replicas to add, otherwise simply populate</span>
+</span></span><span class=line><span class=cl>   <span class=c1>// nameToSize with the current sizes for each replica set.</span>
+</span></span><span class=line><span class=cl>   <span class=k>if</span> <span class=nx>deploymentReplicasToAdd</span> <span class=o>!=</span> <span class=mi>0</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 估算出 rs 需要扩容或者缩容的副本数</span>
+</span></span><span class=line><span class=cl>    <span class=nx>proportion</span> <span class=o>:=</span> <span class=nx>deploymentutil</span><span class=p>.</span><span class=nf>GetProportion</span><span class=p>(</span><span class=nx>logger</span><span class=p>,</span> <span class=nx>rs</span><span class=p>,</span> <span class=o>*</span><span class=nx>deployment</span><span class=p>,</span> <span class=nx>deploymentReplicasToAdd</span><span class=p>,</span> <span class=nx>deploymentReplicasAdded</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 把计算出来的 `proportion` 累加到 `added`</span>
+</span></span><span class=line><span class=cl>    <span class=nx>nameToSize</span><span class=p>[</span><span class=nx>rs</span><span class=p>.</span><span class=nx>Name</span><span class=p>]</span> <span class=p>=</span> <span class=o>*</span><span class=p>(</span><span class=nx>rs</span><span class=p>.</span><span class=nx>Spec</span><span class=p>.</span><span class=nx>Replicas</span><span class=p>)</span> <span class=o>+</span> <span class=nx>proportion</span>
+</span></span><span class=line><span class=cl>    <span class=nx>deploymentReplicasAdded</span> <span class=o>+=</span> <span class=nx>proportion</span>
+</span></span><span class=line><span class=cl>   <span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>nameToSize</span><span class=p>[</span><span class=nx>rs</span><span class=p>.</span><span class=nx>Name</span><span class=p>]</span> <span class=p>=</span> <span class=o>*</span><span class=p>(</span><span class=nx>rs</span><span class=p>.</span><span class=nx>Spec</span><span class=p>.</span><span class=nx>Replicas</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>   <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// Update all replica sets</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// 遍历所有的 rs, 第一个最活跃的 rs.Spec.Replicas 加上上面循环中计算出</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// 其他 rs 要加或者减的副本数，然后更新所有 rs 的 rs.Spec.Replicas</span>
+</span></span><span class=line><span class=cl>  <span class=k>for</span> <span class=nx>i</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>allRSs</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=nx>rs</span> <span class=o>:=</span> <span class=nx>allRSs</span><span class=p>[</span><span class=nx>i</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>   <span class=c1>// Add/remove any leftovers to the largest replica set.</span>
+</span></span><span class=line><span class=cl>   <span class=k>if</span> <span class=nx>i</span> <span class=o>==</span> <span class=mi>0</span> <span class=o>&amp;&amp;</span> <span class=nx>deploymentReplicasToAdd</span> <span class=o>!=</span> <span class=mi>0</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>leftover</span> <span class=o>:=</span> <span class=nx>deploymentReplicasToAdd</span> <span class=o>-</span> <span class=nx>deploymentReplicasAdded</span>
+</span></span><span class=line><span class=cl>    <span class=nx>nameToSize</span><span class=p>[</span><span class=nx>rs</span><span class=p>.</span><span class=nx>Name</span><span class=p>]</span> <span class=p>=</span> <span class=nx>nameToSize</span><span class=p>[</span><span class=nx>rs</span><span class=p>.</span><span class=nx>Name</span><span class=p>]</span> <span class=o>+</span> <span class=nx>leftover</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=nx>nameToSize</span><span class=p>[</span><span class=nx>rs</span><span class=p>.</span><span class=nx>Name</span><span class=p>]</span> <span class=p>&lt;</span> <span class=mi>0</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>     <span class=nx>nameToSize</span><span class=p>[</span><span class=nx>rs</span><span class=p>.</span><span class=nx>Name</span><span class=p>]</span> <span class=p>=</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>   <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>   <span class=c1>// TODO: Use transactions when we have them.</span>
+</span></span><span class=line><span class=cl>   <span class=c1>// 按照扩容的数量去进行扩缩容</span>
+</span></span><span class=line><span class=cl>   <span class=k>if</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>scaleReplicaSet</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>rs</span><span class=p>,</span> <span class=nx>nameToSize</span><span class=p>[</span><span class=nx>rs</span><span class=p>.</span><span class=nx>Name</span><span class=p>],</span> <span class=nx>deployment</span><span class=p>,</span> <span class=nx>scalingOperation</span><span class=p>);</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// Return as soon as we fail, the deployment is requeued</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl>   <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=k>return</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><h3 class=heading-element id=升级deployment><span>升级<code>Deployment</code></span>
+<a href=#%e5%8d%87%e7%ba%a7deployment class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><p><code>kubernetes</code> 里更新策略有两种, 一种为重建模式, 另一种为滚动更新模式. 当没有定义 <code>.spec.strategy</code> 策略时, 默认会给填充 <code>RollingUpdate</code>。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=k>switch</span> <span class=nx>d</span><span class=p>.</span><span class=nx>Spec</span><span class=p>.</span><span class=nx>Strategy</span><span class=p>.</span><span class=nx>Type</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=k>case</span> <span class=nx>apps</span><span class=p>.</span><span class=nx>RecreateDeploymentStrategyType</span><span class=p>:</span>
+</span></span><span class=line><span class=cl> <span class=k>return</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>rolloutRecreate</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>d</span><span class=p>,</span> <span class=nx>rsList</span><span class=p>,</span> <span class=nx>podMap</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=k>case</span> <span class=nx>apps</span><span class=p>.</span><span class=nx>RollingUpdateDeploymentStrategyType</span><span class=p>:</span>
+</span></span><span class=line><span class=cl> <span class=k>return</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>rolloutRolling</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>d</span><span class=p>,</span> <span class=nx>rsList</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><h4 class=heading-element id=重新创建><span>重新创建</span>
+<a href=#%e9%87%8d%e6%96%b0%e5%88%9b%e5%bb%ba class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h4><p><code>Recreate</code> 的逻辑不复杂, 首先对旧的 rs 缩容到 0, 等待所有 pods 状态为 not running 后, 再创建新的 rs, 副本数跟 deployment 期望的值一致.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=c1>// rolloutRecreate implements the logic for recreating a replica set.</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>dc</span> <span class=o>*</span><span class=nx>DeploymentController</span><span class=p>)</span> <span class=nf>rolloutRecreate</span><span class=p>(</span><span class=nx>ctx</span> <span class=nx>context</span><span class=p>.</span><span class=nx>Context</span><span class=p>,</span> <span class=nx>d</span> <span class=o>*</span><span class=nx>apps</span><span class=p>.</span><span class=nx>Deployment</span><span class=p>,</span> <span class=nx>rsList</span> <span class=p>[]</span><span class=o>*</span><span class=nx>apps</span><span class=p>.</span><span class=nx>ReplicaSet</span><span class=p>,</span> <span class=nx>podMap</span> <span class=kd>map</span><span class=p>[</span><span class=nx>types</span><span class=p>.</span><span class=nx>UID</span><span class=p>][]</span><span class=o>*</span><span class=nx>v1</span><span class=p>.</span><span class=nx>Pod</span><span class=p>)</span> <span class=kt>error</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl> <span class=c1>// Don&#39;t create a new RS if not already existed, so that we avoid scaling up before scaling down.</span>
+</span></span><span class=line><span class=cl> <span class=nx>newRS</span><span class=p>,</span> <span class=nx>oldRSs</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>getAllReplicaSetsAndSyncRevision</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>d</span><span class=p>,</span> <span class=nx>rsList</span><span class=p>,</span> <span class=kc>false</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=nx>allRSs</span> <span class=o>:=</span> <span class=nb>append</span><span class=p>(</span><span class=nx>oldRSs</span><span class=p>,</span> <span class=nx>newRS</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=nx>activeOldRSs</span> <span class=o>:=</span> <span class=nx>controller</span><span class=p>.</span><span class=nf>FilterActiveReplicaSets</span><span class=p>(</span><span class=nx>oldRSs</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// scale down old replica sets.</span>
+</span></span><span class=line><span class=cl> <span class=c1>// 缩容 oldRS</span>
+</span></span><span class=line><span class=cl> <span class=nx>scaledDown</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>scaleDownOldReplicaSetsForRecreate</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>activeOldRSs</span><span class=p>,</span> <span class=nx>d</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>scaledDown</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// Update DeploymentStatus.</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>syncRolloutStatus</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>allRSs</span><span class=p>,</span> <span class=nx>newRS</span><span class=p>,</span> <span class=nx>d</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// Do not process a deployment when it has old pods running.</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nf>oldPodsRunning</span><span class=p>(</span><span class=nx>newRS</span><span class=p>,</span> <span class=nx>oldRSs</span><span class=p>,</span> <span class=nx>podMap</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>syncRolloutStatus</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>allRSs</span><span class=p>,</span> <span class=nx>newRS</span><span class=p>,</span> <span class=nx>d</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// If we need to create a new RS, create it now.</span>
+</span></span><span class=line><span class=cl> <span class=c1>// 创建 `newRS`</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>newRS</span> <span class=o>==</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>newRS</span><span class=p>,</span> <span class=nx>oldRSs</span><span class=p>,</span> <span class=nx>err</span> <span class=p>=</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>getAllReplicaSetsAndSyncRevision</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>d</span><span class=p>,</span> <span class=nx>rsList</span><span class=p>,</span> <span class=kc>true</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=nx>allRSs</span> <span class=p>=</span> <span class=nb>append</span><span class=p>(</span><span class=nx>oldRSs</span><span class=p>,</span> <span class=nx>newRS</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// scale up new replica set.</span>
+</span></span><span class=line><span class=cl> <span class=c1>// 扩容`newRS`</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>scaleUpNewReplicaSetForRecreate</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>newRS</span><span class=p>,</span> <span class=nx>d</span><span class=p>);</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// 清理过期的`RS`</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>util</span><span class=p>.</span><span class=nf>DeploymentComplete</span><span class=p>(</span><span class=nx>d</span><span class=p>,</span> <span class=o>&amp;</span><span class=nx>d</span><span class=p>.</span><span class=nx>Status</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>cleanupDeployment</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>oldRSs</span><span class=p>,</span> <span class=nx>d</span><span class=p>);</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// Sync deployment status.</span>
+</span></span><span class=line><span class=cl> <span class=c1>// 同步`Deployment`状态</span>
+</span></span><span class=line><span class=cl> <span class=k>return</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>syncRolloutStatus</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>allRSs</span><span class=p>,</span> <span class=nx>newRS</span><span class=p>,</span> <span class=nx>d</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><h4 class=heading-element id=滚动更新><span>滚动更新</span>
+<a href=#%e6%bb%9a%e5%8a%a8%e6%9b%b4%e6%96%b0 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h4><p><code>rolloutRolling</code> 负责负责滚动更新操作, 先尝试对新的 rs 进行扩容, 在扩容后更新状态后就跳出. 等再次 <code>informer</code> 触发事件, 再次进入方法内时, 滚动更新场景下这时当前 <code>pods</code> 数量超过预期值无法 <code>scale up</code>. 后面会尝试对旧的 rs 进行缩容, 缩容完成后需要更新 rollout 状态, 再次跳出.</p><p>滚动升级就是这样循环反复地对新 rs 进行扩容, 同时对老的 rs 进行缩容, 一边增一边减, 直到达到预期状态.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>dc</span> <span class=o>*</span><span class=nx>DeploymentController</span><span class=p>)</span> <span class=nf>rolloutRolling</span><span class=p>(</span><span class=nx>ctx</span> <span class=nx>context</span><span class=p>.</span><span class=nx>Context</span><span class=p>,</span> <span class=nx>d</span> <span class=o>*</span><span class=nx>apps</span><span class=p>.</span><span class=nx>Deployment</span><span class=p>,</span> <span class=nx>rsList</span> <span class=p>[]</span><span class=o>*</span><span class=nx>apps</span><span class=p>.</span><span class=nx>ReplicaSet</span><span class=p>)</span> <span class=kt>error</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl> <span class=c1>// 获取新旧RS</span>
+</span></span><span class=line><span class=cl> <span class=nx>newRS</span><span class=p>,</span> <span class=nx>oldRSs</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>getAllReplicaSetsAndSyncRevision</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>d</span><span class=p>,</span> <span class=nx>rsList</span><span class=p>,</span> <span class=kc>true</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=nx>allRSs</span> <span class=o>:=</span> <span class=nb>append</span><span class=p>(</span><span class=nx>oldRSs</span><span class=p>,</span> <span class=nx>newRS</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// Scale up, if we can.</span>
+</span></span><span class=line><span class=cl> <span class=c1>// 进行扩容</span>
+</span></span><span class=line><span class=cl> <span class=nx>scaledUp</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>reconcileNewReplicaSet</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>allRSs</span><span class=p>,</span> <span class=nx>newRS</span><span class=p>,</span> <span class=nx>d</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>scaledUp</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// Update DeploymentStatus</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// 更新 Deployment 状态</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>syncRolloutStatus</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>allRSs</span><span class=p>,</span> <span class=nx>newRS</span><span class=p>,</span> <span class=nx>d</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// Scale down, if we can.</span>
+</span></span><span class=line><span class=cl> <span class=c1>// 开始缩容</span>
+</span></span><span class=line><span class=cl> <span class=nx>scaledDown</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>reconcileOldReplicaSets</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>allRSs</span><span class=p>,</span> <span class=nx>controller</span><span class=p>.</span><span class=nf>FilterActiveReplicaSets</span><span class=p>(</span><span class=nx>oldRSs</span><span class=p>),</span> <span class=nx>newRS</span><span class=p>,</span> <span class=nx>d</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>scaledDown</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// Update DeploymentStatus</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// 更新 Deployment 状态</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>syncRolloutStatus</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>allRSs</span><span class=p>,</span> <span class=nx>newRS</span><span class=p>,</span> <span class=nx>d</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// 如果滚动完毕, 需要清理</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>deploymentutil</span><span class=p>.</span><span class=nf>DeploymentComplete</span><span class=p>(</span><span class=nx>d</span><span class=p>,</span> <span class=o>&amp;</span><span class=nx>d</span><span class=p>.</span><span class=nx>Status</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>cleanupDeployment</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>oldRSs</span><span class=p>,</span> <span class=nx>d</span><span class=p>);</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// Sync deployment status</span>
+</span></span><span class=line><span class=cl> <span class=c1>// 同步状态</span>
+</span></span><span class=line><span class=cl> <span class=k>return</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>syncRolloutStatus</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>allRSs</span><span class=p>,</span> <span class=nx>newRS</span><span class=p>,</span> <span class=nx>d</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><p><code>reconcileNewReplicaSet</code> 对 <code>newRs</code> 进行扩容, 其中 <code>NewRSNewReplicas</code> 会根据 <code>RollingUpdate.MaxSurge</code> 和当前副本数计算得出所需要新增的 pods 数.</p><p>在扩容进行完成后, 通过 <code>clientset</code> 来 <code>update</code> 更新 rs 的 <code>annotations</code> 和 <code>spec.replicas</code> 字段, 这里就完事了, rs 的真正维护是依赖 <code>replicaSet controller</code> 实现的.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>dc</span> <span class=o>*</span><span class=nx>DeploymentController</span><span class=p>)</span> <span class=nf>reconcileNewReplicaSet</span><span class=p>(</span><span class=nx>ctx</span> <span class=nx>context</span><span class=p>.</span><span class=nx>Context</span><span class=p>,</span> <span class=nx>allRSs</span> <span class=p>[]</span><span class=o>*</span><span class=nx>apps</span><span class=p>.</span><span class=nx>ReplicaSet</span><span class=p>,</span> <span class=nx>newRS</span> <span class=o>*</span><span class=nx>apps</span><span class=p>.</span><span class=nx>ReplicaSet</span><span class=p>,</span> <span class=nx>deployment</span> <span class=o>*</span><span class=nx>apps</span><span class=p>.</span><span class=nx>Deployment</span><span class=p>)</span> <span class=p>(</span><span class=kt>bool</span><span class=p>,</span> <span class=kt>error</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl> <span class=c1>// 新的 `rs` 副本数是否达到了预期, 也就是跟 `deployment` 定义的一致, 如果一致则没必要再进行滚动.</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=o>*</span><span class=p>(</span><span class=nx>newRS</span><span class=p>.</span><span class=nx>Spec</span><span class=p>.</span><span class=nx>Replicas</span><span class=p>)</span> <span class=o>==</span> <span class=o>*</span><span class=p>(</span><span class=nx>deployment</span><span class=p>.</span><span class=nx>Spec</span><span class=p>.</span><span class=nx>Replicas</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// Scaling not required.</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=kc>false</span><span class=p>,</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=c1>// `newRS` 的副本数比 `deployment` 的预期多, 那么就需要缩容，减少副本数</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=o>*</span><span class=p>(</span><span class=nx>newRS</span><span class=p>.</span><span class=nx>Spec</span><span class=p>.</span><span class=nx>Replicas</span><span class=p>)</span> <span class=p>&gt;</span> <span class=o>*</span><span class=p>(</span><span class=nx>deployment</span><span class=p>.</span><span class=nx>Spec</span><span class=p>.</span><span class=nx>Replicas</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// Scale down.</span>
+</span></span><span class=line><span class=cl>  <span class=nx>scaled</span><span class=p>,</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>scaleReplicaSetAndRecordEvent</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>newRS</span><span class=p>,</span> <span class=o>*</span><span class=p>(</span><span class=nx>deployment</span><span class=p>.</span><span class=nx>Spec</span><span class=p>.</span><span class=nx>Replicas</span><span class=p>),</span> <span class=nx>deployment</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nx>scaled</span><span class=p>,</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=c1>//  计算 `newRS` 的副本数</span>
+</span></span><span class=line><span class=cl> <span class=nx>newReplicasCount</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>deploymentutil</span><span class=p>.</span><span class=nf>NewRSNewReplicas</span><span class=p>(</span><span class=nx>deployment</span><span class=p>,</span> <span class=nx>allRSs</span><span class=p>,</span> <span class=nx>newRS</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=kc>false</span><span class=p>,</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=c1>// 更新 `RS` 的注解和 `RS` 的 `rs.Spec.Replicas` 字段</span>
+</span></span><span class=line><span class=cl> <span class=nx>scaled</span><span class=p>,</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>scaleReplicaSetAndRecordEvent</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>newRS</span><span class=p>,</span> <span class=nx>newReplicasCount</span><span class=p>,</span> <span class=nx>deployment</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=k>return</span> <span class=nx>scaled</span><span class=p>,</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><p>调用 <code>reconcileOldReplicaSets</code> 对 <code>oldRS</code> 不断缩容，每次缩容的数量是根据 <code>RollingUpdate.MaxUnavailable</code> 和当前可用的<code>pods</code>数量来计算出来的.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>dc</span> <span class=o>*</span><span class=nx>DeploymentController</span><span class=p>)</span> <span class=nf>reconcileOldReplicaSets</span><span class=p>(</span><span class=nx>ctx</span> <span class=nx>context</span><span class=p>.</span><span class=nx>Context</span><span class=p>,</span> <span class=nx>allRSs</span> <span class=p>[]</span><span class=o>*</span><span class=nx>apps</span><span class=p>.</span><span class=nx>ReplicaSet</span><span class=p>,</span> <span class=nx>oldRSs</span> <span class=p>[]</span><span class=o>*</span><span class=nx>apps</span><span class=p>.</span><span class=nx>ReplicaSet</span><span class=p>,</span> <span class=nx>newRS</span> <span class=o>*</span><span class=nx>apps</span><span class=p>.</span><span class=nx>ReplicaSet</span><span class=p>,</span> <span class=nx>deployment</span> <span class=o>*</span><span class=nx>apps</span><span class=p>.</span><span class=nx>Deployment</span><span class=p>)</span> <span class=p>(</span><span class=kt>bool</span><span class=p>,</span> <span class=kt>error</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl> <span class=nx>logger</span> <span class=o>:=</span> <span class=nx>klog</span><span class=p>.</span><span class=nf>FromContext</span><span class=p>(</span><span class=nx>ctx</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=c1>// 计算 oldPodsCount</span>
+</span></span><span class=line><span class=cl> <span class=nx>oldPodsCount</span> <span class=o>:=</span> <span class=nx>deploymentutil</span><span class=p>.</span><span class=nf>GetReplicaCountForReplicaSets</span><span class=p>(</span><span class=nx>oldRSs</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>oldPodsCount</span> <span class=o>==</span> <span class=mi>0</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// Can&#39;t scale down further</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=kc>false</span><span class=p>,</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=c1>// 计算 allPodsCount</span>
+</span></span><span class=line><span class=cl> <span class=nx>allPodsCount</span> <span class=o>:=</span> <span class=nx>deploymentutil</span><span class=p>.</span><span class=nf>GetReplicaCountForReplicaSets</span><span class=p>(</span><span class=nx>allRSs</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=nx>logger</span><span class=p>.</span><span class=nf>V</span><span class=p>(</span><span class=mi>4</span><span class=p>).</span><span class=nf>Info</span><span class=p>(</span><span class=s>&#34;New replica set&#34;</span><span class=p>,</span> <span class=s>&#34;replicaSet&#34;</span><span class=p>,</span> <span class=nx>klog</span><span class=p>.</span><span class=nf>KObj</span><span class=p>(</span><span class=nx>newRS</span><span class=p>),</span> <span class=s>&#34;availableReplicas&#34;</span><span class=p>,</span> <span class=nx>newRS</span><span class=p>.</span><span class=nx>Status</span><span class=p>.</span><span class=nx>AvailableReplicas</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=nx>maxUnavailable</span> <span class=o>:=</span> <span class=nx>deploymentutil</span><span class=p>.</span><span class=nf>MaxUnavailable</span><span class=p>(</span><span class=o>*</span><span class=nx>deployment</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// Check if we can scale down. We can scale down in the following 2 cases:</span>
+</span></span><span class=line><span class=cl> <span class=c1>// * Some old replica sets have unhealthy replicas, we could safely scale down those unhealthy replicas since that won&#39;t further</span>
+</span></span><span class=line><span class=cl> <span class=c1>//  increase unavailability.</span>
+</span></span><span class=line><span class=cl> <span class=c1>// * New replica set has scaled up and it&#39;s replicas becomes ready, then we can scale down old replica sets in a further step.</span>
+</span></span><span class=line><span class=cl> <span class=c1>//</span>
+</span></span><span class=line><span class=cl> <span class=c1>// maxScaledDown := allPodsCount - minAvailable - newReplicaSetPodsUnavailable</span>
+</span></span><span class=line><span class=cl> <span class=c1>// take into account not only maxUnavailable and any surge pods that have been created, but also unavailable pods from</span>
+</span></span><span class=line><span class=cl> <span class=c1>// the newRS, so that the unavailable pods from the newRS would not make us scale down old replica sets in a further</span>
+</span></span><span class=line><span class=cl> <span class=c1>// step(that will increase unavailability).</span>
+</span></span><span class=line><span class=cl> <span class=c1>//</span>
+</span></span><span class=line><span class=cl> <span class=c1>// Concrete example:</span>
+</span></span><span class=line><span class=cl> <span class=c1>//</span>
+</span></span><span class=line><span class=cl> <span class=c1>// * 10 replicas</span>
+</span></span><span class=line><span class=cl> <span class=c1>// * 2 maxUnavailable (absolute number, not percent)</span>
+</span></span><span class=line><span class=cl> <span class=c1>// * 3 maxSurge (absolute number, not percent)</span>
+</span></span><span class=line><span class=cl> <span class=c1>//</span>
+</span></span><span class=line><span class=cl> <span class=c1>// case 1:</span>
+</span></span><span class=line><span class=cl> <span class=c1>// * Deployment is updated, newRS is created with 3 replicas, oldRS is scaled down to 8, and newRS is scaled up to 5.</span>
+</span></span><span class=line><span class=cl> <span class=c1>// * The new replica set pods crashloop and never become available.</span>
+</span></span><span class=line><span class=cl> <span class=c1>// * allPodsCount is 13. minAvailable is 8. newRSPodsUnavailable is 5.</span>
+</span></span><span class=line><span class=cl> <span class=c1>// * A node fails and causes one of the oldRS pods to become unavailable. However, 13 - 8 - 5 = 0, so the oldRS won&#39;t be scaled down.</span>
+</span></span><span class=line><span class=cl> <span class=c1>// * The user notices the crashloop and does kubectl rollout undo to rollback.</span>
+</span></span><span class=line><span class=cl> <span class=c1>// * newRSPodsUnavailable is 1, since we rolled back to the good replica set, so maxScaledDown = 13 - 8 - 1 = 4. 4 of the crashlooping pods will be scaled down.</span>
+</span></span><span class=line><span class=cl> <span class=c1>// * The total number of pods will then be 9 and the newRS can be scaled up to 10.</span>
+</span></span><span class=line><span class=cl> <span class=c1>//</span>
+</span></span><span class=line><span class=cl> <span class=c1>// case 2:</span>
+</span></span><span class=line><span class=cl> <span class=c1>// Same example, but pushing a new pod template instead of rolling back (aka &#34;roll over&#34;):</span>
+</span></span><span class=line><span class=cl> <span class=c1>// * The new replica set created must start with 0 replicas because allPodsCount is already at 13.</span>
+</span></span><span class=line><span class=cl> <span class=c1>// * However, newRSPodsUnavailable would also be 0, so the 2 old replica sets could be scaled down by 5 (13 - 8 - 0), which would then</span>
+</span></span><span class=line><span class=cl> <span class=c1>// allow the new replica set to be scaled up by 5.</span>
+</span></span><span class=line><span class=cl> <span class=c1>// 计算 maxScaledDown</span>
+</span></span><span class=line><span class=cl> <span class=nx>minAvailable</span> <span class=o>:=</span> <span class=o>*</span><span class=p>(</span><span class=nx>deployment</span><span class=p>.</span><span class=nx>Spec</span><span class=p>.</span><span class=nx>Replicas</span><span class=p>)</span> <span class=o>-</span> <span class=nx>maxUnavailable</span>
+</span></span><span class=line><span class=cl> <span class=nx>newRSUnavailablePodCount</span> <span class=o>:=</span> <span class=o>*</span><span class=p>(</span><span class=nx>newRS</span><span class=p>.</span><span class=nx>Spec</span><span class=p>.</span><span class=nx>Replicas</span><span class=p>)</span> <span class=o>-</span> <span class=nx>newRS</span><span class=p>.</span><span class=nx>Status</span><span class=p>.</span><span class=nx>AvailableReplicas</span>
+</span></span><span class=line><span class=cl> <span class=nx>maxScaledDown</span> <span class=o>:=</span> <span class=nx>allPodsCount</span> <span class=o>-</span> <span class=nx>minAvailable</span> <span class=o>-</span> <span class=nx>newRSUnavailablePodCount</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>maxScaledDown</span> <span class=o>&lt;=</span> <span class=mi>0</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=kc>false</span><span class=p>,</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// Clean up unhealthy replicas first, otherwise unhealthy replicas will block deployment</span>
+</span></span><span class=line><span class=cl> <span class=c1>// and cause timeout. See https://github.com/kubernetes/kubernetes/issues/16737</span>
+</span></span><span class=line><span class=cl> <span class=c1>// 清理异常 RS</span>
+</span></span><span class=line><span class=cl> <span class=nx>oldRSs</span><span class=p>,</span> <span class=nx>cleanupCount</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>cleanupUnhealthyReplicas</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>oldRSs</span><span class=p>,</span> <span class=nx>deployment</span><span class=p>,</span> <span class=nx>maxScaledDown</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=kc>false</span><span class=p>,</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=nx>logger</span><span class=p>.</span><span class=nf>V</span><span class=p>(</span><span class=mi>4</span><span class=p>).</span><span class=nf>Info</span><span class=p>(</span><span class=s>&#34;Cleaned up unhealthy replicas from old RSes&#34;</span><span class=p>,</span> <span class=s>&#34;count&#34;</span><span class=p>,</span> <span class=nx>cleanupCount</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// Scale down old replica sets, need check maxUnavailable to ensure we can scale down</span>
+</span></span><span class=line><span class=cl> <span class=nx>allRSs</span> <span class=p>=</span> <span class=nb>append</span><span class=p>(</span><span class=nx>oldRSs</span><span class=p>,</span> <span class=nx>newRS</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=c1>// 缩容旧的 RS</span>
+</span></span><span class=line><span class=cl> <span class=nx>scaledDownCount</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>dc</span><span class=p>.</span><span class=nf>scaleDownOldReplicaSetsForRollingUpdate</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>allRSs</span><span class=p>,</span> <span class=nx>oldRSs</span><span class=p>,</span> <span class=nx>deployment</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=kc>false</span><span class=p>,</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=nx>logger</span><span class=p>.</span><span class=nf>V</span><span class=p>(</span><span class=mi>4</span><span class=p>).</span><span class=nf>Info</span><span class=p>(</span><span class=s>&#34;Scaled down old RSes&#34;</span><span class=p>,</span> <span class=s>&#34;deployment&#34;</span><span class=p>,</span> <span class=nx>klog</span><span class=p>.</span><span class=nf>KObj</span><span class=p>(</span><span class=nx>deployment</span><span class=p>),</span> <span class=s>&#34;count&#34;</span><span class=p>,</span> <span class=nx>scaledDownCount</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=nx>totalScaledDown</span> <span class=o>:=</span> <span class=nx>cleanupCount</span> <span class=o>+</span> <span class=nx>scaledDownCount</span>
+</span></span><span class=line><span class=cl> <span class=k>return</span> <span class=nx>totalScaledDown</span> <span class=p>&gt;</span> <span class=mi>0</span><span class=p>,</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><p><img loading=lazy src=https://raw.githubusercontent.com/kbsonlong/notes_statics/master/images/202401021409704.png alt=syncDeployment></p></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span title="更新于 2023-07-28 17:18:49">更新于 2023-07-28&nbsp;</span></div><div class=post-info-license><span><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span></div></div><div class=post-info-line><div class=post-info-md><span><a href=/posts/03-kube-controller-manager-source-code-analysis-deployment-controller/index.md title=阅读原始文档 class=link-to-markdown>阅读原始文档</a></span></div><div class=post-info-share><span><a href=javascript:void(0); title="分享到 X" data-sharer=twitter data-url=https://www.kbsonlong.com/posts/03-kube-controller-manager-source-code-analysis-deployment-controller/ data-title=03-Kube-Controller-Manager源码分析(Deployment控制器) data-hashtags=kubernetes,kube-controller-manager><i class="fa-brands fa-x-twitter fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="分享到 Facebook" data-sharer=facebook data-url=https://www.kbsonlong.com/posts/03-kube-controller-manager-source-code-analysis-deployment-controller/ data-hashtag=kubernetes><i class="fa-brands fa-facebook-square fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="分享到 WhatsApp" data-sharer=whatsapp data-url=https://www.kbsonlong.com/posts/03-kube-controller-manager-source-code-analysis-deployment-controller/ data-title=03-Kube-Controller-Manager源码分析(Deployment控制器) data-web><i class="fa-brands fa-whatsapp fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="分享到 Line" data-sharer=line data-url=https://www.kbsonlong.com/posts/03-kube-controller-manager-source-code-analysis-deployment-controller/ data-title=03-Kube-Controller-Manager源码分析(Deployment控制器)><svg class="icon" role="img" viewBox="0 0 24 24"><title>LINE</title><path d="M19.365 9.863c.349.0.63.285.63.631.0.345-.281.63-.63.63H17.61v1.125h1.755c.349.0.63.283.63.63.0.344-.281.629-.63.629h-2.386c-.345.0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346.0.627.285.627.63.0.349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211.0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346.0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195.0.375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345.0.63.285.63.63v4.771zm-5.741.0c0 .344-.282.629-.631.629-.345.0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346.0.628.285.628.63v4.771zm-2.466.629H4.917c-.345.0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348.0.63.285.63.63v4.141h1.756c.348.0.629.283.629.63.0.344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943.0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg></a>
+<a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://www.kbsonlong.com/posts/03-kube-controller-manager-source-code-analysis-deployment-controller/ data-title=03-Kube-Controller-Manager源码分析(Deployment控制器)><i class="fa-brands fa-weibo fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="分享到 Myspace" data-sharer=myspace data-url=https://www.kbsonlong.com/posts/03-kube-controller-manager-source-code-analysis-deployment-controller/ data-title=03-Kube-Controller-Manager源码分析(Deployment控制器) data-description><svg class="icon" role="img" viewBox="0 0 24 24"><title>Myspace</title><path d="M19.802 12.274A3.811 3.811.0 0023.62 8.47c0-2.101-1.71-3.795-3.818-3.795a3.816 3.816.0 00-3.818 3.81 3.817 3.817.0 003.818 3.811zm-8.602.705a3.43 3.43.0 003.435-3.424A3.43 3.43.0 0011.2 6.13 3.44 3.44.0 007.764 9.566 3.436 3.436.0 0011.2 13zm-7.8.635c1.71.0 3.093-1.38 3.093-3.081.0-1.704-1.395-3.084-3.105-3.084A3.086 3.086.0 00.3 10.539c0 1.7 1.387 3.078 3.095 3.078zm0 .705c-1.96.0-3.4 1.717-3.4 3.495v1.196c0 .17.138.31.31.31h6.18a.31.31.0 00.309-.31v-1.196c0-1.779-1.437-3.5-3.398-3.5zm7.8-.56c-2.18.0-3.78 1.915-3.78 3.891v1.331c0 .188.156.344.345.344h6.87a.344.344.0 00.342-.344V17.65c0-1.976-1.598-3.891-3.777-3.891zm8.602-.617c-2.422.0-4.197 2.126-4.197 4.323v1.477c0 .21.172.381.382.381h7.63c.21.0.383-.171.383-.381v-1.477c-.001-2.197-1.776-4.323-4.198-4.323z"/></svg></a>
+<a href=javascript:void(0); title="分享到 Blogger" data-sharer=blogger data-url=https://www.kbsonlong.com/posts/03-kube-controller-manager-source-code-analysis-deployment-controller/ data-title=03-Kube-Controller-Manager源码分析(Deployment控制器) data-description><i class="fa-brands fa-blogger fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="分享到 Evernote" data-sharer=evernote data-url=https://www.kbsonlong.com/posts/03-kube-controller-manager-source-code-analysis-deployment-controller/ data-title=03-Kube-Controller-Manager源码分析(Deployment控制器)><i class="fa-brands fa-evernote fa-fw" aria-hidden=true></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fa-solid fa-tags fa-fw me-1" aria-hidden=true></i><a href=/tags/kubernetes/ class=post-tag title="标签 - Kubernetes">Kubernetes</a><a href=/tags/kube-controller-manager/ class=post-tag title="标签 - Kube-Controller-Manager">Kube-Controller-Manager</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span></section></div><div class=post-nav><a href=/posts/common-problem/ class=post-nav-item rel=prev title=Istio常见问题><i class="fa-solid fa-angle-left fa-fw" aria-hidden=true></i>Istio常见问题</a><a href=/posts/02-kube-controller-manager-source-code-analysis-main-process/ class=post-nav-item rel=next title=02-Kube-Controller-Manager源码分析(主流程)>02-Kube-Controller-Manager源码分析(主流程)<i class="fa-solid fa-angle-right fa-fw" aria-hidden=true></i></a></div></div><div id=comments><div id=giscus class=comment><script src=https://giscus.app/client.js data-repo=kbsonlong/sre data-repo-id=R_kgDOMFzwNA data-category=Announcements data-category-id=DIC_kwDOMFzwNM4Cn0gn data-mapping=title data-strict=0 data-theme=preferred_color_scheme data-reactions-enabled=1 data-emit-metadata=0 data-input-position=bottom data-lang=zh-CN data-loading=lazy crossorigin=anonymous async defer></script></div><noscript>Please enable JavaScript to view the comments powered by <a href=https://giscus.app/ rel="external nofollow noopener noreferrer">giscus</a>.</noscript></div></article><aside class=toc id=toc-auto aria-label=目录><h2 class=toc-title>目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden=true></i></h2><div class=toc-content id=toc-content-auto></div></aside></main><footer class=footer><div class=footer-container><div class="footer-line copyright" itemscope itemtype=http://schema.org/CreativeWork><i class="fa-regular fa-copyright fa-fw" aria-hidden=true></i>
+<span itemprop=copyrightYear>2018 - 2025</span><span class=author itemprop=copyrightHolder>
+<a href=/></a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span></div><div class="footer-line statistics"><span class=site-time title=网站运行中……><i class="fa-solid fa-heartbeat fa-fw animate-icon" aria-hidden=true></i><span class="run-times ms-1">网站运行中……</span></span></div><div class="footer-line visitor"><span id=busuanzi_container_site_uv title=总访客数><i class="fa-regular fa-user fa-fw me-1" aria-hidden=true></i><span id=busuanzi_value_site_uv><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden=true></i></span></span><span id=busuanzi_container_site_pv class=footer-divider title=总访问量><i class="fa-regular fa-eye fa-fw me-1" aria-hidden=true></i><span id=busuanzi_value_site_pv><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden=true></i></span></span></div><div class="footer-line beian"><span class="icp footer-divider"><a target=_blank href=https://beian.miit.gov.cn/>粤ICP备18122209号</a></span></div></div></footer></div><div class=widgets><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role=button aria-label=回到顶部><i class="fa-solid fa-arrow-up fa-fw" aria-hidden=true></i><span class=variant-numeric>0%</span></div><div class="fixed-button view-comments d-none" role=button aria-label=查看评论><i class="fa-solid fa-comment fa-fw" aria-hidden=true></i></div></div><a href=https://github.com/kbsonlong title="在 GitHub 上查看源代码" target=_blank rel="external nofollow" class="github-corner right d-none-mobile"><svg viewBox="0 0 250 250" aria-hidden="true" width="56" height="56"><path d="M0 0 115 115h15l12 27L250 250V0z"/><path d="M128.3 109C113.8 99.7 119 89.6 119 89.6 122 82.7 120.5 78.6 120.5 78.6 119.2 72 123.4 76.3 123.4 76.3 127.3 80.9 125.5 87.3 125.5 87.3 122.9 97.6 130.6 101.9 134.4 103.2" fill="currentcolor" style="transform-origin:130px 106px" class="octo-arm"/><path d="M115 115C114.9 115.1 118.7 116.5 119.8 115.4l13.9-13.8C136.9 99.2 139.9 98.4 142.2 98.6 133.8 88 127.5 74.4 143.8 58 148.5 53.4 154 51.2 159.7 51 160.3 49.4 163.2 43.6 171.4 40.1 171.4 40.1 176.1 42.5 178.8 56.2 183.1 58.6 187.2 61.8 190.9 65.4 194.5 69 197.7 73.2 200.1 77.6 213.8 80.2 216.3 84.9 216.3 84.9 212.7 93.1 206.9 96 205.4 96.6 205.1 102.4 203 107.8 198.3 112.5 181.9 128.9 168.3 122.5 157.7 114.1 157.9 116.9 156.7 120.9 152.7 124.9L141 136.5C139.8 137.7 141.6 141.9 141.8 141.8z" fill="currentcolor" class="octo-body"/></svg></a><div id=mask></div><div class=reading-progress-bar style=left:0;top:0></div><noscript><div class=noscript-warning>该网站在启用 JavaScript 的情况下效果最佳。</div></noscript></div><link rel=preload href=/lib/katex/katex.min.css as=style onload='this.removeAttribute("onload"),this.rel="stylesheet"'><noscript><link rel=stylesheet href=/lib/katex/katex.min.css></noscript><link rel=stylesheet href=/lib/cookieconsent/cookieconsent.min.css><script src=/lib/autocomplete/autocomplete.min.js defer></script><script src=/lib/algoliasearch/algoliasearch-lite.umd.min.js defer></script><script src=/lib/sharer/sharer.min.js async defer></script><script src=/lib/katex/katex.min.js defer></script><script src=/lib/katex/auto-render.min.js defer></script><script src=/lib/katex/copy-tex.min.js defer></script><script src=/lib/katex/mhchem.min.js defer></script><script src=/lib/cookieconsent/cookieconsent.min.js defer></script><script src=/lib/pangu/pangu.min.js defer></script><script src=/lib/cell-watermark/watermark.min.js defer></script><script src=https://vercount.one/js async defer></script><script>window.config={code:{copyTitle:"复制到剪贴板",editLockTitle:"锁定可编辑代码块",editUnLockTitle:"解锁可编辑代码块",editable:!0,maxShownLines:10},comment:{enable:!0,expired:!1,giscus:{darkTheme:"dark",lightTheme:"light",origin:"https://giscus.app"}},cookieconsent:{content:{dismiss:"同意",link:"了解更多",message:"本网站使用 Cookies 来改善您的浏览体验。"},enable:!0,palette:{button:{background:"#f0f0f0"},popup:{background:"#1aa3ff"}},theme:"edgeless"},enablePWA:!0,math:{delimiters:[{display:!0,left:"$$",right:"$$"},{display:!0,left:"\\[",right:"\\]"},{display:!0,left:"\\begin{equation}",right:"\\end{equation}"},{display:!0,left:"\\begin{equation*}",right:"\\end{equation*}"},{display:!0,left:"\\begin{align}",right:"\\end{align}"},{display:!0,left:"\\begin{align*}",right:"\\end{align*}"},{display:!0,left:"\\begin{alignat}",right:"\\end{alignat}"},{display:!0,left:"\\begin{alignat*}",right:"\\end{alignat*}"},{display:!0,left:"\\begin{gather}",right:"\\end{gather}"},{display:!0,left:"\\begin{CD}",right:"\\end{CD}"},{display:!1,left:"$",right:"$"},{display:!1,left:"\\(",right:"\\)"}],strict:!1},pangu:{enable:!0,selector:"article"},search:{algoliaAppID:"WFOR67TML1",algoliaIndex:"along",algoliaSearchKey:"ea1fe535f9a7ae353f3922489c829cc1",highlightTag:"em",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"algolia"},siteTime:"2018-12-18T16:15:22+08:00",version:"v0.3.20",watermark:{appendto:".wrapper>main",colspacing:30,content:'<img class="fixit-icon" src="/favicon-16x16.png" alt="FixIt logo" /> FixIt 主题',enable:!0,fontfamily:"inherit",fontsize:.85,height:21,opacity:.0125,rotate:15,rowspacing:60,width:150}}</script><script src=/js/theme.min.js defer></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","6272760969",{anonymize_ip:!0})</script><script src="https://www.googletagmanager.com/gtag/js?id=6272760969" async></script></body></html>

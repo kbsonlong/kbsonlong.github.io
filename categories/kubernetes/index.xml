@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Kubernetes - 分类 - 蜷缩的蜗牛</title><link>https://www.kbsonlong.com/categories/kubernetes/</link><description>云原生时代运维</description><generator>Hugo 0.145.0 &amp; FixIt v0.3.20</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Wed, 18 Jun 2025 14:45:14 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/categories/kubernetes/index.xml" rel="self" type="application/rss+xml"/><item><title>Kubernetes NVMe 磁盘 IOPS 限速方案</title><link>https://www.kbsonlong.com/posts/kubernetes-nvme-disk-iops-limit-scenario/</link><pubDate>Wed, 18 Jun 2025 14:45:14 +0800</pubDate><guid>https://www.kbsonlong.com/posts/kubernetes-nvme-disk-iops-limit-scenario/</guid><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><description>本文介绍了在 Kubernetes 集群中对 NVMe 磁盘进行 IOPS 限速的方案，旨在防止单个容器高 IO 影响宿主机性能。</description></item><item><title>04-kube-controller-manager源码分析(EndpointSlice控制器)</title><link>https://www.kbsonlong.com/posts/04-kube-controller-manager-source-code-analysis-endpointslice-controller/</link><pubDate>Tue, 02 Jan 2024 10:09:54 +0800</pubDate><guid>https://www.kbsonlong.com/posts/04-kube-controller-manager-source-code-analysis-endpointslice-controller/</guid><category domain="https://www.kbsonlong.com/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">源码分析</category><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><description>&lt;p>本文基于&lt;a href="https://github.com/kubernetes/kubernetes/tree/v1.29.0"target="_blank" rel="external nofollow noopener noreferrer">1.29.0&lt;/a>版本&lt;/p>
+&lt;h2 class="heading-element" id="背景">&lt;span>背景&lt;/span>
+ &lt;a href="#%e8%83%8c%e6%99%af" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>在 &lt;code>kubernetes&lt;/code> 1.16版本中，&lt;code>EndpointSlice&lt;/code> 作为 &lt;code>alpha&lt;/code> 特性被引入，主要用于解决 &lt;code>Endpoints&lt;/code> 资源可伸缩性改进、双堆栈服务和拓扑感知路由等问题，在&lt;code>Kubernetes&lt;/code> 1.19版本之后默认启用，并在1.21版本后&lt;code>EndpointSlice API&lt;/code> 版本改为 &lt;code>discovery.k8s.io/v1&lt;/code>。&lt;/p></description></item><item><title>karmada作为集群资源同步工具在灾备系统中的实践</title><link>https://www.kbsonlong.com/posts/camp/</link><pubDate>Mon, 27 Nov 2023 15:57:25 +0800</pubDate><guid>https://www.kbsonlong.com/posts/camp/</guid><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><category domain="https://www.kbsonlong.com/categories/karmada/">Karmada</category><description>&lt;h2 class="heading-element" id="karmada是什么">&lt;span>karmada是什么？&lt;/span>
+ &lt;a href="#karmada%e6%98%af%e4%bb%80%e4%b9%88" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>karmada是一个kubernetes多集群管理系统，它可以保持原有使用apiserver的方式，将资源分布到多个集群中。提供了跨云多集群多模式管理、多策略的多集群调度、应用的跨集群故障转移、全局统一资源视图、多集群的服务发现和FederatedHPA能力。它的设计思路继承了&lt;a href="https://github.com/kubernetes-sigs/kubefed"target="_blank" rel="external nofollow noopener noreferrer">集群联邦v2&lt;/a>，目前是cncf的sandbox开源项目。&lt;/p></description></item><item><title>为什么HPA扩容比较慢</title><link>https://www.kbsonlong.com/posts/%E4%B8%BA%E4%BB%80%E4%B9%88hpa%E6%89%A9%E5%AE%B9%E6%AF%94%E8%BE%83%E6%85%A2/</link><pubDate>Fri, 24 Nov 2023 11:56:32 +0800</pubDate><guid>https://www.kbsonlong.com/posts/%E4%B8%BA%E4%BB%80%E4%B9%88hpa%E6%89%A9%E5%AE%B9%E6%AF%94%E8%BE%83%E6%85%A2/</guid><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><description>&lt;p>最近遇到业务活动期间遇到突发流量，由于pod资源使用飙升导致业务可用性降低的问题。这里面导致业务不可用的原因有很多，其中一个直接原因是流量来临时候资源使用飙升，而HPA没有及时的进行扩容。
+这篇文章就是针对这个问题进行研究，主要从这三方面进行阐述：&lt;/p>
+&lt;ol>
+&lt;li>扩容有多慢&lt;/li>
+&lt;li>为什么扩容慢&lt;/li>
+&lt;li>有什么解决方案&lt;/li>
+&lt;/ol></description></item><item><title>基于Coredns多集群服务发现</title><link>https://www.kbsonlong.com/posts/discovery-based-on-coredns-multi--cluster-service/</link><pubDate>Tue, 01 Aug 2023 17:38:45 +0800</pubDate><guid>https://www.kbsonlong.com/posts/discovery-based-on-coredns-multi--cluster-service/</guid><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><category domain="https://www.kbsonlong.com/categories/karmada/">Karmada</category><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><description>&lt;p>在&lt;a href="https://kbsonlong.github.io/posts/2296fc/"target="_blank" rel="external nofollow noopener noreferrer">Karmada 多集群服务发现&lt;/a>一文中跨集群调用时有个派生的前缀 &lt;code>derived-&amp;lt;service name&amp;gt;&lt;/code>, 对于应用调用上有感知，本文介绍如何让应用在调用本地集群或者跨集群都是用同一个service。&lt;/p>
+&lt;p>基础环境 &lt;a href="https://kbsonlong.github.io/posts/2296fc/"target="_blank" rel="external nofollow noopener noreferrer">Karmada 多集群服务发现&lt;/a>&lt;/p></description></item><item><title>02-kube-controller-manager源码分析(主流程)</title><link>https://www.kbsonlong.com/posts/02-kube-controller-manager-source-code-analysis-main-process/</link><pubDate>Fri, 28 Jul 2023 17:19:10 +0800</pubDate><guid>https://www.kbsonlong.com/posts/02-kube-controller-manager-source-code-analysis-main-process/</guid><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><description>&lt;p>本文基于&lt;a href="https://github.com/kubernetes/kubernetes/tree/v1.29.0"target="_blank" rel="external nofollow noopener noreferrer">1.29.0&lt;/a>版本&lt;/p>
+&lt;p>本文主要分析 kubernetes/cmd/kube-controller-manager 部分，该部分主要涉及各种类型的controller的参数解析，及初始化，例如 deployment controller 和statefulset controller。&lt;/p>
+&lt;h2 class="heading-element" id="代码结构">&lt;span>代码结构&lt;/span>
+ &lt;a href="#%e4%bb%a3%e7%a0%81%e7%bb%93%e6%9e%84" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;span class="lnt">56
+&lt;/span>&lt;span class="lnt">57
+&lt;/span>&lt;span class="lnt">58
+&lt;/span>&lt;span class="lnt">59
+&lt;/span>&lt;span class="lnt">60
+&lt;/span>&lt;span class="lnt">61
+&lt;/span>&lt;span class="lnt">62
+&lt;/span>&lt;span class="lnt">63
+&lt;/span>&lt;span class="lnt">64
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">tree cmd/kube-controller-manager 
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">cmd/kube-controller-manager
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── OWNERS
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── app
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── apps.go &lt;span class="c1"># 包含:startDeploymentController、startReplicaSetController、startStatefulSetController、startDaemonSetController&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── autoscaling.go &lt;span class="c1"># startHPAController&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── batch.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── bootstrap.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── certificates.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── certificates_test.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── cloudproviders.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── config &lt;span class="c1"># config: controller manager执行的上下文&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ └── config.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── controllermanager.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── controllermanager_test.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── core.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── core_test.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── discovery.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── flags_providerless.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── flags_providers.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── import_known_versions.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── networking.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── options &lt;span class="c1"># 包含不同controller的option参数&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── attachdetachcontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── cronjobcontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── csrsigningcontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── daemonsetcontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── deploymentcontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── deprecatedcontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── endpointcontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── endpointslicecontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── endpointslicemirroringcontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── ephemeralcontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── garbagecollectorcontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── hpacontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── jobcontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── legacyserviceaccounttokencleaner.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── namespacecontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── nodeipamcontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── nodelifecyclecontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── options.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── options_test.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── persistentvolumebindercontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── podgccontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── replicasetcontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── replicationcontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── resourcequotacontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── serviceaccountcontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── statefulsetcontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── ttlafterfinishedcontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ └── validatingadmissionpolicycontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── plugins.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── plugins_providerless.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── plugins_providers.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── policy.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── rbac.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── testing
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ └── testserver.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ └── validatingadmissionpolicystatus.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── controller-manager.go &lt;span class="c1"># main入口函数&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">└── names
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> └── controller_names.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="m">5&lt;/span> directories, &lt;span class="m">55&lt;/span> files&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item><item><title>03-kube-controller-manager源码分析(Deployment控制器)</title><link>https://www.kbsonlong.com/posts/03-kube-controller-manager-source-code-analysis-deployment-controller/</link><pubDate>Fri, 28 Jul 2023 17:18:49 +0800</pubDate><guid>https://www.kbsonlong.com/posts/03-kube-controller-manager-source-code-analysis-deployment-controller/</guid><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><category domain="https://www.kbsonlong.com/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">源码分析</category><description>&lt;p>本文基于&lt;a href="https://github.com/kubernetes/kubernetes/tree/v1.29.0"target="_blank" rel="external nofollow noopener noreferrer">1.29.0&lt;/a>版本&lt;/p>
+&lt;h2 class="heading-element" id="kube-controller-manager">&lt;span>kube-controller-manager&lt;/span>
+ &lt;a href="#kube-controller-manager" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>pkg/controller目录结构,包含各控制器的具体实现&lt;/p></description></item><item><title>01-利用vscode与kind搭建kubernetes开发环境</title><link>https://www.kbsonlong.com/posts/01-use-vscode-and-kind-to-build-kubernetes-development-environment/</link><pubDate>Fri, 07 Jul 2023 16:50:30 +0800</pubDate><guid>https://www.kbsonlong.com/posts/01-use-vscode-and-kind-to-build-kubernetes-development-environment/</guid><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><description>&lt;p>本文基于&lt;a href="https://github.com/kubernetes/kubernetes/tree/v1.27.0"target="_blank" rel="external nofollow noopener noreferrer">1.27.0&lt;/a>版本&lt;/p>
+&lt;h2 class="heading-element" id="kind-创建集群">&lt;span>Kind 创建集群&lt;/span>
+ &lt;a href="#kind-%e5%88%9b%e5%bb%ba%e9%9b%86%e7%be%a4" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-yaml" data-lang="yaml">&lt;span class="line">&lt;span class="cl">&lt;span class="l">cat &amp;lt;&amp;lt; EOF &amp;gt; dev.yaml&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nt">kind&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">Cluster&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nt">apiVersion&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s2">&amp;#34;kind.x-k8s.io/v1alpha4&amp;#34;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nt">kubeadmConfigPatches&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>- &lt;span class="p">|&lt;/span>&lt;span class="sd">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> apiVersion: kubeadm.k8s.io/v1beta1
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> kind: ClusterConfiguration
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> metadata:
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> name: dev
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> imageRepository: registry.aliyuncs.com/google_containers&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nt">networking&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">podSubnet&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s2">&amp;#34;10.8.0.0/16&amp;#34;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">serviceSubnet&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s2">&amp;#34;10.9.0.0/16&amp;#34;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nt">nodes&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="nt">role&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">control-plane&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">image&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">kindest/node:v1.27.0@sha256:c6b22e613523b1af67d4bc8a0c38a4c3ea3a2b8fbc5b367ae36345c9cb844518&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">extraPortMappings&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="nt">containerPort&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="m">2379&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">hostPort&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="m">2379&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">protocol&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">TCP&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="l">EOF&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="l">kind create cluster --name dev --config=dev.yaml&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item><item><title>源码分析 kubernetes hpa controller 水平自动扩缩容的实现原理</title><link>https://www.kbsonlong.com/posts/source-code-analysis-kubernetes-hpa-controller-horizontal-automatic-expansion-principles/</link><pubDate>Tue, 18 Apr 2023 23:05:14 +0800</pubDate><guid>https://www.kbsonlong.com/posts/source-code-analysis-kubernetes-hpa-controller-horizontal-automatic-expansion-principles/</guid><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><description>&lt;h2 class="heading-element" id="源码分析-kubernetes-hpa-controller-水平自动扩缩容的实现原理">&lt;span>源码分析 kubernetes hpa controller 水平自动扩缩容的实现原理&lt;/span>
+ &lt;a href="#%e6%ba%90%e7%a0%81%e5%88%86%e6%9e%90-kubernetes-hpa-controller-%e6%b0%b4%e5%b9%b3%e8%87%aa%e5%8a%a8%e6%89%a9%e7%bc%a9%e5%ae%b9%e7%9a%84%e5%ae%9e%e7%8e%b0%e5%8e%9f%e7%90%86" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>基于 kubernetes &lt;code>v1.27.0&lt;/code> 版本进行 hpa 源码分析.&lt;/p></description></item><item><title>源码分析 kubernetes scheduler 核心调度器的实现原理</title><link>https://www.kbsonlong.com/posts/source-code-analysis-of-the-implementation-principles-of-kubernetes-scheduler-core-schedu/</link><pubDate>Tue, 18 Apr 2023 21:53:59 +0800</pubDate><guid>https://www.kbsonlong.com/posts/source-code-analysis-of-the-implementation-principles-of-kubernetes-scheduler-core-schedu/</guid><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><description>&lt;p>&lt;img loading="lazy" src='https://xiaorui-cc.oss-cn-hangzhou.aliyuncs.com/images/202301/202301251502086.png' alt="https://xiaorui-cc.oss-cn-hangzhou.aliyuncs.com/images/202301/202301251502086.png">&lt;/p>
+&lt;blockquote>
+&lt;p>基于 kubernetes &lt;code>v1.27.0&lt;/code> 源码分析 scheduler 调度器&lt;/p>&lt;/blockquote>
+&lt;p>k8s scheduler 的主要职责是为新创建的 pod 寻找一个最合适的 node 节点, 然后进行 bind node 绑定, 后面 kubelet 才会监听到并创建真正的 pod.&lt;/p>
+&lt;p>那么问题来了, 如何为 pod 寻找最合适的 node ? 调度器需要经过 predicates 预选和 priority 优选.&lt;/p></description></item><item><title>如何选择最佳的Kubernetes集群自动伸缩策略</title><link>https://www.kbsonlong.com/posts/how-to-choose-the-best-kubernetes-cluster-automatic-telescopic-strategy/</link><pubDate>Thu, 16 Mar 2023 14:55:47 +0800</pubDate><guid>https://www.kbsonlong.com/posts/how-to-choose-the-best-kubernetes-cluster-automatic-telescopic-strategy/</guid><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><description>&lt;h2 class="heading-element" id="前言">&lt;span>前言&lt;/span>
+ &lt;a href="#%e5%89%8d%e8%a8%80" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>这篇内容篇幅比较长，如果不想深入探讨或时间有限，这是全文简述：
+在默认设置下，扩展 Kubernetes 集群中的 pod 和节点可能需要几分钟时间。
+了解如何调整集群节点的大小、配置水平和集群自动缩放器以及过度配置集群以加快扩展速度。&lt;/p></description></item><item><title>Kubernetes创建只读用户</title><link>https://www.kbsonlong.com/posts/kubernetes-creates-only-read-users/</link><pubDate>Thu, 12 Jan 2023 13:05:10 +0800</pubDate><guid>https://www.kbsonlong.com/posts/kubernetes-creates-only-read-users/</guid><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><description>&lt;h3 class="heading-element" id="1-安装cfssl">&lt;span>1 安装cfssl&lt;/span>
+ &lt;a href="#1-%e5%ae%89%e8%a3%85cfssl" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">mkdir -p /nfs/k8s-backup/readonly
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> /nfs/k8s-backup/readonly
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wget https://pkg.cfssl.org/R1.2/cfssl_linux-amd64
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mv cfssl_linux-amd64 cfssl
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wget https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mv cfssljson_linux-amd64 cfssljson
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wget https://pkg.cfssl.org/R1.2/cfssl-certinfo_linux-amd64
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mv cfssl-certinfo_linux-amd64 cfssl-certinfo
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">chmod +x *&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 class="heading-element" id="2-签发客户端证书">&lt;span>2 签发客户端证书&lt;/span>
+ &lt;a href="#2-%e7%ad%be%e5%8f%91%e5%ae%a2%e6%88%b7%e7%ab%af%e8%af%81%e4%b9%a6" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;p>根据ca证书和秘钥签发用户证书，kubeadm工具安装是默认生成存放在/etc/kubernetes/pki目录下&lt;/p></description></item></channel></rss>

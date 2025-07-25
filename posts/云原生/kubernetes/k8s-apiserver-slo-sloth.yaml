@@ -1,0 +1,147 @@
+# Kubernetes ApiServer SLO Configuration using Sloth
+# 基于 sloth 规范的 Kubernetes ApiServer SLO 配置
+apiVersion: sloth.slok.dev/v1
+kind: PrometheusServiceLevel
+metadata:
+  name: k8s-apiserver-slo
+  namespace: monitoring
+spec:
+  service: "k8s-apiserver"
+  labels:
+    team: "platform"
+    component: "kubernetes"
+  slos:
+    # ApiServer 可用性 SLO
+    - name: "apiserver-availability"
+      objective: 99.9
+      description: "Kubernetes ApiServer 可用性 SLO - 99.9%"
+      sli:
+        events:
+          error_query: |
+            sum(rate(apiserver_request_total{code=~"5..",cluster=~".*"}[5m])) by (cluster)
+          total_query: |
+            sum(rate(apiserver_request_total{cluster=~".*"}[5m])) by (cluster)
+      alerting:
+        name: "K8sApiServerAvailability"
+        labels:
+          category: "availability"
+        annotations:
+          summary: "Kubernetes ApiServer availability is below SLO"
+          runbook: "https://runbooks.example.com/k8s-apiserver-availability"
+        page_alert:
+          labels:
+            severity: "critical"
+        ticket_alert:
+          labels:
+            severity: "warning"
+
+    # ApiServer 延迟 SLO
+    - name: "apiserver-latency"
+      objective: 99.0
+      description: "Kubernetes ApiServer 延迟 SLO - 99% 请求在 1s 内完成"
+      sli:
+        events:
+          error_query: |
+            (
+              sum(rate(apiserver_request_duration_seconds_bucket{le="1",cluster=~".*"}[5m])) by (cluster)
+            ) /
+            (
+              sum(rate(apiserver_request_duration_seconds_count{cluster=~".*"}[5m])) by (cluster)
+            )
+          total_query: |
+            sum(rate(apiserver_request_duration_seconds_count{cluster=~".*"}[5m])) by (cluster)
+      alerting:
+        name: "K8sApiServerLatency"
+        labels:
+          category: "latency"
+        annotations:
+          summary: "Kubernetes ApiServer latency is above SLO"
+          runbook: "https://runbooks.example.com/k8s-apiserver-latency"
+        page_alert:
+          labels:
+            severity: "critical"
+        ticket_alert:
+          labels:
+            severity: "warning"
+
+    # ApiServer 读请求延迟 SLO
+    - name: "apiserver-read-latency"
+      objective: 99.5
+      description: "Kubernetes ApiServer 读请求延迟 SLO - 99.5% 读请求在 1s 内完成"
+      sli:
+        events:
+          error_query: |
+            (
+              sum(rate(apiserver_request_duration_seconds_bucket{le="1",verb=~"GET|LIST|WATCH",cluster=~".*"}[5m])) by (cluster)
+            ) /
+            (
+              sum(rate(apiserver_request_duration_seconds_count{verb=~"GET|LIST|WATCH",cluster=~".*"}[5m])) by (cluster)
+            )
+          total_query: |
+            sum(rate(apiserver_request_duration_seconds_count{verb=~"GET|LIST|WATCH",cluster=~".*"}[5m])) by (cluster)
+      alerting:
+        name: "K8sApiServerReadLatency"
+        labels:
+          category: "latency"
+        annotations:
+          summary: "Kubernetes ApiServer read latency is above SLO"
+          runbook: "https://runbooks.example.com/k8s-apiserver-read-latency"
+        page_alert:
+          labels:
+            severity: "critical"
+        ticket_alert:
+          labels:
+            severity: "warning"
+
+    # ApiServer 写请求延迟 SLO
+    - name: "apiserver-write-latency"
+      objective: 99.0
+      description: "Kubernetes ApiServer 写请求延迟 SLO - 99% 写请求在 5s 内完成"
+      sli:
+        events:
+          error_query: |
+            (
+              sum(rate(apiserver_request_duration_seconds_bucket{le="5",verb=~"POST|PUT|PATCH|DELETE",cluster=~".*"}[5m])) by (cluster)
+            ) /
+            (
+              sum(rate(apiserver_request_duration_seconds_count{verb=~"POST|PUT|PATCH|DELETE",cluster=~".*"}[5m])) by (cluster)
+            )
+          total_query: |
+            sum(rate(apiserver_request_duration_seconds_count{verb=~"POST|PUT|PATCH|DELETE",cluster=~".*"}[5m])) by (cluster)
+      alerting:
+        name: "K8sApiServerWriteLatency"
+        labels:
+          category: "latency"
+        annotations:
+          summary: "Kubernetes ApiServer write latency is above SLO"
+          runbook: "https://runbooks.example.com/k8s-apiserver-write-latency"
+        page_alert:
+          labels:
+            severity: "critical"
+        ticket_alert:
+          labels:
+            severity: "warning"
+
+    # ApiServer 错误率 SLO
+    - name: "apiserver-error-rate"
+      objective: 99.9
+      description: "Kubernetes ApiServer 错误率 SLO - 99.9% 请求成功"
+      sli:
+        events:
+          error_query: |
+            sum(rate(apiserver_request_total{code=~"4..|5..",cluster=~".*"}[5m])) by (cluster)
+          total_query: |
+            sum(rate(apiserver_request_total{cluster=~".*"}[5m])) by (cluster)
+      alerting:
+        name: "K8sApiServerErrorRate"
+        labels:
+          category: "errors"
+        annotations:
+          summary: "Kubernetes ApiServer error rate is above SLO"
+          runbook: "https://runbooks.example.com/k8s-apiserver-error-rate"
+        page_alert:
+          labels:
+            severity: "critical"
+        ticket_alert:
+          labels:
+            severity: "warning"

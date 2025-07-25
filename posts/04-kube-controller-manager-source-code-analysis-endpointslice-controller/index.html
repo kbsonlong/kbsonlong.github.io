@@ -1,0 +1,1173 @@
+<!doctype html><html itemscope itemtype=http://schema.org/WebPage lang=zh-CN><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=2"><meta name=robots content="noodp"><title>04-Kube-Controller-Manager源码分析(EndpointSlice控制器) - 蜷缩的蜗牛</title><meta name=author content="kbsonlong">
+<meta name=description content="本文基于1.29.0版本
+背景 在 kubernetes 1.16版本中，EndpointSlice 作为 alpha 特性被引入，主要用于解决 Endpoints 资源可伸缩性改进、双堆栈服务和拓扑感知路由等问题，在Kubernetes 1.19版本之后默认启用，并在1.21版本后EndpointSlice API 版本改为 discovery.k8s.io/v1。
+"><meta name=keywords content='EndpointSlice,kube-controller-manager'><meta itemprop=name content="04-kube-controller-manager源码分析(EndpointSlice控制器)"><meta itemprop=description content="本文基于1.29.0版本
+背景 在 kubernetes 1.16版本中，EndpointSlice 作为 alpha 特性被引入，主要用于解决 Endpoints 资源可伸缩性改进、双堆栈服务和拓扑感知路由等问题，在Kubernetes 1.19版本之后默认启用，并在1.21版本后EndpointSlice API 版本改为 discovery.k8s.io/v1。"><meta itemprop=datePublished content="2024-01-02T10:09:54+08:00"><meta itemprop=dateModified content="2024-01-02T10:09:54+08:00"><meta itemprop=wordCount content="4101"><meta itemprop=image content="https://www.kbsonlong.com/logo_transparent.png"><meta itemprop=keywords content="EndpointSlice,Kube-Controller-Manager"><meta property="og:url" content="https://www.kbsonlong.com/posts/04-kube-controller-manager-source-code-analysis-endpointslice-controller/"><meta property="og:site_name" content="蜷缩的蜗牛"><meta property="og:title" content="04-kube-controller-manager源码分析(EndpointSlice控制器)"><meta property="og:description" content="本文基于1.29.0版本
+背景 在 kubernetes 1.16版本中，EndpointSlice 作为 alpha 特性被引入，主要用于解决 Endpoints 资源可伸缩性改进、双堆栈服务和拓扑感知路由等问题，在Kubernetes 1.19版本之后默认启用，并在1.21版本后EndpointSlice API 版本改为 discovery.k8s.io/v1。"><meta property="og:locale" content="zh_CN"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2024-01-02T10:09:54+08:00"><meta property="article:modified_time" content="2024-01-02T10:09:54+08:00"><meta property="article:tag" content="EndpointSlice"><meta property="article:tag" content="Kube-Controller-Manager"><meta property="og:image" content="https://www.kbsonlong.com/logo_transparent.png"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://www.kbsonlong.com/logo_transparent.png"><meta name=twitter:title content="04-kube-controller-manager源码分析(EndpointSlice控制器)"><meta name=twitter:description content="本文基于1.29.0版本
+背景 在 kubernetes 1.16版本中，EndpointSlice 作为 alpha 特性被引入，主要用于解决 Endpoints 资源可伸缩性改进、双堆栈服务和拓扑感知路由等问题，在Kubernetes 1.19版本之后默认启用，并在1.21版本后EndpointSlice API 版本改为 discovery.k8s.io/v1。"><meta name=application-name content="FixIt"><meta name=apple-mobile-web-app-title content="FixIt"><meta name=theme-color data-light=#ffffff data-dark=#252627 content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical type=text/html href=https://www.kbsonlong.com/posts/04-kube-controller-manager-source-code-analysis-endpointslice-controller/ title="04-kube-controller-manager源码分析(EndpointSlice控制器) - 蜷缩的蜗牛"><link rel=prev type=text/html href=https://www.kbsonlong.com/posts/2023-personal-annual-summary/ title=2023个人年度总结><link rel=next type=text/html href=https://www.kbsonlong.com/posts/docker-multi--archive-mirror-compilation/ title=docker多架构镜像编译><link rel=alternate type=text/markdown href=https://www.kbsonlong.com/posts/04-kube-controller-manager-source-code-analysis-endpointslice-controller/index.md title="04-kube-controller-manager源码分析(EndpointSlice控制器) - 蜷缩的蜗牛"><link rel=stylesheet href=/css/style.min.css><link rel=preload href=/lib/fontawesome-free/all.min.css as=style onload='this.removeAttribute("onload"),this.rel="stylesheet"'><noscript><link rel=stylesheet href=/lib/fontawesome-free/all.min.css></noscript><link rel=preload href=/lib/animate/animate.min.css as=style onload='this.removeAttribute("onload"),this.rel="stylesheet"'><noscript><link rel=stylesheet href=/lib/animate/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"04-kube-controller-manager源码分析(EndpointSlice控制器)","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/www.kbsonlong.com\/posts\/04-kube-controller-manager-source-code-analysis-endpointslice-controller\/"},"genre":"posts","keywords":"EndpointSlice, kube-controller-manager","wordcount":4101,"url":"https:\/\/www.kbsonlong.com\/posts\/04-kube-controller-manager-source-code-analysis-endpointslice-controller\/","datePublished":"2024-01-02T10:09:54+08:00","dateModified":"2024-01-02T10:09:54+08:00","license":"This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"kbsonlong"},"description":""}</script><script src=/js/head/color-scheme.min.js></script></head><body data-header-desktop=sticky data-header-mobile=auto><div class=wrapper data-page-style=normal><header class="desktop animate__faster" id=header-desktop><div class=header-wrapper data-github-corner=right><div class=header-title><a href=/ title=蜷缩的蜗牛><img class=logo src=/logo_transparent.png alt=蜷缩的蜗牛 height=32 width=32><span class=header-title-text>蜷缩的蜗牛</span></a><span class=header-subtitle></span></div><nav><ul class=menu><li class=menu-item><a class=menu-link href=/posts/><i class='fa-solid fa-archive fa-fw fa-sm'></i> 文章</a></li><li class=menu-item><a class=menu-link href=/categories/><i class='fa-solid fa-th fa-fw fa-sm'></i> 分类</a></li><li class=menu-item><a class=menu-link href=/tags/><i class='fa-solid fa-tags fa-fw fa-sm'></i> 标签</a></li><li class=menu-item><a class=menu-link href=/friends/ title=友情链接><i class='fa-solid fa-users fa-fw fa-sm'></i> 友链</a></li><li class=menu-item><a class=menu-link href=/about/><i class='fa-solid fa-info-circle fa-fw fa-sm'></i> 关于</a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=https://github.com/kbsonlong/ title=GitHub rel="noopener noreferrer" target=_blank><i class='fa-brands fa-github fa-fw'></i></a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=/messages/><i class='fa-solid fa-messages'></i> 留言板</a></li><li class=menu-item><a class=menu-link href=/messages/ title=留言板>留言板</a></li><li class="menu-item delimiter"></li><li class="menu-item search" id=search-desktop><input type=text placeholder=搜索文章标题或内容…… id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fa-solid fa-search fa-fw" aria-hidden=true></i>
+</a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fa-solid fa-times-circle fa-fw" aria-hidden=true></i>
+</a><span class="search-button search-loading" id=search-loading-desktop><i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></li><li class="menu-item theme-switch" title=切换主题><i class="fa-solid fa-adjust fa-fw" aria-hidden=true></i></li><li class="menu-item language-switch"><span role=button aria-label=选择语言 title=选择语言><i class="fa-solid fa-language fa-fw" aria-hidden=true></i></span><ul class=sub-menu><li class=menu-item>没有更多翻译</li></ul></li></ul></nav></div></header><header class="mobile animate__faster" id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title=蜷缩的蜗牛><img class=logo src=/logo_transparent.png alt=蜷缩的蜗牛 height=26 width=26><span class=header-title-text>蜷缩的蜗牛</span></a><span class=header-subtitle></span></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><nav><ul class=menu id=menu-mobile><li class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容…… id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fa-solid fa-search fa-fw" aria-hidden=true></i>
+</a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fa-solid fa-times-circle fa-fw" aria-hidden=true></i>
+</a><span class="search-button search-loading" id=search-loading-mobile><i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></li><li class=menu-item><a class=menu-link href=/posts/><i class='fa-solid fa-archive fa-fw fa-sm'></i> 文章</a></li><li class=menu-item><a class=menu-link href=/categories/><i class='fa-solid fa-th fa-fw fa-sm'></i> 分类</a></li><li class=menu-item><a class=menu-link href=/tags/><i class='fa-solid fa-tags fa-fw fa-sm'></i> 标签</a></li><li class=menu-item><a class=menu-link href=/friends/ title=友情链接><i class='fa-solid fa-users fa-fw fa-sm'></i> 友链</a></li><li class=menu-item><a class=menu-link href=/about/><i class='fa-solid fa-info-circle fa-fw fa-sm'></i> 关于</a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=https://github.com/kbsonlong/ title=GitHub rel="noopener noreferrer" target=_blank><i class='fa-brands fa-github fa-fw'></i></a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=/messages/><i class='fa-solid fa-messages'></i> 留言板</a></li><li class=menu-item><a class=menu-link href=/messages/ title=留言板>留言板</a></li><li class="menu-item menu-system"><span class="menu-system-item theme-switch" title=切换主题><i class="fa-solid fa-adjust fa-fw" aria-hidden=true></i></span><span class="menu-system-item language-switch">
+<span role=button aria-label=选择语言 title=选择语言>简体中文<i class="dropdown-icon fa-solid fa-chevron-down" aria-hidden=true></i></span>
+<select class=language-select onchange="location=this.value"><option disabled>没有更多翻译</option></select></span></li></ul></nav></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=container><aside class="aside-collection animate__animated animate__fadeIn animate__faster" aria-label=合集></aside><article class="page single"><div class=header><h1 class="single-title animate__animated animate__flipInX"><span>04-Kube-Controller-Manager源码分析(EndpointSlice控制器)</span></h1></div><div class=post-meta><div class=post-meta-line><span class=post-author><span class=author><i class="fa-solid fa-user-circle" aria-hidden=true></i>
+kbsonlong</span></span><span class=post-included-in>&nbsp;收录于 <a href=/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/ class=post-category title="分类 - 源码分析"><i class="fa-regular fa-folder fa-fw" aria-hidden=true></i> 源码分析</a>&ensp;<a href=/categories/kubernetes/ class=post-category title="分类 - Kubernetes"><i class="fa-regular fa-folder fa-fw" aria-hidden=true></i> Kubernetes</a></span></div><div class=post-meta-line><span title="发布于 2024-01-02 10:09:54"><i class="fa-solid fa-calendar-days fa-fw me-1" aria-hidden=true></i><time datetime=2024-01-02>2024-01-02</time></span>&nbsp;<span title="4101 字"><i class="fa-solid fa-pencil-alt fa-fw me-1" aria-hidden=true></i>约 4200 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw me-1" aria-hidden=true></i>预计阅读 9 分钟</span>&nbsp;<span id=busuanzi_container_page_pv class="busuanzi_visitors comment-visitors" data-flag-title=04-Kube-Controller-Manager源码分析(EndpointSlice控制器)><i class="fa-regular fa-eye fa-fw me-1" aria-hidden=true></i><span id=busuanzi_value_page_pv>-</span>&nbsp;次阅读
+</span>&nbsp;</div></div><div class="details toc" id=toc-static data-kept=false><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fa-solid fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#背景>背景</a><ul><li><a href=#可伸缩性改进>可伸缩性改进</a><ul><li><a href=#endpoints-的限制><code>Endpoints</code> 的限制</a></li><li><a href=#endpointslices-的改进><code>EndpointSlices</code> 的改进</a></li></ul></li><li><a href=#双堆栈服务>双堆栈服务</a></li><li><a href=#拓扑感知路由>拓扑感知路由</a></li></ul></li><li><a href=#newendpointslicecontrollerdescriptor>newEndpointSliceControllerDescriptor</a></li><li><a href=#startendpointslicecontroller>startEndpointSliceController</a></li><li><a href=#newcontroller>NewController</a></li><li><a href=#run>Run</a></li><li><a href=#syncservice>syncService</a></li><li><a href=#creconcilerreconcile>c.reconciler.Reconcile</a></li><li><a href=#rfinalize>r.finalize</a></li><li><a href=#处理流程>处理流程</a></li><li><a href=#参考资料>参考资料</a></li></ul></nav></div></div><div class=content id=content><p>本文基于<a href=https://github.com/kubernetes/kubernetes/tree/v1.29.0 target=_blank rel="external nofollow noopener noreferrer">1.29.0</a>版本</p><h2 class=heading-element id=背景><span>背景</span>
+<a href=#%e8%83%8c%e6%99%af class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p>在 <code>kubernetes</code> 1.16版本中，<code>EndpointSlice</code> 作为 <code>alpha</code> 特性被引入，主要用于解决 <code>Endpoints</code> 资源可伸缩性改进、双堆栈服务和拓扑感知路由等问题，在<code>Kubernetes</code> 1.19版本之后默认启用，并在1.21版本后<code>EndpointSlice API</code> 版本改为 <code>discovery.k8s.io/v1</code>。</p><h3 class=heading-element id=可伸缩性改进><span>可伸缩性改进</span>
+<a href=#%e5%8f%af%e4%bc%b8%e7%bc%a9%e6%80%a7%e6%94%b9%e8%bf%9b class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><h4 class=heading-element id=endpoints-的限制><span><code>Endpoints</code> 的限制</span>
+<a href=#endpoints-%e7%9a%84%e9%99%90%e5%88%b6 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h4><ol><li><p>使用 <code>Endpoints</code> 时，一个<code>Service</code>只有一个 <code>Endpoints</code> 资源，当每一次更新 <code>Pod</code> 后，必须将整个 <code>Endpoints</code> 资源发送到集群中的每个节点。对于大型集群来说，这是一个非常大的负担，因为它涉及在集群中发送大量的数据。</p></li><li><p><code>Endpoints</code> 另一个限制是，它限制了可以为服务跟踪的网络端点的数量。存储在 <code>etcd</code> 中的对象的默认大小限制为 <code>1.5MB</code>。在某些情况下，可以将 <code>Endpoints</code> 资源限制为 <code>5000</code> 个 Pod IP。对于大多数用户来说，这不是问题，但是对于大规模集群的用户来说，这就存在大问题。</p></li></ol><p>比如在一个1000节点的大型集群中，如有有一个服务的<code>Pod</code>数量有<code>5000</code>个，它每一次<code>Pod</code>发生变之后，需要将整个完整的<code>Endpoints</code>资源发送到集群中的每一个 <code>kube-porxy</code> 节点，那么它将涉及在集群中发送的数据量(1.5MB * 1000 = 1.5GB)</p><h4 class=heading-element id=endpointslices-的改进><span><code>EndpointSlices</code> 的改进</span>
+<a href=#endpointslices-%e7%9a%84%e6%94%b9%e8%bf%9b class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h4><p><code>EndpointSlice</code> API 旨在通过类似于分片的方法解决此问题。我们不是使用单个 <code>Endpoints</code> 资源跟踪服务的所有 <code>Pod IP</code>，而是将它们拆分为多个较小的 <code>EndpointSlice</code>,使用 <code>EndpointSlices</code> 时，用于端点更新的数据将大大减少，并且 <code>kube-proxy</code> 更新 <code>iptables</code> 或 <code>ipvs</code> 规则的速度应该更快</p><p><img loading=lazy src=https://kubernetes.io/images/blog/2020-09-02-scaling-kubernetes-networking-endpointslices/endpoint-slices.png alt=endpoint></p><h3 class=heading-element id=双堆栈服务><span>双堆栈服务</span>
+<a href=#%e5%8f%8c%e5%a0%86%e6%a0%88%e6%9c%8d%e5%8a%a1 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><p>同时将 IPv4 和 IPv6 地址用于服务，并依靠 <code>EndpointSlices</code> 上的 <code>addressType</code> 字段按 <code>IP</code> 系列跟踪这些地址</p><h3 class=heading-element id=拓扑感知路由><span>拓扑感知路由</span>
+<a href=#%e6%8b%93%e6%89%91%e6%84%9f%e7%9f%a5%e8%b7%af%e7%94%b1 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><p>拓扑感知路由将更新 <code>kube-proxy</code>，以优先路由同一 <code>zone</code> 或者 <code>region</code> 内的请求。这利用了为 <code>EndpointSlice</code> 中的每个终结点存储的拓扑字段。</p><h2 class=heading-element id=newendpointslicecontrollerdescriptor><span>newEndpointSliceControllerDescriptor</span>
+<a href=#newendpointslicecontrollerdescriptor class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p>cmd/kube-controller-manager/app/discovery.go</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=nf>newEndpointSliceControllerDescriptor</span><span class=p>()</span> <span class=o>*</span><span class=nx>ControllerDescriptor</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl> <span class=k>return</span> <span class=o>&amp;</span><span class=nx>ControllerDescriptor</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>name</span><span class=p>:</span>     <span class=nx>names</span><span class=p>.</span><span class=nx>EndpointSliceController</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nx>aliases</span><span class=p>:</span>  <span class=p>[]</span><span class=kt>string</span><span class=p>{</span><span class=s>&#34;endpointslice&#34;</span><span class=p>},</span>
+</span></span><span class=line><span class=cl>  <span class=nx>initFunc</span><span class=p>:</span> <span class=nx>startEndpointSliceController</span><span class=p>,</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><h2 class=heading-element id=startendpointslicecontroller><span>startEndpointSliceController</span>
+<a href=#startendpointslicecontroller class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p><code>startEndpointSliceController</code> 通过协程实例化 <code>endpointslicecontroller</code> 控制器对象，并且启动控制器</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=nf>startEndpointSliceController</span><span class=p>(</span><span class=nx>ctx</span> <span class=nx>context</span><span class=p>.</span><span class=nx>Context</span><span class=p>,</span> <span class=nx>controllerContext</span> <span class=nx>ControllerContext</span><span class=p>,</span> <span class=nx>controllerName</span> <span class=kt>string</span><span class=p>)</span> <span class=p>(</span><span class=nx>controller</span><span class=p>.</span><span class=nx>Interface</span><span class=p>,</span> <span class=kt>bool</span><span class=p>,</span> <span class=kt>error</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl> <span class=k>go</span> <span class=nx>endpointslicecontroller</span><span class=p>.</span><span class=nf>NewController</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>  <span class=nx>ctx</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nx>controllerContext</span><span class=p>.</span><span class=nx>InformerFactory</span><span class=p>.</span><span class=nf>Core</span><span class=p>().</span><span class=nf>V1</span><span class=p>().</span><span class=nf>Pods</span><span class=p>(),</span>
+</span></span><span class=line><span class=cl>  <span class=nx>controllerContext</span><span class=p>.</span><span class=nx>InformerFactory</span><span class=p>.</span><span class=nf>Core</span><span class=p>().</span><span class=nf>V1</span><span class=p>().</span><span class=nf>Services</span><span class=p>(),</span>
+</span></span><span class=line><span class=cl>  <span class=nx>controllerContext</span><span class=p>.</span><span class=nx>InformerFactory</span><span class=p>.</span><span class=nf>Core</span><span class=p>().</span><span class=nf>V1</span><span class=p>().</span><span class=nf>Nodes</span><span class=p>(),</span>
+</span></span><span class=line><span class=cl>  <span class=nx>controllerContext</span><span class=p>.</span><span class=nx>InformerFactory</span><span class=p>.</span><span class=nf>Discovery</span><span class=p>().</span><span class=nf>V1</span><span class=p>().</span><span class=nf>EndpointSlices</span><span class=p>(),</span>
+</span></span><span class=line><span class=cl>  <span class=nx>controllerContext</span><span class=p>.</span><span class=nx>ComponentConfig</span><span class=p>.</span><span class=nx>EndpointSliceController</span><span class=p>.</span><span class=nx>MaxEndpointsPerSlice</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nx>controllerContext</span><span class=p>.</span><span class=nx>ClientBuilder</span><span class=p>.</span><span class=nf>ClientOrDie</span><span class=p>(</span><span class=s>&#34;endpointslice-controller&#34;</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>  <span class=nx>controllerContext</span><span class=p>.</span><span class=nx>ComponentConfig</span><span class=p>.</span><span class=nx>EndpointSliceController</span><span class=p>.</span><span class=nx>EndpointUpdatesBatchPeriod</span><span class=p>.</span><span class=nx>Duration</span><span class=p>,</span>
+</span></span><span class=line><span class=cl> <span class=p>).</span><span class=nf>Run</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nb>int</span><span class=p>(</span><span class=nx>controllerContext</span><span class=p>.</span><span class=nx>ComponentConfig</span><span class=p>.</span><span class=nx>EndpointSliceController</span><span class=p>.</span><span class=nx>ConcurrentServiceEndpointSyncs</span><span class=p>))</span>
+</span></span><span class=line><span class=cl> <span class=k>return</span> <span class=kc>nil</span><span class=p>,</span> <span class=kc>true</span><span class=p>,</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><h2 class=heading-element id=newcontroller><span>NewController</span>
+<a href=#newcontroller class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p><code>NewController</code> 初始化Controller, 并监听 <code>Sercvice</code>、<code>Pod</code>、<code>EndpointSlice</code> 和 <code>Node</code> 资源事件,</p><p>参数:</p><ol><li><p>c.maxEndpointsPerSlice</p><p>分片最大支持<code>Endpoints</code>数量</p></li><li><p>features.TopologyAwareHints</p><p>启用拓扑路由感知</p></li></ol><p>方法:</p><ol><li><p>c.triggerTimeTracker</p><p>用于计算 <code>pod</code> 和 <code>Service</code> 最后一次更新时间</p></li><li><p>c.reconciler</p><p>核心控制逻辑</p></li></ol><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=nf>NewController</span><span class=p>(</span><span class=nx>ctx</span> <span class=nx>context</span><span class=p>.</span><span class=nx>Context</span><span class=p>,</span> <span class=nx>podInformer</span> <span class=nx>coreinformers</span><span class=p>.</span><span class=nx>PodInformer</span><span class=p>,</span>
+</span></span><span class=line><span class=cl> <span class=nx>serviceInformer</span> <span class=nx>coreinformers</span><span class=p>.</span><span class=nx>ServiceInformer</span><span class=p>,</span>
+</span></span><span class=line><span class=cl> <span class=nx>nodeInformer</span> <span class=nx>coreinformers</span><span class=p>.</span><span class=nx>NodeInformer</span><span class=p>,</span>
+</span></span><span class=line><span class=cl> <span class=nx>endpointSliceInformer</span> <span class=nx>discoveryinformers</span><span class=p>.</span><span class=nx>EndpointSliceInformer</span><span class=p>,</span>
+</span></span><span class=line><span class=cl> <span class=nx>maxEndpointsPerSlice</span> <span class=kt>int32</span><span class=p>,</span>
+</span></span><span class=line><span class=cl> <span class=nx>client</span> <span class=nx>clientset</span><span class=p>.</span><span class=nx>Interface</span><span class=p>,</span>
+</span></span><span class=line><span class=cl> <span class=nx>endpointUpdatesBatchPeriod</span> <span class=nx>time</span><span class=p>.</span><span class=nx>Duration</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>)</span> <span class=o>*</span><span class=nx>Controller</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl> <span class=nx>broadcaster</span> <span class=o>:=</span> <span class=nx>record</span><span class=p>.</span><span class=nf>NewBroadcaster</span><span class=p>()</span>
+</span></span><span class=line><span class=cl> <span class=nx>recorder</span> <span class=o>:=</span> <span class=nx>broadcaster</span><span class=p>.</span><span class=nf>NewRecorder</span><span class=p>(</span><span class=nx>scheme</span><span class=p>.</span><span class=nx>Scheme</span><span class=p>,</span> <span class=nx>v1</span><span class=p>.</span><span class=nx>EventSource</span><span class=p>{</span><span class=nx>Component</span><span class=p>:</span> <span class=s>&#34;endpoint-slice-controller&#34;</span><span class=p>})</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=nx>endpointslicemetrics</span><span class=p>.</span><span class=nf>RegisterMetrics</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// 初始化Controller,并加入100个令牌，10qps的令牌桶限流队列</span>
+</span></span><span class=line><span class=cl> <span class=nx>c</span> <span class=o>:=</span> <span class=o>&amp;</span><span class=nx>Controller</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>client</span><span class=p>:</span> <span class=nx>client</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// This is similar to the DefaultControllerRateLimiter, just with a</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// significantly higher default backoff (1s vs 5ms). This controller</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// processes events that can require significant EndpointSlice changes,</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// such as an update to a Service or Deployment. A more significant</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// rate limit back off here helps ensure that the Controller does not</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// overwhelm the API Server.</span>
+</span></span><span class=line><span class=cl>  <span class=nx>queue</span><span class=p>:</span> <span class=nx>workqueue</span><span class=p>.</span><span class=nf>NewNamedRateLimitingQueue</span><span class=p>(</span><span class=nx>workqueue</span><span class=p>.</span><span class=nf>NewMaxOfRateLimiter</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>   <span class=nx>workqueue</span><span class=p>.</span><span class=nf>NewItemExponentialFailureRateLimiter</span><span class=p>(</span><span class=nx>defaultSyncBackOff</span><span class=p>,</span> <span class=nx>maxSyncBackOff</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>   <span class=c1>// 10 qps, 100 bucket size. This is only for retry speed and its</span>
+</span></span><span class=line><span class=cl>   <span class=c1>// only the overall factor (not per item).</span>
+</span></span><span class=line><span class=cl>   <span class=o>&amp;</span><span class=nx>workqueue</span><span class=p>.</span><span class=nx>BucketRateLimiter</span><span class=p>{</span><span class=nx>Limiter</span><span class=p>:</span> <span class=nx>rate</span><span class=p>.</span><span class=nf>NewLimiter</span><span class=p>(</span><span class=nx>rate</span><span class=p>.</span><span class=nf>Limit</span><span class=p>(</span><span class=mi>10</span><span class=p>),</span> <span class=mi>100</span><span class=p>)},</span>
+</span></span><span class=line><span class=cl>  <span class=p>),</span> <span class=s>&#34;endpoint_slice&#34;</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>  <span class=nx>workerLoopPeriod</span><span class=p>:</span> <span class=nx>time</span><span class=p>.</span><span class=nx>Second</span><span class=p>,</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=c1>// 监听 `Service` 资源增删改事件</span>
+</span></span><span class=line><span class=cl> <span class=nx>serviceInformer</span><span class=p>.</span><span class=nf>Informer</span><span class=p>().</span><span class=nf>AddEventHandler</span><span class=p>(</span><span class=nx>cache</span><span class=p>.</span><span class=nx>ResourceEventHandlerFuncs</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>AddFunc</span><span class=p>:</span> <span class=nx>c</span><span class=p>.</span><span class=nx>onServiceUpdate</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nx>UpdateFunc</span><span class=p>:</span> <span class=kd>func</span><span class=p>(</span><span class=nx>old</span><span class=p>,</span> <span class=nx>cur</span> <span class=kd>interface</span><span class=p>{})</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=nx>c</span><span class=p>.</span><span class=nf>onServiceUpdate</span><span class=p>(</span><span class=nx>cur</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>},</span>
+</span></span><span class=line><span class=cl>  <span class=nx>DeleteFunc</span><span class=p>:</span> <span class=nx>c</span><span class=p>.</span><span class=nx>onServiceDelete</span><span class=p>,</span>
+</span></span><span class=line><span class=cl> <span class=p>})</span>
+</span></span><span class=line><span class=cl> <span class=nx>c</span><span class=p>.</span><span class=nx>serviceLister</span> <span class=p>=</span> <span class=nx>serviceInformer</span><span class=p>.</span><span class=nf>Lister</span><span class=p>()</span>
+</span></span><span class=line><span class=cl> <span class=nx>c</span><span class=p>.</span><span class=nx>servicesSynced</span> <span class=p>=</span> <span class=nx>serviceInformer</span><span class=p>.</span><span class=nf>Informer</span><span class=p>().</span><span class=nx>HasSynced</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// 监听`Pod` 资源增删改事件</span>
+</span></span><span class=line><span class=cl> <span class=nx>podInformer</span><span class=p>.</span><span class=nf>Informer</span><span class=p>().</span><span class=nf>AddEventHandler</span><span class=p>(</span><span class=nx>cache</span><span class=p>.</span><span class=nx>ResourceEventHandlerFuncs</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>AddFunc</span><span class=p>:</span>    <span class=nx>c</span><span class=p>.</span><span class=nx>addPod</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nx>UpdateFunc</span><span class=p>:</span> <span class=nx>c</span><span class=p>.</span><span class=nx>updatePod</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nx>DeleteFunc</span><span class=p>:</span> <span class=nx>c</span><span class=p>.</span><span class=nx>deletePod</span><span class=p>,</span>
+</span></span><span class=line><span class=cl> <span class=p>})</span>
+</span></span><span class=line><span class=cl> <span class=nx>c</span><span class=p>.</span><span class=nx>podLister</span> <span class=p>=</span> <span class=nx>podInformer</span><span class=p>.</span><span class=nf>Lister</span><span class=p>()</span>
+</span></span><span class=line><span class=cl> <span class=nx>c</span><span class=p>.</span><span class=nx>podsSynced</span> <span class=p>=</span> <span class=nx>podInformer</span><span class=p>.</span><span class=nf>Informer</span><span class=p>().</span><span class=nx>HasSynced</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=nx>c</span><span class=p>.</span><span class=nx>nodeLister</span> <span class=p>=</span> <span class=nx>nodeInformer</span><span class=p>.</span><span class=nf>Lister</span><span class=p>()</span>
+</span></span><span class=line><span class=cl> <span class=nx>c</span><span class=p>.</span><span class=nx>nodesSynced</span> <span class=p>=</span> <span class=nx>nodeInformer</span><span class=p>.</span><span class=nf>Informer</span><span class=p>().</span><span class=nx>HasSynced</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=nx>logger</span> <span class=o>:=</span> <span class=nx>klog</span><span class=p>.</span><span class=nf>FromContext</span><span class=p>(</span><span class=nx>ctx</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=c1>// 监听`EndpointSlice` 资源增删改事件</span>
+</span></span><span class=line><span class=cl> <span class=nx>endpointSliceInformer</span><span class=p>.</span><span class=nf>Informer</span><span class=p>().</span><span class=nf>AddEventHandler</span><span class=p>(</span><span class=nx>cache</span><span class=p>.</span><span class=nx>ResourceEventHandlerFuncs</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>AddFunc</span><span class=p>:</span> <span class=nx>c</span><span class=p>.</span><span class=nx>onEndpointSliceAdd</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nx>UpdateFunc</span><span class=p>:</span> <span class=kd>func</span><span class=p>(</span><span class=nx>oldObj</span><span class=p>,</span> <span class=nx>newObj</span> <span class=kd>interface</span><span class=p>{})</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=nx>c</span><span class=p>.</span><span class=nf>onEndpointSliceUpdate</span><span class=p>(</span><span class=nx>logger</span><span class=p>,</span> <span class=nx>oldObj</span><span class=p>,</span> <span class=nx>newObj</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>},</span>
+</span></span><span class=line><span class=cl>  <span class=nx>DeleteFunc</span><span class=p>:</span> <span class=nx>c</span><span class=p>.</span><span class=nx>onEndpointSliceDelete</span><span class=p>,</span>
+</span></span><span class=line><span class=cl> <span class=p>})</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=nx>c</span><span class=p>.</span><span class=nx>endpointSliceLister</span> <span class=p>=</span> <span class=nx>endpointSliceInformer</span><span class=p>.</span><span class=nf>Lister</span><span class=p>()</span>
+</span></span><span class=line><span class=cl> <span class=nx>c</span><span class=p>.</span><span class=nx>endpointSlicesSynced</span> <span class=p>=</span> <span class=nx>endpointSliceInformer</span><span class=p>.</span><span class=nf>Informer</span><span class=p>().</span><span class=nx>HasSynced</span>
+</span></span><span class=line><span class=cl> <span class=nx>c</span><span class=p>.</span><span class=nx>endpointSliceTracker</span> <span class=p>=</span> <span class=nx>endpointsliceutil</span><span class=p>.</span><span class=nf>NewEndpointSliceTracker</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// 每个`EndpointSlice`最大支持`Endpoint` 数量,默认100</span>
+</span></span><span class=line><span class=cl> <span class=nx>c</span><span class=p>.</span><span class=nx>maxEndpointsPerSlice</span> <span class=p>=</span> <span class=nx>maxEndpointsPerSlice</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// 计算 service 和 pods 最后一次更新时间，并存到缓存,然后更新2者资源状态。</span>
+</span></span><span class=line><span class=cl> <span class=nx>c</span><span class=p>.</span><span class=nx>triggerTimeTracker</span> <span class=p>=</span> <span class=nx>endpointsliceutil</span><span class=p>.</span><span class=nf>NewTriggerTimeTracker</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=nx>c</span><span class=p>.</span><span class=nx>eventBroadcaster</span> <span class=p>=</span> <span class=nx>broadcaster</span>
+</span></span><span class=line><span class=cl> <span class=nx>c</span><span class=p>.</span><span class=nx>eventRecorder</span> <span class=p>=</span> <span class=nx>recorder</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=nx>c</span><span class=p>.</span><span class=nx>endpointUpdatesBatchPeriod</span> <span class=p>=</span> <span class=nx>endpointUpdatesBatchPeriod</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// 判断是否启用`TopologyAwareHints` 特性，如果启用监听`Node` 资源增删改事件</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>utilfeature</span><span class=p>.</span><span class=nx>DefaultFeatureGate</span><span class=p>.</span><span class=nf>Enabled</span><span class=p>(</span><span class=nx>features</span><span class=p>.</span><span class=nx>TopologyAwareHints</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>nodeInformer</span><span class=p>.</span><span class=nf>Informer</span><span class=p>().</span><span class=nf>AddEventHandler</span><span class=p>(</span><span class=nx>cache</span><span class=p>.</span><span class=nx>ResourceEventHandlerFuncs</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=nx>AddFunc</span><span class=p>:</span> <span class=kd>func</span><span class=p>(</span><span class=nx>obj</span> <span class=kd>interface</span><span class=p>{})</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>c</span><span class=p>.</span><span class=nf>addNode</span><span class=p>(</span><span class=nx>logger</span><span class=p>,</span> <span class=nx>obj</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>   <span class=p>},</span>
+</span></span><span class=line><span class=cl>   <span class=nx>UpdateFunc</span><span class=p>:</span> <span class=kd>func</span><span class=p>(</span><span class=nx>oldObj</span><span class=p>,</span> <span class=nx>newObj</span> <span class=kd>interface</span><span class=p>{})</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>c</span><span class=p>.</span><span class=nf>updateNode</span><span class=p>(</span><span class=nx>logger</span><span class=p>,</span> <span class=nx>oldObj</span><span class=p>,</span> <span class=nx>newObj</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>   <span class=p>},</span>
+</span></span><span class=line><span class=cl>   <span class=nx>DeleteFunc</span><span class=p>:</span> <span class=kd>func</span><span class=p>(</span><span class=nx>obj</span> <span class=kd>interface</span><span class=p>{})</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>c</span><span class=p>.</span><span class=nf>deleteNode</span><span class=p>(</span><span class=nx>logger</span><span class=p>,</span> <span class=nx>obj</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>   <span class=p>},</span>
+</span></span><span class=line><span class=cl>  <span class=p>})</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>c</span><span class=p>.</span><span class=nx>topologyCache</span> <span class=p>=</span> <span class=nx>topologycache</span><span class=p>.</span><span class=nf>NewTopologyCache</span><span class=p>()</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// `EndpointSlice` 控制器核心逻辑</span>
+</span></span><span class=line><span class=cl> <span class=nx>c</span><span class=p>.</span><span class=nx>reconciler</span> <span class=p>=</span> <span class=nx>endpointslicerec</span><span class=p>.</span><span class=nf>NewReconciler</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>  <span class=nx>c</span><span class=p>.</span><span class=nx>client</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nx>c</span><span class=p>.</span><span class=nx>nodeLister</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nx>c</span><span class=p>.</span><span class=nx>maxEndpointsPerSlice</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nx>c</span><span class=p>.</span><span class=nx>endpointSliceTracker</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nx>c</span><span class=p>.</span><span class=nx>topologyCache</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nx>c</span><span class=p>.</span><span class=nx>eventRecorder</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nx>controllerName</span><span class=p>,</span>
+</span></span><span class=line><span class=cl> <span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=k>return</span> <span class=nx>c</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><h2 class=heading-element id=run><span>Run</span>
+<a href=#run class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p>参数:</p><ul><li><p>ConcurrentServiceEndpointSyncs</p><p>同步<code>Service</code> 和 <code>EndpointSlice</code> 的并发数量</p></li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>c</span> <span class=o>*</span><span class=nx>Controller</span><span class=p>)</span> <span class=nf>Run</span><span class=p>(</span><span class=nx>ctx</span> <span class=nx>context</span><span class=p>.</span><span class=nx>Context</span><span class=p>,</span> <span class=nx>workers</span> <span class=kt>int</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl> <span class=k>defer</span> <span class=nx>utilruntime</span><span class=p>.</span><span class=nf>HandleCrash</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// Start events processing pipeline.</span>
+</span></span><span class=line><span class=cl> <span class=nx>c</span><span class=p>.</span><span class=nx>eventBroadcaster</span><span class=p>.</span><span class=nf>StartLogging</span><span class=p>(</span><span class=nx>klog</span><span class=p>.</span><span class=nx>Infof</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=nx>c</span><span class=p>.</span><span class=nx>eventBroadcaster</span><span class=p>.</span><span class=nf>StartRecordingToSink</span><span class=p>(</span><span class=o>&amp;</span><span class=nx>v1core</span><span class=p>.</span><span class=nx>EventSinkImpl</span><span class=p>{</span><span class=nx>Interface</span><span class=p>:</span> <span class=nx>c</span><span class=p>.</span><span class=nx>client</span><span class=p>.</span><span class=nf>CoreV1</span><span class=p>().</span><span class=nf>Events</span><span class=p>(</span><span class=s>&#34;&#34;</span><span class=p>)})</span>
+</span></span><span class=line><span class=cl> <span class=k>defer</span> <span class=nx>c</span><span class=p>.</span><span class=nx>eventBroadcaster</span><span class=p>.</span><span class=nf>Shutdown</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=k>defer</span> <span class=nx>c</span><span class=p>.</span><span class=nx>queue</span><span class=p>.</span><span class=nf>ShutDown</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=nx>logger</span> <span class=o>:=</span> <span class=nx>klog</span><span class=p>.</span><span class=nf>FromContext</span><span class=p>(</span><span class=nx>ctx</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=nx>logger</span><span class=p>.</span><span class=nf>Info</span><span class=p>(</span><span class=s>&#34;Starting endpoint slice controller&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=k>defer</span> <span class=nx>logger</span><span class=p>.</span><span class=nf>Info</span><span class=p>(</span><span class=s>&#34;Shutting down endpoint slice controller&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=p>!</span><span class=nx>cache</span><span class=p>.</span><span class=nf>WaitForNamedCacheSync</span><span class=p>(</span><span class=s>&#34;endpoint_slice&#34;</span><span class=p>,</span> <span class=nx>ctx</span><span class=p>.</span><span class=nf>Done</span><span class=p>(),</span> <span class=nx>c</span><span class=p>.</span><span class=nx>podsSynced</span><span class=p>,</span> <span class=nx>c</span><span class=p>.</span><span class=nx>servicesSynced</span><span class=p>,</span> <span class=nx>c</span><span class=p>.</span><span class=nx>endpointSlicesSynced</span><span class=p>,</span> <span class=nx>c</span><span class=p>.</span><span class=nx>nodesSynced</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// 启动 消费者 `worker` 协程</span>
+</span></span><span class=line><span class=cl> <span class=nx>logger</span><span class=p>.</span><span class=nf>V</span><span class=p>(</span><span class=mi>2</span><span class=p>).</span><span class=nf>Info</span><span class=p>(</span><span class=s>&#34;Starting worker threads&#34;</span><span class=p>,</span> <span class=s>&#34;total&#34;</span><span class=p>,</span> <span class=nx>workers</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=k>for</span> <span class=nx>i</span> <span class=o>:=</span> <span class=mi>0</span><span class=p>;</span> <span class=nx>i</span> <span class=p>&lt;</span> <span class=nx>workers</span><span class=p>;</span> <span class=nx>i</span><span class=o>++</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>go</span> <span class=nx>wait</span><span class=p>.</span><span class=nf>Until</span><span class=p>(</span><span class=kd>func</span><span class=p>()</span> <span class=p>{</span> <span class=nx>c</span><span class=p>.</span><span class=nf>worker</span><span class=p>(</span><span class=nx>logger</span><span class=p>)</span> <span class=p>},</span> <span class=nx>c</span><span class=p>.</span><span class=nx>workerLoopPeriod</span><span class=p>,</span> <span class=nx>ctx</span><span class=p>.</span><span class=nf>Done</span><span class=p>())</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=o>&lt;-</span><span class=nx>ctx</span><span class=p>.</span><span class=nf>Done</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>c</span> <span class=o>*</span><span class=nx>Controller</span><span class=p>)</span> <span class=nf>worker</span><span class=p>(</span><span class=nx>logger</span> <span class=nx>klog</span><span class=p>.</span><span class=nx>Logger</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl> <span class=k>for</span> <span class=nx>c</span><span class=p>.</span><span class=nf>processNextWorkItem</span><span class=p>(</span><span class=nx>logger</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>c</span> <span class=o>*</span><span class=nx>Controller</span><span class=p>)</span> <span class=nf>processNextWorkItem</span><span class=p>(</span><span class=nx>logger</span> <span class=nx>klog</span><span class=p>.</span><span class=nx>Logger</span><span class=p>)</span> <span class=kt>bool</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl> <span class=nx>cKey</span><span class=p>,</span> <span class=nx>quit</span> <span class=o>:=</span> <span class=nx>c</span><span class=p>.</span><span class=nx>queue</span><span class=p>.</span><span class=nf>Get</span><span class=p>()</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>quit</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=kc>false</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=k>defer</span> <span class=nx>c</span><span class=p>.</span><span class=nx>queue</span><span class=p>.</span><span class=nf>Done</span><span class=p>(</span><span class=nx>cKey</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>c</span><span class=p>.</span><span class=nf>syncService</span><span class=p>(</span><span class=nx>logger</span><span class=p>,</span> <span class=nx>cKey</span><span class=p>.(</span><span class=kt>string</span><span class=p>))</span>
+</span></span><span class=line><span class=cl> <span class=nx>c</span><span class=p>.</span><span class=nf>handleErr</span><span class=p>(</span><span class=nx>logger</span><span class=p>,</span> <span class=nx>err</span><span class=p>,</span> <span class=nx>cKey</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=k>return</span> <span class=kc>true</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><h2 class=heading-element id=syncservice><span>syncService</span>
+<a href=#syncservice class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><ol><li>获取 <code>Services</code> 对象</li><li>根据Service标签选择器获取 <code>Pods</code> 对象</li><li>根据Service标签选择器获取 <code>EndpointSlices</code> 对象</li><li>标记删除的 <code>EndpointSlices</code> 对象</li><li>计算 <code>EndpointSlices</code> 对象最后一次更新时间,并更新 <code>EndpointSlice</code> 的注解</li></ol><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span><span class=lnt>76
+</span><span class=lnt>77
+</span><span class=lnt>78
+</span><span class=lnt>79
+</span><span class=lnt>80
+</span><span class=lnt>81
+</span><span class=lnt>82
+</span><span class=lnt>83
+</span><span class=lnt>84
+</span><span class=lnt>85
+</span><span class=lnt>86
+</span><span class=lnt>87
+</span><span class=lnt>88
+</span><span class=lnt>89
+</span><span class=lnt>90
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>c</span> <span class=o>*</span><span class=nx>Controller</span><span class=p>)</span> <span class=nf>syncService</span><span class=p>(</span><span class=nx>logger</span> <span class=nx>klog</span><span class=p>.</span><span class=nx>Logger</span><span class=p>,</span> <span class=nx>key</span> <span class=kt>string</span><span class=p>)</span> <span class=kt>error</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl> <span class=nx>startTime</span> <span class=o>:=</span> <span class=nx>time</span><span class=p>.</span><span class=nf>Now</span><span class=p>()</span>
+</span></span><span class=line><span class=cl> <span class=k>defer</span> <span class=kd>func</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>logger</span><span class=p>.</span><span class=nf>V</span><span class=p>(</span><span class=mi>4</span><span class=p>).</span><span class=nf>Info</span><span class=p>(</span><span class=s>&#34;Finished syncing service endpoint slices&#34;</span><span class=p>,</span> <span class=s>&#34;key&#34;</span><span class=p>,</span> <span class=nx>key</span><span class=p>,</span> <span class=s>&#34;elapsedTime&#34;</span><span class=p>,</span> <span class=nx>time</span><span class=p>.</span><span class=nf>Since</span><span class=p>(</span><span class=nx>startTime</span><span class=p>))</span>
+</span></span><span class=line><span class=cl> <span class=p>}()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=nx>namespace</span><span class=p>,</span> <span class=nx>name</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>cache</span><span class=p>.</span><span class=nf>SplitMetaNamespaceKey</span><span class=p>(</span><span class=nx>key</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// 1. 获取 `Services` 对象</span>
+</span></span><span class=line><span class=cl> <span class=nx>service</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>c</span><span class=p>.</span><span class=nx>serviceLister</span><span class=p>.</span><span class=nf>Services</span><span class=p>(</span><span class=nx>namespace</span><span class=p>).</span><span class=nf>Get</span><span class=p>(</span><span class=nx>name</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=p>!</span><span class=nx>apierrors</span><span class=p>.</span><span class=nf>IsNotFound</span><span class=p>(</span><span class=nx>err</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>c</span><span class=p>.</span><span class=nx>triggerTimeTracker</span><span class=p>.</span><span class=nf>DeleteService</span><span class=p>(</span><span class=nx>namespace</span><span class=p>,</span> <span class=nx>name</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nx>c</span><span class=p>.</span><span class=nx>reconciler</span><span class=p>.</span><span class=nf>DeleteService</span><span class=p>(</span><span class=nx>namespace</span><span class=p>,</span> <span class=nx>name</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nx>c</span><span class=p>.</span><span class=nx>endpointSliceTracker</span><span class=p>.</span><span class=nf>DeleteService</span><span class=p>(</span><span class=nx>namespace</span><span class=p>,</span> <span class=nx>name</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// The service has been deleted, return nil so that it won&#39;t be retried.</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>service</span><span class=p>.</span><span class=nx>Spec</span><span class=p>.</span><span class=nx>Type</span> <span class=o>==</span> <span class=nx>v1</span><span class=p>.</span><span class=nx>ServiceTypeExternalName</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// services with Type ExternalName receive no endpoints from this controller;</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// Ref: https://issues.k8s.io/105986</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>service</span><span class=p>.</span><span class=nx>Spec</span><span class=p>.</span><span class=nx>Selector</span> <span class=o>==</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// services without a selector receive no endpoint slices from this controller;</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// these services will receive endpoint slices that are created out-of-band via the REST API.</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=nx>logger</span><span class=p>.</span><span class=nf>V</span><span class=p>(</span><span class=mi>5</span><span class=p>).</span><span class=nf>Info</span><span class=p>(</span><span class=s>&#34;About to update endpoint slices for service&#34;</span><span class=p>,</span> <span class=s>&#34;key&#34;</span><span class=p>,</span> <span class=nx>key</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// 2. 根据Service标签选择器获取 `Pods` 对象</span>
+</span></span><span class=line><span class=cl> <span class=nx>podLabelSelector</span> <span class=o>:=</span> <span class=nx>labels</span><span class=p>.</span><span class=nf>Set</span><span class=p>(</span><span class=nx>service</span><span class=p>.</span><span class=nx>Spec</span><span class=p>.</span><span class=nx>Selector</span><span class=p>).</span><span class=nf>AsSelectorPreValidated</span><span class=p>()</span>
+</span></span><span class=line><span class=cl> <span class=nx>pods</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>c</span><span class=p>.</span><span class=nx>podLister</span><span class=p>.</span><span class=nf>Pods</span><span class=p>(</span><span class=nx>service</span><span class=p>.</span><span class=nx>Namespace</span><span class=p>).</span><span class=nf>List</span><span class=p>(</span><span class=nx>podLabelSelector</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// Since we&#39;re getting stuff from a local cache, it is basically</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// impossible to get this error.</span>
+</span></span><span class=line><span class=cl>  <span class=nx>c</span><span class=p>.</span><span class=nx>eventRecorder</span><span class=p>.</span><span class=nf>Eventf</span><span class=p>(</span><span class=nx>service</span><span class=p>,</span> <span class=nx>v1</span><span class=p>.</span><span class=nx>EventTypeWarning</span><span class=p>,</span> <span class=s>&#34;FailedToListPods&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>   <span class=s>&#34;Error listing Pods for Service %s/%s: %v&#34;</span><span class=p>,</span> <span class=nx>service</span><span class=p>.</span><span class=nx>Namespace</span><span class=p>,</span> <span class=nx>service</span><span class=p>.</span><span class=nx>Name</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// 3. 根据Service标签选择器获取 `EndpointSlices` 对象</span>
+</span></span><span class=line><span class=cl> <span class=nx>esLabelSelector</span> <span class=o>:=</span> <span class=nx>labels</span><span class=p>.</span><span class=nf>Set</span><span class=p>(</span><span class=kd>map</span><span class=p>[</span><span class=kt>string</span><span class=p>]</span><span class=kt>string</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>discovery</span><span class=p>.</span><span class=nx>LabelServiceName</span><span class=p>:</span> <span class=nx>service</span><span class=p>.</span><span class=nx>Name</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nx>discovery</span><span class=p>.</span><span class=nx>LabelManagedBy</span><span class=p>:</span>   <span class=nx>c</span><span class=p>.</span><span class=nx>reconciler</span><span class=p>.</span><span class=nf>GetControllerName</span><span class=p>(),</span>
+</span></span><span class=line><span class=cl> <span class=p>}).</span><span class=nf>AsSelectorPreValidated</span><span class=p>()</span>
+</span></span><span class=line><span class=cl> <span class=nx>endpointSlices</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>c</span><span class=p>.</span><span class=nx>endpointSliceLister</span><span class=p>.</span><span class=nf>EndpointSlices</span><span class=p>(</span><span class=nx>service</span><span class=p>.</span><span class=nx>Namespace</span><span class=p>).</span><span class=nf>List</span><span class=p>(</span><span class=nx>esLabelSelector</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// Since we&#39;re getting stuff from a local cache, it is basically</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// impossible to get this error.</span>
+</span></span><span class=line><span class=cl>  <span class=nx>c</span><span class=p>.</span><span class=nx>eventRecorder</span><span class=p>.</span><span class=nf>Eventf</span><span class=p>(</span><span class=nx>service</span><span class=p>,</span> <span class=nx>v1</span><span class=p>.</span><span class=nx>EventTypeWarning</span><span class=p>,</span> <span class=s>&#34;FailedToListEndpointSlices&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>   <span class=s>&#34;Error listing Endpoint Slices for Service %s/%s: %v&#34;</span><span class=p>,</span> <span class=nx>service</span><span class=p>.</span><span class=nx>Namespace</span><span class=p>,</span> <span class=nx>service</span><span class=p>.</span><span class=nx>Name</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// Drop EndpointSlices that have been marked for deletion to prevent the controller from getting stuck.</span>
+</span></span><span class=line><span class=cl> <span class=c1>// 4. 标记删除的 `EndpointSlices` 对象</span>
+</span></span><span class=line><span class=cl> <span class=nx>endpointSlices</span> <span class=p>=</span> <span class=nf>dropEndpointSlicesPendingDeletion</span><span class=p>(</span><span class=nx>endpointSlices</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>c</span><span class=p>.</span><span class=nx>endpointSliceTracker</span><span class=p>.</span><span class=nf>StaleSlices</span><span class=p>(</span><span class=nx>service</span><span class=p>,</span> <span class=nx>endpointSlices</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nx>endpointslicepkg</span><span class=p>.</span><span class=nf>NewStaleInformerCache</span><span class=p>(</span><span class=s>&#34;EndpointSlice informer cache is out of date&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// We call ComputeEndpointLastChangeTriggerTime here to make sure that the</span>
+</span></span><span class=line><span class=cl> <span class=c1>// state of the trigger time tracker gets updated even if the sync turns out</span>
+</span></span><span class=line><span class=cl> <span class=c1>// to be no-op and we don&#39;t update the EndpointSlice objects.</span>
+</span></span><span class=line><span class=cl> <span class=c1>// 5. 计算 `EndpointSlices` 对象最后一次更新时间,并更新 `EndpointSlice` 的注解</span>
+</span></span><span class=line><span class=cl> <span class=nx>lastChangeTriggerTime</span> <span class=o>:=</span> <span class=nx>c</span><span class=p>.</span><span class=nx>triggerTimeTracker</span><span class=p>.</span>
+</span></span><span class=line><span class=cl>  <span class=nf>ComputeEndpointLastChangeTriggerTime</span><span class=p>(</span><span class=nx>namespace</span><span class=p>,</span> <span class=nx>service</span><span class=p>,</span> <span class=nx>pods</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// 6. 核心控制逻辑</span>
+</span></span><span class=line><span class=cl> <span class=nx>err</span> <span class=p>=</span> <span class=nx>c</span><span class=p>.</span><span class=nx>reconciler</span><span class=p>.</span><span class=nf>Reconcile</span><span class=p>(</span><span class=nx>logger</span><span class=p>,</span> <span class=nx>service</span><span class=p>,</span> <span class=nx>pods</span><span class=p>,</span> <span class=nx>endpointSlices</span><span class=p>,</span> <span class=nx>lastChangeTriggerTime</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>c</span><span class=p>.</span><span class=nx>eventRecorder</span><span class=p>.</span><span class=nf>Eventf</span><span class=p>(</span><span class=nx>service</span><span class=p>,</span> <span class=nx>v1</span><span class=p>.</span><span class=nx>EventTypeWarning</span><span class=p>,</span> <span class=s>&#34;FailedToUpdateEndpointSlices&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>   <span class=s>&#34;Error updating Endpoint Slices for Service %s/%s: %v&#34;</span><span class=p>,</span> <span class=nx>service</span><span class=p>.</span><span class=nx>Namespace</span><span class=p>,</span> <span class=nx>service</span><span class=p>.</span><span class=nx>Name</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=k>return</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><h2 class=heading-element id=creconcilerreconcile><span>c.reconciler.Reconcile</span>
+<a href=#creconcilerreconcile class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span><span class=lnt>118
+</span><span class=lnt>119
+</span><span class=lnt>120
+</span><span class=lnt>121
+</span><span class=lnt>122
+</span><span class=lnt>123
+</span><span class=lnt>124
+</span><span class=lnt>125
+</span><span class=lnt>126
+</span><span class=lnt>127
+</span><span class=lnt>128
+</span><span class=lnt>129
+</span><span class=lnt>130
+</span><span class=lnt>131
+</span><span class=lnt>132
+</span><span class=lnt>133
+</span><span class=lnt>134
+</span><span class=lnt>135
+</span><span class=lnt>136
+</span><span class=lnt>137
+</span><span class=lnt>138
+</span><span class=lnt>139
+</span><span class=lnt>140
+</span><span class=lnt>141
+</span><span class=lnt>142
+</span><span class=lnt>143
+</span><span class=lnt>144
+</span><span class=lnt>145
+</span><span class=lnt>146
+</span><span class=lnt>147
+</span><span class=lnt>148
+</span><span class=lnt>149
+</span><span class=lnt>150
+</span><span class=lnt>151
+</span><span class=lnt>152
+</span><span class=lnt>153
+</span><span class=lnt>154
+</span><span class=lnt>155
+</span><span class=lnt>156
+</span><span class=lnt>157
+</span><span class=lnt>158
+</span><span class=lnt>159
+</span><span class=lnt>160
+</span><span class=lnt>161
+</span><span class=lnt>162
+</span><span class=lnt>163
+</span><span class=lnt>164
+</span><span class=lnt>165
+</span><span class=lnt>166
+</span><span class=lnt>167
+</span><span class=lnt>168
+</span><span class=lnt>169
+</span><span class=lnt>170
+</span><span class=lnt>171
+</span><span class=lnt>172
+</span><span class=lnt>173
+</span><span class=lnt>174
+</span><span class=lnt>175
+</span><span class=lnt>176
+</span><span class=lnt>177
+</span><span class=lnt>178
+</span><span class=lnt>179
+</span><span class=lnt>180
+</span><span class=lnt>181
+</span><span class=lnt>182
+</span><span class=lnt>183
+</span><span class=lnt>184
+</span><span class=lnt>185
+</span><span class=lnt>186
+</span><span class=lnt>187
+</span><span class=lnt>188
+</span><span class=lnt>189
+</span><span class=lnt>190
+</span><span class=lnt>191
+</span><span class=lnt>192
+</span><span class=lnt>193
+</span><span class=lnt>194
+</span><span class=lnt>195
+</span><span class=lnt>196
+</span><span class=lnt>197
+</span><span class=lnt>198
+</span><span class=lnt>199
+</span><span class=lnt>200
+</span><span class=lnt>201
+</span><span class=lnt>202
+</span><span class=lnt>203
+</span><span class=lnt>204
+</span><span class=lnt>205
+</span><span class=lnt>206
+</span><span class=lnt>207
+</span><span class=lnt>208
+</span><span class=lnt>209
+</span><span class=lnt>210
+</span><span class=lnt>211
+</span><span class=lnt>212
+</span><span class=lnt>213
+</span><span class=lnt>214
+</span><span class=lnt>215
+</span><span class=lnt>216
+</span><span class=lnt>217
+</span><span class=lnt>218
+</span><span class=lnt>219
+</span><span class=lnt>220
+</span><span class=lnt>221
+</span><span class=lnt>222
+</span><span class=lnt>223
+</span><span class=lnt>224
+</span><span class=lnt>225
+</span><span class=lnt>226
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>r</span> <span class=o>*</span><span class=nx>Reconciler</span><span class=p>)</span> <span class=nf>Reconcile</span><span class=p>(</span><span class=nx>logger</span> <span class=nx>klog</span><span class=p>.</span><span class=nx>Logger</span><span class=p>,</span> <span class=nx>service</span> <span class=o>*</span><span class=nx>corev1</span><span class=p>.</span><span class=nx>Service</span><span class=p>,</span> <span class=nx>pods</span> <span class=p>[]</span><span class=o>*</span><span class=nx>corev1</span><span class=p>.</span><span class=nx>Pod</span><span class=p>,</span> <span class=nx>existingSlices</span> <span class=p>[]</span><span class=o>*</span><span class=nx>discovery</span><span class=p>.</span><span class=nx>EndpointSlice</span><span class=p>,</span> <span class=nx>triggerTime</span> <span class=nx>time</span><span class=p>.</span><span class=nx>Time</span><span class=p>)</span> <span class=kt>error</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl> <span class=nx>slicesToDelete</span> <span class=o>:=</span> <span class=p>[]</span><span class=o>*</span><span class=nx>discovery</span><span class=p>.</span><span class=nx>EndpointSlice</span><span class=p>{}</span>                                    <span class=c1>// slices that are no longer  matching any address the service has</span>
+</span></span><span class=line><span class=cl> <span class=nx>errs</span> <span class=o>:=</span> <span class=p>[]</span><span class=kt>error</span><span class=p>{}</span>                                                                 <span class=c1>// all errors generated in the process of reconciling</span>
+</span></span><span class=line><span class=cl> <span class=nx>slicesByAddressType</span> <span class=o>:=</span> <span class=nb>make</span><span class=p>(</span><span class=kd>map</span><span class=p>[</span><span class=nx>discovery</span><span class=p>.</span><span class=nx>AddressType</span><span class=p>][]</span><span class=o>*</span><span class=nx>discovery</span><span class=p>.</span><span class=nx>EndpointSlice</span><span class=p>)</span> <span class=c1>// slices by address type</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// addresses that this service supports [o(1) find]</span>
+</span></span><span class=line><span class=cl> <span class=c1>// 获取`Service` 支持的地址类型</span>
+</span></span><span class=line><span class=cl> <span class=nx>serviceSupportedAddressesTypes</span> <span class=o>:=</span> <span class=nf>getAddressTypesForService</span><span class=p>(</span><span class=nx>logger</span><span class=p>,</span> <span class=nx>service</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// loop through slices identifying their address type.</span>
+</span></span><span class=line><span class=cl> <span class=c1>// slices that no longer match address type supported by services</span>
+</span></span><span class=line><span class=cl> <span class=c1>// go to delete, other slices goes to the Reconciler machinery</span>
+</span></span><span class=line><span class=cl> <span class=c1>// for further adjustment</span>
+</span></span><span class=line><span class=cl> <span class=c1>// 根据服务支持的地址类型,对`EndpointSlice`进行分类</span>
+</span></span><span class=line><span class=cl> <span class=k>for</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>existingSlice</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>existingSlices</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// service no longer supports that address type, add it to deleted slices</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=p>!</span><span class=nx>serviceSupportedAddressesTypes</span><span class=p>.</span><span class=nf>Has</span><span class=p>(</span><span class=nx>existingSlice</span><span class=p>.</span><span class=nx>AddressType</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=c1>// 拓扑缓存不为空,按拓扑进行切分</span>
+</span></span><span class=line><span class=cl>   <span class=k>if</span> <span class=nx>r</span><span class=p>.</span><span class=nx>topologyCache</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>svcKey</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nf>ServiceControllerKey</span><span class=p>(</span><span class=nx>existingSlice</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>     <span class=nx>logger</span><span class=p>.</span><span class=nf>Info</span><span class=p>(</span><span class=s>&#34;Couldn&#39;t get key to remove EndpointSlice from topology cache&#34;</span><span class=p>,</span> <span class=s>&#34;existingSlice&#34;</span><span class=p>,</span> <span class=nx>existingSlice</span><span class=p>,</span> <span class=s>&#34;err&#34;</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>     <span class=nx>r</span><span class=p>.</span><span class=nx>topologyCache</span><span class=p>.</span><span class=nf>RemoveHints</span><span class=p>(</span><span class=nx>svcKey</span><span class=p>,</span> <span class=nx>existingSlice</span><span class=p>.</span><span class=nx>AddressType</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>   <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>   <span class=nx>slicesToDelete</span> <span class=p>=</span> <span class=nb>append</span><span class=p>(</span><span class=nx>slicesToDelete</span><span class=p>,</span> <span class=nx>existingSlice</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>   <span class=k>continue</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// add list if it is not on our map</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>ok</span> <span class=o>:=</span> <span class=nx>slicesByAddressType</span><span class=p>[</span><span class=nx>existingSlice</span><span class=p>.</span><span class=nx>AddressType</span><span class=p>];</span> <span class=p>!</span><span class=nx>ok</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=nx>slicesByAddressType</span><span class=p>[</span><span class=nx>existingSlice</span><span class=p>.</span><span class=nx>AddressType</span><span class=p>]</span> <span class=p>=</span> <span class=nb>make</span><span class=p>([]</span><span class=o>*</span><span class=nx>discovery</span><span class=p>.</span><span class=nx>EndpointSlice</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>slicesByAddressType</span><span class=p>[</span><span class=nx>existingSlice</span><span class=p>.</span><span class=nx>AddressType</span><span class=p>]</span> <span class=p>=</span> <span class=nb>append</span><span class=p>(</span><span class=nx>slicesByAddressType</span><span class=p>[</span><span class=nx>existingSlice</span><span class=p>.</span><span class=nx>AddressType</span><span class=p>],</span> <span class=nx>existingSlice</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// reconcile for existing.</span>
+</span></span><span class=line><span class=cl> <span class=c1>// 根据地址类型,对`EndpointSlice`进行切分处理</span>
+</span></span><span class=line><span class=cl> <span class=k>for</span> <span class=nx>addressType</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>serviceSupportedAddressesTypes</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>existingSlices</span> <span class=o>:=</span> <span class=nx>slicesByAddressType</span><span class=p>[</span><span class=nx>addressType</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>  <span class=nx>err</span> <span class=o>:=</span> <span class=nx>r</span><span class=p>.</span><span class=nf>reconcileByAddressType</span><span class=p>(</span><span class=nx>logger</span><span class=p>,</span> <span class=nx>service</span><span class=p>,</span> <span class=nx>pods</span><span class=p>,</span> <span class=nx>existingSlices</span><span class=p>,</span> <span class=nx>triggerTime</span><span class=p>,</span> <span class=nx>addressType</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=nx>errs</span> <span class=p>=</span> <span class=nb>append</span><span class=p>(</span><span class=nx>errs</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// delete those which are of addressType that is no longer supported</span>
+</span></span><span class=line><span class=cl> <span class=c1>// by the service</span>
+</span></span><span class=line><span class=cl> <span class=c1>// 删除不再支持的`EndpointSlice`</span>
+</span></span><span class=line><span class=cl> <span class=k>for</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>sliceToDelete</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>slicesToDelete</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>err</span> <span class=o>:=</span> <span class=nx>r</span><span class=p>.</span><span class=nx>client</span><span class=p>.</span><span class=nf>DiscoveryV1</span><span class=p>().</span><span class=nf>EndpointSlices</span><span class=p>(</span><span class=nx>service</span><span class=p>.</span><span class=nx>Namespace</span><span class=p>).</span><span class=nf>Delete</span><span class=p>(</span><span class=nx>context</span><span class=p>.</span><span class=nf>TODO</span><span class=p>(),</span> <span class=nx>sliceToDelete</span><span class=p>.</span><span class=nx>Name</span><span class=p>,</span> <span class=nx>metav1</span><span class=p>.</span><span class=nx>DeleteOptions</span><span class=p>{})</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=nx>errs</span> <span class=p>=</span> <span class=nb>append</span><span class=p>(</span><span class=nx>errs</span><span class=p>,</span> <span class=nx>fmt</span><span class=p>.</span><span class=nf>Errorf</span><span class=p>(</span><span class=s>&#34;error deleting %s EndpointSlice for Service %s/%s: %w&#34;</span><span class=p>,</span> <span class=nx>sliceToDelete</span><span class=p>.</span><span class=nx>Name</span><span class=p>,</span> <span class=nx>service</span><span class=p>.</span><span class=nx>Namespace</span><span class=p>,</span> <span class=nx>service</span><span class=p>.</span><span class=nx>Name</span><span class=p>,</span> <span class=nx>err</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=nx>r</span><span class=p>.</span><span class=nx>endpointSliceTracker</span><span class=p>.</span><span class=nf>ExpectDeletion</span><span class=p>(</span><span class=nx>sliceToDelete</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>   <span class=nx>metrics</span><span class=p>.</span><span class=nx>EndpointSliceChanges</span><span class=p>.</span><span class=nf>WithLabelValues</span><span class=p>(</span><span class=s>&#34;delete&#34;</span><span class=p>).</span><span class=nf>Inc</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=k>return</span> <span class=nx>utilerrors</span><span class=p>.</span><span class=nf>NewAggregate</span><span class=p>(</span><span class=nx>errs</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// reconcileByAddressType 获取当前与服务选择器匹配的一组 Pod，</span>
+</span></span><span class=line><span class=cl><span class=c1>// 并将它们与给定服务的任何现有端点切片（按地址类型）中已存在的端点进行比较。</span>
+</span></span><span class=line><span class=cl><span class=c1>// 它创建、更新或删除端点切片，以确保所需的 pod 集由端点切片表示。</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>r</span> <span class=o>*</span><span class=nx>Reconciler</span><span class=p>)</span> <span class=nf>reconcileByAddressType</span><span class=p>(</span><span class=nx>logger</span> <span class=nx>klog</span><span class=p>.</span><span class=nx>Logger</span><span class=p>,</span> <span class=nx>service</span> <span class=o>*</span><span class=nx>corev1</span><span class=p>.</span><span class=nx>Service</span><span class=p>,</span> <span class=nx>pods</span> <span class=p>[]</span><span class=o>*</span><span class=nx>corev1</span><span class=p>.</span><span class=nx>Pod</span><span class=p>,</span> <span class=nx>existingSlices</span> <span class=p>[]</span><span class=o>*</span><span class=nx>discovery</span><span class=p>.</span><span class=nx>EndpointSlice</span><span class=p>,</span> <span class=nx>triggerTime</span> <span class=nx>time</span><span class=p>.</span><span class=nx>Time</span><span class=p>,</span> <span class=nx>addressType</span> <span class=nx>discovery</span><span class=p>.</span><span class=nx>AddressType</span><span class=p>)</span> <span class=kt>error</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl> <span class=nx>errs</span> <span class=o>:=</span> <span class=p>[]</span><span class=kt>error</span><span class=p>{}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=nx>slicesToCreate</span> <span class=o>:=</span> <span class=p>[]</span><span class=o>*</span><span class=nx>discovery</span><span class=p>.</span><span class=nx>EndpointSlice</span><span class=p>{}</span>
+</span></span><span class=line><span class=cl> <span class=nx>slicesToUpdate</span> <span class=o>:=</span> <span class=p>[]</span><span class=o>*</span><span class=nx>discovery</span><span class=p>.</span><span class=nx>EndpointSlice</span><span class=p>{}</span>
+</span></span><span class=line><span class=cl> <span class=nx>slicesToDelete</span> <span class=o>:=</span> <span class=p>[]</span><span class=o>*</span><span class=nx>discovery</span><span class=p>.</span><span class=nx>EndpointSlice</span><span class=p>{}</span>
+</span></span><span class=line><span class=cl> <span class=nx>events</span> <span class=o>:=</span> <span class=p>[]</span><span class=o>*</span><span class=nx>topologycache</span><span class=p>.</span><span class=nx>EventBuilder</span><span class=p>{}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// Build data structures for existing state.</span>
+</span></span><span class=line><span class=cl> <span class=nx>existingSlicesByPortMap</span> <span class=o>:=</span> <span class=kd>map</span><span class=p>[</span><span class=nx>endpointsliceutil</span><span class=p>.</span><span class=nx>PortMapKey</span><span class=p>][]</span><span class=o>*</span><span class=nx>discovery</span><span class=p>.</span><span class=nx>EndpointSlice</span><span class=p>{}</span>
+</span></span><span class=line><span class=cl> <span class=k>for</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>existingSlice</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>existingSlices</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=nf>ownedBy</span><span class=p>(</span><span class=nx>existingSlice</span><span class=p>,</span> <span class=nx>service</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=nx>epHash</span> <span class=o>:=</span> <span class=nx>endpointsliceutil</span><span class=p>.</span><span class=nf>NewPortMapKey</span><span class=p>(</span><span class=nx>existingSlice</span><span class=p>.</span><span class=nx>Ports</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>   <span class=nx>existingSlicesByPortMap</span><span class=p>[</span><span class=nx>epHash</span><span class=p>]</span> <span class=p>=</span> <span class=nb>append</span><span class=p>(</span><span class=nx>existingSlicesByPortMap</span><span class=p>[</span><span class=nx>epHash</span><span class=p>],</span> <span class=nx>existingSlice</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=nx>slicesToDelete</span> <span class=p>=</span> <span class=nb>append</span><span class=p>(</span><span class=nx>slicesToDelete</span><span class=p>,</span> <span class=nx>existingSlice</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// Build data structures for desired state.</span>
+</span></span><span class=line><span class=cl> <span class=nx>desiredMetaByPortMap</span> <span class=o>:=</span> <span class=kd>map</span><span class=p>[</span><span class=nx>endpointsliceutil</span><span class=p>.</span><span class=nx>PortMapKey</span><span class=p>]</span><span class=o>*</span><span class=nx>endpointMeta</span><span class=p>{}</span>
+</span></span><span class=line><span class=cl> <span class=nx>desiredEndpointsByPortMap</span> <span class=o>:=</span> <span class=kd>map</span><span class=p>[</span><span class=nx>endpointsliceutil</span><span class=p>.</span><span class=nx>PortMapKey</span><span class=p>]</span><span class=nx>endpointsliceutil</span><span class=p>.</span><span class=nx>EndpointSet</span><span class=p>{}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=k>for</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>pod</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>pods</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=p>!</span><span class=nx>endpointsliceutil</span><span class=p>.</span><span class=nf>ShouldPodBeInEndpoints</span><span class=p>(</span><span class=nx>pod</span><span class=p>,</span> <span class=kc>true</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=k>continue</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>endpointPorts</span> <span class=o>:=</span> <span class=nf>getEndpointPorts</span><span class=p>(</span><span class=nx>logger</span><span class=p>,</span> <span class=nx>service</span><span class=p>,</span> <span class=nx>pod</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nx>epHash</span> <span class=o>:=</span> <span class=nx>endpointsliceutil</span><span class=p>.</span><span class=nf>NewPortMapKey</span><span class=p>(</span><span class=nx>endpointPorts</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>ok</span> <span class=o>:=</span> <span class=nx>desiredEndpointsByPortMap</span><span class=p>[</span><span class=nx>epHash</span><span class=p>];</span> <span class=p>!</span><span class=nx>ok</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=nx>desiredEndpointsByPortMap</span><span class=p>[</span><span class=nx>epHash</span><span class=p>]</span> <span class=p>=</span> <span class=nx>endpointsliceutil</span><span class=p>.</span><span class=nx>EndpointSet</span><span class=p>{}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>ok</span> <span class=o>:=</span> <span class=nx>desiredMetaByPortMap</span><span class=p>[</span><span class=nx>epHash</span><span class=p>];</span> <span class=p>!</span><span class=nx>ok</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=nx>desiredMetaByPortMap</span><span class=p>[</span><span class=nx>epHash</span><span class=p>]</span> <span class=p>=</span> <span class=o>&amp;</span><span class=nx>endpointMeta</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>addressType</span><span class=p>:</span> <span class=nx>addressType</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>ports</span><span class=p>:</span>       <span class=nx>endpointPorts</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>   <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>node</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>r</span><span class=p>.</span><span class=nx>nodeLister</span><span class=p>.</span><span class=nf>Get</span><span class=p>(</span><span class=nx>pod</span><span class=p>.</span><span class=nx>Spec</span><span class=p>.</span><span class=nx>NodeName</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=c1>// we are getting the information from the local informer,</span>
+</span></span><span class=line><span class=cl>   <span class=c1>// an error different than IsNotFound should not happen</span>
+</span></span><span class=line><span class=cl>   <span class=k>if</span> <span class=p>!</span><span class=nx>errors</span><span class=p>.</span><span class=nf>IsNotFound</span><span class=p>(</span><span class=nx>err</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl>   <span class=p>}</span>
+</span></span><span class=line><span class=cl>   <span class=c1>// If the Node specified by the Pod doesn&#39;t exist we want to requeue the Service so we</span>
+</span></span><span class=line><span class=cl>   <span class=c1>// retry later, but also update the EndpointSlice without the problematic Pod.</span>
+</span></span><span class=line><span class=cl>   <span class=c1>// Theoretically, the pod Garbage Collector will remove the Pod, but we want to avoid</span>
+</span></span><span class=line><span class=cl>   <span class=c1>// situations where a reference from a Pod to a missing node can leave the EndpointSlice</span>
+</span></span><span class=line><span class=cl>   <span class=c1>// stuck forever.</span>
+</span></span><span class=line><span class=cl>   <span class=c1>// On the other side, if the service.Spec.PublishNotReadyAddresses is set we just add the</span>
+</span></span><span class=line><span class=cl>   <span class=c1>// Pod, since the user is explicitly indicating that the Pod address should be published.</span>
+</span></span><span class=line><span class=cl>   <span class=k>if</span> <span class=p>!</span><span class=nx>service</span><span class=p>.</span><span class=nx>Spec</span><span class=p>.</span><span class=nx>PublishNotReadyAddresses</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>logger</span><span class=p>.</span><span class=nf>Info</span><span class=p>(</span><span class=s>&#34;skipping Pod for Service, Node not found&#34;</span><span class=p>,</span> <span class=s>&#34;pod&#34;</span><span class=p>,</span> <span class=nx>klog</span><span class=p>.</span><span class=nf>KObj</span><span class=p>(</span><span class=nx>pod</span><span class=p>),</span> <span class=s>&#34;service&#34;</span><span class=p>,</span> <span class=nx>klog</span><span class=p>.</span><span class=nf>KObj</span><span class=p>(</span><span class=nx>service</span><span class=p>),</span> <span class=s>&#34;node&#34;</span><span class=p>,</span> <span class=nx>klog</span><span class=p>.</span><span class=nf>KRef</span><span class=p>(</span><span class=s>&#34;&#34;</span><span class=p>,</span> <span class=nx>pod</span><span class=p>.</span><span class=nx>Spec</span><span class=p>.</span><span class=nx>NodeName</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=nx>errs</span> <span class=p>=</span> <span class=nb>append</span><span class=p>(</span><span class=nx>errs</span><span class=p>,</span> <span class=nx>fmt</span><span class=p>.</span><span class=nf>Errorf</span><span class=p>(</span><span class=s>&#34;skipping Pod %s for Service %s/%s: Node %s Not Found&#34;</span><span class=p>,</span> <span class=nx>pod</span><span class=p>.</span><span class=nx>Name</span><span class=p>,</span> <span class=nx>service</span><span class=p>.</span><span class=nx>Namespace</span><span class=p>,</span> <span class=nx>service</span><span class=p>.</span><span class=nx>Name</span><span class=p>,</span> <span class=nx>pod</span><span class=p>.</span><span class=nx>Spec</span><span class=p>.</span><span class=nx>NodeName</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=k>continue</span>
+</span></span><span class=line><span class=cl>   <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=nx>endpoint</span> <span class=o>:=</span> <span class=nf>podToEndpoint</span><span class=p>(</span><span class=nx>pod</span><span class=p>,</span> <span class=nx>node</span><span class=p>,</span> <span class=nx>service</span><span class=p>,</span> <span class=nx>addressType</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=nx>endpoint</span><span class=p>.</span><span class=nx>Addresses</span><span class=p>)</span> <span class=p>&gt;</span> <span class=mi>0</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=nx>desiredEndpointsByPortMap</span><span class=p>[</span><span class=nx>epHash</span><span class=p>].</span><span class=nf>Insert</span><span class=p>(</span><span class=o>&amp;</span><span class=nx>endpoint</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=nx>spMetrics</span> <span class=o>:=</span> <span class=nx>metrics</span><span class=p>.</span><span class=nf>NewServicePortCache</span><span class=p>()</span>
+</span></span><span class=line><span class=cl> <span class=nx>totalAdded</span> <span class=o>:=</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl> <span class=nx>totalRemoved</span> <span class=o>:=</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// Determine changes necessary for each group of slices by port map.</span>
+</span></span><span class=line><span class=cl> <span class=k>for</span> <span class=nx>portMap</span><span class=p>,</span> <span class=nx>desiredEndpoints</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>desiredEndpointsByPortMap</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>numEndpoints</span> <span class=o>:=</span> <span class=nb>len</span><span class=p>(</span><span class=nx>desiredEndpoints</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nx>pmSlicesToCreate</span><span class=p>,</span> <span class=nx>pmSlicesToUpdate</span><span class=p>,</span> <span class=nx>pmSlicesToDelete</span><span class=p>,</span> <span class=nx>added</span><span class=p>,</span> <span class=nx>removed</span> <span class=o>:=</span> <span class=nx>r</span><span class=p>.</span><span class=nf>reconcileByPortMapping</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>   <span class=nx>logger</span><span class=p>,</span> <span class=nx>service</span><span class=p>,</span> <span class=nx>existingSlicesByPortMap</span><span class=p>[</span><span class=nx>portMap</span><span class=p>],</span> <span class=nx>desiredEndpoints</span><span class=p>,</span> <span class=nx>desiredMetaByPortMap</span><span class=p>[</span><span class=nx>portMap</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>totalAdded</span> <span class=o>+=</span> <span class=nx>added</span>
+</span></span><span class=line><span class=cl>  <span class=nx>totalRemoved</span> <span class=o>+=</span> <span class=nx>removed</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>spMetrics</span><span class=p>.</span><span class=nf>Set</span><span class=p>(</span><span class=nx>portMap</span><span class=p>,</span> <span class=nx>metrics</span><span class=p>.</span><span class=nx>EfficiencyInfo</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=nx>Endpoints</span><span class=p>:</span> <span class=nx>numEndpoints</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>   <span class=nx>Slices</span><span class=p>:</span>    <span class=nb>len</span><span class=p>(</span><span class=nx>existingSlicesByPortMap</span><span class=p>[</span><span class=nx>portMap</span><span class=p>])</span> <span class=o>+</span> <span class=nb>len</span><span class=p>(</span><span class=nx>pmSlicesToCreate</span><span class=p>)</span> <span class=o>-</span> <span class=nb>len</span><span class=p>(</span><span class=nx>pmSlicesToDelete</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>  <span class=p>})</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>slicesToCreate</span> <span class=p>=</span> <span class=nb>append</span><span class=p>(</span><span class=nx>slicesToCreate</span><span class=p>,</span> <span class=nx>pmSlicesToCreate</span><span class=o>...</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nx>slicesToUpdate</span> <span class=p>=</span> <span class=nb>append</span><span class=p>(</span><span class=nx>slicesToUpdate</span><span class=p>,</span> <span class=nx>pmSlicesToUpdate</span><span class=o>...</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nx>slicesToDelete</span> <span class=p>=</span> <span class=nb>append</span><span class=p>(</span><span class=nx>slicesToDelete</span><span class=p>,</span> <span class=nx>pmSlicesToDelete</span><span class=o>...</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// If there are unique sets of ports that are no longer desired, mark</span>
+</span></span><span class=line><span class=cl> <span class=c1>// the corresponding endpoint slices for deletion.</span>
+</span></span><span class=line><span class=cl> <span class=k>for</span> <span class=nx>portMap</span><span class=p>,</span> <span class=nx>existingSlices</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>existingSlicesByPortMap</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>ok</span> <span class=o>:=</span> <span class=nx>desiredEndpointsByPortMap</span><span class=p>[</span><span class=nx>portMap</span><span class=p>];</span> <span class=p>!</span><span class=nx>ok</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=nx>slicesToDelete</span> <span class=p>=</span> <span class=nb>append</span><span class=p>(</span><span class=nx>slicesToDelete</span><span class=p>,</span> <span class=nx>existingSlices</span><span class=o>...</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// When no endpoint slices would usually exist, we need to add a placeholder.</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=nx>existingSlices</span><span class=p>)</span> <span class=o>==</span> <span class=nb>len</span><span class=p>(</span><span class=nx>slicesToDelete</span><span class=p>)</span> <span class=o>&amp;&amp;</span> <span class=nb>len</span><span class=p>(</span><span class=nx>slicesToCreate</span><span class=p>)</span> <span class=p>&lt;</span> <span class=mi>1</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// Check for existing placeholder slice outside of the core control flow</span>
+</span></span><span class=line><span class=cl>  <span class=nx>placeholderSlice</span> <span class=o>:=</span> <span class=nf>newEndpointSlice</span><span class=p>(</span><span class=nx>logger</span><span class=p>,</span> <span class=nx>service</span><span class=p>,</span> <span class=o>&amp;</span><span class=nx>endpointMeta</span><span class=p>{</span><span class=nx>ports</span><span class=p>:</span> <span class=p>[]</span><span class=nx>discovery</span><span class=p>.</span><span class=nx>EndpointPort</span><span class=p>{},</span> <span class=nx>addressType</span><span class=p>:</span> <span class=nx>addressType</span><span class=p>},</span> <span class=nx>r</span><span class=p>.</span><span class=nx>controllerName</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=nx>slicesToDelete</span><span class=p>)</span> <span class=o>==</span> <span class=mi>1</span> <span class=o>&amp;&amp;</span> <span class=nx>placeholderSliceCompare</span><span class=p>.</span><span class=nf>DeepEqual</span><span class=p>(</span><span class=nx>slicesToDelete</span><span class=p>[</span><span class=mi>0</span><span class=p>],</span> <span class=nx>placeholderSlice</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=c1>// We are about to unnecessarily delete/recreate the placeholder, remove it now.</span>
+</span></span><span class=line><span class=cl>   <span class=nx>slicesToDelete</span> <span class=p>=</span> <span class=nx>slicesToDelete</span><span class=p>[:</span><span class=mi>0</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=nx>slicesToCreate</span> <span class=p>=</span> <span class=nb>append</span><span class=p>(</span><span class=nx>slicesToCreate</span><span class=p>,</span> <span class=nx>placeholderSlice</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=nx>spMetrics</span><span class=p>.</span><span class=nf>Set</span><span class=p>(</span><span class=nx>endpointsliceutil</span><span class=p>.</span><span class=nf>NewPortMapKey</span><span class=p>(</span><span class=nx>placeholderSlice</span><span class=p>.</span><span class=nx>Ports</span><span class=p>),</span> <span class=nx>metrics</span><span class=p>.</span><span class=nx>EfficiencyInfo</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=nx>Endpoints</span><span class=p>:</span> <span class=mi>0</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>   <span class=nx>Slices</span><span class=p>:</span>    <span class=mi>1</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=p>})</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=nx>metrics</span><span class=p>.</span><span class=nx>EndpointsAddedPerSync</span><span class=p>.</span><span class=nf>WithLabelValues</span><span class=p>().</span><span class=nf>Observe</span><span class=p>(</span><span class=nb>float64</span><span class=p>(</span><span class=nx>totalAdded</span><span class=p>))</span>
+</span></span><span class=line><span class=cl> <span class=nx>metrics</span><span class=p>.</span><span class=nx>EndpointsRemovedPerSync</span><span class=p>.</span><span class=nf>WithLabelValues</span><span class=p>().</span><span class=nf>Observe</span><span class=p>(</span><span class=nb>float64</span><span class=p>(</span><span class=nx>totalRemoved</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=nx>serviceNN</span> <span class=o>:=</span> <span class=nx>types</span><span class=p>.</span><span class=nx>NamespacedName</span><span class=p>{</span><span class=nx>Name</span><span class=p>:</span> <span class=nx>service</span><span class=p>.</span><span class=nx>Name</span><span class=p>,</span> <span class=nx>Namespace</span><span class=p>:</span> <span class=nx>service</span><span class=p>.</span><span class=nx>Namespace</span><span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=nx>r</span><span class=p>.</span><span class=nx>metricsCache</span><span class=p>.</span><span class=nf>UpdateServicePortCache</span><span class=p>(</span><span class=nx>serviceNN</span><span class=p>,</span> <span class=nx>spMetrics</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// Topology hints are assigned per address type. This means it is</span>
+</span></span><span class=line><span class=cl> <span class=c1>// theoretically possible for endpoints of one address type to be assigned</span>
+</span></span><span class=line><span class=cl> <span class=c1>// hints while another endpoints of another address type are not.</span>
+</span></span><span class=line><span class=cl> <span class=nx>si</span> <span class=o>:=</span> <span class=o>&amp;</span><span class=nx>topologycache</span><span class=p>.</span><span class=nx>SliceInfo</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>ServiceKey</span><span class=p>:</span>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Sprintf</span><span class=p>(</span><span class=s>&#34;%s/%s&#34;</span><span class=p>,</span> <span class=nx>service</span><span class=p>.</span><span class=nx>Namespace</span><span class=p>,</span> <span class=nx>service</span><span class=p>.</span><span class=nx>Name</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>  <span class=nx>AddressType</span><span class=p>:</span> <span class=nx>addressType</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nx>ToCreate</span><span class=p>:</span>    <span class=nx>slicesToCreate</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nx>ToUpdate</span><span class=p>:</span>    <span class=nx>slicesToUpdate</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nx>Unchanged</span><span class=p>:</span>   <span class=nf>unchangedSlices</span><span class=p>(</span><span class=nx>existingSlices</span><span class=p>,</span> <span class=nx>slicesToUpdate</span><span class=p>,</span> <span class=nx>slicesToDelete</span><span class=p>),</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// 根据`Service`的注解 `service.kubernetes.io/topology-mode` 判断是否开启拓扑路由切分</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>r</span><span class=p>.</span><span class=nx>topologyCache</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=o>&amp;&amp;</span> <span class=nf>hintsEnabled</span><span class=p>(</span><span class=nx>service</span><span class=p>.</span><span class=nx>Annotations</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>slicesToCreate</span><span class=p>,</span> <span class=nx>slicesToUpdate</span><span class=p>,</span> <span class=nx>events</span> <span class=p>=</span> <span class=nx>r</span><span class=p>.</span><span class=nx>topologyCache</span><span class=p>.</span><span class=nf>AddHints</span><span class=p>(</span><span class=nx>logger</span><span class=p>,</span> <span class=nx>si</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=nx>r</span><span class=p>.</span><span class=nx>topologyCache</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=k>if</span> <span class=nx>r</span><span class=p>.</span><span class=nx>topologyCache</span><span class=p>.</span><span class=nf>HasPopulatedHints</span><span class=p>(</span><span class=nx>si</span><span class=p>.</span><span class=nx>ServiceKey</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>logger</span><span class=p>.</span><span class=nf>Info</span><span class=p>(</span><span class=s>&#34;TopologyAwareHints annotation has changed, removing hints&#34;</span><span class=p>,</span> <span class=s>&#34;serviceKey&#34;</span><span class=p>,</span> <span class=nx>si</span><span class=p>.</span><span class=nx>ServiceKey</span><span class=p>,</span> <span class=s>&#34;addressType&#34;</span><span class=p>,</span> <span class=nx>si</span><span class=p>.</span><span class=nx>AddressType</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nx>events</span> <span class=p>=</span> <span class=nb>append</span><span class=p>(</span><span class=nx>events</span><span class=p>,</span> <span class=o>&amp;</span><span class=nx>topologycache</span><span class=p>.</span><span class=nx>EventBuilder</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>     <span class=nx>EventType</span><span class=p>:</span> <span class=nx>corev1</span><span class=p>.</span><span class=nx>EventTypeWarning</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>     <span class=nx>Reason</span><span class=p>:</span>    <span class=s>&#34;TopologyAwareHintsDisabled&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>     <span class=nx>Message</span><span class=p>:</span>   <span class=nx>topologycache</span><span class=p>.</span><span class=nf>FormatWithAddressType</span><span class=p>(</span><span class=nx>topologycache</span><span class=p>.</span><span class=nx>TopologyAwareHintsDisabled</span><span class=p>,</span> <span class=nx>si</span><span class=p>.</span><span class=nx>AddressType</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>    <span class=p>})</span>
+</span></span><span class=line><span class=cl>   <span class=p>}</span>
+</span></span><span class=line><span class=cl>   <span class=nx>r</span><span class=p>.</span><span class=nx>topologyCache</span><span class=p>.</span><span class=nf>RemoveHints</span><span class=p>(</span><span class=nx>si</span><span class=p>.</span><span class=nx>ServiceKey</span><span class=p>,</span> <span class=nx>addressType</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=nx>slicesToCreate</span><span class=p>,</span> <span class=nx>slicesToUpdate</span> <span class=p>=</span> <span class=nx>topologycache</span><span class=p>.</span><span class=nf>RemoveHintsFromSlices</span><span class=p>(</span><span class=nx>si</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>r</span><span class=p>.</span><span class=nf>finalize</span><span class=p>(</span><span class=nx>service</span><span class=p>,</span> <span class=nx>slicesToCreate</span><span class=p>,</span> <span class=nx>slicesToUpdate</span><span class=p>,</span> <span class=nx>slicesToDelete</span><span class=p>,</span> <span class=nx>triggerTime</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>errs</span> <span class=p>=</span> <span class=nb>append</span><span class=p>(</span><span class=nx>errs</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=k>for</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>event</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>events</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>r</span><span class=p>.</span><span class=nx>eventRecorder</span><span class=p>.</span><span class=nf>Event</span><span class=p>(</span><span class=nx>service</span><span class=p>,</span> <span class=nx>event</span><span class=p>.</span><span class=nx>EventType</span><span class=p>,</span> <span class=nx>event</span><span class=p>.</span><span class=nx>Reason</span><span class=p>,</span> <span class=nx>event</span><span class=p>.</span><span class=nx>Message</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=k>return</span> <span class=nx>utilerrors</span><span class=p>.</span><span class=nf>NewAggregate</span><span class=p>(</span><span class=nx>errs</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><h2 class=heading-element id=rfinalize><span>r.finalize</span>
+<a href=#rfinalize class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span><span class=lnt>76
+</span><span class=lnt>77
+</span><span class=lnt>78
+</span><span class=lnt>79
+</span><span class=lnt>80
+</span><span class=lnt>81
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>r</span> <span class=o>*</span><span class=nx>Reconciler</span><span class=p>)</span> <span class=nf>finalize</span><span class=p>(</span>
+</span></span><span class=line><span class=cl> <span class=nx>service</span> <span class=o>*</span><span class=nx>corev1</span><span class=p>.</span><span class=nx>Service</span><span class=p>,</span>
+</span></span><span class=line><span class=cl> <span class=nx>slicesToCreate</span><span class=p>,</span>
+</span></span><span class=line><span class=cl> <span class=nx>slicesToUpdate</span><span class=p>,</span>
+</span></span><span class=line><span class=cl> <span class=nx>slicesToDelete</span> <span class=p>[]</span><span class=o>*</span><span class=nx>discovery</span><span class=p>.</span><span class=nx>EndpointSlice</span><span class=p>,</span>
+</span></span><span class=line><span class=cl> <span class=nx>triggerTime</span> <span class=nx>time</span><span class=p>.</span><span class=nx>Time</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>)</span> <span class=kt>error</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl> <span class=c1>// If there are slices to create and delete, change the creates to updates</span>
+</span></span><span class=line><span class=cl> <span class=c1>// of the slices that would otherwise be deleted.</span>
+</span></span><span class=line><span class=cl> <span class=k>for</span> <span class=nx>i</span> <span class=o>:=</span> <span class=mi>0</span><span class=p>;</span> <span class=nx>i</span> <span class=p>&lt;</span> <span class=nb>len</span><span class=p>(</span><span class=nx>slicesToDelete</span><span class=p>);</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=nx>slicesToCreate</span><span class=p>)</span> <span class=o>==</span> <span class=mi>0</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=k>break</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=nx>sliceToDelete</span> <span class=o>:=</span> <span class=nx>slicesToDelete</span><span class=p>[</span><span class=nx>i</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>  <span class=nx>slice</span> <span class=o>:=</span> <span class=nx>slicesToCreate</span><span class=p>[</span><span class=nb>len</span><span class=p>(</span><span class=nx>slicesToCreate</span><span class=p>)</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// Only update EndpointSlices that are owned by this Service and have</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// the same AddressType. We need to avoid updating EndpointSlices that</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// are being garbage collected for an old Service with the same name.</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// The AddressType field is immutable. Since Services also consider</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// IPFamily immutable, the only case where this should matter will be</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// the migration from IP to IPv4 and IPv6 AddressTypes, where there&#39;s a</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// chance EndpointSlices with an IP AddressType would otherwise be</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// updated to IPv4 or IPv6 without this check.</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=nx>sliceToDelete</span><span class=p>.</span><span class=nx>AddressType</span> <span class=o>==</span> <span class=nx>slice</span><span class=p>.</span><span class=nx>AddressType</span> <span class=o>&amp;&amp;</span> <span class=nf>ownedBy</span><span class=p>(</span><span class=nx>sliceToDelete</span><span class=p>,</span> <span class=nx>service</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=nx>slice</span><span class=p>.</span><span class=nx>Name</span> <span class=p>=</span> <span class=nx>sliceToDelete</span><span class=p>.</span><span class=nx>Name</span>
+</span></span><span class=line><span class=cl>   <span class=nx>slicesToCreate</span> <span class=p>=</span> <span class=nx>slicesToCreate</span><span class=p>[:</span><span class=nb>len</span><span class=p>(</span><span class=nx>slicesToCreate</span><span class=p>)</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>   <span class=nx>slicesToUpdate</span> <span class=p>=</span> <span class=nb>append</span><span class=p>(</span><span class=nx>slicesToUpdate</span><span class=p>,</span> <span class=nx>slice</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>   <span class=nx>slicesToDelete</span> <span class=p>=</span> <span class=nb>append</span><span class=p>(</span><span class=nx>slicesToDelete</span><span class=p>[:</span><span class=nx>i</span><span class=p>],</span> <span class=nx>slicesToDelete</span><span class=p>[</span><span class=nx>i</span><span class=o>+</span><span class=mi>1</span><span class=p>:]</span><span class=o>...</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=nx>i</span><span class=o>++</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=c1>// Don&#39;t create new EndpointSlices if the Service is pending deletion. This</span>
+</span></span><span class=line><span class=cl> <span class=c1>// is to avoid a potential race condition with the garbage collector where</span>
+</span></span><span class=line><span class=cl> <span class=c1>// it tries to delete EndpointSlices as this controller replaces them.</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>service</span><span class=p>.</span><span class=nx>DeletionTimestamp</span> <span class=o>==</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>for</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>endpointSlice</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>slicesToCreate</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=nf>addTriggerTimeAnnotation</span><span class=p>(</span><span class=nx>endpointSlice</span><span class=p>,</span> <span class=nx>triggerTime</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>   <span class=nx>createdSlice</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>r</span><span class=p>.</span><span class=nx>client</span><span class=p>.</span><span class=nf>DiscoveryV1</span><span class=p>().</span><span class=nf>EndpointSlices</span><span class=p>(</span><span class=nx>service</span><span class=p>.</span><span class=nx>Namespace</span><span class=p>).</span><span class=nf>Create</span><span class=p>(</span><span class=nx>context</span><span class=p>.</span><span class=nf>TODO</span><span class=p>(),</span> <span class=nx>endpointSlice</span><span class=p>,</span> <span class=nx>metav1</span><span class=p>.</span><span class=nx>CreateOptions</span><span class=p>{})</span>
+</span></span><span class=line><span class=cl>   <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// If the namespace is terminating, creates will continue to fail. Simply drop the item.</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=nx>errors</span><span class=p>.</span><span class=nf>HasStatusCause</span><span class=p>(</span><span class=nx>err</span><span class=p>,</span> <span class=nx>corev1</span><span class=p>.</span><span class=nx>NamespaceTerminatingCause</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>     <span class=k>return</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nx>fmt</span><span class=p>.</span><span class=nf>Errorf</span><span class=p>(</span><span class=s>&#34;failed to create EndpointSlice for Service %s/%s: %v&#34;</span><span class=p>,</span> <span class=nx>service</span><span class=p>.</span><span class=nx>Namespace</span><span class=p>,</span> <span class=nx>service</span><span class=p>.</span><span class=nx>Name</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>   <span class=p>}</span>
+</span></span><span class=line><span class=cl>   <span class=nx>r</span><span class=p>.</span><span class=nx>endpointSliceTracker</span><span class=p>.</span><span class=nf>Update</span><span class=p>(</span><span class=nx>createdSlice</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>   <span class=nx>metrics</span><span class=p>.</span><span class=nx>EndpointSliceChanges</span><span class=p>.</span><span class=nf>WithLabelValues</span><span class=p>(</span><span class=s>&#34;create&#34;</span><span class=p>).</span><span class=nf>Inc</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=k>for</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>endpointSlice</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>slicesToUpdate</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nf>addTriggerTimeAnnotation</span><span class=p>(</span><span class=nx>endpointSlice</span><span class=p>,</span> <span class=nx>triggerTime</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nx>updatedSlice</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>r</span><span class=p>.</span><span class=nx>client</span><span class=p>.</span><span class=nf>DiscoveryV1</span><span class=p>().</span><span class=nf>EndpointSlices</span><span class=p>(</span><span class=nx>service</span><span class=p>.</span><span class=nx>Namespace</span><span class=p>).</span><span class=nf>Update</span><span class=p>(</span><span class=nx>context</span><span class=p>.</span><span class=nf>TODO</span><span class=p>(),</span> <span class=nx>endpointSlice</span><span class=p>,</span> <span class=nx>metav1</span><span class=p>.</span><span class=nx>UpdateOptions</span><span class=p>{})</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=k>return</span> <span class=nx>fmt</span><span class=p>.</span><span class=nf>Errorf</span><span class=p>(</span><span class=s>&#34;failed to update %s EndpointSlice for Service %s/%s: %v&#34;</span><span class=p>,</span> <span class=nx>endpointSlice</span><span class=p>.</span><span class=nx>Name</span><span class=p>,</span> <span class=nx>service</span><span class=p>.</span><span class=nx>Namespace</span><span class=p>,</span> <span class=nx>service</span><span class=p>.</span><span class=nx>Name</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=nx>r</span><span class=p>.</span><span class=nx>endpointSliceTracker</span><span class=p>.</span><span class=nf>Update</span><span class=p>(</span><span class=nx>updatedSlice</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nx>metrics</span><span class=p>.</span><span class=nx>EndpointSliceChanges</span><span class=p>.</span><span class=nf>WithLabelValues</span><span class=p>(</span><span class=s>&#34;update&#34;</span><span class=p>).</span><span class=nf>Inc</span><span class=p>()</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=k>for</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>endpointSlice</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>slicesToDelete</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>err</span> <span class=o>:=</span> <span class=nx>r</span><span class=p>.</span><span class=nx>client</span><span class=p>.</span><span class=nf>DiscoveryV1</span><span class=p>().</span><span class=nf>EndpointSlices</span><span class=p>(</span><span class=nx>service</span><span class=p>.</span><span class=nx>Namespace</span><span class=p>).</span><span class=nf>Delete</span><span class=p>(</span><span class=nx>context</span><span class=p>.</span><span class=nf>TODO</span><span class=p>(),</span> <span class=nx>endpointSlice</span><span class=p>.</span><span class=nx>Name</span><span class=p>,</span> <span class=nx>metav1</span><span class=p>.</span><span class=nx>DeleteOptions</span><span class=p>{})</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=k>return</span> <span class=nx>fmt</span><span class=p>.</span><span class=nf>Errorf</span><span class=p>(</span><span class=s>&#34;failed to delete %s EndpointSlice for Service %s/%s: %v&#34;</span><span class=p>,</span> <span class=nx>endpointSlice</span><span class=p>.</span><span class=nx>Name</span><span class=p>,</span> <span class=nx>service</span><span class=p>.</span><span class=nx>Namespace</span><span class=p>,</span> <span class=nx>service</span><span class=p>.</span><span class=nx>Name</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=nx>r</span><span class=p>.</span><span class=nx>endpointSliceTracker</span><span class=p>.</span><span class=nf>ExpectDeletion</span><span class=p>(</span><span class=nx>endpointSlice</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nx>metrics</span><span class=p>.</span><span class=nx>EndpointSliceChanges</span><span class=p>.</span><span class=nf>WithLabelValues</span><span class=p>(</span><span class=s>&#34;delete&#34;</span><span class=p>).</span><span class=nf>Inc</span><span class=p>()</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=nx>topologyLabel</span> <span class=o>:=</span> <span class=s>&#34;Disabled&#34;</span>
+</span></span><span class=line><span class=cl> <span class=k>if</span> <span class=nx>r</span><span class=p>.</span><span class=nx>topologyCache</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=o>&amp;&amp;</span> <span class=nf>hintsEnabled</span><span class=p>(</span><span class=nx>service</span><span class=p>.</span><span class=nx>Annotations</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>topologyLabel</span> <span class=p>=</span> <span class=s>&#34;Auto&#34;</span>
+</span></span><span class=line><span class=cl> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=nx>numSlicesChanged</span> <span class=o>:=</span> <span class=nb>len</span><span class=p>(</span><span class=nx>slicesToCreate</span><span class=p>)</span> <span class=o>+</span> <span class=nb>len</span><span class=p>(</span><span class=nx>slicesToUpdate</span><span class=p>)</span> <span class=o>+</span> <span class=nb>len</span><span class=p>(</span><span class=nx>slicesToDelete</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> <span class=nx>metrics</span><span class=p>.</span><span class=nx>EndpointSlicesChangedPerSync</span><span class=p>.</span><span class=nf>WithLabelValues</span><span class=p>(</span><span class=nx>topologyLabel</span><span class=p>).</span><span class=nf>Observe</span><span class=p>(</span><span class=nb>float64</span><span class=p>(</span><span class=nx>numSlicesChanged</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=k>return</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><h2 class=heading-element id=处理流程><span>处理流程</span>
+<a href=#%e5%a4%84%e7%90%86%e6%b5%81%e7%a8%8b class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p><img loading=lazy src=https://raw.githubusercontent.com/kbsonlong/notes_statics/master/images/202401021749445.png alt=202401021749445></p><h2 class=heading-element id=参考资料><span>参考资料</span>
+<a href=#%e5%8f%82%e8%80%83%e8%b5%84%e6%96%99 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><ol><li><a href=https://kubernetes.io/blog/2020/09/02/scaling-kubernetes-networking-with-endpointslices/ target=_blank rel="external nofollow noopener noreferrer">https://kubernetes.io/blog/2020/09/02/scaling-kubernetes-networking-with-endpointslices/</a></li></ol></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span title="更新于 2024-01-02 10:09:54">更新于 2024-01-02&nbsp;</span></div><div class=post-info-license><span><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span></div></div><div class=post-info-line><div class=post-info-md><span><a href=/posts/04-kube-controller-manager-source-code-analysis-endpointslice-controller/index.md title=阅读原始文档 class=link-to-markdown>阅读原始文档</a></span></div><div class=post-info-share><span><a href=javascript:void(0); title="分享到 X" data-sharer=twitter data-url=https://www.kbsonlong.com/posts/04-kube-controller-manager-source-code-analysis-endpointslice-controller/ data-title=04-Kube-Controller-Manager源码分析(EndpointSlice控制器) data-hashtags=EndpointSlice,kube-controller-manager><i class="fa-brands fa-x-twitter fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="分享到 Facebook" data-sharer=facebook data-url=https://www.kbsonlong.com/posts/04-kube-controller-manager-source-code-analysis-endpointslice-controller/ data-hashtag=EndpointSlice><i class="fa-brands fa-facebook-square fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="分享到 WhatsApp" data-sharer=whatsapp data-url=https://www.kbsonlong.com/posts/04-kube-controller-manager-source-code-analysis-endpointslice-controller/ data-title=04-Kube-Controller-Manager源码分析(EndpointSlice控制器) data-web><i class="fa-brands fa-whatsapp fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="分享到 Line" data-sharer=line data-url=https://www.kbsonlong.com/posts/04-kube-controller-manager-source-code-analysis-endpointslice-controller/ data-title=04-Kube-Controller-Manager源码分析(EndpointSlice控制器)><svg class="icon" role="img" viewBox="0 0 24 24"><title>LINE</title><path d="M19.365 9.863c.349.0.63.285.63.631.0.345-.281.63-.63.63H17.61v1.125h1.755c.349.0.63.283.63.63.0.344-.281.629-.63.629h-2.386c-.345.0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346.0.627.285.627.63.0.349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211.0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346.0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195.0.375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345.0.63.285.63.63v4.771zm-5.741.0c0 .344-.282.629-.631.629-.345.0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346.0.628.285.628.63v4.771zm-2.466.629H4.917c-.345.0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348.0.63.285.63.63v4.141h1.756c.348.0.629.283.629.63.0.344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943.0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg></a>
+<a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://www.kbsonlong.com/posts/04-kube-controller-manager-source-code-analysis-endpointslice-controller/ data-title=04-Kube-Controller-Manager源码分析(EndpointSlice控制器)><i class="fa-brands fa-weibo fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="分享到 Myspace" data-sharer=myspace data-url=https://www.kbsonlong.com/posts/04-kube-controller-manager-source-code-analysis-endpointslice-controller/ data-title=04-Kube-Controller-Manager源码分析(EndpointSlice控制器) data-description><svg class="icon" role="img" viewBox="0 0 24 24"><title>Myspace</title><path d="M19.802 12.274A3.811 3.811.0 0023.62 8.47c0-2.101-1.71-3.795-3.818-3.795a3.816 3.816.0 00-3.818 3.81 3.817 3.817.0 003.818 3.811zm-8.602.705a3.43 3.43.0 003.435-3.424A3.43 3.43.0 0011.2 6.13 3.44 3.44.0 007.764 9.566 3.436 3.436.0 0011.2 13zm-7.8.635c1.71.0 3.093-1.38 3.093-3.081.0-1.704-1.395-3.084-3.105-3.084A3.086 3.086.0 00.3 10.539c0 1.7 1.387 3.078 3.095 3.078zm0 .705c-1.96.0-3.4 1.717-3.4 3.495v1.196c0 .17.138.31.31.31h6.18a.31.31.0 00.309-.31v-1.196c0-1.779-1.437-3.5-3.398-3.5zm7.8-.56c-2.18.0-3.78 1.915-3.78 3.891v1.331c0 .188.156.344.345.344h6.87a.344.344.0 00.342-.344V17.65c0-1.976-1.598-3.891-3.777-3.891zm8.602-.617c-2.422.0-4.197 2.126-4.197 4.323v1.477c0 .21.172.381.382.381h7.63c.21.0.383-.171.383-.381v-1.477c-.001-2.197-1.776-4.323-4.198-4.323z"/></svg></a>
+<a href=javascript:void(0); title="分享到 Blogger" data-sharer=blogger data-url=https://www.kbsonlong.com/posts/04-kube-controller-manager-source-code-analysis-endpointslice-controller/ data-title=04-Kube-Controller-Manager源码分析(EndpointSlice控制器) data-description><i class="fa-brands fa-blogger fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="分享到 Evernote" data-sharer=evernote data-url=https://www.kbsonlong.com/posts/04-kube-controller-manager-source-code-analysis-endpointslice-controller/ data-title=04-Kube-Controller-Manager源码分析(EndpointSlice控制器)><i class="fa-brands fa-evernote fa-fw" aria-hidden=true></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fa-solid fa-tags fa-fw me-1" aria-hidden=true></i><a href=/tags/endpointslice/ class=post-tag title="标签 - EndpointSlice">EndpointSlice</a><a href=/tags/kube-controller-manager/ class=post-tag title="标签 - Kube-Controller-Manager">Kube-Controller-Manager</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span></section></div><div class=post-nav><a href=/posts/2023-personal-annual-summary/ class=post-nav-item rel=prev title=2023个人年度总结><i class="fa-solid fa-angle-left fa-fw" aria-hidden=true></i>2023个人年度总结</a><a href=/posts/docker-multi--archive-mirror-compilation/ class=post-nav-item rel=next title=Docker多架构镜像编译>Docker多架构镜像编译<i class="fa-solid fa-angle-right fa-fw" aria-hidden=true></i></a></div></div><div id=comments><div id=giscus class=comment><script src=https://giscus.app/client.js data-repo=kbsonlong/sre data-repo-id=R_kgDOMFzwNA data-category=Announcements data-category-id=DIC_kwDOMFzwNM4Cn0gn data-mapping=title data-strict=0 data-theme=preferred_color_scheme data-reactions-enabled=1 data-emit-metadata=0 data-input-position=bottom data-lang=zh-CN data-loading=lazy crossorigin=anonymous async defer></script></div><noscript>Please enable JavaScript to view the comments powered by <a href=https://giscus.app/ rel="external nofollow noopener noreferrer">giscus</a>.</noscript></div></article><aside class=toc id=toc-auto aria-label=目录><h2 class=toc-title>目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden=true></i></h2><div class=toc-content id=toc-content-auto></div></aside></main><footer class=footer><div class=footer-container><div class="footer-line copyright" itemscope itemtype=http://schema.org/CreativeWork><i class="fa-regular fa-copyright fa-fw" aria-hidden=true></i>
+<span itemprop=copyrightYear>2018 - 2025</span><span class=author itemprop=copyrightHolder>
+<a href=/></a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span></div><div class="footer-line statistics"><span class=site-time title=网站运行中……><i class="fa-solid fa-heartbeat fa-fw animate-icon" aria-hidden=true></i><span class="run-times ms-1">网站运行中……</span></span></div><div class="footer-line visitor"><span id=busuanzi_container_site_uv title=总访客数><i class="fa-regular fa-user fa-fw me-1" aria-hidden=true></i><span id=busuanzi_value_site_uv><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden=true></i></span></span><span id=busuanzi_container_site_pv class=footer-divider title=总访问量><i class="fa-regular fa-eye fa-fw me-1" aria-hidden=true></i><span id=busuanzi_value_site_pv><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden=true></i></span></span></div><div class="footer-line beian"><span class="icp footer-divider"><a target=_blank href=https://beian.miit.gov.cn/>粤ICP备18122209号</a></span></div></div></footer></div><div class=widgets><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role=button aria-label=回到顶部><i class="fa-solid fa-arrow-up fa-fw" aria-hidden=true></i><span class=variant-numeric>0%</span></div><div class="fixed-button view-comments d-none" role=button aria-label=查看评论><i class="fa-solid fa-comment fa-fw" aria-hidden=true></i></div></div><a href=https://github.com/kbsonlong title="在 GitHub 上查看源代码" target=_blank rel="external nofollow" class="github-corner right d-none-mobile"><svg viewBox="0 0 250 250" aria-hidden="true" width="56" height="56"><path d="M0 0 115 115h15l12 27L250 250V0z"/><path d="M128.3 109C113.8 99.7 119 89.6 119 89.6 122 82.7 120.5 78.6 120.5 78.6 119.2 72 123.4 76.3 123.4 76.3 127.3 80.9 125.5 87.3 125.5 87.3 122.9 97.6 130.6 101.9 134.4 103.2" fill="currentcolor" style="transform-origin:130px 106px" class="octo-arm"/><path d="M115 115C114.9 115.1 118.7 116.5 119.8 115.4l13.9-13.8C136.9 99.2 139.9 98.4 142.2 98.6 133.8 88 127.5 74.4 143.8 58 148.5 53.4 154 51.2 159.7 51 160.3 49.4 163.2 43.6 171.4 40.1 171.4 40.1 176.1 42.5 178.8 56.2 183.1 58.6 187.2 61.8 190.9 65.4 194.5 69 197.7 73.2 200.1 77.6 213.8 80.2 216.3 84.9 216.3 84.9 212.7 93.1 206.9 96 205.4 96.6 205.1 102.4 203 107.8 198.3 112.5 181.9 128.9 168.3 122.5 157.7 114.1 157.9 116.9 156.7 120.9 152.7 124.9L141 136.5C139.8 137.7 141.6 141.9 141.8 141.8z" fill="currentcolor" class="octo-body"/></svg></a><div id=mask></div><div class=reading-progress-bar style=left:0;top:0></div><noscript><div class=noscript-warning>该网站在启用 JavaScript 的情况下效果最佳。</div></noscript></div><link rel=preload href=/lib/katex/katex.min.css as=style onload='this.removeAttribute("onload"),this.rel="stylesheet"'><noscript><link rel=stylesheet href=/lib/katex/katex.min.css></noscript><link rel=stylesheet href=/lib/cookieconsent/cookieconsent.min.css><script src=/lib/autocomplete/autocomplete.min.js defer></script><script src=/lib/algoliasearch/algoliasearch-lite.umd.min.js defer></script><script src=/lib/sharer/sharer.min.js async defer></script><script src=/lib/katex/katex.min.js defer></script><script src=/lib/katex/auto-render.min.js defer></script><script src=/lib/katex/copy-tex.min.js defer></script><script src=/lib/katex/mhchem.min.js defer></script><script src=/lib/cookieconsent/cookieconsent.min.js defer></script><script src=/lib/pangu/pangu.min.js defer></script><script src=/lib/cell-watermark/watermark.min.js defer></script><script src=https://vercount.one/js async defer></script><script>window.config={code:{copyTitle:"复制到剪贴板",editLockTitle:"锁定可编辑代码块",editUnLockTitle:"解锁可编辑代码块",editable:!0,maxShownLines:10},comment:{enable:!0,expired:!1,giscus:{darkTheme:"dark",lightTheme:"light",origin:"https://giscus.app"}},cookieconsent:{content:{dismiss:"同意",link:"了解更多",message:"本网站使用 Cookies 来改善您的浏览体验。"},enable:!0,palette:{button:{background:"#f0f0f0"},popup:{background:"#1aa3ff"}},theme:"edgeless"},enablePWA:!0,math:{delimiters:[{display:!0,left:"$$",right:"$$"},{display:!0,left:"\\[",right:"\\]"},{display:!0,left:"\\begin{equation}",right:"\\end{equation}"},{display:!0,left:"\\begin{equation*}",right:"\\end{equation*}"},{display:!0,left:"\\begin{align}",right:"\\end{align}"},{display:!0,left:"\\begin{align*}",right:"\\end{align*}"},{display:!0,left:"\\begin{alignat}",right:"\\end{alignat}"},{display:!0,left:"\\begin{alignat*}",right:"\\end{alignat*}"},{display:!0,left:"\\begin{gather}",right:"\\end{gather}"},{display:!0,left:"\\begin{CD}",right:"\\end{CD}"},{display:!1,left:"$",right:"$"},{display:!1,left:"\\(",right:"\\)"}],strict:!1},pangu:{enable:!0,selector:"article"},search:{algoliaAppID:"WFOR67TML1",algoliaIndex:"along",algoliaSearchKey:"ea1fe535f9a7ae353f3922489c829cc1",highlightTag:"em",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"algolia"},siteTime:"2018-12-18T16:15:22+08:00",version:"v0.3.20",watermark:{appendto:".wrapper>main",colspacing:30,content:'<img class="fixit-icon" src="/favicon-16x16.png" alt="FixIt logo" /> FixIt 主题',enable:!0,fontfamily:"inherit",fontsize:.85,height:21,opacity:.0125,rotate:15,rowspacing:60,width:150}}</script><script src=/js/theme.min.js defer></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","6272760969",{anonymize_ip:!0})</script><script src="https://www.googletagmanager.com/gtag/js?id=6272760969" async></script></body></html>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Sentry - 分类 - 蜷缩的蜗牛</title><link>https://www.kbsonlong.com/categories/sentry/</link><description>云原生时代运维</description><generator>Hugo 0.145.0 &amp; FixIt v0.3.20</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 03 Jan 2023 16:55:15 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/categories/sentry/index.xml" rel="self" type="application/rss+xml"/><item><title>Sentry 监控 - Snuba 数据中台本地开发环境配置实战</title><link>https://www.kbsonlong.com/posts/snuba/</link><pubDate>Tue, 03 Jan 2023 16:55:15 +0800</pubDate><guid>https://www.kbsonlong.com/posts/snuba/</guid><category domain="https://www.kbsonlong.com/categories/sentry/">Sentry</category><description>&lt;h2 class="heading-element" id="系列">&lt;span>系列&lt;/span>
+ &lt;a href="#%e7%b3%bb%e5%88%97" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;ul>
+&lt;li>&lt;a href="https://mp.weixin.qq.com/s/7pTJbwkUltqMndg3IIHBfQ"target="_blank" rel="external nofollow noopener noreferrer">1 分钟快速使用 Docker 上手最新版 Sentry-CLI - 创建版本&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://mp.weixin.qq.com/s/zUbsfMTtajGrhJm6hfaHJw"target="_blank" rel="external nofollow noopener noreferrer">快速使用 Docker 上手 Sentry-CLI - 30 秒上手 Source Maps&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://mp.weixin.qq.com/s/FFpg1t0-3K8casLMNla15g"target="_blank" rel="external nofollow noopener noreferrer">Sentry For React 完整接入详解&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://mp.weixin.qq.com/s/_ubxtWBEyzfPtc20TSJp1w"target="_blank" rel="external nofollow noopener noreferrer">Sentry For Vue 完整接入详解&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://mp.weixin.qq.com/s/IRMBvcfLNwq5fCng7IA16w"target="_blank" rel="external nofollow noopener noreferrer">Sentry-CLI 使用详解&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://mp.weixin.qq.com/s/QZQ8-48MD3zgGmSrr_oWwQ"target="_blank" rel="external nofollow noopener noreferrer">Sentry Web 性能监控 - Web Vitals&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://mp.weixin.qq.com/s/XTpRk5Y5fAzhBg4FhidLWQ"target="_blank" rel="external nofollow noopener noreferrer">Sentry Web 性能监控 - Metrics&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://mp.weixin.qq.com/s/_CJduJFnUiCnIEkdEwSdDA"target="_blank" rel="external nofollow noopener noreferrer">Sentry Web 性能监控 - Trends&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://mp.weixin.qq.com/s/c_ANVMoRKnVS9Fq7Id6Hsg"target="_blank" rel="external nofollow noopener noreferrer">Sentry Web 前端监控 - 最佳实践(官方教程)&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://mp.weixin.qq.com/s/mdexnNPRwy8BPD9HYY4DpQ"target="_blank" rel="external nofollow noopener noreferrer">Sentry 后端监控 - 最佳实践(官方教程)&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://mp.weixin.qq.com/s/Yol6ASdQOOLcGFabIqKZtA"target="_blank" rel="external nofollow noopener noreferrer">Sentry 监控 - Discover 大数据查询分析引擎&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://mp.weixin.qq.com/s/ms5bCB0KSI6N2Ck5_QkBSA"target="_blank" rel="external nofollow noopener noreferrer">Sentry 监控 - Dashboards 数据可视化大屏&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://mp.weixin.qq.com/s/BVpDsIhir68S0PI2UE9-fQ"target="_blank" rel="external nofollow noopener noreferrer">Sentry 监控 - Environments 区分不同部署环境的事件数据&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://mp.weixin.qq.com/s/gykn0Kwgmj93TvzmPjsxZQ"target="_blank" rel="external nofollow noopener noreferrer">Sentry 监控 - Security Policy 安全策略报告&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://mp.weixin.qq.com/s/JtxTAyYzdLVkxmUe-gukRQ"target="_blank" rel="external nofollow noopener noreferrer">Sentry 监控 - Search 搜索查询实战&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://mp.weixin.qq.com/s/8F-inVbQaxdQTlaMHinJKw"target="_blank" rel="external nofollow noopener noreferrer">Sentry 监控 - Alerts 告警&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://mp.weixin.qq.com/s/gXC0nnJnp6R5V18TwCk2qw"target="_blank" rel="external nofollow noopener noreferrer">Sentry 监控 - Distributed Tracing 分布式跟踪&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://mp.weixin.qq.com/s/GDuKKxIsflkAs7X6tUrrvQ"target="_blank" rel="external nofollow noopener noreferrer">Sentry 监控 - 面向全栈开发人员的分布式跟踪 101 系列教程(一)&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://mp.weixin.qq.com/s/ub8t4Il8cx8ffkgMYJrWHg"target="_blank" rel="external nofollow noopener noreferrer">Sentry 监控 - Snuba 数据中台架构简介(Kafka+Clickhouse)&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://mp.weixin.qq.com/s/rmTL7LXToinVTQP0ELDKPA"target="_blank" rel="external nofollow noopener noreferrer">Sentry 监控 - Snuba 数据中台架构(Data Model 简介)&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://mp.weixin.qq.com/s/Ue5YCzD3Om2j2sen5Isx6g"target="_blank" rel="external nofollow noopener noreferrer">Sentry 监控 - Snuba 数据中台架构(Query Processing 简介)&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://mp.weixin.qq.com/s/Sm-IR1NSV3xAoa7CuSVTGA"target="_blank" rel="external nofollow noopener noreferrer">Sentry 官方 JavaScript SDK 简介与调试指南&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://mp.weixin.qq.com/s/BeBZmyBhV5nZB_XHrHmVEg"target="_blank" rel="external nofollow noopener noreferrer">Sentry 监控 - Snuba 数据中台架构(编写和测试 Snuba 查询)&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://mp.weixin.qq.com/s/F8ppyKEv9BK3vhWVl2TPjw"target="_blank" rel="external nofollow noopener noreferrer">Sentry 监控 - Snuba 数据中台架构(SnQL 查询语言简介)&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;h2 class="heading-element" id="克隆仓库">&lt;span>克隆仓库&lt;/span>
+ &lt;a href="#%e5%85%8b%e9%9a%86%e4%bb%93%e5%ba%93" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>分别克隆 &lt;code>getsentry/sentry&lt;/code> 与 &lt;code>getsentry/snuba&lt;/code>：&lt;/p></description></item></channel></rss>

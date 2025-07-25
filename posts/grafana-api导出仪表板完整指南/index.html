@@ -1,0 +1,860 @@
+<!doctype html><html itemscope itemtype=http://schema.org/WebPage lang=zh-CN><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=2"><meta name=robots content="noodp"><title>Grafana API导出仪表板完整指南 - 蜷缩的蜗牛</title><meta name=author content>
+<meta name=description content="Grafana API导出仪表板完整指南 概述 本指南详细介绍如何使用Grafana API批量导出所有目录下的仪表板，包括获取API密钥、查询文件夹结构、导出仪表板配置等完整流程。
+"><meta name=keywords content='Grafana,API,仪表板,导出'><meta itemprop=name content="Grafana API导出仪表板完整指南"><meta itemprop=description content="Grafana API导出仪表板完整指南 概述 本指南详细介绍如何使用Grafana API批量导出所有目录下的仪表板，包括获取API密钥、查询文件夹结构、导出仪表板配置等完整流程。"><meta itemprop=datePublished content="2024-12-19T10:45:00+08:00"><meta itemprop=dateModified content="2024-12-19T10:45:00+08:00"><meta itemprop=wordCount content="3275"><meta itemprop=image content="https://www.kbsonlong.com/logo_transparent.png"><meta itemprop=keywords content="Grafana,API,仪表板,导出"><meta property="og:url" content="https://www.kbsonlong.com/posts/grafana-api%E5%AF%BC%E5%87%BA%E4%BB%AA%E8%A1%A8%E6%9D%BF%E5%AE%8C%E6%95%B4%E6%8C%87%E5%8D%97/"><meta property="og:site_name" content="蜷缩的蜗牛"><meta property="og:title" content="Grafana API导出仪表板完整指南"><meta property="og:description" content="Grafana API导出仪表板完整指南 概述 本指南详细介绍如何使用Grafana API批量导出所有目录下的仪表板，包括获取API密钥、查询文件夹结构、导出仪表板配置等完整流程。"><meta property="og:locale" content="zh_CN"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2024-12-19T10:45:00+08:00"><meta property="article:modified_time" content="2024-12-19T10:45:00+08:00"><meta property="article:tag" content="Grafana"><meta property="article:tag" content="API"><meta property="article:tag" content="仪表板"><meta property="article:tag" content="导出"><meta property="og:image" content="https://www.kbsonlong.com/logo_transparent.png"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://www.kbsonlong.com/logo_transparent.png"><meta name=twitter:title content="Grafana API导出仪表板完整指南"><meta name=twitter:description content="Grafana API导出仪表板完整指南 概述 本指南详细介绍如何使用Grafana API批量导出所有目录下的仪表板，包括获取API密钥、查询文件夹结构、导出仪表板配置等完整流程。"><meta name=application-name content="FixIt"><meta name=apple-mobile-web-app-title content="FixIt"><meta name=theme-color data-light=#ffffff data-dark=#252627 content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical type=text/html href=https://www.kbsonlong.com/posts/grafana-api%E5%AF%BC%E5%87%BA%E4%BB%AA%E8%A1%A8%E6%9D%BF%E5%AE%8C%E6%95%B4%E6%8C%87%E5%8D%97/ title="Grafana API导出仪表板完整指南 - 蜷缩的蜗牛"><link rel=prev type=text/html href=https://www.kbsonlong.com/posts/kind--flannel--multus-cni-%E5%BF%AB%E9%80%9F%E9%AA%8C%E8%AF%81%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E6%8C%87%E5%8D%97/ title="Kind + Flannel + Multus-CNI 快速验证环境搭建指南"><link rel=next type=text/html href=https://www.kbsonlong.com/posts/grafana-api%E5%AF%BC%E5%87%BA%E4%BB%AA%E8%A1%A8%E6%9D%BF%E4%BD%BF%E7%94%A8%E7%A4%BA%E4%BE%8B/ title="Grafana API导出仪表板使用示例"><link rel=alternate type=text/markdown href=https://www.kbsonlong.com/posts/grafana-api%E5%AF%BC%E5%87%BA%E4%BB%AA%E8%A1%A8%E6%9D%BF%E5%AE%8C%E6%95%B4%E6%8C%87%E5%8D%97/index.md title="Grafana API导出仪表板完整指南 - 蜷缩的蜗牛"><link rel=stylesheet href=/css/style.min.css><link rel=preload href=/lib/fontawesome-free/all.min.css as=style onload='this.removeAttribute("onload"),this.rel="stylesheet"'><noscript><link rel=stylesheet href=/lib/fontawesome-free/all.min.css></noscript><link rel=preload href=/lib/animate/animate.min.css as=style onload='this.removeAttribute("onload"),this.rel="stylesheet"'><noscript><link rel=stylesheet href=/lib/animate/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Grafana API导出仪表板完整指南","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/www.kbsonlong.com\/posts\/grafana-api%E5%AF%BC%E5%87%BA%E4%BB%AA%E8%A1%A8%E6%9D%BF%E5%AE%8C%E6%95%B4%E6%8C%87%E5%8D%97\/"},"genre":"posts","keywords":"Grafana, API, 仪表板, 导出","wordcount":3275,"url":"https:\/\/www.kbsonlong.com\/posts\/grafana-api%E5%AF%BC%E5%87%BA%E4%BB%AA%E8%A1%A8%E6%9D%BF%E5%AE%8C%E6%95%B4%E6%8C%87%E5%8D%97\/","datePublished":"2024-12-19T10:45:00+08:00","dateModified":"2024-12-19T10:45:00+08:00","license":"This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"作者"},"description":""}</script><script src=/js/head/color-scheme.min.js></script></head><body data-header-desktop=sticky data-header-mobile=auto><div class=wrapper data-page-style=normal><header class="desktop animate__faster" id=header-desktop><div class=header-wrapper data-github-corner=right><div class=header-title><a href=/ title=蜷缩的蜗牛><img class=logo src=/logo_transparent.png alt=蜷缩的蜗牛 height=32 width=32><span class=header-title-text>蜷缩的蜗牛</span></a><span class=header-subtitle></span></div><nav><ul class=menu><li class=menu-item><a class=menu-link href=/posts/><i class='fa-solid fa-archive fa-fw fa-sm'></i> 文章</a></li><li class=menu-item><a class=menu-link href=/categories/><i class='fa-solid fa-th fa-fw fa-sm'></i> 分类</a></li><li class=menu-item><a class=menu-link href=/tags/><i class='fa-solid fa-tags fa-fw fa-sm'></i> 标签</a></li><li class=menu-item><a class=menu-link href=/friends/ title=友情链接><i class='fa-solid fa-users fa-fw fa-sm'></i> 友链</a></li><li class=menu-item><a class=menu-link href=/about/><i class='fa-solid fa-info-circle fa-fw fa-sm'></i> 关于</a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=https://github.com/kbsonlong/ title=GitHub rel="noopener noreferrer" target=_blank><i class='fa-brands fa-github fa-fw'></i></a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=/messages/><i class='fa-solid fa-messages'></i> 留言板</a></li><li class=menu-item><a class=menu-link href=/messages/ title=留言板>留言板</a></li><li class="menu-item delimiter"></li><li class="menu-item search" id=search-desktop><input type=text placeholder=搜索文章标题或内容…… id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fa-solid fa-search fa-fw" aria-hidden=true></i>
+</a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fa-solid fa-times-circle fa-fw" aria-hidden=true></i>
+</a><span class="search-button search-loading" id=search-loading-desktop><i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></li><li class="menu-item theme-switch" title=切换主题><i class="fa-solid fa-adjust fa-fw" aria-hidden=true></i></li><li class="menu-item language-switch"><span role=button aria-label=选择语言 title=选择语言><i class="fa-solid fa-language fa-fw" aria-hidden=true></i></span><ul class=sub-menu><li class=menu-item>没有更多翻译</li></ul></li></ul></nav></div></header><header class="mobile animate__faster" id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title=蜷缩的蜗牛><img class=logo src=/logo_transparent.png alt=蜷缩的蜗牛 height=26 width=26><span class=header-title-text>蜷缩的蜗牛</span></a><span class=header-subtitle></span></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><nav><ul class=menu id=menu-mobile><li class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容…… id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fa-solid fa-search fa-fw" aria-hidden=true></i>
+</a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fa-solid fa-times-circle fa-fw" aria-hidden=true></i>
+</a><span class="search-button search-loading" id=search-loading-mobile><i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></li><li class=menu-item><a class=menu-link href=/posts/><i class='fa-solid fa-archive fa-fw fa-sm'></i> 文章</a></li><li class=menu-item><a class=menu-link href=/categories/><i class='fa-solid fa-th fa-fw fa-sm'></i> 分类</a></li><li class=menu-item><a class=menu-link href=/tags/><i class='fa-solid fa-tags fa-fw fa-sm'></i> 标签</a></li><li class=menu-item><a class=menu-link href=/friends/ title=友情链接><i class='fa-solid fa-users fa-fw fa-sm'></i> 友链</a></li><li class=menu-item><a class=menu-link href=/about/><i class='fa-solid fa-info-circle fa-fw fa-sm'></i> 关于</a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=https://github.com/kbsonlong/ title=GitHub rel="noopener noreferrer" target=_blank><i class='fa-brands fa-github fa-fw'></i></a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=/messages/><i class='fa-solid fa-messages'></i> 留言板</a></li><li class=menu-item><a class=menu-link href=/messages/ title=留言板>留言板</a></li><li class="menu-item menu-system"><span class="menu-system-item theme-switch" title=切换主题><i class="fa-solid fa-adjust fa-fw" aria-hidden=true></i></span><span class="menu-system-item language-switch">
+<span role=button aria-label=选择语言 title=选择语言>简体中文<i class="dropdown-icon fa-solid fa-chevron-down" aria-hidden=true></i></span>
+<select class=language-select onchange="location=this.value"><option disabled>没有更多翻译</option></select></span></li></ul></nav></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=container><aside class="aside-collection animate__animated animate__fadeIn animate__faster" aria-label=合集></aside><article class="page single"><div class=header><h1 class="single-title animate__animated animate__flipInX"><span>Grafana API导出仪表板完整指南</span></h1></div><div class=post-meta><div class=post-meta-line><span class=post-author><span class=author><i class="fa-solid fa-user-circle" aria-hidden=true></i>
+Anonymous</span></span><span class=post-included-in>&nbsp;收录于 <a href=/categories/%E8%BF%90%E7%BB%B4%E5%B7%A5%E5%85%B7/ class=post-category title="分类 - 运维工具"><i class="fa-regular fa-folder fa-fw" aria-hidden=true></i> 运维工具</a></span></div><div class=post-meta-line><span title="发布于 2024-12-19 10:45:00"><i class="fa-solid fa-calendar-days fa-fw me-1" aria-hidden=true></i><time datetime=2024-12-19>2024-12-19</time></span>&nbsp;<span title="3275 字"><i class="fa-solid fa-pencil-alt fa-fw me-1" aria-hidden=true></i>约 3300 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw me-1" aria-hidden=true></i>预计阅读 7 分钟</span>&nbsp;<span id=busuanzi_container_page_pv class="busuanzi_visitors comment-visitors" data-flag-title="Grafana API导出仪表板完整指南"><i class="fa-regular fa-eye fa-fw me-1" aria-hidden=true></i><span id=busuanzi_value_page_pv>-</span>&nbsp;次阅读
+</span>&nbsp;</div></div><div class="details toc" id=toc-static data-kept=false><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fa-solid fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#概述>概述</a></li><li><a href=#前置准备>前置准备</a><ul><li><a href=#1-获取api密钥>1. 获取API密钥</a><ul><li><a href=#方法一通过web界面创建>方法一：通过Web界面创建</a></li><li><a href=#方法二通过命令行创建>方法二：通过命令行创建</a></li></ul></li><li><a href=#2-环境变量设置>2. 环境变量设置</a></li></ul></li><li><a href=#api操作方法>API操作方法</a><ul><li><a href=#1-获取所有文件夹>1. 获取所有文件夹</a></li><li><a href=#2-获取文件夹下的仪表板>2. 获取文件夹下的仪表板</a></li><li><a href=#3-导出单个仪表板>3. 导出单个仪表板</a></li></ul></li><li><a href=#批量导出脚本>批量导出脚本</a><ul><li><a href=#1-bash脚本版本>1. Bash脚本版本</a></li><li><a href=#2-python脚本版本>2. Python脚本版本</a></li></ul></li><li><a href=#使用方法>使用方法</a><ul><li><a href=#1-bash脚本使用>1. Bash脚本使用</a></li><li><a href=#2-python脚本使用>2. Python脚本使用</a></li><li><a href=#3-直接使用curl命令>3. 直接使用curl命令</a></li></ul></li><li><a href=#高级功能>高级功能</a><ul><li><a href=#1-按文件夹分类导出>1. 按文件夹分类导出</a></li><li><a href=#2-按标签过滤导出>2. 按标签过滤导出</a></li><li><a href=#3-导出仪表板权限信息>3. 导出仪表板权限信息</a></li></ul></li><li><a href=#导入仪表板>导入仪表板</a><ul><li><a href=#1-单个仪表板导入>1. 单个仪表板导入</a></li><li><a href=#2-批量导入脚本>2. 批量导入脚本</a></li></ul></li><li><a href=#故障排除>故障排除</a><ul><li><a href=#1-常见错误>1. 常见错误</a></li><li><a href=#2-调试方法>2. 调试方法</a></li></ul></li><li><a href=#最佳实践>最佳实践</a></li><li><a href=#参考资源>参考资源</a></li></ul></nav></div></div><div class=content id=content><h2 class=heading-element id=grafana-api导出仪表板完整指南><span>Grafana API导出仪表板完整指南</span>
+<a href=#grafana-api%e5%af%bc%e5%87%ba%e4%bb%aa%e8%a1%a8%e6%9d%bf%e5%ae%8c%e6%95%b4%e6%8c%87%e5%8d%97 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><h2 class=heading-element id=概述><span>概述</span>
+<a href=#%e6%a6%82%e8%bf%b0 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p>本指南详细介绍如何使用Grafana API批量导出所有目录下的仪表板，包括获取API密钥、查询文件夹结构、导出仪表板配置等完整流程。</p><h2 class=heading-element id=前置准备><span>前置准备</span>
+<a href=#%e5%89%8d%e7%bd%ae%e5%87%86%e5%a4%87 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><h3 class=heading-element id=1-获取api密钥><span>1. 获取API密钥</span>
+<a href=#1-%e8%8e%b7%e5%8f%96api%e5%af%86%e9%92%a5 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><h4 class=heading-element id=方法一通过web界面创建><span>方法一：通过Web界面创建</span>
+<a href=#%e6%96%b9%e6%b3%95%e4%b8%80%e9%80%9a%e8%bf%87web%e7%95%8c%e9%9d%a2%e5%88%9b%e5%bb%ba class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h4><ol><li>登录Grafana管理界面</li><li>访问 <code>Configuration > API Keys</code></li><li>点击 <code>New API Key</code></li><li>设置密钥名称和权限（建议选择Admin权限）</li><li>复制生成的API密钥</li></ol><h4 class=heading-element id=方法二通过命令行创建><span>方法二：通过命令行创建</span>
+<a href=#%e6%96%b9%e6%b3%95%e4%ba%8c%e9%80%9a%e8%bf%87%e5%91%bd%e4%bb%a4%e8%a1%8c%e5%88%9b%e5%bb%ba class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 创建API密钥</span>
+</span></span><span class=line><span class=cl>curl -X POST <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>  http://localhost:3000/api/auth/keys <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>  -H <span class=s1>&#39;Content-Type: application/json&#39;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>  -u admin:admin <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>  -d <span class=s1>&#39;{
+</span></span></span><span class=line><span class=cl><span class=s1>    &#34;name&#34;: &#34;export-dashboards&#34;,
+</span></span></span><span class=line><span class=cl><span class=s1>    &#34;role&#34;: &#34;Admin&#34;
+</span></span></span><span class=line><span class=cl><span class=s1>  }&#39;</span></span></span></code></pre></td></tr></table></div></div><h3 class=heading-element id=2-环境变量设置><span>2. 环境变量设置</span>
+<a href=#2-%e7%8e%af%e5%a2%83%e5%8f%98%e9%87%8f%e8%ae%be%e7%bd%ae class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 设置Grafana相关环境变量</span>
+</span></span><span class=line><span class=cl><span class=nb>export</span> <span class=nv>GRAFANA_URL</span><span class=o>=</span><span class=s2>&#34;http://localhost:3000&#34;</span>
+</span></span><span class=line><span class=cl><span class=nb>export</span> <span class=nv>GRAFANA_API_KEY</span><span class=o>=</span><span class=s2>&#34;your-api-key-here&#34;</span>
+</span></span><span class=line><span class=cl><span class=nb>export</span> <span class=nv>GRAFANA_USER</span><span class=o>=</span><span class=s2>&#34;admin&#34;</span>
+</span></span><span class=line><span class=cl><span class=nb>export</span> <span class=nv>GRAFANA_PASSWORD</span><span class=o>=</span><span class=s2>&#34;admin&#34;</span></span></span></code></pre></td></tr></table></div></div><h2 class=heading-element id=api操作方法><span>API操作方法</span>
+<a href=#api%e6%93%8d%e4%bd%9c%e6%96%b9%e6%b3%95 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><h3 class=heading-element id=1-获取所有文件夹><span>1. 获取所有文件夹</span>
+<a href=#1-%e8%8e%b7%e5%8f%96%e6%89%80%e6%9c%89%e6%96%87%e4%bb%b6%e5%a4%b9 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 获取所有文件夹列表</span>
+</span></span><span class=line><span class=cl>curl -H <span class=s2>&#34;Authorization: Bearer </span><span class=nv>$GRAFANA_API_KEY</span><span class=s2>&#34;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>     <span class=s2>&#34;</span><span class=nv>$GRAFANA_URL</span><span class=s2>/api/folders&#34;</span></span></span></code></pre></td></tr></table></div></div><p><strong>响应示例：</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=line><span class=cl><span class=p>[</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;id&#34;</span><span class=p>:</span> <span class=mi>1</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;uid&#34;</span><span class=p>:</span> <span class=s2>&#34;folder-uid-1&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;title&#34;</span><span class=p>:</span> <span class=s2>&#34;Production&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;url&#34;</span><span class=p>:</span> <span class=s2>&#34;/dashboards/f/folder-uid-1/production&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;hasAcl&#34;</span><span class=p>:</span> <span class=kc>false</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;canSave&#34;</span><span class=p>:</span> <span class=kc>true</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;canEdit&#34;</span><span class=p>:</span> <span class=kc>true</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;canAdmin&#34;</span><span class=p>:</span> <span class=kc>true</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;version&#34;</span><span class=p>:</span> <span class=mi>1</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>]</span></span></span></code></pre></td></tr></table></div></div><h3 class=heading-element id=2-获取文件夹下的仪表板><span>2. 获取文件夹下的仪表板</span>
+<a href=#2-%e8%8e%b7%e5%8f%96%e6%96%87%e4%bb%b6%e5%a4%b9%e4%b8%8b%e7%9a%84%e4%bb%aa%e8%a1%a8%e6%9d%bf class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 获取特定文件夹下的仪表板</span>
+</span></span><span class=line><span class=cl>curl -H <span class=s2>&#34;Authorization: Bearer </span><span class=nv>$GRAFANA_API_KEY</span><span class=s2>&#34;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>     <span class=s2>&#34;</span><span class=nv>$GRAFANA_URL</span><span class=s2>/api/search?folderIds=1&amp;type=dash-db&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 获取所有仪表板（包括根目录）</span>
+</span></span><span class=line><span class=cl>curl -H <span class=s2>&#34;Authorization: Bearer </span><span class=nv>$GRAFANA_API_KEY</span><span class=s2>&#34;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>     <span class=s2>&#34;</span><span class=nv>$GRAFANA_URL</span><span class=s2>/api/search?type=dash-db&#34;</span></span></span></code></pre></td></tr></table></div></div><p><strong>响应示例：</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=line><span class=cl><span class=p>[</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;id&#34;</span><span class=p>:</span> <span class=mi>1</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;uid&#34;</span><span class=p>:</span> <span class=s2>&#34;dashboard-uid-1&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;title&#34;</span><span class=p>:</span> <span class=s2>&#34;System Overview&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;uri&#34;</span><span class=p>:</span> <span class=s2>&#34;db/system-overview&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;url&#34;</span><span class=p>:</span> <span class=s2>&#34;/d/dashboard-uid-1/system-overview&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;slug&#34;</span><span class=p>:</span> <span class=s2>&#34;system-overview&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;type&#34;</span><span class=p>:</span> <span class=s2>&#34;dash-db&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;tags&#34;</span><span class=p>:</span> <span class=p>[</span><span class=s2>&#34;system&#34;</span><span class=p>,</span> <span class=s2>&#34;monitoring&#34;</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;isStarred&#34;</span><span class=p>:</span> <span class=kc>false</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;folderId&#34;</span><span class=p>:</span> <span class=mi>1</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;folderUid&#34;</span><span class=p>:</span> <span class=s2>&#34;folder-uid-1&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;folderTitle&#34;</span><span class=p>:</span> <span class=s2>&#34;Production&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;folderUrl&#34;</span><span class=p>:</span> <span class=s2>&#34;/dashboards/f/folder-uid-1/production&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>]</span></span></span></code></pre></td></tr></table></div></div><h3 class=heading-element id=3-导出单个仪表板><span>3. 导出单个仪表板</span>
+<a href=#3-%e5%af%bc%e5%87%ba%e5%8d%95%e4%b8%aa%e4%bb%aa%e8%a1%a8%e6%9d%bf class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 通过UID导出仪表板</span>
+</span></span><span class=line><span class=cl>curl -H <span class=s2>&#34;Authorization: Bearer </span><span class=nv>$GRAFANA_API_KEY</span><span class=s2>&#34;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>     <span class=s2>&#34;</span><span class=nv>$GRAFANA_URL</span><span class=s2>/api/dashboards/uid/dashboard-uid-1&#34;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>     <span class=p>|</span> jq <span class=s1>&#39;.dashboard&#39;</span> &gt; dashboard-uid-1.json
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 通过slug导出仪表板</span>
+</span></span><span class=line><span class=cl>curl -H <span class=s2>&#34;Authorization: Bearer </span><span class=nv>$GRAFANA_API_KEY</span><span class=s2>&#34;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>     <span class=s2>&#34;</span><span class=nv>$GRAFANA_URL</span><span class=s2>/api/dashboards/db/system-overview&#34;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>     <span class=p>|</span> jq <span class=s1>&#39;.dashboard&#39;</span> &gt; system-overview.json</span></span></code></pre></td></tr></table></div></div><h2 class=heading-element id=批量导出脚本><span>批量导出脚本</span>
+<a href=#%e6%89%b9%e9%87%8f%e5%af%bc%e5%87%ba%e8%84%9a%e6%9c%ac class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><h3 class=heading-element id=1-bash脚本版本><span>1. Bash脚本版本</span>
+<a href=#1-bash%e8%84%9a%e6%9c%ac%e7%89%88%e6%9c%ac class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=cp>#!/bin/bash
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=c1># Grafana批量导出脚本</span>
+</span></span><span class=line><span class=cl><span class=c1># export-all-dashboards.sh</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>set</span> -e
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 配置参数</span>
+</span></span><span class=line><span class=cl><span class=nv>GRAFANA_URL</span><span class=o>=</span><span class=s2>&#34;</span><span class=si>${</span><span class=nv>GRAFANA_URL</span><span class=k>:-</span><span class=nv>http</span><span class=p>://localhost:</span><span class=nv>3000</span><span class=si>}</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl><span class=nv>GRAFANA_API_KEY</span><span class=o>=</span><span class=s2>&#34;</span><span class=si>${</span><span class=nv>GRAFANA_API_KEY</span><span class=si>}</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl><span class=nv>OUTPUT_DIR</span><span class=o>=</span><span class=s2>&#34;</span><span class=si>${</span><span class=nv>OUTPUT_DIR</span><span class=k>:-</span><span class=p>./grafana-exports</span><span class=si>}</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl><span class=nv>DATE</span><span class=o>=</span><span class=k>$(</span>date +<span class=s2>&#34;%Y%m%d_%H%M%S&#34;</span><span class=k>)</span>
+</span></span><span class=line><span class=cl><span class=nv>EXPORT_DIR</span><span class=o>=</span><span class=s2>&#34;</span><span class=nv>$OUTPUT_DIR</span><span class=s2>/export_</span><span class=nv>$DATE</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 检查必要参数</span>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=o>[</span> -z <span class=s2>&#34;</span><span class=nv>$GRAFANA_API_KEY</span><span class=s2>&#34;</span> <span class=o>]</span><span class=p>;</span> <span class=k>then</span>
+</span></span><span class=line><span class=cl>    <span class=nb>echo</span> <span class=s2>&#34;错误: 请设置GRAFANA_API_KEY环境变量&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=nb>exit</span> <span class=m>1</span>
+</span></span><span class=line><span class=cl><span class=k>fi</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 创建导出目录</span>
+</span></span><span class=line><span class=cl>mkdir -p <span class=s2>&#34;</span><span class=nv>$EXPORT_DIR</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl><span class=nb>echo</span> <span class=s2>&#34;导出目录: </span><span class=nv>$EXPORT_DIR</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 函数：API请求</span>
+</span></span><span class=line><span class=cl>api_request<span class=o>()</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=nb>local</span> <span class=nv>endpoint</span><span class=o>=</span><span class=s2>&#34;</span><span class=nv>$1</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl>    curl -s -H <span class=s2>&#34;Authorization: Bearer </span><span class=nv>$GRAFANA_API_KEY</span><span class=s2>&#34;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>         <span class=s2>&#34;</span><span class=nv>$GRAFANA_URL$endpoint</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 函数：导出仪表板</span>
+</span></span><span class=line><span class=cl>export_dashboard<span class=o>()</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=nb>local</span> <span class=nv>uid</span><span class=o>=</span><span class=s2>&#34;</span><span class=nv>$1</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=nb>local</span> <span class=nv>title</span><span class=o>=</span><span class=s2>&#34;</span><span class=nv>$2</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=nb>local</span> <span class=nv>folder_title</span><span class=o>=</span><span class=s2>&#34;</span><span class=nv>$3</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=nb>echo</span> <span class=s2>&#34;导出仪表板: </span><span class=nv>$title</span><span class=s2> (UID: </span><span class=nv>$uid</span><span class=s2>)&#34;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 创建文件夹目录</span>
+</span></span><span class=line><span class=cl>    <span class=nb>local</span> <span class=nv>folder_dir</span><span class=o>=</span><span class=s2>&#34;</span><span class=nv>$EXPORT_DIR</span><span class=s2>/</span><span class=si>${</span><span class=nv>folder_title</span><span class=k>:-</span><span class=nv>root</span><span class=si>}</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl>    mkdir -p <span class=s2>&#34;</span><span class=nv>$folder_dir</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 安全的文件名</span>
+</span></span><span class=line><span class=cl>    <span class=nb>local</span> <span class=nv>safe_title</span><span class=o>=</span><span class=k>$(</span><span class=nb>echo</span> <span class=s2>&#34;</span><span class=nv>$title</span><span class=s2>&#34;</span> <span class=p>|</span> sed <span class=s1>&#39;s/[^a-zA-Z0-9._-]/_/g&#39;</span><span class=k>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>local</span> <span class=nv>filename</span><span class=o>=</span><span class=s2>&#34;</span><span class=nv>$folder_dir</span><span class=s2>/</span><span class=si>${</span><span class=nv>safe_title</span><span class=si>}</span><span class=s2>_</span><span class=si>${</span><span class=nv>uid</span><span class=si>}</span><span class=s2>.json&#34;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 导出仪表板</span>
+</span></span><span class=line><span class=cl>    api_request <span class=s2>&#34;/api/dashboards/uid/</span><span class=nv>$uid</span><span class=s2>&#34;</span> <span class=p>|</span> jq <span class=s1>&#39;.dashboard&#39;</span> &gt; <span class=s2>&#34;</span><span class=nv>$filename</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=o>[</span> <span class=nv>$?</span> -eq <span class=m>0</span> <span class=o>]</span><span class=p>;</span> <span class=k>then</span>
+</span></span><span class=line><span class=cl>        <span class=nb>echo</span> <span class=s2>&#34;  ✓ 导出成功: </span><span class=nv>$filename</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>else</span>
+</span></span><span class=line><span class=cl>        <span class=nb>echo</span> <span class=s2>&#34;  ✗ 导出失败: </span><span class=nv>$title</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>fi</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 主函数</span>
+</span></span><span class=line><span class=cl>main<span class=o>()</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=nb>echo</span> <span class=s2>&#34;开始导出Grafana仪表板...&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=nb>echo</span> <span class=s2>&#34;Grafana URL: </span><span class=nv>$GRAFANA_URL</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 获取所有仪表板</span>
+</span></span><span class=line><span class=cl>    <span class=nb>echo</span> <span class=s2>&#34;获取仪表板列表...&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=nb>local</span> <span class=nv>dashboards</span><span class=o>=</span><span class=k>$(</span>api_request <span class=s2>&#34;/api/search?type=dash-db&#34;</span><span class=k>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=o>[</span> <span class=nv>$?</span> -ne <span class=m>0</span> <span class=o>]</span><span class=p>;</span> <span class=k>then</span>
+</span></span><span class=line><span class=cl>        <span class=nb>echo</span> <span class=s2>&#34;错误: 无法获取仪表板列表&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=nb>exit</span> <span class=m>1</span>
+</span></span><span class=line><span class=cl>    <span class=k>fi</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 解析并导出每个仪表板</span>
+</span></span><span class=line><span class=cl>    <span class=nb>echo</span> <span class=s2>&#34;</span><span class=nv>$dashboards</span><span class=s2>&#34;</span> <span class=p>|</span> jq -r <span class=s1>&#39;.[] | &#34;\(.uid)|\(.title)|\(.folderTitle // &#34;root&#34;)&#34;&#39;</span> <span class=p>|</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    <span class=k>while</span> <span class=nv>IFS</span><span class=o>=</span><span class=s1>&#39;|&#39;</span> <span class=nb>read</span> -r uid title folder_title<span class=p>;</span> <span class=k>do</span>
+</span></span><span class=line><span class=cl>        export_dashboard <span class=s2>&#34;</span><span class=nv>$uid</span><span class=s2>&#34;</span> <span class=s2>&#34;</span><span class=nv>$title</span><span class=s2>&#34;</span> <span class=s2>&#34;</span><span class=nv>$folder_title</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>done</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 导出文件夹结构</span>
+</span></span><span class=line><span class=cl>    <span class=nb>echo</span> <span class=s2>&#34;导出文件夹结构...&#34;</span>
+</span></span><span class=line><span class=cl>    api_request <span class=s2>&#34;/api/folders&#34;</span> &gt; <span class=s2>&#34;</span><span class=nv>$EXPORT_DIR</span><span class=s2>/folders.json&#34;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 生成导出报告</span>
+</span></span><span class=line><span class=cl>    <span class=nb>echo</span> <span class=s2>&#34;生成导出报告...&#34;</span>
+</span></span><span class=line><span class=cl>    cat &gt; <span class=s2>&#34;</span><span class=nv>$EXPORT_DIR</span><span class=s2>/export_report.txt&#34;</span> <span class=s>&lt;&lt; EOF
+</span></span></span><span class=line><span class=cl><span class=s>导出时间: $(date)
+</span></span></span><span class=line><span class=cl><span class=s>Grafana URL: $GRAFANA_URL
+</span></span></span><span class=line><span class=cl><span class=s>导出目录: $EXPORT_DIR
+</span></span></span><span class=line><span class=cl><span class=s>
+</span></span></span><span class=line><span class=cl><span class=s>文件夹统计:
+</span></span></span><span class=line><span class=cl><span class=s>$(find &#34;$EXPORT_DIR&#34; -type d | wc -l) 个文件夹
+</span></span></span><span class=line><span class=cl><span class=s>
+</span></span></span><span class=line><span class=cl><span class=s>仪表板统计:
+</span></span></span><span class=line><span class=cl><span class=s>$(find &#34;$EXPORT_DIR&#34; -name &#34;*.json&#34; -not -name &#34;folders.json&#34; | wc -l) 个仪表板
+</span></span></span><span class=line><span class=cl><span class=s>
+</span></span></span><span class=line><span class=cl><span class=s>详细列表:
+</span></span></span><span class=line><span class=cl><span class=s>EOF</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    find <span class=s2>&#34;</span><span class=nv>$EXPORT_DIR</span><span class=s2>&#34;</span> -name <span class=s2>&#34;*.json&#34;</span> -not -name <span class=s2>&#34;folders.json&#34;</span> <span class=p>|</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    sed <span class=s2>&#34;s|</span><span class=nv>$EXPORT_DIR</span><span class=s2>/||&#34;</span> &gt;&gt; <span class=s2>&#34;</span><span class=nv>$EXPORT_DIR</span><span class=s2>/export_report.txt&#34;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=nb>echo</span> <span class=s2>&#34;导出完成!&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=nb>echo</span> <span class=s2>&#34;导出目录: </span><span class=nv>$EXPORT_DIR</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=nb>echo</span> <span class=s2>&#34;查看报告: </span><span class=nv>$EXPORT_DIR</span><span class=s2>/export_report.txt&#34;</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 执行主函数</span>
+</span></span><span class=line><span class=cl>main <span class=s2>&#34;</span><span class=nv>$@</span><span class=s2>&#34;</span></span></span></code></pre></td></tr></table></div></div><h3 class=heading-element id=2-python脚本版本><span>2. Python脚本版本</span>
+<a href=#2-python%e8%84%9a%e6%9c%ac%e7%89%88%e6%9c%ac class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span><span class=lnt>118
+</span><span class=lnt>119
+</span><span class=lnt>120
+</span><span class=lnt>121
+</span><span class=lnt>122
+</span><span class=lnt>123
+</span><span class=lnt>124
+</span><span class=lnt>125
+</span><span class=lnt>126
+</span><span class=lnt>127
+</span><span class=lnt>128
+</span><span class=lnt>129
+</span><span class=lnt>130
+</span><span class=lnt>131
+</span><span class=lnt>132
+</span><span class=lnt>133
+</span><span class=lnt>134
+</span><span class=lnt>135
+</span><span class=lnt>136
+</span><span class=lnt>137
+</span><span class=lnt>138
+</span><span class=lnt>139
+</span><span class=lnt>140
+</span><span class=lnt>141
+</span><span class=lnt>142
+</span><span class=lnt>143
+</span><span class=lnt>144
+</span><span class=lnt>145
+</span><span class=lnt>146
+</span><span class=lnt>147
+</span><span class=lnt>148
+</span><span class=lnt>149
+</span><span class=lnt>150
+</span><span class=lnt>151
+</span><span class=lnt>152
+</span><span class=lnt>153
+</span><span class=lnt>154
+</span><span class=lnt>155
+</span><span class=lnt>156
+</span><span class=lnt>157
+</span><span class=lnt>158
+</span><span class=lnt>159
+</span><span class=lnt>160
+</span><span class=lnt>161
+</span><span class=lnt>162
+</span><span class=lnt>163
+</span><span class=lnt>164
+</span><span class=lnt>165
+</span><span class=lnt>166
+</span><span class=lnt>167
+</span><span class=lnt>168
+</span><span class=lnt>169
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=ch>#!/usr/bin/env python3</span>
+</span></span><span class=line><span class=cl><span class=c1># -*- coding: utf-8 -*-</span>
+</span></span><span class=line><span class=cl><span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>Grafana仪表板批量导出工具
+</span></span></span><span class=line><span class=cl><span class=s2>export-dashboards.py
+</span></span></span><span class=line><span class=cl><span class=s2>&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>os</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>json</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>requests</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>argparse</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>datetime</span> <span class=kn>import</span> <span class=n>datetime</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>pathlib</span> <span class=kn>import</span> <span class=n>Path</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>re</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>GrafanaExporter</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>url</span><span class=p>,</span> <span class=n>api_key</span><span class=p>,</span> <span class=n>output_dir</span><span class=o>=</span><span class=s2>&#34;./grafana-exports&#34;</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>url</span> <span class=o>=</span> <span class=n>url</span><span class=o>.</span><span class=n>rstrip</span><span class=p>(</span><span class=s1>&#39;/&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>api_key</span> <span class=o>=</span> <span class=n>api_key</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>output_dir</span> <span class=o>=</span> <span class=n>Path</span><span class=p>(</span><span class=n>output_dir</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>session</span> <span class=o>=</span> <span class=n>requests</span><span class=o>.</span><span class=n>Session</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>session</span><span class=o>.</span><span class=n>headers</span><span class=o>.</span><span class=n>update</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;Authorization&#39;</span><span class=p>:</span> <span class=sa>f</span><span class=s1>&#39;Bearer </span><span class=si>{</span><span class=n>api_key</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;Content-Type&#39;</span><span class=p>:</span> <span class=s1>&#39;application/json&#39;</span>
+</span></span><span class=line><span class=cl>        <span class=p>})</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=c1># 创建带时间戳的导出目录</span>
+</span></span><span class=line><span class=cl>        <span class=n>timestamp</span> <span class=o>=</span> <span class=n>datetime</span><span class=o>.</span><span class=n>now</span><span class=p>()</span><span class=o>.</span><span class=n>strftime</span><span class=p>(</span><span class=s2>&#34;%Y%m</span><span class=si>%d</span><span class=s2>_%H%M%S&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>export_dir</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>output_dir</span> <span class=o>/</span> <span class=sa>f</span><span class=s2>&#34;export_</span><span class=si>{</span><span class=n>timestamp</span><span class=si>}</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>export_dir</span><span class=o>.</span><span class=n>mkdir</span><span class=p>(</span><span class=n>parents</span><span class=o>=</span><span class=kc>True</span><span class=p>,</span> <span class=n>exist_ok</span><span class=o>=</span><span class=kc>True</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>api_request</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>endpoint</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;发送API请求&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>try</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>response</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>session</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>url</span><span class=si>}{</span><span class=n>endpoint</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>response</span><span class=o>.</span><span class=n>raise_for_status</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=n>response</span><span class=o>.</span><span class=n>json</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>        <span class=k>except</span> <span class=n>requests</span><span class=o>.</span><span class=n>exceptions</span><span class=o>.</span><span class=n>RequestException</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;API请求失败: </span><span class=si>{</span><span class=n>e</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=kc>None</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>safe_filename</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>name</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;生成安全的文件名&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>re</span><span class=o>.</span><span class=n>sub</span><span class=p>(</span><span class=sa>r</span><span class=s1>&#39;[^a-zA-Z0-9._-]&#39;</span><span class=p>,</span> <span class=s1>&#39;_&#39;</span><span class=p>,</span> <span class=n>name</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>get_folders</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;获取所有文件夹&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;获取文件夹列表...&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>folders</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>api_request</span><span class=p>(</span><span class=s2>&#34;/api/folders&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>folders</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=c1># 保存文件夹信息</span>
+</span></span><span class=line><span class=cl>            <span class=k>with</span> <span class=nb>open</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>export_dir</span> <span class=o>/</span> <span class=s2>&#34;folders.json&#34;</span><span class=p>,</span> <span class=s1>&#39;w&#39;</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=s1>&#39;utf-8&#39;</span><span class=p>)</span> <span class=k>as</span> <span class=n>f</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>json</span><span class=o>.</span><span class=n>dump</span><span class=p>(</span><span class=n>folders</span><span class=p>,</span> <span class=n>f</span><span class=p>,</span> <span class=n>indent</span><span class=o>=</span><span class=mi>2</span><span class=p>,</span> <span class=n>ensure_ascii</span><span class=o>=</span><span class=kc>False</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;找到 </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>folders</span><span class=p>)</span><span class=si>}</span><span class=s2> 个文件夹&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>folders</span> <span class=ow>or</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>get_dashboards</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;获取所有仪表板&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;获取仪表板列表...&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>dashboards</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>api_request</span><span class=p>(</span><span class=s2>&#34;/api/search?type=dash-db&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>dashboards</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;找到 </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>dashboards</span><span class=p>)</span><span class=si>}</span><span class=s2> 个仪表板&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>dashboards</span> <span class=ow>or</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>export_dashboard</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>dashboard_info</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;导出单个仪表板&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=n>uid</span> <span class=o>=</span> <span class=n>dashboard_info</span><span class=p>[</span><span class=s1>&#39;uid&#39;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>        <span class=n>title</span> <span class=o>=</span> <span class=n>dashboard_info</span><span class=p>[</span><span class=s1>&#39;title&#39;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>        <span class=n>folder_title</span> <span class=o>=</span> <span class=n>dashboard_info</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=s1>&#39;folderTitle&#39;</span><span class=p>,</span> <span class=s1>&#39;root&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;导出仪表板: </span><span class=si>{</span><span class=n>title</span><span class=si>}</span><span class=s2> (UID: </span><span class=si>{</span><span class=n>uid</span><span class=si>}</span><span class=s2>)&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=c1># 创建文件夹目录</span>
+</span></span><span class=line><span class=cl>        <span class=n>folder_dir</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>export_dir</span> <span class=o>/</span> <span class=bp>self</span><span class=o>.</span><span class=n>safe_filename</span><span class=p>(</span><span class=n>folder_title</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>folder_dir</span><span class=o>.</span><span class=n>mkdir</span><span class=p>(</span><span class=n>exist_ok</span><span class=o>=</span><span class=kc>True</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=c1># 获取仪表板详细信息</span>
+</span></span><span class=line><span class=cl>        <span class=n>dashboard_data</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>api_request</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;/api/dashboards/uid/</span><span class=si>{</span><span class=n>uid</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>dashboard_data</span> <span class=ow>and</span> <span class=s1>&#39;dashboard&#39;</span> <span class=ow>in</span> <span class=n>dashboard_data</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=c1># 生成文件名</span>
+</span></span><span class=line><span class=cl>            <span class=n>safe_title</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>safe_filename</span><span class=p>(</span><span class=n>title</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>filename</span> <span class=o>=</span> <span class=n>folder_dir</span> <span class=o>/</span> <span class=sa>f</span><span class=s2>&#34;</span><span class=si>{</span><span class=n>safe_title</span><span class=si>}</span><span class=s2>_</span><span class=si>{</span><span class=n>uid</span><span class=si>}</span><span class=s2>.json&#34;</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 保存仪表板</span>
+</span></span><span class=line><span class=cl>            <span class=k>with</span> <span class=nb>open</span><span class=p>(</span><span class=n>filename</span><span class=p>,</span> <span class=s1>&#39;w&#39;</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=s1>&#39;utf-8&#39;</span><span class=p>)</span> <span class=k>as</span> <span class=n>f</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>json</span><span class=o>.</span><span class=n>dump</span><span class=p>(</span><span class=n>dashboard_data</span><span class=p>[</span><span class=s1>&#39;dashboard&#39;</span><span class=p>],</span> <span class=n>f</span><span class=p>,</span> <span class=n>indent</span><span class=o>=</span><span class=mi>2</span><span class=p>,</span> <span class=n>ensure_ascii</span><span class=o>=</span><span class=kc>False</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;  ✓ 导出成功: </span><span class=si>{</span><span class=n>filename</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=kc>True</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;  ✗ 导出失败: </span><span class=si>{</span><span class=n>title</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=kc>False</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>generate_report</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>exported_count</span><span class=p>,</span> <span class=n>total_count</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;生成导出报告&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=n>report_file</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>export_dir</span> <span class=o>/</span> <span class=s2>&#34;export_report.txt&#34;</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=c1># 统计信息</span>
+</span></span><span class=line><span class=cl>        <span class=n>folders_count</span> <span class=o>=</span> <span class=nb>len</span><span class=p>([</span><span class=n>d</span> <span class=k>for</span> <span class=n>d</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>export_dir</span><span class=o>.</span><span class=n>iterdir</span><span class=p>()</span> <span class=k>if</span> <span class=n>d</span><span class=o>.</span><span class=n>is_dir</span><span class=p>()])</span>
+</span></span><span class=line><span class=cl>        <span class=n>json_files</span> <span class=o>=</span> <span class=nb>list</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>export_dir</span><span class=o>.</span><span class=n>rglob</span><span class=p>(</span><span class=s2>&#34;*.json&#34;</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>        <span class=n>dashboard_files</span> <span class=o>=</span> <span class=p>[</span><span class=n>f</span> <span class=k>for</span> <span class=n>f</span> <span class=ow>in</span> <span class=n>json_files</span> <span class=k>if</span> <span class=n>f</span><span class=o>.</span><span class=n>name</span> <span class=o>!=</span> <span class=s2>&#34;folders.json&#34;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>with</span> <span class=nb>open</span><span class=p>(</span><span class=n>report_file</span><span class=p>,</span> <span class=s1>&#39;w&#39;</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=s1>&#39;utf-8&#39;</span><span class=p>)</span> <span class=k>as</span> <span class=n>f</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>f</span><span class=o>.</span><span class=n>write</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Grafana仪表板导出报告</span><span class=se>\n</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>f</span><span class=o>.</span><span class=n>write</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=si>{</span><span class=s1>&#39;=&#39;</span><span class=o>*</span><span class=mi>50</span><span class=si>}</span><span class=se>\n</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>f</span><span class=o>.</span><span class=n>write</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;导出时间: </span><span class=si>{</span><span class=n>datetime</span><span class=o>.</span><span class=n>now</span><span class=p>()</span><span class=o>.</span><span class=n>strftime</span><span class=p>(</span><span class=s1>&#39;%Y-%m-</span><span class=si>%d</span><span class=s1> %H:%M:%S&#39;</span><span class=p>)</span><span class=si>}</span><span class=se>\n</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>f</span><span class=o>.</span><span class=n>write</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Grafana URL: </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>url</span><span class=si>}</span><span class=se>\n</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>f</span><span class=o>.</span><span class=n>write</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;导出目录: </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>export_dir</span><span class=si>}</span><span class=se>\n\n</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=n>f</span><span class=o>.</span><span class=n>write</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;统计信息:</span><span class=se>\n</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>f</span><span class=o>.</span><span class=n>write</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;  文件夹数量: </span><span class=si>{</span><span class=n>folders_count</span><span class=si>}</span><span class=se>\n</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>f</span><span class=o>.</span><span class=n>write</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;  仪表板总数: </span><span class=si>{</span><span class=n>total_count</span><span class=si>}</span><span class=se>\n</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>f</span><span class=o>.</span><span class=n>write</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;  成功导出: </span><span class=si>{</span><span class=n>exported_count</span><span class=si>}</span><span class=se>\n</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>f</span><span class=o>.</span><span class=n>write</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;  失败数量: </span><span class=si>{</span><span class=n>total_count</span> <span class=o>-</span> <span class=n>exported_count</span><span class=si>}</span><span class=se>\n\n</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=n>f</span><span class=o>.</span><span class=n>write</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;导出文件列表:</span><span class=se>\n</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>for</span> <span class=n>file</span> <span class=ow>in</span> <span class=nb>sorted</span><span class=p>(</span><span class=n>dashboard_files</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>                <span class=n>relative_path</span> <span class=o>=</span> <span class=n>file</span><span class=o>.</span><span class=n>relative_to</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>export_dir</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=n>f</span><span class=o>.</span><span class=n>write</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;  </span><span class=si>{</span><span class=n>relative_path</span><span class=si>}</span><span class=se>\n</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;导出报告已生成: </span><span class=si>{</span><span class=n>report_file</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>export_all</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;导出所有仪表板&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;开始导出Grafana仪表板...&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Grafana URL: </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>url</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;导出目录: </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>export_dir</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=c1># 获取文件夹信息</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>get_folders</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=c1># 获取所有仪表板</span>
+</span></span><span class=line><span class=cl>        <span class=n>dashboards</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>get_dashboards</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=ow>not</span> <span class=n>dashboards</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;未找到任何仪表板&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=c1># 导出每个仪表板</span>
+</span></span><span class=line><span class=cl>        <span class=n>exported_count</span> <span class=o>=</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=n>dashboard</span> <span class=ow>in</span> <span class=n>dashboards</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>export_dashboard</span><span class=p>(</span><span class=n>dashboard</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>                <span class=n>exported_count</span> <span class=o>+=</span> <span class=mi>1</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=c1># 生成报告</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>generate_report</span><span class=p>(</span><span class=n>exported_count</span><span class=p>,</span> <span class=nb>len</span><span class=p>(</span><span class=n>dashboards</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>导出完成!&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;成功导出: </span><span class=si>{</span><span class=n>exported_count</span><span class=si>}</span><span class=s2>/</span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>dashboards</span><span class=p>)</span><span class=si>}</span><span class=s2> 个仪表板&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;导出目录: </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>export_dir</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>main</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=n>parser</span> <span class=o>=</span> <span class=n>argparse</span><span class=o>.</span><span class=n>ArgumentParser</span><span class=p>(</span><span class=n>description</span><span class=o>=</span><span class=s1>&#39;Grafana仪表板批量导出工具&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>parser</span><span class=o>.</span><span class=n>add_argument</span><span class=p>(</span><span class=s1>&#39;--url&#39;</span><span class=p>,</span> <span class=n>default</span><span class=o>=</span><span class=s1>&#39;http://localhost:3000&#39;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                       <span class=n>help</span><span class=o>=</span><span class=s1>&#39;Grafana URL (默认: http://localhost:3000)&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>parser</span><span class=o>.</span><span class=n>add_argument</span><span class=p>(</span><span class=s1>&#39;--api-key&#39;</span><span class=p>,</span> <span class=n>required</span><span class=o>=</span><span class=kc>True</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                       <span class=n>help</span><span class=o>=</span><span class=s1>&#39;Grafana API密钥&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>parser</span><span class=o>.</span><span class=n>add_argument</span><span class=p>(</span><span class=s1>&#39;--output&#39;</span><span class=p>,</span> <span class=n>default</span><span class=o>=</span><span class=s1>&#39;./grafana-exports&#39;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                       <span class=n>help</span><span class=o>=</span><span class=s1>&#39;导出目录 (默认: ./grafana-exports)&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=n>args</span> <span class=o>=</span> <span class=n>parser</span><span class=o>.</span><span class=n>parse_args</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 创建导出器并执行导出</span>
+</span></span><span class=line><span class=cl>    <span class=n>exporter</span> <span class=o>=</span> <span class=n>GrafanaExporter</span><span class=p>(</span><span class=n>args</span><span class=o>.</span><span class=n>url</span><span class=p>,</span> <span class=n>args</span><span class=o>.</span><span class=n>api_key</span><span class=p>,</span> <span class=n>args</span><span class=o>.</span><span class=n>output</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>exporter</span><span class=o>.</span><span class=n>export_all</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=vm>__name__</span> <span class=o>==</span> <span class=s1>&#39;__main__&#39;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>main</span><span class=p>()</span></span></span></code></pre></td></tr></table></div></div><h2 class=heading-element id=使用方法><span>使用方法</span>
+<a href=#%e4%bd%bf%e7%94%a8%e6%96%b9%e6%b3%95 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><h3 class=heading-element id=1-bash脚本使用><span>1. Bash脚本使用</span>
+<a href=#1-bash%e8%84%9a%e6%9c%ac%e4%bd%bf%e7%94%a8 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 设置权限</span>
+</span></span><span class=line><span class=cl>chmod +x export-all-dashboards.sh
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 设置环境变量</span>
+</span></span><span class=line><span class=cl><span class=nb>export</span> <span class=nv>GRAFANA_URL</span><span class=o>=</span><span class=s2>&#34;http://localhost:3000&#34;</span>
+</span></span><span class=line><span class=cl><span class=nb>export</span> <span class=nv>GRAFANA_API_KEY</span><span class=o>=</span><span class=s2>&#34;your-api-key&#34;</span>
+</span></span><span class=line><span class=cl><span class=nb>export</span> <span class=nv>OUTPUT_DIR</span><span class=o>=</span><span class=s2>&#34;./exports&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 执行导出</span>
+</span></span><span class=line><span class=cl>./export-all-dashboards.sh</span></span></code></pre></td></tr></table></div></div><h3 class=heading-element id=2-python脚本使用><span>2. Python脚本使用</span>
+<a href=#2-python%e8%84%9a%e6%9c%ac%e4%bd%bf%e7%94%a8 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 安装依赖</span>
+</span></span><span class=line><span class=cl>pip install requests
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 执行导出</span>
+</span></span><span class=line><span class=cl>python3 export-dashboards.py <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    --url http://localhost:3000 <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    --api-key your-api-key <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    --output ./exports</span></span></code></pre></td></tr></table></div></div><h3 class=heading-element id=3-直接使用curl命令><span>3. 直接使用curl命令</span>
+<a href=#3-%e7%9b%b4%e6%8e%a5%e4%bd%bf%e7%94%a8curl%e5%91%bd%e4%bb%a4 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 一键导出脚本</span>
+</span></span><span class=line><span class=cl><span class=c1>#!/bin/bash</span>
+</span></span><span class=line><span class=cl><span class=nv>GRAFANA_URL</span><span class=o>=</span><span class=s2>&#34;http://localhost:3000&#34;</span>
+</span></span><span class=line><span class=cl><span class=nv>GRAFANA_API_KEY</span><span class=o>=</span><span class=s2>&#34;your-api-key&#34;</span>
+</span></span><span class=line><span class=cl><span class=nv>OUTPUT_DIR</span><span class=o>=</span><span class=s2>&#34;./grafana-exports&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>mkdir -p <span class=s2>&#34;</span><span class=nv>$OUTPUT_DIR</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 获取并导出所有仪表板</span>
+</span></span><span class=line><span class=cl>curl -H <span class=s2>&#34;Authorization: Bearer </span><span class=nv>$GRAFANA_API_KEY</span><span class=s2>&#34;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>     <span class=s2>&#34;</span><span class=nv>$GRAFANA_URL</span><span class=s2>/api/search?type=dash-db&#34;</span> <span class=p>|</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>jq -r <span class=s1>&#39;.[] | .uid&#39;</span> <span class=p>|</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span><span class=k>while</span> <span class=nb>read</span> uid<span class=p>;</span> <span class=k>do</span>
+</span></span><span class=line><span class=cl>    <span class=nb>echo</span> <span class=s2>&#34;导出仪表板: </span><span class=nv>$uid</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl>    curl -H <span class=s2>&#34;Authorization: Bearer </span><span class=nv>$GRAFANA_API_KEY</span><span class=s2>&#34;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>         <span class=s2>&#34;</span><span class=nv>$GRAFANA_URL</span><span class=s2>/api/dashboards/uid/</span><span class=nv>$uid</span><span class=s2>&#34;</span> <span class=p>|</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    jq <span class=s1>&#39;.dashboard&#39;</span> &gt; <span class=s2>&#34;</span><span class=nv>$OUTPUT_DIR</span><span class=s2>/dashboard_</span><span class=nv>$uid</span><span class=s2>.json&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>done</span></span></span></code></pre></td></tr></table></div></div><h2 class=heading-element id=高级功能><span>高级功能</span>
+<a href=#%e9%ab%98%e7%ba%a7%e5%8a%9f%e8%83%bd class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><h3 class=heading-element id=1-按文件夹分类导出><span>1. 按文件夹分类导出</span>
+<a href=#1-%e6%8c%89%e6%96%87%e4%bb%b6%e5%a4%b9%e5%88%86%e7%b1%bb%e5%af%bc%e5%87%ba class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 获取特定文件夹的仪表板</span>
+</span></span><span class=line><span class=cl><span class=nv>FOLDER_UID</span><span class=o>=</span><span class=s2>&#34;folder-uid-1&#34;</span>
+</span></span><span class=line><span class=cl>curl -H <span class=s2>&#34;Authorization: Bearer </span><span class=nv>$GRAFANA_API_KEY</span><span class=s2>&#34;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>     <span class=s2>&#34;</span><span class=nv>$GRAFANA_URL</span><span class=s2>/api/search?folderIds=</span><span class=nv>$FOLDER_UID</span><span class=s2>&amp;type=dash-db&#34;</span></span></span></code></pre></td></tr></table></div></div><h3 class=heading-element id=2-按标签过滤导出><span>2. 按标签过滤导出</span>
+<a href=#2-%e6%8c%89%e6%a0%87%e7%ad%be%e8%bf%87%e6%bb%a4%e5%af%bc%e5%87%ba class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 导出带有特定标签的仪表板</span>
+</span></span><span class=line><span class=cl><span class=nv>TAG</span><span class=o>=</span><span class=s2>&#34;production&#34;</span>
+</span></span><span class=line><span class=cl>curl -H <span class=s2>&#34;Authorization: Bearer </span><span class=nv>$GRAFANA_API_KEY</span><span class=s2>&#34;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>     <span class=s2>&#34;</span><span class=nv>$GRAFANA_URL</span><span class=s2>/api/search?tag=</span><span class=nv>$TAG</span><span class=s2>&amp;type=dash-db&#34;</span></span></span></code></pre></td></tr></table></div></div><h3 class=heading-element id=3-导出仪表板权限信息><span>3. 导出仪表板权限信息</span>
+<a href=#3-%e5%af%bc%e5%87%ba%e4%bb%aa%e8%a1%a8%e6%9d%bf%e6%9d%83%e9%99%90%e4%bf%a1%e6%81%af class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 获取仪表板权限</span>
+</span></span><span class=line><span class=cl><span class=nv>DASHBOARD_UID</span><span class=o>=</span><span class=s2>&#34;dashboard-uid-1&#34;</span>
+</span></span><span class=line><span class=cl>curl -H <span class=s2>&#34;Authorization: Bearer </span><span class=nv>$GRAFANA_API_KEY</span><span class=s2>&#34;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>     <span class=s2>&#34;</span><span class=nv>$GRAFANA_URL</span><span class=s2>/api/dashboards/uid/</span><span class=nv>$DASHBOARD_UID</span><span class=s2>/permissions&#34;</span></span></span></code></pre></td></tr></table></div></div><h2 class=heading-element id=导入仪表板><span>导入仪表板</span>
+<a href=#%e5%af%bc%e5%85%a5%e4%bb%aa%e8%a1%a8%e6%9d%bf class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><h3 class=heading-element id=1-单个仪表板导入><span>1. 单个仪表板导入</span>
+<a href=#1-%e5%8d%95%e4%b8%aa%e4%bb%aa%e8%a1%a8%e6%9d%bf%e5%af%bc%e5%85%a5 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 导入仪表板</span>
+</span></span><span class=line><span class=cl>curl -X POST <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>  -H <span class=s2>&#34;Authorization: Bearer </span><span class=nv>$GRAFANA_API_KEY</span><span class=s2>&#34;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>  -H <span class=s2>&#34;Content-Type: application/json&#34;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>  -d @dashboard.json <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>  <span class=s2>&#34;</span><span class=nv>$GRAFANA_URL</span><span class=s2>/api/dashboards/db&#34;</span></span></span></code></pre></td></tr></table></div></div><h3 class=heading-element id=2-批量导入脚本><span>2. 批量导入脚本</span>
+<a href=#2-%e6%89%b9%e9%87%8f%e5%af%bc%e5%85%a5%e8%84%9a%e6%9c%ac class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=cp>#!/bin/bash
+</span></span></span><span class=line><span class=cl><span class=cp></span><span class=c1># 批量导入仪表板</span>
+</span></span><span class=line><span class=cl><span class=k>for</span> file in ./exports/*.json<span class=p>;</span> <span class=k>do</span>
+</span></span><span class=line><span class=cl>    <span class=nb>echo</span> <span class=s2>&#34;导入: </span><span class=nv>$file</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl>    curl -X POST <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>      -H <span class=s2>&#34;Authorization: Bearer </span><span class=nv>$GRAFANA_API_KEY</span><span class=s2>&#34;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>      -H <span class=s2>&#34;Content-Type: application/json&#34;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>      -d @<span class=s2>&#34;</span><span class=nv>$file</span><span class=s2>&#34;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>      <span class=s2>&#34;</span><span class=nv>$GRAFANA_URL</span><span class=s2>/api/dashboards/db&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>done</span></span></span></code></pre></td></tr></table></div></div><h2 class=heading-element id=故障排除><span>故障排除</span>
+<a href=#%e6%95%85%e9%9a%9c%e6%8e%92%e9%99%a4 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><h3 class=heading-element id=1-常见错误><span>1. 常见错误</span>
+<a href=#1-%e5%b8%b8%e8%a7%81%e9%94%99%e8%af%af class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><p><strong>401 Unauthorized</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 检查API密钥</span>
+</span></span><span class=line><span class=cl>curl -H <span class=s2>&#34;Authorization: Bearer </span><span class=nv>$GRAFANA_API_KEY</span><span class=s2>&#34;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>     <span class=s2>&#34;</span><span class=nv>$GRAFANA_URL</span><span class=s2>/api/user&#34;</span></span></span></code></pre></td></tr></table></div></div><p><strong>403 Forbidden</strong></p><ul><li>检查API密钥权限</li><li>确保使用Admin或Editor权限</li></ul><p><strong>404 Not Found</strong></p><ul><li>检查Grafana URL是否正确</li><li>确认仪表板UID存在</li></ul><h3 class=heading-element id=2-调试方法><span>2. 调试方法</span>
+<a href=#2-%e8%b0%83%e8%af%95%e6%96%b9%e6%b3%95 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 启用详细输出</span>
+</span></span><span class=line><span class=cl>curl -v -H <span class=s2>&#34;Authorization: Bearer </span><span class=nv>$GRAFANA_API_KEY</span><span class=s2>&#34;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>     <span class=s2>&#34;</span><span class=nv>$GRAFANA_URL</span><span class=s2>/api/search?type=dash-db&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 检查API响应</span>
+</span></span><span class=line><span class=cl>curl -H <span class=s2>&#34;Authorization: Bearer </span><span class=nv>$GRAFANA_API_KEY</span><span class=s2>&#34;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>     <span class=s2>&#34;</span><span class=nv>$GRAFANA_URL</span><span class=s2>/api/search?type=dash-db&#34;</span> <span class=p>|</span> jq .</span></span></code></pre></td></tr></table></div></div><h2 class=heading-element id=最佳实践><span>最佳实践</span>
+<a href=#%e6%9c%80%e4%bd%b3%e5%ae%9e%e8%b7%b5 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><ol><li><strong>定期备份</strong>: 建议定期导出仪表板作为备份</li><li><strong>版本控制</strong>: 将导出的JSON文件纳入版本控制系统</li><li><strong>权限管理</strong>: 使用专门的API密钥，避免使用管理员账户</li><li><strong>批量处理</strong>: 对于大量仪表板，使用脚本自动化处理</li><li><strong>错误处理</strong>: 在脚本中添加适当的错误处理和重试机制</li></ol><h2 class=heading-element id=参考资源><span>参考资源</span>
+<a href=#%e5%8f%82%e8%80%83%e8%b5%84%e6%ba%90 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><ul><li><a href=https://grafana.com/docs/grafana/latest/developers/http_api/ target=_blank rel="external nofollow noopener noreferrer">Grafana HTTP API文档</a></li><li><a href=https://grafana.com/docs/grafana/latest/developers/http_api/dashboard/ target=_blank rel="external nofollow noopener noreferrer">Grafana仪表板API</a></li><li><a href=https://grafana.com/docs/grafana/latest/developers/http_api/folder/ target=_blank rel="external nofollow noopener noreferrer">Grafana文件夹API</a></li></ul></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span title="更新于 2024-12-19 10:45:00">更新于 2024-12-19&nbsp;</span></div><div class=post-info-license><span><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span></div></div><div class=post-info-line><div class=post-info-md><span><a href=/posts/grafana-api%E5%AF%BC%E5%87%BA%E4%BB%AA%E8%A1%A8%E6%9D%BF%E5%AE%8C%E6%95%B4%E6%8C%87%E5%8D%97/index.md title=阅读原始文档 class=link-to-markdown>阅读原始文档</a></span></div><div class=post-info-share><span><a href=javascript:void(0); title="分享到 X" data-sharer=twitter data-url=https://www.kbsonlong.com/posts/grafana-api%E5%AF%BC%E5%87%BA%E4%BB%AA%E8%A1%A8%E6%9D%BF%E5%AE%8C%E6%95%B4%E6%8C%87%E5%8D%97/ data-title="Grafana API导出仪表板完整指南" data-hashtags=Grafana,API,仪表板,导出><i class="fa-brands fa-x-twitter fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="分享到 Facebook" data-sharer=facebook data-url=https://www.kbsonlong.com/posts/grafana-api%E5%AF%BC%E5%87%BA%E4%BB%AA%E8%A1%A8%E6%9D%BF%E5%AE%8C%E6%95%B4%E6%8C%87%E5%8D%97/ data-hashtag=Grafana><i class="fa-brands fa-facebook-square fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="分享到 WhatsApp" data-sharer=whatsapp data-url=https://www.kbsonlong.com/posts/grafana-api%E5%AF%BC%E5%87%BA%E4%BB%AA%E8%A1%A8%E6%9D%BF%E5%AE%8C%E6%95%B4%E6%8C%87%E5%8D%97/ data-title="Grafana API导出仪表板完整指南" data-web><i class="fa-brands fa-whatsapp fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="分享到 Line" data-sharer=line data-url=https://www.kbsonlong.com/posts/grafana-api%E5%AF%BC%E5%87%BA%E4%BB%AA%E8%A1%A8%E6%9D%BF%E5%AE%8C%E6%95%B4%E6%8C%87%E5%8D%97/ data-title="Grafana API导出仪表板完整指南"><svg class="icon" role="img" viewBox="0 0 24 24"><title>LINE</title><path d="M19.365 9.863c.349.0.63.285.63.631.0.345-.281.63-.63.63H17.61v1.125h1.755c.349.0.63.283.63.63.0.344-.281.629-.63.629h-2.386c-.345.0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346.0.627.285.627.63.0.349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211.0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346.0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195.0.375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345.0.63.285.63.63v4.771zm-5.741.0c0 .344-.282.629-.631.629-.345.0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346.0.628.285.628.63v4.771zm-2.466.629H4.917c-.345.0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348.0.63.285.63.63v4.141h1.756c.348.0.629.283.629.63.0.344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943.0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg></a>
+<a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://www.kbsonlong.com/posts/grafana-api%E5%AF%BC%E5%87%BA%E4%BB%AA%E8%A1%A8%E6%9D%BF%E5%AE%8C%E6%95%B4%E6%8C%87%E5%8D%97/ data-title="Grafana API导出仪表板完整指南"><i class="fa-brands fa-weibo fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="分享到 Myspace" data-sharer=myspace data-url=https://www.kbsonlong.com/posts/grafana-api%E5%AF%BC%E5%87%BA%E4%BB%AA%E8%A1%A8%E6%9D%BF%E5%AE%8C%E6%95%B4%E6%8C%87%E5%8D%97/ data-title="Grafana API导出仪表板完整指南" data-description><svg class="icon" role="img" viewBox="0 0 24 24"><title>Myspace</title><path d="M19.802 12.274A3.811 3.811.0 0023.62 8.47c0-2.101-1.71-3.795-3.818-3.795a3.816 3.816.0 00-3.818 3.81 3.817 3.817.0 003.818 3.811zm-8.602.705a3.43 3.43.0 003.435-3.424A3.43 3.43.0 0011.2 6.13 3.44 3.44.0 007.764 9.566 3.436 3.436.0 0011.2 13zm-7.8.635c1.71.0 3.093-1.38 3.093-3.081.0-1.704-1.395-3.084-3.105-3.084A3.086 3.086.0 00.3 10.539c0 1.7 1.387 3.078 3.095 3.078zm0 .705c-1.96.0-3.4 1.717-3.4 3.495v1.196c0 .17.138.31.31.31h6.18a.31.31.0 00.309-.31v-1.196c0-1.779-1.437-3.5-3.398-3.5zm7.8-.56c-2.18.0-3.78 1.915-3.78 3.891v1.331c0 .188.156.344.345.344h6.87a.344.344.0 00.342-.344V17.65c0-1.976-1.598-3.891-3.777-3.891zm8.602-.617c-2.422.0-4.197 2.126-4.197 4.323v1.477c0 .21.172.381.382.381h7.63c.21.0.383-.171.383-.381v-1.477c-.001-2.197-1.776-4.323-4.198-4.323z"/></svg></a>
+<a href=javascript:void(0); title="分享到 Blogger" data-sharer=blogger data-url=https://www.kbsonlong.com/posts/grafana-api%E5%AF%BC%E5%87%BA%E4%BB%AA%E8%A1%A8%E6%9D%BF%E5%AE%8C%E6%95%B4%E6%8C%87%E5%8D%97/ data-title="Grafana API导出仪表板完整指南" data-description><i class="fa-brands fa-blogger fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="分享到 Evernote" data-sharer=evernote data-url=https://www.kbsonlong.com/posts/grafana-api%E5%AF%BC%E5%87%BA%E4%BB%AA%E8%A1%A8%E6%9D%BF%E5%AE%8C%E6%95%B4%E6%8C%87%E5%8D%97/ data-title="Grafana API导出仪表板完整指南"><i class="fa-brands fa-evernote fa-fw" aria-hidden=true></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fa-solid fa-tags fa-fw me-1" aria-hidden=true></i><a href=/tags/grafana/ class=post-tag title="标签 - Grafana">Grafana</a><a href=/tags/api/ class=post-tag title="标签 - API">API</a><a href=/tags/%E4%BB%AA%E8%A1%A8%E6%9D%BF/ class=post-tag title="标签 - 仪表板">仪表板</a><a href=/tags/%E5%AF%BC%E5%87%BA/ class=post-tag title="标签 - 导出">导出</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span></section></div><div class=post-nav><a href=/posts/kind--flannel--multus-cni-%E5%BF%AB%E9%80%9F%E9%AA%8C%E8%AF%81%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E6%8C%87%E5%8D%97/ class=post-nav-item rel=prev title="Kind + Flannel + Multus-CNI 快速验证环境搭建指南"><i class="fa-solid fa-angle-left fa-fw" aria-hidden=true></i>Kind + Flannel + Multus-CNI 快速验证环境搭建指南</a><a href=/posts/grafana-api%E5%AF%BC%E5%87%BA%E4%BB%AA%E8%A1%A8%E6%9D%BF%E4%BD%BF%E7%94%A8%E7%A4%BA%E4%BE%8B/ class=post-nav-item rel=next title="Grafana API导出仪表板使用示例">Grafana API导出仪表板使用示例<i class="fa-solid fa-angle-right fa-fw" aria-hidden=true></i></a></div></div><div id=comments><div id=giscus class=comment><script src=https://giscus.app/client.js data-repo=kbsonlong/sre data-repo-id=R_kgDOMFzwNA data-category=Announcements data-category-id=DIC_kwDOMFzwNM4Cn0gn data-mapping=title data-strict=0 data-theme=preferred_color_scheme data-reactions-enabled=1 data-emit-metadata=0 data-input-position=bottom data-lang=zh-CN data-loading=lazy crossorigin=anonymous async defer></script></div><noscript>Please enable JavaScript to view the comments powered by <a href=https://giscus.app/ rel="external nofollow noopener noreferrer">giscus</a>.</noscript></div></article><aside class=toc id=toc-auto aria-label=目录><h2 class=toc-title>目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden=true></i></h2><div class=toc-content id=toc-content-auto></div></aside></main><footer class=footer><div class=footer-container><div class="footer-line copyright" itemscope itemtype=http://schema.org/CreativeWork><i class="fa-regular fa-copyright fa-fw" aria-hidden=true></i>
+<span itemprop=copyrightYear>2018 - 2025</span><span class=author itemprop=copyrightHolder>
+<a href=/></a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span></div><div class="footer-line statistics"><span class=site-time title=网站运行中……><i class="fa-solid fa-heartbeat fa-fw animate-icon" aria-hidden=true></i><span class="run-times ms-1">网站运行中……</span></span></div><div class="footer-line visitor"><span id=busuanzi_container_site_uv title=总访客数><i class="fa-regular fa-user fa-fw me-1" aria-hidden=true></i><span id=busuanzi_value_site_uv><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden=true></i></span></span><span id=busuanzi_container_site_pv class=footer-divider title=总访问量><i class="fa-regular fa-eye fa-fw me-1" aria-hidden=true></i><span id=busuanzi_value_site_pv><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden=true></i></span></span></div><div class="footer-line beian"><span class="icp footer-divider"><a target=_blank href=https://beian.miit.gov.cn/>粤ICP备18122209号</a></span></div></div></footer></div><div class=widgets><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role=button aria-label=回到顶部><i class="fa-solid fa-arrow-up fa-fw" aria-hidden=true></i><span class=variant-numeric>0%</span></div><div class="fixed-button view-comments d-none" role=button aria-label=查看评论><i class="fa-solid fa-comment fa-fw" aria-hidden=true></i></div></div><a href=https://github.com/kbsonlong title="在 GitHub 上查看源代码" target=_blank rel="external nofollow" class="github-corner right d-none-mobile"><svg viewBox="0 0 250 250" aria-hidden="true" width="56" height="56"><path d="M0 0 115 115h15l12 27L250 250V0z"/><path d="M128.3 109C113.8 99.7 119 89.6 119 89.6 122 82.7 120.5 78.6 120.5 78.6 119.2 72 123.4 76.3 123.4 76.3 127.3 80.9 125.5 87.3 125.5 87.3 122.9 97.6 130.6 101.9 134.4 103.2" fill="currentcolor" style="transform-origin:130px 106px" class="octo-arm"/><path d="M115 115C114.9 115.1 118.7 116.5 119.8 115.4l13.9-13.8C136.9 99.2 139.9 98.4 142.2 98.6 133.8 88 127.5 74.4 143.8 58 148.5 53.4 154 51.2 159.7 51 160.3 49.4 163.2 43.6 171.4 40.1 171.4 40.1 176.1 42.5 178.8 56.2 183.1 58.6 187.2 61.8 190.9 65.4 194.5 69 197.7 73.2 200.1 77.6 213.8 80.2 216.3 84.9 216.3 84.9 212.7 93.1 206.9 96 205.4 96.6 205.1 102.4 203 107.8 198.3 112.5 181.9 128.9 168.3 122.5 157.7 114.1 157.9 116.9 156.7 120.9 152.7 124.9L141 136.5C139.8 137.7 141.6 141.9 141.8 141.8z" fill="currentcolor" class="octo-body"/></svg></a><div id=mask></div><div class=reading-progress-bar style=left:0;top:0></div><noscript><div class=noscript-warning>该网站在启用 JavaScript 的情况下效果最佳。</div></noscript></div><link rel=preload href=/lib/katex/katex.min.css as=style onload='this.removeAttribute("onload"),this.rel="stylesheet"'><noscript><link rel=stylesheet href=/lib/katex/katex.min.css></noscript><link rel=stylesheet href=/lib/cookieconsent/cookieconsent.min.css><script src=/lib/autocomplete/autocomplete.min.js defer></script><script src=/lib/algoliasearch/algoliasearch-lite.umd.min.js defer></script><script src=/lib/sharer/sharer.min.js async defer></script><script src=/lib/katex/katex.min.js defer></script><script src=/lib/katex/auto-render.min.js defer></script><script src=/lib/katex/copy-tex.min.js defer></script><script src=/lib/katex/mhchem.min.js defer></script><script src=/lib/cookieconsent/cookieconsent.min.js defer></script><script src=/lib/pangu/pangu.min.js defer></script><script src=/lib/cell-watermark/watermark.min.js defer></script><script src=https://vercount.one/js async defer></script><script>window.config={code:{copyTitle:"复制到剪贴板",editLockTitle:"锁定可编辑代码块",editUnLockTitle:"解锁可编辑代码块",editable:!0,maxShownLines:10},comment:{enable:!0,expired:!1,giscus:{darkTheme:"dark",lightTheme:"light",origin:"https://giscus.app"}},cookieconsent:{content:{dismiss:"同意",link:"了解更多",message:"本网站使用 Cookies 来改善您的浏览体验。"},enable:!0,palette:{button:{background:"#f0f0f0"},popup:{background:"#1aa3ff"}},theme:"edgeless"},enablePWA:!0,math:{delimiters:[{display:!0,left:"$$",right:"$$"},{display:!0,left:"\\[",right:"\\]"},{display:!0,left:"\\begin{equation}",right:"\\end{equation}"},{display:!0,left:"\\begin{equation*}",right:"\\end{equation*}"},{display:!0,left:"\\begin{align}",right:"\\end{align}"},{display:!0,left:"\\begin{align*}",right:"\\end{align*}"},{display:!0,left:"\\begin{alignat}",right:"\\end{alignat}"},{display:!0,left:"\\begin{alignat*}",right:"\\end{alignat*}"},{display:!0,left:"\\begin{gather}",right:"\\end{gather}"},{display:!0,left:"\\begin{CD}",right:"\\end{CD}"},{display:!1,left:"$",right:"$"},{display:!1,left:"\\(",right:"\\)"}],strict:!1},pangu:{enable:!0,selector:"article"},search:{algoliaAppID:"WFOR67TML1",algoliaIndex:"along",algoliaSearchKey:"ea1fe535f9a7ae353f3922489c829cc1",highlightTag:"em",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"algolia"},siteTime:"2018-12-18T16:15:22+08:00",version:"v0.3.20",watermark:{appendto:".wrapper>main",colspacing:30,content:'<img class="fixit-icon" src="/favicon-16x16.png" alt="FixIt logo" /> FixIt 主题',enable:!0,fontfamily:"inherit",fontsize:.85,height:21,opacity:.0125,rotate:15,rowspacing:60,width:150}}</script><script src=/js/theme.min.js defer></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","6272760969",{anonymize_ip:!0})</script><script src="https://www.googletagmanager.com/gtag/js?id=6272760969" async></script></body></html>

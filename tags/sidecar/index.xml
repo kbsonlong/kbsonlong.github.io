@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Sidecar - 标签 - 蜷缩的蜗牛</title><link>https://www.kbsonlong.com/tags/sidecar/</link><description>云原生时代运维</description><generator>Hugo 0.145.0 &amp; FixIt v0.3.20</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 11 Sep 2022 10:29:36 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/tags/sidecar/index.xml" rel="self" type="application/rss+xml"/><item><title>深入Istio系列-Sidecar自动注入</title><link>https://www.kbsonlong.com/posts/in-depth-istio-series-sidecar-automatic-injection/</link><pubDate>Sun, 11 Sep 2022 10:29:36 +0800</pubDate><guid>https://www.kbsonlong.com/posts/in-depth-istio-series-sidecar-automatic-injection/</guid><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><category domain="https://www.kbsonlong.com/categories/istio/">Istio</category><description>&lt;ul>
+&lt;li>
+&lt;p>Sidecar 自动注入机制是将 sidecar 代理自动添加到用户创建的 pod。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>它使用 MutatingWebhook 机制在 pod 创建的时候将 sidecar 的容器和卷添加到每个 pod 的模版里。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>用户可以通过 webhooks namespaceSelector 机制来限定需要启动自动注入的范围，也可以通过注解的方式针对每个 pod 来单独启用和禁用自动注入功能。&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>Sidecar 是否会被自动注入取决于下面 3 条配置和 2 条安全规则：&lt;/p></description></item></channel></rss>

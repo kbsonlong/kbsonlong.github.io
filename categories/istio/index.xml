@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Istio - 分类 - 蜷缩的蜗牛</title><link>https://www.kbsonlong.com/categories/istio/</link><description>云原生时代运维</description><generator>Hugo 0.145.0 &amp; FixIt v0.3.20</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Wed, 26 Jul 2023 10:33:16 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/categories/istio/index.xml" rel="self" type="application/rss+xml"/><item><title>istio常见问题</title><link>https://www.kbsonlong.com/posts/common-problem/</link><pubDate>Wed, 26 Jul 2023 10:33:16 +0800</pubDate><guid>https://www.kbsonlong.com/posts/common-problem/</guid><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><category domain="https://www.kbsonlong.com/categories/istio/">Istio</category><description>&lt;h2 class="heading-element" id="503-uf-tls">&lt;span>503 UF TLS&lt;/span>
+ &lt;a href="#503-uf-tls" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>&lt;code>upstream_reset_before_response_started{connection_failure,TLS_error:_268435703:SSL_routines:OPENSSL_internal:WRONG_VERSION_NUMBER}&lt;/code>&lt;/p></description></item><item><title>Istio故障排除常用指令</title><link>https://www.kbsonlong.com/posts/istio-failure-exclusion-common-instruction/</link><pubDate>Fri, 31 Mar 2023 21:13:29 +0800</pubDate><guid>https://www.kbsonlong.com/posts/istio-failure-exclusion-common-instruction/</guid><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><category domain="https://www.kbsonlong.com/categories/istio/">Istio</category><description>&lt;h2 class="heading-element" id="局部开启-access-日志">&lt;span>局部开启 Access 日志&lt;/span>
+ &lt;a href="#%e5%b1%80%e9%83%a8%e5%bc%80%e5%90%af-access-%e6%97%a5%e5%bf%97" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">export&lt;/span> &lt;span class="nv">NAMESPACE&lt;/span>&lt;span class="o">=&lt;/span>default
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">export&lt;/span> &lt;span class="nv">WORKLOAD&lt;/span>&lt;span class="o">=&lt;/span>details
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">cat &lt;span class="s">&amp;lt;&amp;lt; EOF | kubectl apply -f -
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s">apiVersion: networking.istio.io/v1alpha3
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s">kind: EnvoyFilter
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s">metadata:
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s"> name: enable-accesslog
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s"> namespace: ${NAMESPACE}
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s">spec:
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s"> configPatches:
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s"> - applyTo: NETWORK_FILTER
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s"> match:
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s"> context: ANY
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s"> listener:
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s"> filterChain:
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s"> filter:
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s"> name: envoy.filters.network.http_connection_manager
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s"> patch:
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s"> operation: MERGE
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s"> value:
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s"> typed_config:
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s"> &amp;#39;@type&amp;#39;: type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s"> access_log:
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s"> - name: envoy.access_loggers.file
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s"> typed_config:
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s"> &amp;#39;@type&amp;#39;: type.googleapis.com/envoy.extensions.access_loggers.file.v3.FileAccessLog
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s"> path: /dev/stdout
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s"> workloadSelector:
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s"> labels:
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s"> app: ${WORKLOAD}
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s">EOF&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 class="heading-element" id="修改-envoy-日志级别">&lt;span>修改 Envoy 日志级别&lt;/span>
+ &lt;a href="#%e4%bf%ae%e6%94%b9-envoy-%e6%97%a5%e5%bf%97%e7%ba%a7%e5%88%ab" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;h3 class="heading-element" id="修改所有-logger">&lt;span>修改所有 logger&lt;/span>
+ &lt;a href="#%e4%bf%ae%e6%94%b9%e6%89%80%e6%9c%89-logger" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">export&lt;/span> &lt;span class="nv">POD_NAME&lt;/span>&lt;span class="o">=&lt;/span>xxx
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kubectl &lt;span class="nb">exec&lt;/span> -ti -n &lt;span class="si">${&lt;/span>&lt;span class="nv">NAMESPACE&lt;/span>&lt;span class="si">}&lt;/span> &lt;span class="si">${&lt;/span>&lt;span class="nv">POD_NAME&lt;/span>&lt;span class="si">}&lt;/span> -c istio-proxy -- curl -X POST 127.0.0.1:15000/logging&lt;span class="se">\?&lt;/span>&lt;span class="nv">level&lt;/span>&lt;span class="o">=&lt;/span>info&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-text" data-lang="text">&lt;span class="line">&lt;span class="cl">active loggers:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> admin: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> alternate_protocols_cache: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> aws: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> assert: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> backtrace: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> cache_filter: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> client: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> config: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> connection: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> conn_handler: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> decompression: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> dns: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> dubbo: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> envoy_bug: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> ext_authz: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> rocketmq: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> file: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> filter: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> forward_proxy: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> grpc: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> hc: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> health_checker: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> http: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> http2: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> hystrix: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> init: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> io: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> jwt: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> kafka: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> key_value_store: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> lua: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> main: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> matcher: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> misc: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> mongo: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> quic: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> quic_stream: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> pool: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> rbac: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> redis: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> router: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> runtime: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> stats: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> secret: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> tap: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> testing: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> thrift: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> tracing: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> upstream: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> udp: info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> wasm: info&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 class="heading-element" id="修改其中一个-logger-级别">&lt;span>修改其中一个 logger 级别&lt;/span>
+ &lt;a href="#%e4%bf%ae%e6%94%b9%e5%85%b6%e4%b8%ad%e4%b8%80%e4%b8%aa-logger-%e7%ba%a7%e5%88%ab" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">kubectl &lt;span class="nb">exec&lt;/span> -ti -n &lt;span class="si">${&lt;/span>&lt;span class="nv">NAMESPACE&lt;/span>&lt;span class="si">}&lt;/span> &lt;span class="si">${&lt;/span>&lt;span class="nv">POD_NAME&lt;/span>&lt;span class="si">}&lt;/span> -c istio-proxy -- curl -X POST 127.0.0.1:15000/logging&lt;span class="se">\?&lt;/span>&lt;span class="nv">http&lt;/span>&lt;span class="o">=&lt;/span>trace&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-text" data-lang="text">&lt;span class="line">&lt;span class="cl">active loggers:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> health_checker: warning
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> http: trace
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> http2: warning
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> hystrix: warning
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">...&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">pod&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="sb">`&lt;/span>kubectl get pod -n istio-system -l &lt;span class="nv">app&lt;/span>&lt;span class="o">=&lt;/span>istiod -o name&lt;span class="sb">`&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kubectl &lt;span class="nb">exec&lt;/span> &lt;span class="nv">$pod&lt;/span> -n istio-system -- curl http://127.0.0.1:15014/debug/&lt;span class="nv">$@&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kubectl &lt;span class="nb">exec&lt;/span> &lt;span class="nv">$pod&lt;/span> -n istio-system -- curl http://127.0.0.1:15014/debug/endpointz
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kubectl &lt;span class="nb">exec&lt;/span> &lt;span class="nv">$pod&lt;/span> -n istio-system -- curl http://127.0.0.1:15014/debug/adsz
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kubectl &lt;span class="nb">exec&lt;/span> &lt;span class="nv">$pod&lt;/span> -n istio-system -- curl http://127.0.0.1:15014/debug/registryz
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kubectl &lt;span class="nb">exec&lt;/span> &lt;span class="nv">$pod&lt;/span> -n istio-system -- curl http://127.0.0.1:15014/debug/configz&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 class="heading-element" id="常用脚本">&lt;span>常用脚本&lt;/span>
+ &lt;a href="#%e5%b8%b8%e7%94%a8%e8%84%9a%e6%9c%ac" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>由于线上主机初始化没有安装 &lt;code>socat&lt;/code>, 在使用&lt;code>istioctl&lt;/code>是无法转发端口,所以直接导出 &lt;code>Envoy&lt;/code> 的配置，然后在使用 &lt;code>istioctl&lt;/code>操作。&lt;/p>
+&lt;h3 class="heading-element" id="导出config">&lt;span>导出config&lt;/span>
+ &lt;a href="#%e5%af%bc%e5%87%baconfig" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">namespace&lt;/span>&lt;span class="o">=&lt;/span>zsl-test
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">pod_name&lt;/span>&lt;span class="o">=&lt;/span>mydemo-my-demo-sgcanshu-4vb7b
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kubectl &lt;span class="nb">exec&lt;/span> -ti -n &lt;span class="si">${&lt;/span>&lt;span class="nv">namespace&lt;/span>&lt;span class="si">}&lt;/span> &lt;span class="si">${&lt;/span>&lt;span class="nv">pod_name&lt;/span>&lt;span class="si">}&lt;/span> -c istio-proxy -- curl http://127.0.0.1:15000/config_dump &amp;gt; config_dump.json&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 class="heading-element" id="导出clusterendpoint">&lt;span>导出cluster,(endpoint)&lt;/span>
+ &lt;a href="#%e5%af%bc%e5%87%baclusterendpoint" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">kubectl &lt;span class="nb">exec&lt;/span> -ti -n &lt;span class="si">${&lt;/span>&lt;span class="nv">namespace&lt;/span>&lt;span class="si">}&lt;/span> &lt;span class="si">${&lt;/span>&lt;span class="nv">pod_name&lt;/span>&lt;span class="si">}&lt;/span> -c istio-proxy -- curl &lt;span class="s2">&amp;#34;http://127.0.0.1:15000/clusters?format=json&amp;#34;&lt;/span> &amp;gt; envoy-clusters.json&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 class="heading-element" id="istioctl-分析文件">&lt;span>istioctl 分析文件&lt;/span>
+ &lt;a href="#istioctl-%e5%88%86%e6%9e%90%e6%96%87%e4%bb%b6" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">istioctl proxy-config listener -f config_dump.json --port &lt;span class="m">5000&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">istioctl proxy-config endpoints -f envoy-cluster.json --cluster &lt;span class="s2">&amp;#34;outbound|5000||helloworld.sample.svc.cluster.local&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 过滤存在多版本的Endpoint&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">istioctl proxy-config endpoints -f envoy-clusters.json &lt;span class="p">|&lt;/span> awk -F&lt;span class="s1">&amp;#39;[ ]+&amp;#39;&lt;/span> &lt;span class="s1">&amp;#39;$NF ~ /outbound\|[0-9]+\|[^|]+\|/ {print $0}&amp;#39;&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item><item><title>深入Istio系列 - Envoy配置分析</title><link>https://www.kbsonlong.com/posts/in--depth-istio-series--envoy-configuration-analysis/</link><pubDate>Tue, 28 Mar 2023 15:10:12 +0800</pubDate><guid>https://www.kbsonlong.com/posts/in--depth-istio-series--envoy-configuration-analysis/</guid><category domain="https://www.kbsonlong.com/categories/istio/">Istio</category><category domain="https://www.kbsonlong.com/categories/envoy/">Envoy</category><description>&lt;h2 class="heading-element" id="envoy-初始化配置文件">&lt;span>Envoy 初始化配置文件&lt;/span>
+ &lt;a href="#envoy-%e5%88%9d%e5%a7%8b%e5%8c%96%e9%85%8d%e7%bd%ae%e6%96%87%e4%bb%b6" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kubectl &lt;span class="nb">exec&lt;/span> -ti productpage-v1-d4f8dfd97-p8xlb -c istio-proxy -- cat /etc/istio/proxy/envoy-rev.json&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>配置文件结构&lt;/p>
+&lt;p>&lt;img loading="lazy" src='https://raw.githubusercontent.com/kbsonlong/notes_statics/master/images/20230328152709.png' alt="envoy-rev.json">&lt;/p></description></item><item><title>Istio Proxy Access日志</title><link>https://www.kbsonlong.com/posts/deepen-the-istio-series--istio-project/</link><pubDate>Fri, 17 Mar 2023 13:57:26 +0800</pubDate><guid>https://www.kbsonlong.com/posts/deepen-the-istio-series--istio-project/</guid><category domain="https://www.kbsonlong.com/categories/istio/">Istio</category><description>&lt;h2 class="heading-element" id="开启-access-日志">&lt;span>开启 Access 日志&lt;/span>
+ &lt;a href="#%e5%bc%80%e5%90%af-access-%e6%97%a5%e5%bf%97" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-yaml" data-lang="yaml">&lt;span class="line">&lt;span class="cl">&lt;span class="nt">apiVersion&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">v1&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nt">kind&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">ConfigMap&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nt">metadata&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">name&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">istio&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">namespace&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">istio-system&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nt">data&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">mesh&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">|&lt;/span>&lt;span class="sd">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> accessLogEncoding: JSON
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> accessLogFile: /dev/stdout
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> accessLogFormat: &amp;#34;&amp;#34;&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item><item><title>深入Istio系列-Pilot agent</title><link>https://www.kbsonlong.com/posts/deepen-the-istio-series-pilot-agent/</link><pubDate>Fri, 16 Sep 2022 17:25:59 +0800</pubDate><guid>https://www.kbsonlong.com/posts/deepen-the-istio-series-pilot-agent/</guid><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><category domain="https://www.kbsonlong.com/categories/istio/">Istio</category><description>&lt;h3 class="heading-element" id="查看监听端口和进程">&lt;span>查看监听端口和进程&lt;/span>
+ &lt;a href="#%e6%9f%a5%e7%9c%8b%e7%9b%91%e5%90%ac%e7%ab%af%e5%8f%a3%e5%92%8c%e8%bf%9b%e7%a8%8b" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">istio-proxy@istio-ingressgateway-799bbc9474-hf7kv:/$ ss -ntlp
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">State Recv-Q Send-Q Local Address:Port Peer Address:Port Process 
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">LISTEN &lt;span class="m">0&lt;/span> &lt;span class="m">128&lt;/span> 127.0.0.1:15000 0.0.0.0:* users:&lt;span class="o">((&lt;/span>&lt;span class="s2">&amp;#34;envoy&amp;#34;&lt;/span>,pid&lt;span class="o">=&lt;/span>16,fd&lt;span class="o">=&lt;/span>18&lt;span class="o">))&lt;/span> 
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">LISTEN &lt;span class="m">0&lt;/span> &lt;span class="m">128&lt;/span> 127.0.0.1:15004 0.0.0.0:* users:&lt;span class="o">((&lt;/span>&lt;span class="s2">&amp;#34;pilot-agent&amp;#34;&lt;/span>,pid&lt;span class="o">=&lt;/span>1,fd&lt;span class="o">=&lt;/span>15&lt;span class="o">))&lt;/span> 
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">LISTEN &lt;span class="m">0&lt;/span> &lt;span class="m">128&lt;/span> 0.0.0.0:15021 0.0.0.0:* users:&lt;span class="o">((&lt;/span>&lt;span class="s2">&amp;#34;envoy&amp;#34;&lt;/span>,pid&lt;span class="o">=&lt;/span>16,fd&lt;span class="o">=&lt;/span>24&lt;span class="o">))&lt;/span> 
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">LISTEN &lt;span class="m">0&lt;/span> &lt;span class="m">128&lt;/span> 0.0.0.0:15021 0.0.0.0:* users:&lt;span class="o">((&lt;/span>&lt;span class="s2">&amp;#34;envoy&amp;#34;&lt;/span>,pid&lt;span class="o">=&lt;/span>16,fd&lt;span class="o">=&lt;/span>23&lt;span class="o">))&lt;/span> 
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">LISTEN &lt;span class="m">0&lt;/span> &lt;span class="m">128&lt;/span> 0.0.0.0:8080 0.0.0.0:* users:&lt;span class="o">((&lt;/span>&lt;span class="s2">&amp;#34;envoy&amp;#34;&lt;/span>,pid&lt;span class="o">=&lt;/span>16,fd&lt;span class="o">=&lt;/span>40&lt;span class="o">))&lt;/span> 
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">LISTEN &lt;span class="m">0&lt;/span> &lt;span class="m">128&lt;/span> 0.0.0.0:8080 0.0.0.0:* users:&lt;span class="o">((&lt;/span>&lt;span class="s2">&amp;#34;envoy&amp;#34;&lt;/span>,pid&lt;span class="o">=&lt;/span>16,fd&lt;span class="o">=&lt;/span>39&lt;span class="o">))&lt;/span> 
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">LISTEN &lt;span class="m">0&lt;/span> &lt;span class="m">128&lt;/span> 0.0.0.0:15090 0.0.0.0:* users:&lt;span class="o">((&lt;/span>&lt;span class="s2">&amp;#34;envoy&amp;#34;&lt;/span>,pid&lt;span class="o">=&lt;/span>16,fd&lt;span class="o">=&lt;/span>22&lt;span class="o">))&lt;/span> 
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">LISTEN &lt;span class="m">0&lt;/span> &lt;span class="m">128&lt;/span> 0.0.0.0:15090 0.0.0.0:* users:&lt;span class="o">((&lt;/span>&lt;span class="s2">&amp;#34;envoy&amp;#34;&lt;/span>,pid&lt;span class="o">=&lt;/span>16,fd&lt;span class="o">=&lt;/span>21&lt;span class="o">))&lt;/span> 
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">LISTEN &lt;span class="m">0&lt;/span> &lt;span class="m">128&lt;/span> *:15020 *:* users:&lt;span class="o">((&lt;/span>&lt;span class="s2">&amp;#34;pilot-agent&amp;#34;&lt;/span>,pid&lt;span class="o">=&lt;/span>1,fd&lt;span class="o">=&lt;/span>12&lt;span class="o">))&lt;/span> 
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">istio-proxy@istio-ingressgateway-799bbc9474-hf7kv:/$ ps -ef &lt;span class="p">|&lt;/span>grep pilot-agent
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">istio-p+ &lt;span class="m">1&lt;/span> &lt;span class="m">0&lt;/span> &lt;span class="m">0&lt;/span> Sep14 ? 00:01:27 /usr/local/bin/pilot-agent proxy router --domain istio-system.svc.cluster.local --proxyLogLevel&lt;span class="o">=&lt;/span>warning --proxyComponentLogLevel&lt;span class="o">=&lt;/span>misc:error --log_output_level&lt;span class="o">=&lt;/span>default:info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">istio-p+ &lt;span class="m">74&lt;/span> &lt;span class="m">30&lt;/span> &lt;span class="m">0&lt;/span> 09:37 pts/0 00:00:00 grep --color&lt;span class="o">=&lt;/span>auto pilot-agent&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;figure>&lt;img src="https://raw.githubusercontent.com/kbsonlong/notes_statics/master/images/20220916173915.png">
+&lt;/figure></description></item><item><title>深入Istio系列-Sidecar自动注入</title><link>https://www.kbsonlong.com/posts/in-depth-istio-series-sidecar-automatic-injection/</link><pubDate>Sun, 11 Sep 2022 10:29:36 +0800</pubDate><guid>https://www.kbsonlong.com/posts/in-depth-istio-series-sidecar-automatic-injection/</guid><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><category domain="https://www.kbsonlong.com/categories/istio/">Istio</category><description>&lt;ul>
+&lt;li>
+&lt;p>Sidecar 自动注入机制是将 sidecar 代理自动添加到用户创建的 pod。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>它使用 MutatingWebhook 机制在 pod 创建的时候将 sidecar 的容器和卷添加到每个 pod 的模版里。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>用户可以通过 webhooks namespaceSelector 机制来限定需要启动自动注入的范围，也可以通过注解的方式针对每个 pod 来单独启用和禁用自动注入功能。&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>Sidecar 是否会被自动注入取决于下面 3 条配置和 2 条安全规则：&lt;/p></description></item></channel></rss>

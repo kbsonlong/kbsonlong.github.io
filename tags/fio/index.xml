@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Fio - 标签 - 蜷缩的蜗牛</title><link>https://www.kbsonlong.com/tags/fio/</link><description>云原生时代运维</description><generator>Hugo 0.145.0 &amp; FixIt v0.3.20</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 18 Oct 2022 10:01:33 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/tags/fio/index.xml" rel="self" type="application/rss+xml"/><item><title>FIO存储性能工具</title><link>https://www.kbsonlong.com/posts/fio-storage-performance-testing-tool/</link><pubDate>Tue, 18 Oct 2022 10:01:33 +0800</pubDate><guid>https://www.kbsonlong.com/posts/fio-storage-performance-testing-tool/</guid><category domain="https://www.kbsonlong.com/categories/%E6%80%A7%E8%83%BD/">性能</category><description>&lt;h3 class="heading-element" id="fio-介绍">&lt;span>FIO 介绍&lt;/span>
+ &lt;a href="#fio-%e4%bb%8b%e7%bb%8d" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;p>fio 是一个常见的用于测试磁盘 I/O 性能的工具，支持 19 种不同的 I/O 引擎，包括：sync, mmap, libaio, posixaio, SG v3, splice, null, network, syslet, guasi, solarisaio 等等。fio 一直在更新，最新的版本是 v3.19，它的官网是 fio。&lt;/p>
+&lt;h4 class="heading-element" id="常用参数">&lt;span>常用参数&lt;/span>
+ &lt;a href="#%e5%b8%b8%e7%94%a8%e5%8f%82%e6%95%b0" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h4>&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>常用参数&lt;/th>
+ &lt;th>参数说明&lt;/th>
+ &lt;th>参数取值(eg:)&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>name&lt;/td>
+ &lt;td>FIO 运行任务的名称 （可选）&lt;/td>
+ &lt;td>name=fio-test&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>description&lt;/td>
+ &lt;td>FIO 运行时的描述 （可选）&lt;/td>
+ &lt;td>description=&amp;ldquo;this is a test&amp;rdquo;&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>loops&lt;/td>
+ &lt;td>FIO 是否要循环执行该任务 （可选）&lt;/td>
+ &lt;td>loops=5&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>numjobs&lt;/td>
+ &lt;td>每个FIO 任务要开启多少数量的线程&lt;/td>
+ &lt;td>numjobs=8&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>runtime&lt;/td>
+ &lt;td>FIO 任务要执行的时间，单位为s&lt;/td>
+ &lt;td>runtime=300&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>time_based&lt;/td>
+ &lt;td>设置后，即便FIO写完了整个磁盘，也不会退出任务。当任务的时间满足runtime设置的时间后，才会退出任务&lt;/td>
+ &lt;td>time_based&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>startdelay&lt;/td>
+ &lt;td>延迟作业的启动时间。如果指定区间类型的数值，将从区间中选择一个随机值用来启动任务。单位为s&lt;/td>
+ &lt;td>startdelay=10&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>ramp_time&lt;/td>
+ &lt;td>FIO 在执行任务时预热的时间。可以使性能测试的结果更加精确可靠。单位为s&lt;/td>
+ &lt;td>ramp_time=60&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>filename&lt;/td>
+ &lt;td>测试文件的名称，通常为硬盘的盘符名称&lt;/td>
+ &lt;td>filename=/dev/sdd&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pre_read&lt;/td>
+ &lt;td>在FIO下发 I/O 前，文件会被加载到内存中。当 pre_read=true 时会清除掉磁盘中的元数据，默认为false&lt;/td>
+ &lt;td>pre_read=false&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>max_open_zones&lt;/td>
+ &lt;td>FIO 执行随机写入任务时，允许写入/读取的磁盘的区域的最大数量。&lt;/td>
+ &lt;td>max_open_zones=1000000&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>direct&lt;/td>
+ &lt;td>是否使用非缓冲I/O。默认为false&lt;/td>
+ &lt;td>direct=true&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>readwrite&lt;/td>
+ &lt;td>I/O 模式。read、write、randwrite、randread、randrw。混合读写时默认读写比例为50%:50%&lt;/td>
+ &lt;td>readwrite=read&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>percentage_random&lt;/td>
+ &lt;td>随机写入时包含多少的随机数据&lt;/td>
+ &lt;td>percentage_random=30%&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>blocksize&lt;/td>
+ &lt;td>读取/写入时块的大小&lt;/td>
+ &lt;td>bs=1M&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>zero_buffers&lt;/td>
+ &lt;td>初始化所有零的缓冲区。默认用随机数填充缓冲区&lt;/td>
+ &lt;td>zero_buffers&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>rwmixread&lt;/td>
+ &lt;td>混合模式中读取所占的百分比&lt;/td>
+ &lt;td>rwmixread=30&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>rwmixwrite&lt;/td>
+ &lt;td>混合模式中写入所占的百分比&lt;/td>
+ &lt;td>rwmixwrite=70&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>refill_buffers&lt;/td>
+ &lt;td>FIO 在每次提交时重新填充 I/O 缓冲区。使用 zero_buffers 参数后，该参数会失效&lt;/td>
+ &lt;td>refill_buffers&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>buffer_compress_percentage&lt;/td>
+ &lt;td>压缩 I/O 缓冲区的百分比，配合 refill_buffers 可以降低硬盘中相邻块中数据的一致性&lt;/td>
+ &lt;td>buffer_compress_percentage=70&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>size&lt;/td>
+ &lt;td>FIO 执行任务时要读取或写入的数据总和。size为百分比时将按照硬盘容量 * percentage&lt;/td>
+ &lt;td>size=300G or size=50%&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>ioengine&lt;/td>
+ &lt;td>FIO 任务工具时的引擎，sync, libaio, rdma&amp;hellip;&lt;/td>
+ &lt;td>ioengine=libaio&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>iodepth&lt;/td>
+ &lt;td>任务执行时的 I/O 队列深度的单元数。任务的线程数 = numjobs * iodepth&lt;/td>
+ &lt;td>iodepth=16&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table></description></item></channel></rss>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>技巧 - 标签 - 蜷缩的蜗牛</title><link>https://www.kbsonlong.com/tags/%E6%8A%80%E5%B7%A7/</link><description>云原生时代运维</description><generator>Hugo 0.145.0 &amp; FixIt v0.3.20</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 26 Mar 2024 11:56:32 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/tags/%E6%8A%80%E5%B7%A7/index.xml" rel="self" type="application/rss+xml"/><item><title>为什么HPA扩容比较慢</title><link>https://www.kbsonlong.com/posts/%E4%B8%BA%E4%BB%80%E4%B9%88hpa%E6%89%A9%E5%AE%B9%E6%AF%94%E8%BE%83%E6%85%A2/</link><pubDate>Fri, 24 Nov 2023 11:56:32 +0800</pubDate><guid>https://www.kbsonlong.com/posts/%E4%B8%BA%E4%BB%80%E4%B9%88hpa%E6%89%A9%E5%AE%B9%E6%AF%94%E8%BE%83%E6%85%A2/</guid><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><description>&lt;p>最近遇到业务活动期间遇到突发流量，由于pod资源使用飙升导致业务可用性降低的问题。这里面导致业务不可用的原因有很多，其中一个直接原因是流量来临时候资源使用飙升，而HPA没有及时的进行扩容。
+这篇文章就是针对这个问题进行研究，主要从这三方面进行阐述：&lt;/p>
+&lt;ol>
+&lt;li>扩容有多慢&lt;/li>
+&lt;li>为什么扩容慢&lt;/li>
+&lt;li>有什么解决方案&lt;/li>
+&lt;/ol></description></item></channel></rss>

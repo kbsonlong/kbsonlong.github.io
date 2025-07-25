@@ -1,0 +1,444 @@
+# HELP alloy_build_info A metric with a constant '1' value labeled by version, revision, branch, goversion from which alloy was built, and the goos and goarch for the build.
+# TYPE alloy_build_info gauge
+alloy_build_info{branch="HEAD",goarch="amd64",goos="linux",goversion="go1.24.4",revision="30277f7",tags="netgo,builtinassets,promtail_journal_enabled",version="v1.9.2"} 1
+# HELP alloy_component_controller_evaluating Tracks if the controller is currently in the middle of a graph evaluation
+# TYPE alloy_component_controller_evaluating gauge
+alloy_component_controller_evaluating{controller_id="",controller_path="/"} 0
+alloy_component_controller_evaluating{controller_id="remotecfg",controller_path="/"} 0
+# HELP alloy_component_controller_running_components Total number of running components.
+# TYPE alloy_component_controller_running_components gauge
+alloy_component_controller_running_components{controller_id="",controller_path="/",health_type="healthy"} 5
+# HELP alloy_component_dependencies_wait_seconds Time spent by components waiting to be evaluated after their dependency is updated.
+# TYPE alloy_component_dependencies_wait_seconds histogram
+alloy_component_dependencies_wait_seconds_bucket{controller_id="",controller_path="/",le="0.005"} 6
+alloy_component_dependencies_wait_seconds_bucket{controller_id="",controller_path="/",le="0.025"} 6
+alloy_component_dependencies_wait_seconds_bucket{controller_id="",controller_path="/",le="0.1"} 6
+alloy_component_dependencies_wait_seconds_bucket{controller_id="",controller_path="/",le="0.5"} 6
+alloy_component_dependencies_wait_seconds_bucket{controller_id="",controller_path="/",le="1"} 6
+alloy_component_dependencies_wait_seconds_bucket{controller_id="",controller_path="/",le="5"} 6
+alloy_component_dependencies_wait_seconds_bucket{controller_id="",controller_path="/",le="10"} 6
+alloy_component_dependencies_wait_seconds_bucket{controller_id="",controller_path="/",le="30"} 6
+alloy_component_dependencies_wait_seconds_bucket{controller_id="",controller_path="/",le="60"} 6
+alloy_component_dependencies_wait_seconds_bucket{controller_id="",controller_path="/",le="120"} 6
+alloy_component_dependencies_wait_seconds_bucket{controller_id="",controller_path="/",le="300"} 6
+alloy_component_dependencies_wait_seconds_bucket{controller_id="",controller_path="/",le="600"} 6
+alloy_component_dependencies_wait_seconds_bucket{controller_id="",controller_path="/",le="+Inf"} 6
+alloy_component_dependencies_wait_seconds_sum{controller_id="",controller_path="/"} 0.007167303
+alloy_component_dependencies_wait_seconds_count{controller_id="",controller_path="/"} 6
+alloy_component_dependencies_wait_seconds_bucket{controller_id="remotecfg",controller_path="/",le="0.005"} 0
+alloy_component_dependencies_wait_seconds_bucket{controller_id="remotecfg",controller_path="/",le="0.025"} 0
+alloy_component_dependencies_wait_seconds_bucket{controller_id="remotecfg",controller_path="/",le="0.1"} 0
+alloy_component_dependencies_wait_seconds_bucket{controller_id="remotecfg",controller_path="/",le="0.5"} 0
+alloy_component_dependencies_wait_seconds_bucket{controller_id="remotecfg",controller_path="/",le="1"} 0
+alloy_component_dependencies_wait_seconds_bucket{controller_id="remotecfg",controller_path="/",le="5"} 0
+alloy_component_dependencies_wait_seconds_bucket{controller_id="remotecfg",controller_path="/",le="10"} 0
+alloy_component_dependencies_wait_seconds_bucket{controller_id="remotecfg",controller_path="/",le="30"} 0
+alloy_component_dependencies_wait_seconds_bucket{controller_id="remotecfg",controller_path="/",le="60"} 0
+alloy_component_dependencies_wait_seconds_bucket{controller_id="remotecfg",controller_path="/",le="120"} 0
+alloy_component_dependencies_wait_seconds_bucket{controller_id="remotecfg",controller_path="/",le="300"} 0
+alloy_component_dependencies_wait_seconds_bucket{controller_id="remotecfg",controller_path="/",le="600"} 0
+alloy_component_dependencies_wait_seconds_bucket{controller_id="remotecfg",controller_path="/",le="+Inf"} 0
+alloy_component_dependencies_wait_seconds_sum{controller_id="remotecfg",controller_path="/"} 0
+alloy_component_dependencies_wait_seconds_count{controller_id="remotecfg",controller_path="/"} 0
+# HELP alloy_component_evaluation_queue_size Tracks the number of components waiting to be evaluated in the worker pool
+# TYPE alloy_component_evaluation_queue_size gauge
+alloy_component_evaluation_queue_size{controller_id="",controller_path="/"} 1
+alloy_component_evaluation_queue_size{controller_id="remotecfg",controller_path="/"} 0
+# HELP alloy_component_evaluation_seconds Time spent performing component evaluation
+# TYPE alloy_component_evaluation_seconds histogram
+alloy_component_evaluation_seconds_bucket{controller_id="",controller_path="/",le="0.005"} 6
+alloy_component_evaluation_seconds_bucket{controller_id="",controller_path="/",le="0.025"} 6
+alloy_component_evaluation_seconds_bucket{controller_id="",controller_path="/",le="0.1"} 6
+alloy_component_evaluation_seconds_bucket{controller_id="",controller_path="/",le="0.5"} 6
+alloy_component_evaluation_seconds_bucket{controller_id="",controller_path="/",le="1"} 6
+alloy_component_evaluation_seconds_bucket{controller_id="",controller_path="/",le="5"} 6
+alloy_component_evaluation_seconds_bucket{controller_id="",controller_path="/",le="10"} 6
+alloy_component_evaluation_seconds_bucket{controller_id="",controller_path="/",le="30"} 6
+alloy_component_evaluation_seconds_bucket{controller_id="",controller_path="/",le="60"} 6
+alloy_component_evaluation_seconds_bucket{controller_id="",controller_path="/",le="120"} 6
+alloy_component_evaluation_seconds_bucket{controller_id="",controller_path="/",le="300"} 6
+alloy_component_evaluation_seconds_bucket{controller_id="",controller_path="/",le="600"} 6
+alloy_component_evaluation_seconds_bucket{controller_id="",controller_path="/",le="+Inf"} 6
+alloy_component_evaluation_seconds_sum{controller_id="",controller_path="/"} 0.0017637769999999998
+alloy_component_evaluation_seconds_count{controller_id="",controller_path="/"} 6
+alloy_component_evaluation_seconds_bucket{controller_id="remotecfg",controller_path="/",le="0.005"} 0
+alloy_component_evaluation_seconds_bucket{controller_id="remotecfg",controller_path="/",le="0.025"} 0
+alloy_component_evaluation_seconds_bucket{controller_id="remotecfg",controller_path="/",le="0.1"} 0
+alloy_component_evaluation_seconds_bucket{controller_id="remotecfg",controller_path="/",le="0.5"} 0
+alloy_component_evaluation_seconds_bucket{controller_id="remotecfg",controller_path="/",le="1"} 0
+alloy_component_evaluation_seconds_bucket{controller_id="remotecfg",controller_path="/",le="5"} 0
+alloy_component_evaluation_seconds_bucket{controller_id="remotecfg",controller_path="/",le="10"} 0
+alloy_component_evaluation_seconds_bucket{controller_id="remotecfg",controller_path="/",le="30"} 0
+alloy_component_evaluation_seconds_bucket{controller_id="remotecfg",controller_path="/",le="60"} 0
+alloy_component_evaluation_seconds_bucket{controller_id="remotecfg",controller_path="/",le="120"} 0
+alloy_component_evaluation_seconds_bucket{controller_id="remotecfg",controller_path="/",le="300"} 0
+alloy_component_evaluation_seconds_bucket{controller_id="remotecfg",controller_path="/",le="600"} 0
+alloy_component_evaluation_seconds_bucket{controller_id="remotecfg",controller_path="/",le="+Inf"} 0
+alloy_component_evaluation_seconds_sum{controller_id="remotecfg",controller_path="/"} 0
+alloy_component_evaluation_seconds_count{controller_id="remotecfg",controller_path="/"} 0
+# HELP alloy_config_hash Hash of the currently active config file.
+# TYPE alloy_config_hash gauge
+alloy_config_hash{cluster_name="",sha256="c322599fb8d15a5fbf8deaeed64b5091a0c7a8ed3b0431645f4035607c4f684a"} 1
+# HELP alloy_config_last_load_success_timestamp_seconds Timestamp of the last successful configuration load.
+# TYPE alloy_config_last_load_success_timestamp_seconds gauge
+alloy_config_last_load_success_timestamp_seconds 1.7527266210548882e+09
+# HELP alloy_config_last_load_successful Config loaded successfully.
+# TYPE alloy_config_last_load_successful gauge
+alloy_config_last_load_successful 1
+# HELP alloy_config_load_failures_total Configuration load failures.
+# TYPE alloy_config_load_failures_total counter
+alloy_config_load_failures_total 0
+# HELP alloy_labelstore_global_ids_count Total number of global ids.
+# TYPE alloy_labelstore_global_ids_count gauge
+alloy_labelstore_global_ids_count 0
+# HELP alloy_labelstore_last_stale_check_timestamp Last time stale check was ran expressed in unix timestamp.
+# TYPE alloy_labelstore_last_stale_check_timestamp gauge
+alloy_labelstore_last_stale_check_timestamp 0
+# HELP alloy_resources_machine_rx_bytes_total Total bytes, host-wide, received across all network interfaces.
+# TYPE alloy_resources_machine_rx_bytes_total counter
+alloy_resources_machine_rx_bytes_total 1.89695853e+08
+# HELP alloy_resources_machine_tx_bytes_total Total bytes, host-wide, sent across all given network interface.
+# TYPE alloy_resources_machine_tx_bytes_total counter
+alloy_resources_machine_tx_bytes_total 4.6973466e+07
+# HELP alloy_resources_process_cpu_seconds_total Total user and system CPU time spent in seconds.
+# TYPE alloy_resources_process_cpu_seconds_total counter
+alloy_resources_process_cpu_seconds_total 24.44
+# HELP alloy_resources_process_resident_memory_bytes Current resident memory size in bytes.
+# TYPE alloy_resources_process_resident_memory_bytes gauge
+alloy_resources_process_resident_memory_bytes 2.4295424e+08
+# HELP alloy_resources_process_start_time_seconds Start time of the process since Unix epoch in seconds.
+# TYPE alloy_resources_process_start_time_seconds gauge
+alloy_resources_process_start_time_seconds 1.75272662e+09
+# HELP alloy_resources_process_virtual_memory_bytes Current virtual memory size in bytes.
+# TYPE alloy_resources_process_virtual_memory_bytes gauge
+alloy_resources_process_virtual_memory_bytes 3.280785408e+09
+# HELP deprecated_flags_inuse_total The number of deprecated flags currently set.
+# TYPE deprecated_flags_inuse_total counter
+deprecated_flags_inuse_total 0
+# HELP go_gc_duration_seconds A summary of the wall-time pause (stop-the-world) duration in garbage collection cycles.
+# TYPE go_gc_duration_seconds summary
+go_gc_duration_seconds{quantile="0"} 5.8313e-05
+go_gc_duration_seconds{quantile="0.25"} 0.000113197
+go_gc_duration_seconds{quantile="0.5"} 0.000153873
+go_gc_duration_seconds{quantile="0.75"} 0.000205232
+go_gc_duration_seconds{quantile="1"} 0.00031021
+go_gc_duration_seconds_sum 0.006824223
+go_gc_duration_seconds_count 43
+# HELP go_gc_gogc_percent Heap size target percentage configured by the user, otherwise 100. This value is set by the GOGC environment variable, and the runtime/debug.SetGCPercent function. Sourced from /gc/gogc:percent.
+# TYPE go_gc_gogc_percent gauge
+go_gc_gogc_percent 100
+# HELP go_gc_gomemlimit_bytes Go runtime memory limit configured by the user, otherwise math.MaxInt64. This value is set by the GOMEMLIMIT environment variable, and the runtime/debug.SetMemoryLimit function. Sourced from /gc/gomemlimit:bytes.
+# TYPE go_gc_gomemlimit_bytes gauge
+go_gc_gomemlimit_bytes 9.223372036854776e+18
+# HELP go_goroutines Number of goroutines that currently exist.
+# TYPE go_goroutines gauge
+go_goroutines 134
+# HELP go_info Information about the Go environment.
+# TYPE go_info gauge
+go_info{version="go1.24.4"} 1
+# HELP go_memstats_alloc_bytes Number of bytes allocated in heap and currently in use. Equals to /memory/classes/heap/objects:bytes.
+# TYPE go_memstats_alloc_bytes gauge
+go_memstats_alloc_bytes 4.1290736e+07
+# HELP go_memstats_alloc_bytes_total Total number of bytes allocated in heap until now, even if released already. Equals to /gc/heap/allocs:bytes.
+# TYPE go_memstats_alloc_bytes_total counter
+go_memstats_alloc_bytes_total 1.410476488e+09
+# HELP go_memstats_buck_hash_sys_bytes Number of bytes used by the profiling bucket hash table. Equals to /memory/classes/profiling/buckets:bytes.
+# TYPE go_memstats_buck_hash_sys_bytes gauge
+go_memstats_buck_hash_sys_bytes 1.586906e+06
+# HELP go_memstats_frees_total Total number of heap objects frees. Equals to /gc/heap/frees:objects + /gc/heap/tiny/allocs:objects.
+# TYPE go_memstats_frees_total counter
+go_memstats_frees_total 1.7170442e+07
+# HELP go_memstats_gc_sys_bytes Number of bytes used for garbage collection system metadata. Equals to /memory/classes/metadata/other:bytes.
+# TYPE go_memstats_gc_sys_bytes gauge
+go_memstats_gc_sys_bytes 4.736936e+06
+# HELP go_memstats_heap_alloc_bytes Number of heap bytes allocated and currently in use, same as go_memstats_alloc_bytes. Equals to /memory/classes/heap/objects:bytes.
+# TYPE go_memstats_heap_alloc_bytes gauge
+go_memstats_heap_alloc_bytes 4.1290736e+07
+# HELP go_memstats_heap_idle_bytes Number of heap bytes waiting to be used. Equals to /memory/classes/heap/released:bytes + /memory/classes/heap/free:bytes.
+# TYPE go_memstats_heap_idle_bytes gauge
+go_memstats_heap_idle_bytes 6.5298432e+07
+# HELP go_memstats_heap_inuse_bytes Number of heap bytes that are in use. Equals to /memory/classes/heap/objects:bytes + /memory/classes/heap/unused:bytes
+# TYPE go_memstats_heap_inuse_bytes gauge
+go_memstats_heap_inuse_bytes 5.4796288e+07
+# HELP go_memstats_heap_objects Number of currently allocated objects. Equals to /gc/heap/objects:objects.
+# TYPE go_memstats_heap_objects gauge
+go_memstats_heap_objects 278349
+# HELP go_memstats_heap_released_bytes Number of heap bytes released to OS. Equals to /memory/classes/heap/released:bytes.
+# TYPE go_memstats_heap_released_bytes gauge
+go_memstats_heap_released_bytes 4.8685056e+07
+# HELP go_memstats_heap_sys_bytes Number of heap bytes obtained from system. Equals to /memory/classes/heap/objects:bytes + /memory/classes/heap/unused:bytes + /memory/classes/heap/released:bytes + /memory/classes/heap/free:bytes.
+# TYPE go_memstats_heap_sys_bytes gauge
+go_memstats_heap_sys_bytes 1.2009472e+08
+# HELP go_memstats_last_gc_time_seconds Number of seconds since 1970 of last garbage collection.
+# TYPE go_memstats_last_gc_time_seconds gauge
+go_memstats_last_gc_time_seconds 1.7527267016709783e+09
+# HELP go_memstats_mallocs_total Total number of heap objects allocated, both live and gc-ed. Semantically a counter version for go_memstats_heap_objects gauge. Equals to /gc/heap/allocs:objects + /gc/heap/tiny/allocs:objects.
+# TYPE go_memstats_mallocs_total counter
+go_memstats_mallocs_total 1.7448791e+07
+# HELP go_memstats_mcache_inuse_bytes Number of bytes in use by mcache structures. Equals to /memory/classes/metadata/mcache/inuse:bytes.
+# TYPE go_memstats_mcache_inuse_bytes gauge
+go_memstats_mcache_inuse_bytes 19328
+# HELP go_memstats_mcache_sys_bytes Number of bytes used for mcache structures obtained from system. Equals to /memory/classes/metadata/mcache/inuse:bytes + /memory/classes/metadata/mcache/free:bytes.
+# TYPE go_memstats_mcache_sys_bytes gauge
+go_memstats_mcache_sys_bytes 31408
+# HELP go_memstats_mspan_inuse_bytes Number of bytes in use by mspan structures. Equals to /memory/classes/metadata/mspan/inuse:bytes.
+# TYPE go_memstats_mspan_inuse_bytes gauge
+go_memstats_mspan_inuse_bytes 846080
+# HELP go_memstats_mspan_sys_bytes Number of bytes used for mspan structures obtained from system. Equals to /memory/classes/metadata/mspan/inuse:bytes + /memory/classes/metadata/mspan/free:bytes.
+# TYPE go_memstats_mspan_sys_bytes gauge
+go_memstats_mspan_sys_bytes 1.56672e+06
+# HELP go_memstats_next_gc_bytes Number of heap bytes when next garbage collection will take place. Equals to /gc/heap/goal:bytes.
+# TYPE go_memstats_next_gc_bytes gauge
+go_memstats_next_gc_bytes 7.8701666e+07
+# HELP go_memstats_other_sys_bytes Number of bytes used for other system allocations. Equals to /memory/classes/other:bytes.
+# TYPE go_memstats_other_sys_bytes gauge
+go_memstats_other_sys_bytes 3.080166e+06
+# HELP go_memstats_stack_inuse_bytes Number of bytes obtained from system for stack allocator in non-CGO environments. Equals to /memory/classes/heap/stacks:bytes.
+# TYPE go_memstats_stack_inuse_bytes gauge
+go_memstats_stack_inuse_bytes 1.540096e+06
+# HELP go_memstats_stack_sys_bytes Number of bytes obtained from system for stack allocator. Equals to /memory/classes/heap/stacks:bytes + /memory/classes/os-stacks:bytes.
+# TYPE go_memstats_stack_sys_bytes gauge
+go_memstats_stack_sys_bytes 1.540096e+06
+# HELP go_memstats_sys_bytes Number of bytes obtained from system. Equals to /memory/classes/total:byte.
+# TYPE go_memstats_sys_bytes gauge
+go_memstats_sys_bytes 1.32636952e+08
+# HELP go_sched_gomaxprocs_threads The current runtime.GOMAXPROCS setting, or the number of operating system threads that can execute user-level Go code simultaneously. Sourced from /sched/gomaxprocs:threads.
+# TYPE go_sched_gomaxprocs_threads gauge
+go_sched_gomaxprocs_threads 16
+# HELP go_threads Number of OS threads created.
+# TYPE go_threads gauge
+go_threads 23
+# HELP http_client_duration_milliseconds Measures the duration of outbound HTTP requests.
+# TYPE http_client_duration_milliseconds histogram
+http_client_duration_milliseconds_bucket{component_id="otelcol.exporter.otlphttp.default",component_path="/",http_method="POST",http_status_code="200",net_peer_name="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com",net_peer_port="9481",otel_scope_name="go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp",otel_scope_version="0.60.0",le="0"} 0
+http_client_duration_milliseconds_bucket{component_id="otelcol.exporter.otlphttp.default",component_path="/",http_method="POST",http_status_code="200",net_peer_name="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com",net_peer_port="9481",otel_scope_name="go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp",otel_scope_version="0.60.0",le="5"} 0
+http_client_duration_milliseconds_bucket{component_id="otelcol.exporter.otlphttp.default",component_path="/",http_method="POST",http_status_code="200",net_peer_name="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com",net_peer_port="9481",otel_scope_name="go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp",otel_scope_version="0.60.0",le="10"} 0
+http_client_duration_milliseconds_bucket{component_id="otelcol.exporter.otlphttp.default",component_path="/",http_method="POST",http_status_code="200",net_peer_name="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com",net_peer_port="9481",otel_scope_name="go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp",otel_scope_version="0.60.0",le="25"} 3
+http_client_duration_milliseconds_bucket{component_id="otelcol.exporter.otlphttp.default",component_path="/",http_method="POST",http_status_code="200",net_peer_name="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com",net_peer_port="9481",otel_scope_name="go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp",otel_scope_version="0.60.0",le="50"} 20
+http_client_duration_milliseconds_bucket{component_id="otelcol.exporter.otlphttp.default",component_path="/",http_method="POST",http_status_code="200",net_peer_name="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com",net_peer_port="9481",otel_scope_name="go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp",otel_scope_version="0.60.0",le="75"} 25
+http_client_duration_milliseconds_bucket{component_id="otelcol.exporter.otlphttp.default",component_path="/",http_method="POST",http_status_code="200",net_peer_name="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com",net_peer_port="9481",otel_scope_name="go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp",otel_scope_version="0.60.0",le="100"} 35
+http_client_duration_milliseconds_bucket{component_id="otelcol.exporter.otlphttp.default",component_path="/",http_method="POST",http_status_code="200",net_peer_name="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com",net_peer_port="9481",otel_scope_name="go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp",otel_scope_version="0.60.0",le="250"} 87
+http_client_duration_milliseconds_bucket{component_id="otelcol.exporter.otlphttp.default",component_path="/",http_method="POST",http_status_code="200",net_peer_name="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com",net_peer_port="9481",otel_scope_name="go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp",otel_scope_version="0.60.0",le="500"} 87
+http_client_duration_milliseconds_bucket{component_id="otelcol.exporter.otlphttp.default",component_path="/",http_method="POST",http_status_code="200",net_peer_name="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com",net_peer_port="9481",otel_scope_name="go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp",otel_scope_version="0.60.0",le="750"} 87
+http_client_duration_milliseconds_bucket{component_id="otelcol.exporter.otlphttp.default",component_path="/",http_method="POST",http_status_code="200",net_peer_name="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com",net_peer_port="9481",otel_scope_name="go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp",otel_scope_version="0.60.0",le="1000"} 87
+http_client_duration_milliseconds_bucket{component_id="otelcol.exporter.otlphttp.default",component_path="/",http_method="POST",http_status_code="200",net_peer_name="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com",net_peer_port="9481",otel_scope_name="go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp",otel_scope_version="0.60.0",le="2500"} 87
+http_client_duration_milliseconds_bucket{component_id="otelcol.exporter.otlphttp.default",component_path="/",http_method="POST",http_status_code="200",net_peer_name="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com",net_peer_port="9481",otel_scope_name="go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp",otel_scope_version="0.60.0",le="5000"} 87
+http_client_duration_milliseconds_bucket{component_id="otelcol.exporter.otlphttp.default",component_path="/",http_method="POST",http_status_code="200",net_peer_name="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com",net_peer_port="9481",otel_scope_name="go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp",otel_scope_version="0.60.0",le="7500"} 87
+http_client_duration_milliseconds_bucket{component_id="otelcol.exporter.otlphttp.default",component_path="/",http_method="POST",http_status_code="200",net_peer_name="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com",net_peer_port="9481",otel_scope_name="go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp",otel_scope_version="0.60.0",le="10000"} 87
+http_client_duration_milliseconds_bucket{component_id="otelcol.exporter.otlphttp.default",component_path="/",http_method="POST",http_status_code="200",net_peer_name="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com",net_peer_port="9481",otel_scope_name="go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp",otel_scope_version="0.60.0",le="+Inf"} 87
+http_client_duration_milliseconds_sum{component_id="otelcol.exporter.otlphttp.default",component_path="/",http_method="POST",http_status_code="200",net_peer_name="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com",net_peer_port="9481",otel_scope_name="go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp",otel_scope_version="0.60.0"} 9916.504274000003
+http_client_duration_milliseconds_count{component_id="otelcol.exporter.otlphttp.default",component_path="/",http_method="POST",http_status_code="200",net_peer_name="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com",net_peer_port="9481",otel_scope_name="go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp",otel_scope_version="0.60.0"} 87
+# HELP http_client_request_size_bytes_total Measures the size of HTTP request messages.
+# TYPE http_client_request_size_bytes_total counter
+http_client_request_size_bytes_total{component_id="otelcol.exporter.otlphttp.default",component_path="/",http_method="POST",http_status_code="200",net_peer_name="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com",net_peer_port="9481",otel_scope_name="go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp",otel_scope_version="0.60.0"} 2.09639717e+08
+# HELP http_client_response_size_bytes_total Measures the size of HTTP response messages.
+# TYPE http_client_response_size_bytes_total counter
+http_client_response_size_bytes_total{component_id="otelcol.exporter.otlphttp.default",component_path="/",http_method="POST",http_status_code="200",net_peer_name="vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com",net_peer_port="9481",otel_scope_name="go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp",otel_scope_version="0.60.0"} 0
+# HELP loki_experimental_features_in_use_total The number of experimental features in use.
+# TYPE loki_experimental_features_in_use_total counter
+loki_experimental_features_in_use_total 0
+# HELP loki_logql_querystats_duplicates_total Total count of duplicates found while executing LogQL queries.
+# TYPE loki_logql_querystats_duplicates_total counter
+loki_logql_querystats_duplicates_total 0
+# HELP loki_logql_querystats_ingester_sent_lines_total Total count of lines sent from ingesters while executing LogQL queries.
+# TYPE loki_logql_querystats_ingester_sent_lines_total counter
+loki_logql_querystats_ingester_sent_lines_total 0
+# HELP loki_panic_total The total number of panic triggered
+# TYPE loki_panic_total counter
+loki_panic_total 0
+# HELP loki_querier_index_cache_corruptions_total The number of cache corruptions for the index cache.
+# TYPE loki_querier_index_cache_corruptions_total counter
+loki_querier_index_cache_corruptions_total 0
+# HELP loki_querier_index_cache_encode_errors_total The number of errors for the index cache while encoding the body.
+# TYPE loki_querier_index_cache_encode_errors_total counter
+loki_querier_index_cache_encode_errors_total 0
+# HELP loki_querier_index_cache_gets_total The number of gets for the index cache.
+# TYPE loki_querier_index_cache_gets_total counter
+loki_querier_index_cache_gets_total 0
+# HELP loki_querier_index_cache_hits_total The number of cache hits for the index cache.
+# TYPE loki_querier_index_cache_hits_total counter
+loki_querier_index_cache_hits_total 0
+# HELP loki_querier_index_cache_puts_total The number of puts for the index cache.
+# TYPE loki_querier_index_cache_puts_total counter
+loki_querier_index_cache_puts_total 0
+# HELP otel_scope_info Instrumentation Scope metadata
+# TYPE otel_scope_info gauge
+otel_scope_info{component_id="otelcol.exporter.otlphttp.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/exporter/exporterhelper",otel_scope_version=""} 1
+otel_scope_info{component_id="otelcol.exporter.otlphttp.default",component_path="/",otel_scope_name="go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp",otel_scope_version="0.60.0"} 1
+otel_scope_info{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version=""} 1
+# HELP otelcol_exporter_queue_capacity Fixed capacity of the retry queue (in batches) [alpha]
+# TYPE otelcol_exporter_queue_capacity gauge
+otelcol_exporter_queue_capacity{component_id="otelcol.exporter.otlphttp.default",component_path="/",data_type="logs",exporter="otlphttp/otelcol.exporter.otlphttp.default",otel_scope_name="go.opentelemetry.io/collector/exporter/exporterhelper",otel_scope_version=""} 1000
+otelcol_exporter_queue_capacity{component_id="otelcol.exporter.otlphttp.default",component_path="/",data_type="metrics",exporter="otlphttp/otelcol.exporter.otlphttp.default",otel_scope_name="go.opentelemetry.io/collector/exporter/exporterhelper",otel_scope_version=""} 1000
+otelcol_exporter_queue_capacity{component_id="otelcol.exporter.otlphttp.default",component_path="/",data_type="traces",exporter="otlphttp/otelcol.exporter.otlphttp.default",otel_scope_name="go.opentelemetry.io/collector/exporter/exporterhelper",otel_scope_version=""} 1000
+# HELP otelcol_exporter_queue_size Current size of the retry queue (in batches) [alpha]
+# TYPE otelcol_exporter_queue_size gauge
+otelcol_exporter_queue_size{component_id="otelcol.exporter.otlphttp.default",component_path="/",data_type="logs",exporter="otlphttp/otelcol.exporter.otlphttp.default",otel_scope_name="go.opentelemetry.io/collector/exporter/exporterhelper",otel_scope_version=""} 0
+otelcol_exporter_queue_size{component_id="otelcol.exporter.otlphttp.default",component_path="/",data_type="metrics",exporter="otlphttp/otelcol.exporter.otlphttp.default",otel_scope_name="go.opentelemetry.io/collector/exporter/exporterhelper",otel_scope_version=""} 0
+otelcol_exporter_queue_size{component_id="otelcol.exporter.otlphttp.default",component_path="/",data_type="traces",exporter="otlphttp/otelcol.exporter.otlphttp.default",otel_scope_name="go.opentelemetry.io/collector/exporter/exporterhelper",otel_scope_version=""} 0
+# HELP otelcol_exporter_send_failed_log_records_total Number of log records in failed attempts to send to destination. [alpha]
+# TYPE otelcol_exporter_send_failed_log_records_total counter
+otelcol_exporter_send_failed_log_records_total{component_id="otelcol.exporter.otlphttp.default",component_path="/",exporter="otlphttp/otelcol.exporter.otlphttp.default",otel_scope_name="go.opentelemetry.io/collector/exporter/exporterhelper",otel_scope_version=""} 0
+# HELP otelcol_exporter_sent_log_records_total Number of log record successfully sent to destination. [alpha]
+# TYPE otelcol_exporter_sent_log_records_total counter
+otelcol_exporter_sent_log_records_total{component_id="otelcol.exporter.otlphttp.default",component_path="/",exporter="otlphttp/otelcol.exporter.otlphttp.default",otel_scope_name="go.opentelemetry.io/collector/exporter/exporterhelper",otel_scope_version=""} 477974
+# HELP otelcol_processor_batch_batch_send_size Number of units in the batch
+# TYPE otelcol_processor_batch_batch_send_size histogram
+otelcol_processor_batch_batch_send_size_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="10"} 0
+otelcol_processor_batch_batch_send_size_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="25"} 0
+otelcol_processor_batch_batch_send_size_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="50"} 0
+otelcol_processor_batch_batch_send_size_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="75"} 0
+otelcol_processor_batch_batch_send_size_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="100"} 0
+otelcol_processor_batch_batch_send_size_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="250"} 0
+otelcol_processor_batch_batch_send_size_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="500"} 0
+otelcol_processor_batch_batch_send_size_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="750"} 0
+otelcol_processor_batch_batch_send_size_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="1000"} 0
+otelcol_processor_batch_batch_send_size_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="2000"} 13
+otelcol_processor_batch_batch_send_size_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="3000"} 24
+otelcol_processor_batch_batch_send_size_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="4000"} 24
+otelcol_processor_batch_batch_send_size_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="5000"} 27
+otelcol_processor_batch_batch_send_size_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="6000"} 48
+otelcol_processor_batch_batch_send_size_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="7000"} 60
+otelcol_processor_batch_batch_send_size_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="8000"} 61
+otelcol_processor_batch_batch_send_size_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="9000"} 87
+otelcol_processor_batch_batch_send_size_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="10000"} 87
+otelcol_processor_batch_batch_send_size_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="20000"} 87
+otelcol_processor_batch_batch_send_size_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="30000"} 87
+otelcol_processor_batch_batch_send_size_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="50000"} 87
+otelcol_processor_batch_batch_send_size_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="100000"} 87
+otelcol_processor_batch_batch_send_size_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="+Inf"} 87
+otelcol_processor_batch_batch_send_size_sum{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default"} 477974
+otelcol_processor_batch_batch_send_size_count{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default"} 87
+# HELP otelcol_processor_batch_batch_send_size_bytes Number of bytes in batch that was sent. Only available on detailed level.
+# TYPE otelcol_processor_batch_batch_send_size_bytes histogram
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="10"} 0
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="25"} 0
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="50"} 0
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="75"} 0
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="100"} 0
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="250"} 0
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="500"} 0
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="750"} 0
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="1000"} 0
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="2000"} 0
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="3000"} 0
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="4000"} 0
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="5000"} 0
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="6000"} 0
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="7000"} 0
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="8000"} 0
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="9000"} 0
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="10000"} 0
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="20000"} 0
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="30000"} 0
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="50000"} 0
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="100000"} 0
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="200000"} 0
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="300000"} 0
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="400000"} 0
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="500000"} 0
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="600000"} 1
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="700000"} 2
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="800000"} 5
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="900000"} 13
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="1e+06"} 14
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="2e+06"} 25
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="3e+06"} 59
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="4e+06"} 87
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="5e+06"} 87
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="6e+06"} 87
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="7e+06"} 87
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="8e+06"} 87
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="9e+06"} 87
+otelcol_processor_batch_batch_send_size_bytes_bucket{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default",le="+Inf"} 87
+otelcol_processor_batch_batch_send_size_bytes_sum{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default"} 2.09639717e+08
+otelcol_processor_batch_batch_send_size_bytes_count{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default"} 87
+# HELP otelcol_processor_batch_batch_size_trigger_send_total Number of times the batch was sent due to a size trigger
+# TYPE otelcol_processor_batch_batch_size_trigger_send_total counter
+otelcol_processor_batch_batch_size_trigger_send_total{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default"} 26
+# HELP otelcol_processor_batch_metadata_cardinality Number of distinct metadata value combinations being processed
+# TYPE otelcol_processor_batch_metadata_cardinality gauge
+otelcol_processor_batch_metadata_cardinality{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default"} 1
+# HELP otelcol_processor_batch_timeout_trigger_send_total Number of times the batch was sent due to a timeout trigger
+# TYPE otelcol_processor_batch_timeout_trigger_send_total counter
+otelcol_processor_batch_timeout_trigger_send_total{component_id="otelcol.processor.batch.default",component_path="/",otel_scope_name="go.opentelemetry.io/collector/processor/batchprocessor",otel_scope_version="",processor="batch/otelcol.processor.batch.default"} 61
+# HELP postgres_exporter_config_last_reload_success_timestamp_seconds Timestamp of the last successful configuration reload.
+# TYPE postgres_exporter_config_last_reload_success_timestamp_seconds gauge
+postgres_exporter_config_last_reload_success_timestamp_seconds 0
+# HELP postgres_exporter_config_last_reload_successful Postgres exporter config loaded successfully.
+# TYPE postgres_exporter_config_last_reload_successful gauge
+postgres_exporter_config_last_reload_successful 0
+# HELP process_cpu_seconds_total Total user and system CPU time spent in seconds.
+# TYPE process_cpu_seconds_total counter
+process_cpu_seconds_total 24.44
+# HELP process_max_fds Maximum number of open file descriptors.
+# TYPE process_max_fds gauge
+process_max_fds 262140
+# HELP process_network_receive_bytes_total Number of bytes received by the process over the network.
+# TYPE process_network_receive_bytes_total counter
+process_network_receive_bytes_total 1.83860992e+08
+# HELP process_network_transmit_bytes_total Number of bytes sent by the process over the network.
+# TYPE process_network_transmit_bytes_total counter
+process_network_transmit_bytes_total 4.4337858e+07
+# HELP process_open_fds Number of open file descriptors.
+# TYPE process_open_fds gauge
+process_open_fds 15
+# HELP process_resident_memory_bytes Resident memory size in bytes.
+# TYPE process_resident_memory_bytes gauge
+process_resident_memory_bytes 2.4295424e+08
+# HELP process_start_time_seconds Start time of the process since unix epoch in seconds.
+# TYPE process_start_time_seconds gauge
+process_start_time_seconds 1.75272662087e+09
+# HELP process_virtual_memory_bytes Virtual memory size in bytes.
+# TYPE process_virtual_memory_bytes gauge
+process_virtual_memory_bytes 3.280785408e+09
+# HELP process_virtual_memory_max_bytes Maximum amount of virtual memory available in bytes.
+# TYPE process_virtual_memory_max_bytes gauge
+process_virtual_memory_max_bytes 1.8446744073709552e+19
+# HELP prometheus_remote_storage_exemplars_in_total Exemplars in to remote storage, compare to exemplars out for queue managers.
+# TYPE prometheus_remote_storage_exemplars_in_total counter
+prometheus_remote_storage_exemplars_in_total 0
+# HELP prometheus_remote_storage_histograms_in_total HistogramSamples in to remote storage, compare to histograms out for queue managers.
+# TYPE prometheus_remote_storage_histograms_in_total counter
+prometheus_remote_storage_histograms_in_total 0
+# HELP prometheus_remote_storage_samples_in_total Samples in to remote storage, compare to samples out for queue managers.
+# TYPE prometheus_remote_storage_samples_in_total counter
+prometheus_remote_storage_samples_in_total 0
+# HELP prometheus_remote_storage_string_interner_zero_reference_releases_total The number of times release has been called for strings that are not interned.
+# TYPE prometheus_remote_storage_string_interner_zero_reference_releases_total counter
+prometheus_remote_storage_string_interner_zero_reference_releases_total 0
+# HELP prometheus_sd_kubernetes_events_total The number of Kubernetes events handled.
+# TYPE prometheus_sd_kubernetes_events_total counter
+prometheus_sd_kubernetes_events_total{component_id="discovery.kubernetes.pods",component_path="/",event="add",role="endpoints"} 0
+prometheus_sd_kubernetes_events_total{component_id="discovery.kubernetes.pods",component_path="/",event="add",role="endpointslice"} 0
+prometheus_sd_kubernetes_events_total{component_id="discovery.kubernetes.pods",component_path="/",event="add",role="ingress"} 0
+prometheus_sd_kubernetes_events_total{component_id="discovery.kubernetes.pods",component_path="/",event="add",role="node"} 0
+prometheus_sd_kubernetes_events_total{component_id="discovery.kubernetes.pods",component_path="/",event="add",role="pod"} 3
+prometheus_sd_kubernetes_events_total{component_id="discovery.kubernetes.pods",component_path="/",event="add",role="service"} 0
+prometheus_sd_kubernetes_events_total{component_id="discovery.kubernetes.pods",component_path="/",event="delete",role="endpoints"} 0
+prometheus_sd_kubernetes_events_total{component_id="discovery.kubernetes.pods",component_path="/",event="delete",role="endpointslice"} 0
+prometheus_sd_kubernetes_events_total{component_id="discovery.kubernetes.pods",component_path="/",event="delete",role="ingress"} 0
+prometheus_sd_kubernetes_events_total{component_id="discovery.kubernetes.pods",component_path="/",event="delete",role="node"} 0
+prometheus_sd_kubernetes_events_total{component_id="discovery.kubernetes.pods",component_path="/",event="delete",role="pod"} 0
+prometheus_sd_kubernetes_events_total{component_id="discovery.kubernetes.pods",component_path="/",event="delete",role="service"} 0
+prometheus_sd_kubernetes_events_total{component_id="discovery.kubernetes.pods",component_path="/",event="update",role="endpoints"} 0
+prometheus_sd_kubernetes_events_total{component_id="discovery.kubernetes.pods",component_path="/",event="update",role="endpointslice"} 0
+prometheus_sd_kubernetes_events_total{component_id="discovery.kubernetes.pods",component_path="/",event="update",role="ingress"} 0
+prometheus_sd_kubernetes_events_total{component_id="discovery.kubernetes.pods",component_path="/",event="update",role="node"} 0
+prometheus_sd_kubernetes_events_total{component_id="discovery.kubernetes.pods",component_path="/",event="update",role="pod"} 9
+prometheus_sd_kubernetes_events_total{component_id="discovery.kubernetes.pods",component_path="/",event="update",role="service"} 0
+# HELP prometheus_sd_kubernetes_failures_total The number of failed WATCH/LIST requests.
+# TYPE prometheus_sd_kubernetes_failures_total counter
+prometheus_sd_kubernetes_failures_total{component_id="discovery.kubernetes.pods",component_path="/"} 0
+# HELP prometheus_template_text_expansion_failures_total The total number of template text expansion failures.
+# TYPE prometheus_template_text_expansion_failures_total counter
+prometheus_template_text_expansion_failures_total 0
+# HELP prometheus_template_text_expansions_total The total number of template text expansions.
+# TYPE prometheus_template_text_expansions_total counter
+prometheus_template_text_expansions_total 0
+# HELP prometheus_treecache_watcher_goroutines The current number of watcher goroutines.
+# TYPE prometheus_treecache_watcher_goroutines gauge
+prometheus_treecache_watcher_goroutines 0
+# HELP prometheus_treecache_zookeeper_failures_total The total number of ZooKeeper failures.
+# TYPE prometheus_treecache_zookeeper_failures_total counter
+prometheus_treecache_zookeeper_failures_total 0

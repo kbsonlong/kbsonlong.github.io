@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Air - 标签 - 蜷缩的蜗牛</title><link>https://www.kbsonlong.com/tags/air/</link><description>云原生时代运维</description><generator>Hugo 0.145.0 &amp; FixIt v0.3.20</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 19 Sep 2022 15:30:40 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/tags/air/index.xml" rel="self" type="application/rss+xml"/><item><title>golang热加载工具</title><link>https://www.kbsonlong.com/posts/golang-hot-loading-tool/</link><pubDate>Mon, 19 Sep 2022 15:30:40 +0800</pubDate><guid>https://www.kbsonlong.com/posts/golang-hot-loading-tool/</guid><category domain="https://www.kbsonlong.com/categories/golang/">Golang</category><category domain="https://www.kbsonlong.com/categories/%E6%AF%8F%E6%97%A5%E4%B8%80%E5%BA%93/">每日一库</category><description>&lt;p>在用 Go 和 gin 框架开发网站时，gin 缺乏实时重载的功能是令人遗憾的,修改完代码之后经常需要 &lt;code>ctrl + c&lt;/code> 结束服务，重新运行 &lt;code>go run&lt;/code>,影响开发效率。
+&lt;a href="https://github.com/cosmtrek/air.git"target="_blank" rel="external nofollow noopener noreferrer">Air&lt;/a> 是为 Go 应用开发设计的另外一个热重载的命令行工具。只需在你的项目根目录下输入 air，然后把它放在一边，专注于你的代码即可&lt;/p>
+&lt;h2 class="heading-element" id="安装">&lt;span>安装&lt;/span>
+ &lt;a href="#%e5%ae%89%e8%a3%85" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># binary 文件会是在 $(go env GOPATH)/bin/air&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">curl -sSfL https://raw.githubusercontent.com/cosmtrek/air/master/install.sh &lt;span class="p">|&lt;/span> sh -s -- -b &lt;span class="k">$(&lt;/span>go env GOPATH&lt;span class="k">)&lt;/span>/bin
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 或者把它安装在 ./bin/ 路径下&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">curl -sSfL https://raw.githubusercontent.com/cosmtrek/air/master/install.sh &lt;span class="p">|&lt;/span> sh -s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">air -v&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item></channel></rss>

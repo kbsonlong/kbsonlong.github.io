@@ -1,0 +1,349 @@
+# Alloy 高级配置 - 使用 OpenTelemetry Collector 协议输出
+# 启用实时调试
+livedebugging {
+  enabled = true
+}
+
+# Kubernetes Pod 服务发现
+discovery.kubernetes "pods" {
+  role = "pod"
+  
+  selectors {
+    role  = "pod"
+    label = "project-name"
+  }
+  
+  # 可选：指定命名空间
+  # namespaces {
+  #   names = ["default", "monitoring"]
+  # }
+}
+
+# 从 Kubernetes Pod 收集日志
+loki.source.kubernetes "pods" {
+  targets    = discovery.kubernetes.pods.targets
+  forward_to = [otelcol.receiver.loki.default.receiver]
+  
+  # 从 Kubernetes 标签中动态提取 labels
+  labels = {
+    job = "kubernetes-pods",
+    cluster = "production-cluster",
+    source = "alloy",
+    # 从 Pod 标签中提取
+    namespace = "__meta_kubernetes_namespace",
+    pod = "__meta_kubernetes_pod_name",
+    container = "__meta_kubernetes_pod_container_name",
+    app = "__meta_kubernetes_pod_label_app",
+    project_name = "__meta_kubernetes_pod_label_project_name",
+    version = "__meta_kubernetes_pod_label_version",
+    deploy_type = "__meta_kubernetes_pod_label_deploy_type",
+    # 从 Pod 注解中提取
+    deployment_revision = "__meta_kubernetes_pod_annotation_deployment_kubernetes_io_revision",
+  }
+}
+
+# OpenTelemetry Collector Loki 接收器 - 接收 Loki 格式日志并转换为 OTEL 格式
+otelcol.receiver.loki "default" {
+  output {
+    logs = [otelcol.processor.k8sattributes.default.input]
+  }
+}
+
+# Kubernetes 属性处理器 - 自动添加 Kubernetes 元数据
+otelcol.processor.k8sattributes "default" {
+  # 认证方式
+  auth_type = "serviceAccount"
+  
+  # 等待元数据同步
+  wait_for_metadata = true
+  wait_for_metadata_timeout = "30s"
+  
+  # 提取标签配置
+  extract {
+    # 提取Pod标签
+    label {
+      tag_name = "project-name"
+      key = "project-name"
+      from = "pod"
+    }
+    
+    label {
+      tag_name = "version"
+      key = "version"
+      from = "pod"
+    }
+    
+    label {
+      tag_name = "deploy-type"
+      key = "deploy-type"
+      from = "pod"
+    }
+    
+    label {
+      tag_name = "app"
+      key = "app"
+      from = "pod"
+    }
+    
+    # 提取Pod注解
+    annotation {
+      tag_name = "deployment.name"
+      key = "deployment.kubernetes.io/revision"
+      from = "pod"
+    }
+  }
+  
+  # Pod关联规则
+  pod_association {
+    source {
+      from = "resource_attribute"
+      name = "k8s.pod.ip"
+    }
+  }
+  
+  pod_association {
+    source {
+      from = "resource_attribute"
+      name = "k8s.pod.name"
+    }
+  }
+  
+  pod_association {
+    source {
+      from = "resource_attribute"
+      name = "k8s.namespace.name"
+    }
+  }
+  
+  output {
+    logs = [otelcol.processor.attributes.add_service_labels.input]
+  }
+}
+
+# 属性映射处理器 - 将K8s标签映射到OpenTelemetry语义约定
+otelcol.processor.attributes "add_service_labels" {
+  # 从project-name标签设置service.name
+  action {
+    key = "service.name"
+    action = "insert"
+    from_attribute = "k8s.pod.labels.project-name"
+  }
+  
+  # 如果project-name不存在，使用app标签
+  action {
+    key = "service.name"
+    action = "update"
+    from_attribute = "k8s.pod.labels.app"
+  }
+  
+  # 如果都不存在，使用默认值
+  action {
+    key = "service.name"
+    action = "update"
+    value = "unknown-service"
+  }
+  
+  # 从version标签设置service.version
+  action {
+    key = "service.version"
+    action = "insert"
+    from_attribute = "k8s.pod.labels.version"
+  }
+  
+  # 如果version不存在，设置默认值
+  action {
+    key = "service.version"
+    action = "update"
+    value = "1.0.0"
+  }
+  
+  # 从deploy-type标签设置deployment.environment
+  action {
+    key = "deployment.environment"
+    action = "insert"
+    from_attribute = "k8s.pod.labels.deploy-type"
+  }
+  
+  # 如果environment不存在，设置默认值
+  action {
+    key = "deployment.environment"
+    action = "update"
+    value = "production"
+  }
+  
+  output {
+    logs = [otelcol.processor.resource.default.input]
+  }
+}
+
+# 资源处理器 - 处理资源属性
+otelcol.processor.resource "default" {
+  attributes {
+    key    = "cluster.name"
+    action = "insert"
+    value  = "kubernetes-cluster"
+  }
+  
+  attributes {
+    key    = "k8s.cluster.name"
+    action = "insert"
+    value  = "production-cluster"
+  }
+  
+  output {
+    logs = [otelcol.processor.batch.default.input]
+  }
+}
+
+# 批处理器 - 优化传输效率
+otelcol.processor.batch "default" {
+  # 批处理配置
+  send_batch_size      = 1024
+  send_batch_max_size  = 2048
+  timeout              = "5s"
+  
+  output {
+    logs = [otelcol.exporter.otlphttp.default.input]
+  }
+}
+
+# OpenTelemetry Collector OTLP HTTP 导出器
+otelcol.exporter.otlphttp "default" {
+  client {
+    endpoint = "http://vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com:9481/insert/opentelemetry"
+    
+    # 超时配置
+    timeout = "30s"
+    
+    # 重试配置
+    retry_on_failure {
+      enabled         = true
+      initial_interval = "1s"
+      max_interval    = "30s"
+      max_elapsed_time = "300s"
+    }
+    
+    # 发送队列配置
+    sending_queue {
+      enabled      = true
+      num_consumers = 10
+      queue_size   = 1000
+    }
+    
+    # 压缩配置
+    compression = "gzip"
+    
+    # 可选：添加认证头
+    # headers = {
+    #   "Authorization" = "Bearer your-token"
+    #   "X-Custom-Header" = "custom-value"
+    # }
+    
+    # 可选：TLS 配置
+    # tls {
+    #   insecure = true
+    #   # ca_file = "/path/to/ca.crt"
+    #   # cert_file = "/path/to/client.crt"
+    #   # key_file = "/path/to/client.key"
+    # }
+  }
+}
+
+# Kubernetes Pod 服务发现 - 用于 Prometheus 指标采集
+discovery.kubernetes "prometheus_pods" {
+  role = "pod"
+  
+  # 选择带有 prometheus.vm/scrape: true 注解的 Pod
+  selectors {
+    role = "pod"
+    label = "prometheus.vm/scrape=true"
+  }
+}
+
+# Prometheus 指标采集 - 采集带有注解的 Pod
+prometheus.scrape "annotated_pods" {
+  targets = discovery.kubernetes.prometheus_pods.targets
+  
+  # 使用注解中的端口信息
+  relabel_configs {
+    source_labels = ["__meta_kubernetes_pod_annotation_prometheus_vm_port"]
+    target_label  = "__address__"
+    regex         = "(.+)"
+    replacement   = "${1}:${__meta_kubernetes_pod_annotation_prometheus_vm_port}"
+  }
+  
+  # 设置 metrics 路径
+  relabel_configs {
+    source_labels = ["__meta_kubernetes_pod_annotation_prometheus_vm_path"]
+    target_label  = "__metrics_path__"
+    regex         = "(.+)"
+    replacement   = "${1}"
+  }
+  
+  # 如果没有指定路径，使用默认的 /metrics
+  relabel_configs {
+    source_labels = ["__metrics_path__"]
+    target_label  = "__metrics_path__"
+    regex         = "^$"
+    replacement   = "/metrics"
+  }
+  
+  # 添加 Pod 相关标签
+  relabel_configs {
+    source_labels = ["__meta_kubernetes_pod_name"]
+    target_label  = "pod"
+  }
+  
+  relabel_configs {
+    source_labels = ["__meta_kubernetes_namespace"]
+    target_label  = "namespace"
+  }
+  
+  relabel_configs {
+    source_labels = ["__meta_kubernetes_pod_label_app"]
+    target_label  = "app"
+  }
+  
+  # 设置采集间隔
+  scrape_interval = "15s"
+  scrape_timeout  = "10s"
+  
+  forward_to = [prometheus.remote_write.default.receiver]
+}
+
+# Alloy 自身指标导出
+prometheus.exporter.self "alloy_metrics" {}
+
+prometheus.scrape "alloy_metrics" {
+  targets    = prometheus.exporter.self.alloy_metrics.targets
+  forward_to = [prometheus.remote_write.default.receiver]
+}
+
+# Prometheus 远程写入
+prometheus.remote_write "default" {
+  endpoint {
+    url = "http://prometheus.monitoring.svc.cluster.local:9090/api/v1/write"
+    
+    # 写入配置优化
+    queue_config {
+      capacity             = 10000
+      max_shards          = 200
+      min_shards          = 1
+      max_samples_per_send = 2000
+      batch_send_deadline  = "5s"
+      min_backoff         = "30ms"
+      max_backoff         = "100ms"
+    }
+    
+    # 可选：认证配置
+    # basic_auth {
+    #   username = "admin"
+    #   password = "password"
+    # }
+    
+    # 可选：TLS 配置
+    # tls_config {
+    #   insecure_skip_verify = true
+    # }
+  }
+}

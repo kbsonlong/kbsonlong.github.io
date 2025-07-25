@@ -1,0 +1,61 @@
+# Alloy 配置 - 使用 OpenTelemetry Collector 协议输出
+# 启用实时调试
+livedebugging {
+  enabled = true
+}
+
+# Kubernetes Pod 服务发现
+discovery.kubernetes "pods" {
+  role = "pod"
+  
+  selectors {
+    role  = "pod"
+    label = "app"
+  }
+}
+
+# 从 Kubernetes Pod 收集日志
+loki.source.kubernetes "pods" {
+  targets    = discovery.kubernetes.pods.targets
+  forward_to = [otelcol.receiver.loki.default.receiver]
+}
+
+# OpenTelemetry Collector Loki 接收器 - 接收 Loki 格式日志并转换为 OTEL 格式
+otelcol.receiver.loki "default" {
+  output {
+    logs = [otelcol.processor.batch.default.input]
+  }
+}
+
+# OpenTelemetry Collector 批处理器
+otelcol.processor.batch "default" {
+  send_batch_size     = 1024
+  send_batch_max_size = 2048
+  timeout             = "5s"
+  
+  output {
+    logs = [otelcol.exporter.otlphttp.default.input]
+  }
+}
+
+# OpenTelemetry Collector OTLP HTTP 导出器
+otelcol.exporter.otlphttp "default" {
+  client {
+    endpoint = "http://vlog-victoria-logs-cluster-vlinsert.monitoring.svc.kubeyy.com:9481/insert/opentelemetry/v1/logs"
+    timeout  = "30s"
+    compression = "gzip"
+    
+    retry_on_failure {
+      enabled         = true
+      initial_interval = "1s"
+      max_interval    = "30s"
+      max_elapsed_time = "300s"
+    }
+    
+    sending_queue {
+      enabled      = true
+      num_consumers = 10
+      queue_size   = 1000
+    }
+  }
+}

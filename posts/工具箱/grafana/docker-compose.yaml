@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  postgres-primary:
+    image: postgres:15
+    network_mode: host
+    environment:
+      POSTGRES_DB: grafana
+      POSTGRES_USER: grafana
+      POSTGRES_PASSWORD: grafana
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./pg_hba.conf:/etc/postgresql/pg_hba.conf
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf -c hba_file=/etc/postgresql/pg_hba.conf
+  grafana:
+    image: grafana/grafana:12.0.2
+    container_name: grafana
+    network_mode: host
+    environment:
+      - GF_DATABASE_TYPE=postgres
+      - GF_DATABASE_HOST=localhost:5432
+      - GF_DATABASE_NAME=grafana
+      - GF_DATABASE_USER=grafana
+      - GF_DATABASE_PASSWORD=grafana
+      - GF_DATABASE_SSL_MODE=disable
+      # Feature Toggles for Kubernetes integration
+      - GF_FEATURE_TOGGLES_ENABLE=provisioning,kubernetesClientDashboardsFolders,kubernetesDashboards,grafanaAPIServerEnsureKubectlAccess
+    depends_on:
+      - postgres-primary
+volumes:
+  postgres_data:
+    driver: local

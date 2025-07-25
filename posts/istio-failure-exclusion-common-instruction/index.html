@@ -1,0 +1,1171 @@
+<!doctype html><html itemscope itemtype=http://schema.org/WebPage lang=zh-CN><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=2"><meta name=robots content="noodp"><title>Istio故障排除常用指令 - 蜷缩的蜗牛</title><meta name=author content="kbsonlong">
+<meta name=description content="局部开启 Access 日志 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 export NAMESPACE=default export WORKLOAD=details cat << EOF | kubectl apply -f - apiVersion: networking.istio.io/v1alpha3 kind: EnvoyFilter metadata: name: enable-accesslog namespace: ${NAMESPACE} spec: configPatches: - applyTo: NETWORK_FILTER match: context: ANY listener: filterChain: filter: name: envoy.filters.network.http_connection_manager patch: operation: MERGE value: typed_config: '@type': type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager access_log: - name: envoy.access_loggers.file typed_config: '@type': type.googleapis.com/envoy.extensions.access_loggers.file.v3.FileAccessLog path: /dev/stdout workloadSelector: labels: app: ${WORKLOAD} EOF 修改 Envoy 日志级别 修改所有 logger 1 2 export POD_NAME=xxx kubectl exec -ti -n ${NAMESPACE} ${POD_NAME} -c istio-proxy -- curl -X POST 127.0.0.1:15000/logging\?level=info 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 active loggers: admin: info alternate_protocols_cache: info aws: info assert: info backtrace: info cache_filter: info client: info config: info connection: info conn_handler: info decompression: info dns: info dubbo: info envoy_bug: info ext_authz: info rocketmq: info file: info filter: info forward_proxy: info grpc: info hc: info health_checker: info http: info http2: info hystrix: info init: info io: info jwt: info kafka: info key_value_store: info lua: info main: info matcher: info misc: info mongo: info quic: info quic_stream: info pool: info rbac: info redis: info router: info runtime: info stats: info secret: info tap: info testing: info thrift: info tracing: info upstream: info udp: info wasm: info 修改其中一个 logger 级别 1 kubectl exec -ti -n ${NAMESPACE} ${POD_NAME} -c istio-proxy -- curl -X POST 127.0.0.1:15000/logging\?http=trace 1 2 3 4 5 6 7 8 9 active loggers: ... ... health_checker: warning http: trace http2: warning hystrix: warning ... ... 1 2 3 4 5 6 pod=`kubectl get pod -n istio-system -l app=istiod -o name` kubectl exec $pod -n istio-system -- curl http://127.0.0.1:15014/debug/$@ kubectl exec $pod -n istio-system -- curl http://127.0.0.1:15014/debug/endpointz kubectl exec $pod -n istio-system -- curl http://127.0.0.1:15014/debug/adsz kubectl exec $pod -n istio-system -- curl http://127.0.0.1:15014/debug/registryz kubectl exec $pod -n istio-system -- curl http://127.0.0.1:15014/debug/configz 常用脚本 由于线上主机初始化没有安装 socat, 在使用istioctl是无法转发端口,所以直接导出 Envoy 的配置，然后在使用 istioctl操作。
+导出config 1 2 3 4 namespace=zsl-test pod_name=mydemo-my-demo-sgcanshu-4vb7b kubectl exec -ti -n ${namespace} ${pod_name} -c istio-proxy -- curl http://127.0.0.1:15000/config_dump > config_dump.json 导出cluster,(endpoint) 1 kubectl exec -ti -n ${namespace} ${pod_name} -c istio-proxy -- curl &#34;http://127.0.0.1:15000/clusters?format=json&#34; > envoy-clusters.json istioctl 分析文件 1 2 3 4 istioctl proxy-config listener -f config_dump.json --port 5000 istioctl proxy-config endpoints -f envoy-cluster.json --cluster &#34;outbound|5000||helloworld.sample.svc.cluster.local&#34; # 过滤存在多版本的Endpoint istioctl proxy-config endpoints -f envoy-clusters.json | awk -F'[ ]+' '$NF ~ /outbound\|[0-9]+\|[^|]+\|/ {print $0}' "><meta name=keywords content='faq,istio'><meta itemprop=name content="Istio故障排除常用指令"><meta itemprop=description content="局部开启 Access 日志 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 export NAMESPACE=default export WORKLOAD=details cat << EOF | kubectl apply -f - apiVersion: networking.istio.io/v1alpha3 kind: EnvoyFilter metadata: name: enable-accesslog namespace: ${NAMESPACE} spec: configPatches: - applyTo: NETWORK_FILTER match: context: ANY listener: filterChain: filter: name: envoy.filters.network.http_connection_manager patch: operation: MERGE value: typed_config: '@type': type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager access_log: - name: envoy.access_loggers.file typed_config: '@type': type.googleapis.com/envoy.extensions.access_loggers.file.v3.FileAccessLog path: /dev/stdout workloadSelector: labels: app: ${WORKLOAD} EOF 修改 Envoy 日志级别 修改所有 logger 1 2 export POD_NAME=xxx kubectl exec -ti -n ${NAMESPACE} ${POD_NAME} -c istio-proxy -- curl -X POST 127.0.0.1:15000/logging\?level=info 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 active loggers: admin: info alternate_protocols_cache: info aws: info assert: info backtrace: info cache_filter: info client: info config: info connection: info conn_handler: info decompression: info dns: info dubbo: info envoy_bug: info ext_authz: info rocketmq: info file: info filter: info forward_proxy: info grpc: info hc: info health_checker: info http: info http2: info hystrix: info init: info io: info jwt: info kafka: info key_value_store: info lua: info main: info matcher: info misc: info mongo: info quic: info quic_stream: info pool: info rbac: info redis: info router: info runtime: info stats: info secret: info tap: info testing: info thrift: info tracing: info upstream: info udp: info wasm: info 修改其中一个 logger 级别 1 kubectl exec -ti -n ${NAMESPACE} ${POD_NAME} -c istio-proxy -- curl -X POST 127.0.0.1:15000/logging\?http=trace 1 2 3 4 5 6 7 8 9 active loggers: ... ... health_checker: warning http: trace http2: warning hystrix: warning ... ... 1 2 3 4 5 6 pod=`kubectl get pod -n istio-system -l app=istiod -o name` kubectl exec $pod -n istio-system -- curl http://127.0.0.1:15014/debug/$@ kubectl exec $pod -n istio-system -- curl http://127.0.0.1:15014/debug/endpointz kubectl exec $pod -n istio-system -- curl http://127.0.0.1:15014/debug/adsz kubectl exec $pod -n istio-system -- curl http://127.0.0.1:15014/debug/registryz kubectl exec $pod -n istio-system -- curl http://127.0.0.1:15014/debug/configz 常用脚本 由于线上主机初始化没有安装 socat, 在使用istioctl是无法转发端口,所以直接导出 Envoy 的配置，然后在使用 istioctl操作。
+导出config 1 2 3 4 namespace=zsl-test pod_name=mydemo-my-demo-sgcanshu-4vb7b kubectl exec -ti -n ${namespace} ${pod_name} -c istio-proxy -- curl http://127.0.0.1:15000/config_dump > config_dump.json 导出cluster,(endpoint) 1 kubectl exec -ti -n ${namespace} ${pod_name} -c istio-proxy -- curl &#34;http://127.0.0.1:15000/clusters?format=json&#34; > envoy-clusters.json istioctl 分析文件 1 2 3 4 istioctl proxy-config listener -f config_dump.json --port 5000 istioctl proxy-config endpoints -f envoy-cluster.json --cluster &#34;outbound|5000||helloworld.sample.svc.cluster.local&#34; # 过滤存在多版本的Endpoint istioctl proxy-config endpoints -f envoy-clusters.json | awk -F'[ ]+' '$NF ~ /outbound\|[0-9]+\|[^|]+\|/ {print $0}'"><meta itemprop=datePublished content="2023-03-31T21:13:29+08:00"><meta itemprop=dateModified content="2023-03-31T21:13:29+08:00"><meta itemprop=wordCount content="3941"><meta itemprop=image content="https://www.kbsonlong.com/logo_transparent.png"><meta itemprop=keywords content="Faq,Istio"><meta property="og:url" content="https://www.kbsonlong.com/posts/istio-failure-exclusion-common-instruction/"><meta property="og:site_name" content="蜷缩的蜗牛"><meta property="og:title" content="Istio故障排除常用指令"><meta property="og:description" content="局部开启 Access 日志 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 export NAMESPACE=default export WORKLOAD=details cat << EOF | kubectl apply -f - apiVersion: networking.istio.io/v1alpha3 kind: EnvoyFilter metadata: name: enable-accesslog namespace: ${NAMESPACE} spec: configPatches: - applyTo: NETWORK_FILTER match: context: ANY listener: filterChain: filter: name: envoy.filters.network.http_connection_manager patch: operation: MERGE value: typed_config: '@type': type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager access_log: - name: envoy.access_loggers.file typed_config: '@type': type.googleapis.com/envoy.extensions.access_loggers.file.v3.FileAccessLog path: /dev/stdout workloadSelector: labels: app: ${WORKLOAD} EOF 修改 Envoy 日志级别 修改所有 logger 1 2 export POD_NAME=xxx kubectl exec -ti -n ${NAMESPACE} ${POD_NAME} -c istio-proxy -- curl -X POST 127.0.0.1:15000/logging\?level=info 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 active loggers: admin: info alternate_protocols_cache: info aws: info assert: info backtrace: info cache_filter: info client: info config: info connection: info conn_handler: info decompression: info dns: info dubbo: info envoy_bug: info ext_authz: info rocketmq: info file: info filter: info forward_proxy: info grpc: info hc: info health_checker: info http: info http2: info hystrix: info init: info io: info jwt: info kafka: info key_value_store: info lua: info main: info matcher: info misc: info mongo: info quic: info quic_stream: info pool: info rbac: info redis: info router: info runtime: info stats: info secret: info tap: info testing: info thrift: info tracing: info upstream: info udp: info wasm: info 修改其中一个 logger 级别 1 kubectl exec -ti -n ${NAMESPACE} ${POD_NAME} -c istio-proxy -- curl -X POST 127.0.0.1:15000/logging\?http=trace 1 2 3 4 5 6 7 8 9 active loggers: ... ... health_checker: warning http: trace http2: warning hystrix: warning ... ... 1 2 3 4 5 6 pod=`kubectl get pod -n istio-system -l app=istiod -o name` kubectl exec $pod -n istio-system -- curl http://127.0.0.1:15014/debug/$@ kubectl exec $pod -n istio-system -- curl http://127.0.0.1:15014/debug/endpointz kubectl exec $pod -n istio-system -- curl http://127.0.0.1:15014/debug/adsz kubectl exec $pod -n istio-system -- curl http://127.0.0.1:15014/debug/registryz kubectl exec $pod -n istio-system -- curl http://127.0.0.1:15014/debug/configz 常用脚本 由于线上主机初始化没有安装 socat, 在使用istioctl是无法转发端口,所以直接导出 Envoy 的配置，然后在使用 istioctl操作。
+导出config 1 2 3 4 namespace=zsl-test pod_name=mydemo-my-demo-sgcanshu-4vb7b kubectl exec -ti -n ${namespace} ${pod_name} -c istio-proxy -- curl http://127.0.0.1:15000/config_dump > config_dump.json 导出cluster,(endpoint) 1 kubectl exec -ti -n ${namespace} ${pod_name} -c istio-proxy -- curl &#34;http://127.0.0.1:15000/clusters?format=json&#34; > envoy-clusters.json istioctl 分析文件 1 2 3 4 istioctl proxy-config listener -f config_dump.json --port 5000 istioctl proxy-config endpoints -f envoy-cluster.json --cluster &#34;outbound|5000||helloworld.sample.svc.cluster.local&#34; # 过滤存在多版本的Endpoint istioctl proxy-config endpoints -f envoy-clusters.json | awk -F'[ ]+' '$NF ~ /outbound\|[0-9]+\|[^|]+\|/ {print $0}'"><meta property="og:locale" content="zh_CN"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2023-03-31T21:13:29+08:00"><meta property="article:modified_time" content="2023-03-31T21:13:29+08:00"><meta property="article:tag" content="Faq"><meta property="article:tag" content="Istio"><meta property="og:image" content="https://www.kbsonlong.com/logo_transparent.png"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://www.kbsonlong.com/logo_transparent.png"><meta name=twitter:title content="Istio故障排除常用指令"><meta name=twitter:description content="局部开启 Access 日志 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 export NAMESPACE=default export WORKLOAD=details cat << EOF | kubectl apply -f - apiVersion: networking.istio.io/v1alpha3 kind: EnvoyFilter metadata: name: enable-accesslog namespace: ${NAMESPACE} spec: configPatches: - applyTo: NETWORK_FILTER match: context: ANY listener: filterChain: filter: name: envoy.filters.network.http_connection_manager patch: operation: MERGE value: typed_config: '@type': type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager access_log: - name: envoy.access_loggers.file typed_config: '@type': type.googleapis.com/envoy.extensions.access_loggers.file.v3.FileAccessLog path: /dev/stdout workloadSelector: labels: app: ${WORKLOAD} EOF 修改 Envoy 日志级别 修改所有 logger 1 2 export POD_NAME=xxx kubectl exec -ti -n ${NAMESPACE} ${POD_NAME} -c istio-proxy -- curl -X POST 127.0.0.1:15000/logging\?level=info 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 active loggers: admin: info alternate_protocols_cache: info aws: info assert: info backtrace: info cache_filter: info client: info config: info connection: info conn_handler: info decompression: info dns: info dubbo: info envoy_bug: info ext_authz: info rocketmq: info file: info filter: info forward_proxy: info grpc: info hc: info health_checker: info http: info http2: info hystrix: info init: info io: info jwt: info kafka: info key_value_store: info lua: info main: info matcher: info misc: info mongo: info quic: info quic_stream: info pool: info rbac: info redis: info router: info runtime: info stats: info secret: info tap: info testing: info thrift: info tracing: info upstream: info udp: info wasm: info 修改其中一个 logger 级别 1 kubectl exec -ti -n ${NAMESPACE} ${POD_NAME} -c istio-proxy -- curl -X POST 127.0.0.1:15000/logging\?http=trace 1 2 3 4 5 6 7 8 9 active loggers: ... ... health_checker: warning http: trace http2: warning hystrix: warning ... ... 1 2 3 4 5 6 pod=`kubectl get pod -n istio-system -l app=istiod -o name` kubectl exec $pod -n istio-system -- curl http://127.0.0.1:15014/debug/$@ kubectl exec $pod -n istio-system -- curl http://127.0.0.1:15014/debug/endpointz kubectl exec $pod -n istio-system -- curl http://127.0.0.1:15014/debug/adsz kubectl exec $pod -n istio-system -- curl http://127.0.0.1:15014/debug/registryz kubectl exec $pod -n istio-system -- curl http://127.0.0.1:15014/debug/configz 常用脚本 由于线上主机初始化没有安装 socat, 在使用istioctl是无法转发端口,所以直接导出 Envoy 的配置，然后在使用 istioctl操作。
+导出config 1 2 3 4 namespace=zsl-test pod_name=mydemo-my-demo-sgcanshu-4vb7b kubectl exec -ti -n ${namespace} ${pod_name} -c istio-proxy -- curl http://127.0.0.1:15000/config_dump > config_dump.json 导出cluster,(endpoint) 1 kubectl exec -ti -n ${namespace} ${pod_name} -c istio-proxy -- curl &#34;http://127.0.0.1:15000/clusters?format=json&#34; > envoy-clusters.json istioctl 分析文件 1 2 3 4 istioctl proxy-config listener -f config_dump.json --port 5000 istioctl proxy-config endpoints -f envoy-cluster.json --cluster &#34;outbound|5000||helloworld.sample.svc.cluster.local&#34; # 过滤存在多版本的Endpoint istioctl proxy-config endpoints -f envoy-clusters.json | awk -F'[ ]+' '$NF ~ /outbound\|[0-9]+\|[^|]+\|/ {print $0}'"><meta name=application-name content="FixIt"><meta name=apple-mobile-web-app-title content="FixIt"><meta name=theme-color data-light=#ffffff data-dark=#252627 content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical type=text/html href=https://www.kbsonlong.com/posts/istio-failure-exclusion-common-instruction/ title="Istio故障排除常用指令 - 蜷缩的蜗牛"><link rel=prev type=text/html href=https://www.kbsonlong.com/posts/argo-workflow-of-argo/ title=Argo全家桶之argo-workflow><link rel=next type=text/html href=https://www.kbsonlong.com/posts/source-code-analysis-of-the-implementation-principles-of-kubernetes-scheduler-core-schedu/ title="源码分析 kubernetes scheduler 核心调度器的实现原理"><link rel=alternate type=text/markdown href=https://www.kbsonlong.com/posts/istio-failure-exclusion-common-instruction/index.md title="Istio故障排除常用指令 - 蜷缩的蜗牛"><link rel=stylesheet href=/css/style.min.css><link rel=preload href=/lib/fontawesome-free/all.min.css as=style onload='this.removeAttribute("onload"),this.rel="stylesheet"'><noscript><link rel=stylesheet href=/lib/fontawesome-free/all.min.css></noscript><link rel=preload href=/lib/animate/animate.min.css as=style onload='this.removeAttribute("onload"),this.rel="stylesheet"'><noscript><link rel=stylesheet href=/lib/animate/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Istio故障排除常用指令","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/www.kbsonlong.com\/posts\/istio-failure-exclusion-common-instruction\/"},"genre":"posts","keywords":"faq, istio","wordcount":3941,"url":"https:\/\/www.kbsonlong.com\/posts\/istio-failure-exclusion-common-instruction\/","datePublished":"2023-03-31T21:13:29+08:00","dateModified":"2023-03-31T21:13:29+08:00","license":"This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"kbsonlong"},"description":""}</script><script src=/js/head/color-scheme.min.js></script></head><body data-header-desktop=sticky data-header-mobile=auto><div class=wrapper data-page-style=normal><header class="desktop animate__faster" id=header-desktop><div class=header-wrapper data-github-corner=right><div class=header-title><a href=/ title=蜷缩的蜗牛><img class=logo src=/logo_transparent.png alt=蜷缩的蜗牛 height=32 width=32><span class=header-title-text>蜷缩的蜗牛</span></a><span class=header-subtitle></span></div><nav><ul class=menu><li class=menu-item><a class=menu-link href=/posts/><i class='fa-solid fa-archive fa-fw fa-sm'></i> 文章</a></li><li class=menu-item><a class=menu-link href=/categories/><i class='fa-solid fa-th fa-fw fa-sm'></i> 分类</a></li><li class=menu-item><a class=menu-link href=/tags/><i class='fa-solid fa-tags fa-fw fa-sm'></i> 标签</a></li><li class=menu-item><a class=menu-link href=/friends/ title=友情链接><i class='fa-solid fa-users fa-fw fa-sm'></i> 友链</a></li><li class=menu-item><a class=menu-link href=/about/><i class='fa-solid fa-info-circle fa-fw fa-sm'></i> 关于</a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=https://github.com/kbsonlong/ title=GitHub rel="noopener noreferrer" target=_blank><i class='fa-brands fa-github fa-fw'></i></a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=/messages/><i class='fa-solid fa-messages'></i> 留言板</a></li><li class=menu-item><a class=menu-link href=/messages/ title=留言板>留言板</a></li><li class="menu-item delimiter"></li><li class="menu-item search" id=search-desktop><input type=text placeholder=搜索文章标题或内容…… id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fa-solid fa-search fa-fw" aria-hidden=true></i>
+</a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fa-solid fa-times-circle fa-fw" aria-hidden=true></i>
+</a><span class="search-button search-loading" id=search-loading-desktop><i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></li><li class="menu-item theme-switch" title=切换主题><i class="fa-solid fa-adjust fa-fw" aria-hidden=true></i></li><li class="menu-item language-switch"><span role=button aria-label=选择语言 title=选择语言><i class="fa-solid fa-language fa-fw" aria-hidden=true></i></span><ul class=sub-menu><li class=menu-item>没有更多翻译</li></ul></li></ul></nav></div></header><header class="mobile animate__faster" id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title=蜷缩的蜗牛><img class=logo src=/logo_transparent.png alt=蜷缩的蜗牛 height=26 width=26><span class=header-title-text>蜷缩的蜗牛</span></a><span class=header-subtitle></span></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><nav><ul class=menu id=menu-mobile><li class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容…… id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fa-solid fa-search fa-fw" aria-hidden=true></i>
+</a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fa-solid fa-times-circle fa-fw" aria-hidden=true></i>
+</a><span class="search-button search-loading" id=search-loading-mobile><i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></li><li class=menu-item><a class=menu-link href=/posts/><i class='fa-solid fa-archive fa-fw fa-sm'></i> 文章</a></li><li class=menu-item><a class=menu-link href=/categories/><i class='fa-solid fa-th fa-fw fa-sm'></i> 分类</a></li><li class=menu-item><a class=menu-link href=/tags/><i class='fa-solid fa-tags fa-fw fa-sm'></i> 标签</a></li><li class=menu-item><a class=menu-link href=/friends/ title=友情链接><i class='fa-solid fa-users fa-fw fa-sm'></i> 友链</a></li><li class=menu-item><a class=menu-link href=/about/><i class='fa-solid fa-info-circle fa-fw fa-sm'></i> 关于</a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=https://github.com/kbsonlong/ title=GitHub rel="noopener noreferrer" target=_blank><i class='fa-brands fa-github fa-fw'></i></a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=/messages/><i class='fa-solid fa-messages'></i> 留言板</a></li><li class=menu-item><a class=menu-link href=/messages/ title=留言板>留言板</a></li><li class="menu-item menu-system"><span class="menu-system-item theme-switch" title=切换主题><i class="fa-solid fa-adjust fa-fw" aria-hidden=true></i></span><span class="menu-system-item language-switch">
+<span role=button aria-label=选择语言 title=选择语言>简体中文<i class="dropdown-icon fa-solid fa-chevron-down" aria-hidden=true></i></span>
+<select class=language-select onchange="location=this.value"><option disabled>没有更多翻译</option></select></span></li></ul></nav></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=container><aside class="aside-collection animate__animated animate__fadeIn animate__faster" aria-label=合集></aside><article class="page single"><div class=header><h1 class="single-title animate__animated animate__flipInX"><span>Istio故障排除常用指令</span></h1></div><div class=post-meta><div class=post-meta-line><span class=post-author><span class=author><i class="fa-solid fa-user-circle" aria-hidden=true></i>
+kbsonlong</span></span><span class=post-included-in>&nbsp;收录于 <a href=/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/ class=post-category title="分类 - 云原生"><i class="fa-regular fa-folder fa-fw" aria-hidden=true></i> 云原生</a>&ensp;<a href=/categories/istio/ class=post-category title="分类 - Istio"><i class="fa-regular fa-folder fa-fw" aria-hidden=true></i> Istio</a></span></div><div class=post-meta-line><span title="发布于 2023-03-31 21:13:29"><i class="fa-solid fa-calendar-days fa-fw me-1" aria-hidden=true></i><time datetime=2023-03-31>2023-03-31</time></span>&nbsp;<span title="3941 字"><i class="fa-solid fa-pencil-alt fa-fw me-1" aria-hidden=true></i>约 4000 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw me-1" aria-hidden=true></i>预计阅读 8 分钟</span>&nbsp;<span id=busuanzi_container_page_pv class="busuanzi_visitors comment-visitors" data-flag-title=Istio故障排除常用指令><i class="fa-regular fa-eye fa-fw me-1" aria-hidden=true></i><span id=busuanzi_value_page_pv>-</span>&nbsp;次阅读
+</span>&nbsp;</div></div><div class="details toc" id=toc-static data-kept=false><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fa-solid fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#局部开启-access-日志>局部开启 Access 日志</a></li><li><a href=#修改-envoy-日志级别>修改 Envoy 日志级别</a><ul><li><a href=#修改所有-logger>修改所有 logger</a></li><li><a href=#修改其中一个-logger-级别>修改其中一个 logger 级别</a></li></ul></li><li><a href=#常用脚本>常用脚本</a><ul><li><a href=#导出config>导出config</a></li><li><a href=#导出clusterendpoint>导出cluster,(endpoint)</a></li><li><a href=#istioctl-分析文件>istioctl 分析文件</a></li><li><a href=#查看sidecar证书是否正常>查看sidecar证书是否正常</a></li><li><a href=#查看sidecar证书详细>查看sidecar证书详细</a></li></ul></li><li><a href=#常用yaml>常用yaml</a><ul><li><a href=#sidecar-注入相关>sidecar 注入相关</a></li><li><a href=#proxy-相关>proxy 相关</a><ul><li><a href=#自定义资源>自定义资源</a></li><li><a href=#自定义日志级别>自定义日志级别</a></li><li><a href=#不劫持部分流量>不劫持部分流量</a><ul><li><a href=#不劫持指定出站端口443流量>不劫持指定出站端口(443)流量</a></li><li><a href=#劫持指定出站80端口>劫持指定出站(80)端口</a></li><li><a href=#劫持指定出站网段>劫持指定出站网段</a></li></ul></li></ul></li><li><a href=#全局禁用mtls>全局禁用<code>mTLS</code></a></li></ul></li><li><a href=#常用envoyfilter>常用<code>EnvoyFilter</code></a><ul><li><a href=#请求限制>请求限制</a></li><li><a href=#保留请求头大小写>保留请求头大小写</a></li><li><a href=#删除header>删除header</a></li></ul></li><li><a href=#高频使用链接>高频使用链接</a><ul><li><a href=#istio-相关>istio 相关</a></li><li><a href=#envoy-相关>Envoy 相关</a></li></ul></li></ul></nav></div></div><div class=content id=content><h2 class=heading-element id=局部开启-access-日志><span>局部开启 Access 日志</span>
+<a href=#%e5%b1%80%e9%83%a8%e5%bc%80%e5%90%af-access-%e6%97%a5%e5%bf%97 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=nb>export</span> <span class=nv>NAMESPACE</span><span class=o>=</span>default
+</span></span><span class=line><span class=cl><span class=nb>export</span> <span class=nv>WORKLOAD</span><span class=o>=</span>details
+</span></span><span class=line><span class=cl>cat <span class=s>&lt;&lt; EOF | kubectl apply -f -
+</span></span></span><span class=line><span class=cl><span class=s>apiVersion: networking.istio.io/v1alpha3
+</span></span></span><span class=line><span class=cl><span class=s>kind: EnvoyFilter
+</span></span></span><span class=line><span class=cl><span class=s>metadata:
+</span></span></span><span class=line><span class=cl><span class=s>  name: enable-accesslog
+</span></span></span><span class=line><span class=cl><span class=s>  namespace: ${NAMESPACE}
+</span></span></span><span class=line><span class=cl><span class=s>spec:
+</span></span></span><span class=line><span class=cl><span class=s>  configPatches:
+</span></span></span><span class=line><span class=cl><span class=s>  - applyTo: NETWORK_FILTER
+</span></span></span><span class=line><span class=cl><span class=s>    match:
+</span></span></span><span class=line><span class=cl><span class=s>      context: ANY
+</span></span></span><span class=line><span class=cl><span class=s>      listener:
+</span></span></span><span class=line><span class=cl><span class=s>        filterChain:
+</span></span></span><span class=line><span class=cl><span class=s>          filter:
+</span></span></span><span class=line><span class=cl><span class=s>            name: envoy.filters.network.http_connection_manager
+</span></span></span><span class=line><span class=cl><span class=s>    patch:
+</span></span></span><span class=line><span class=cl><span class=s>      operation: MERGE
+</span></span></span><span class=line><span class=cl><span class=s>      value:
+</span></span></span><span class=line><span class=cl><span class=s>        typed_config:
+</span></span></span><span class=line><span class=cl><span class=s>          &#39;@type&#39;: type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+</span></span></span><span class=line><span class=cl><span class=s>          access_log:
+</span></span></span><span class=line><span class=cl><span class=s>          - name: envoy.access_loggers.file
+</span></span></span><span class=line><span class=cl><span class=s>            typed_config:
+</span></span></span><span class=line><span class=cl><span class=s>              &#39;@type&#39;: type.googleapis.com/envoy.extensions.access_loggers.file.v3.FileAccessLog
+</span></span></span><span class=line><span class=cl><span class=s>              path: /dev/stdout
+</span></span></span><span class=line><span class=cl><span class=s>  workloadSelector:
+</span></span></span><span class=line><span class=cl><span class=s>    labels:
+</span></span></span><span class=line><span class=cl><span class=s>      app: ${WORKLOAD}
+</span></span></span><span class=line><span class=cl><span class=s>EOF</span></span></span></code></pre></td></tr></table></div></div><h2 class=heading-element id=修改-envoy-日志级别><span>修改 Envoy 日志级别</span>
+<a href=#%e4%bf%ae%e6%94%b9-envoy-%e6%97%a5%e5%bf%97%e7%ba%a7%e5%88%ab class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><h3 class=heading-element id=修改所有-logger><span>修改所有 logger</span>
+<a href=#%e4%bf%ae%e6%94%b9%e6%89%80%e6%9c%89-logger class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=nb>export</span> <span class=nv>POD_NAME</span><span class=o>=</span>xxx
+</span></span><span class=line><span class=cl>kubectl <span class=nb>exec</span> -ti -n <span class=si>${</span><span class=nv>NAMESPACE</span><span class=si>}</span> <span class=si>${</span><span class=nv>POD_NAME</span><span class=si>}</span> -c istio-proxy -- curl -X POST 127.0.0.1:15000/logging<span class=se>\?</span><span class=nv>level</span><span class=o>=</span>info</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>active loggers:
+</span></span><span class=line><span class=cl>  admin: info
+</span></span><span class=line><span class=cl>  alternate_protocols_cache: info
+</span></span><span class=line><span class=cl>  aws: info
+</span></span><span class=line><span class=cl>  assert: info
+</span></span><span class=line><span class=cl>  backtrace: info
+</span></span><span class=line><span class=cl>  cache_filter: info
+</span></span><span class=line><span class=cl>  client: info
+</span></span><span class=line><span class=cl>  config: info
+</span></span><span class=line><span class=cl>  connection: info
+</span></span><span class=line><span class=cl>  conn_handler: info
+</span></span><span class=line><span class=cl>  decompression: info
+</span></span><span class=line><span class=cl>  dns: info
+</span></span><span class=line><span class=cl>  dubbo: info
+</span></span><span class=line><span class=cl>  envoy_bug: info
+</span></span><span class=line><span class=cl>  ext_authz: info
+</span></span><span class=line><span class=cl>  rocketmq: info
+</span></span><span class=line><span class=cl>  file: info
+</span></span><span class=line><span class=cl>  filter: info
+</span></span><span class=line><span class=cl>  forward_proxy: info
+</span></span><span class=line><span class=cl>  grpc: info
+</span></span><span class=line><span class=cl>  hc: info
+</span></span><span class=line><span class=cl>  health_checker: info
+</span></span><span class=line><span class=cl>  http: info
+</span></span><span class=line><span class=cl>  http2: info
+</span></span><span class=line><span class=cl>  hystrix: info
+</span></span><span class=line><span class=cl>  init: info
+</span></span><span class=line><span class=cl>  io: info
+</span></span><span class=line><span class=cl>  jwt: info
+</span></span><span class=line><span class=cl>  kafka: info
+</span></span><span class=line><span class=cl>  key_value_store: info
+</span></span><span class=line><span class=cl>  lua: info
+</span></span><span class=line><span class=cl>  main: info
+</span></span><span class=line><span class=cl>  matcher: info
+</span></span><span class=line><span class=cl>  misc: info
+</span></span><span class=line><span class=cl>  mongo: info
+</span></span><span class=line><span class=cl>  quic: info
+</span></span><span class=line><span class=cl>  quic_stream: info
+</span></span><span class=line><span class=cl>  pool: info
+</span></span><span class=line><span class=cl>  rbac: info
+</span></span><span class=line><span class=cl>  redis: info
+</span></span><span class=line><span class=cl>  router: info
+</span></span><span class=line><span class=cl>  runtime: info
+</span></span><span class=line><span class=cl>  stats: info
+</span></span><span class=line><span class=cl>  secret: info
+</span></span><span class=line><span class=cl>  tap: info
+</span></span><span class=line><span class=cl>  testing: info
+</span></span><span class=line><span class=cl>  thrift: info
+</span></span><span class=line><span class=cl>  tracing: info
+</span></span><span class=line><span class=cl>  upstream: info
+</span></span><span class=line><span class=cl>  udp: info
+</span></span><span class=line><span class=cl>  wasm: info</span></span></code></pre></td></tr></table></div></div><h3 class=heading-element id=修改其中一个-logger-级别><span>修改其中一个 logger 级别</span>
+<a href=#%e4%bf%ae%e6%94%b9%e5%85%b6%e4%b8%ad%e4%b8%80%e4%b8%aa-logger-%e7%ba%a7%e5%88%ab class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl <span class=nb>exec</span> -ti -n <span class=si>${</span><span class=nv>NAMESPACE</span><span class=si>}</span> <span class=si>${</span><span class=nv>POD_NAME</span><span class=si>}</span> -c istio-proxy -- curl -X POST 127.0.0.1:15000/logging<span class=se>\?</span><span class=nv>http</span><span class=o>=</span>trace</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>active loggers:
+</span></span><span class=line><span class=cl>...
+</span></span><span class=line><span class=cl>...
+</span></span><span class=line><span class=cl>  health_checker: warning
+</span></span><span class=line><span class=cl>  http: trace
+</span></span><span class=line><span class=cl>  http2: warning
+</span></span><span class=line><span class=cl>  hystrix: warning
+</span></span><span class=line><span class=cl>...
+</span></span><span class=line><span class=cl>...</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=nv>pod</span><span class=o>=</span><span class=sb>`</span>kubectl get pod -n istio-system -l <span class=nv>app</span><span class=o>=</span>istiod -o name<span class=sb>`</span>
+</span></span><span class=line><span class=cl>kubectl <span class=nb>exec</span> <span class=nv>$pod</span> -n istio-system -- curl http://127.0.0.1:15014/debug/<span class=nv>$@</span>
+</span></span><span class=line><span class=cl>kubectl <span class=nb>exec</span> <span class=nv>$pod</span> -n istio-system -- curl http://127.0.0.1:15014/debug/endpointz
+</span></span><span class=line><span class=cl>kubectl <span class=nb>exec</span> <span class=nv>$pod</span> -n istio-system -- curl http://127.0.0.1:15014/debug/adsz
+</span></span><span class=line><span class=cl>kubectl <span class=nb>exec</span> <span class=nv>$pod</span> -n istio-system -- curl http://127.0.0.1:15014/debug/registryz
+</span></span><span class=line><span class=cl>kubectl <span class=nb>exec</span> <span class=nv>$pod</span> -n istio-system -- curl http://127.0.0.1:15014/debug/configz</span></span></code></pre></td></tr></table></div></div><h2 class=heading-element id=常用脚本><span>常用脚本</span>
+<a href=#%e5%b8%b8%e7%94%a8%e8%84%9a%e6%9c%ac class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p>由于线上主机初始化没有安装 <code>socat</code>, 在使用<code>istioctl</code>是无法转发端口,所以直接导出 <code>Envoy</code> 的配置，然后在使用 <code>istioctl</code>操作。</p><h3 class=heading-element id=导出config><span>导出config</span>
+<a href=#%e5%af%bc%e5%87%baconfig class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=nv>namespace</span><span class=o>=</span>zsl-test
+</span></span><span class=line><span class=cl><span class=nv>pod_name</span><span class=o>=</span>mydemo-my-demo-sgcanshu-4vb7b
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>kubectl <span class=nb>exec</span> -ti -n <span class=si>${</span><span class=nv>namespace</span><span class=si>}</span> <span class=si>${</span><span class=nv>pod_name</span><span class=si>}</span> -c istio-proxy -- curl http://127.0.0.1:15000/config_dump &gt; config_dump.json</span></span></code></pre></td></tr></table></div></div><h3 class=heading-element id=导出clusterendpoint><span>导出cluster,(endpoint)</span>
+<a href=#%e5%af%bc%e5%87%baclusterendpoint class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl <span class=nb>exec</span> -ti -n <span class=si>${</span><span class=nv>namespace</span><span class=si>}</span> <span class=si>${</span><span class=nv>pod_name</span><span class=si>}</span> -c istio-proxy -- curl <span class=s2>&#34;http://127.0.0.1:15000/clusters?format=json&#34;</span> &gt; envoy-clusters.json</span></span></code></pre></td></tr></table></div></div><h3 class=heading-element id=istioctl-分析文件><span>istioctl 分析文件</span>
+<a href=#istioctl-%e5%88%86%e6%9e%90%e6%96%87%e4%bb%b6 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>istioctl proxy-config listener -f config_dump.json --port <span class=m>5000</span>
+</span></span><span class=line><span class=cl>istioctl proxy-config endpoints -f envoy-cluster.json --cluster <span class=s2>&#34;outbound|5000||helloworld.sample.svc.cluster.local&#34;</span>
+</span></span><span class=line><span class=cl><span class=c1># 过滤存在多版本的Endpoint</span>
+</span></span><span class=line><span class=cl>istioctl proxy-config endpoints -f envoy-clusters.json <span class=p>|</span> awk -F<span class=s1>&#39;[ ]+&#39;</span> <span class=s1>&#39;$NF ~ /outbound\|[0-9]+\|[^|]+\|/ {print $0}&#39;</span></span></span></code></pre></td></tr></table></div></div><h3 class=heading-element id=查看sidecar证书是否正常><span>查看sidecar证书是否正常</span>
+<a href=#%e6%9f%a5%e7%9c%8bsidecar%e8%af%81%e4%b9%a6%e6%98%af%e5%90%a6%e6%ad%a3%e5%b8%b8 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># ./istioctl proxy-config secret -f config_dump.json</span>
+</span></span><span class=line><span class=cl>RESOURCE NAME     TYPE           STATUS     VALID CERT     SERIAL NUMBER                               NOT AFTER                NOT BEFORE
+</span></span><span class=line><span class=cl>default           Cert Chain     ACTIVE     <span class=nb>true</span>           <span class=m>219345628773408727192682202221320774018</span>     2023-07-18T01:56:01Z     2023-07-17T01:54:01Z
+</span></span><span class=line><span class=cl>ROOTCA            CA             ACTIVE     <span class=nb>true</span>           <span class=m>17390732964404848583</span>                        2031-12-13T09:40:24Z     2021-12-15T09:40:24Z</span></span></code></pre></td></tr></table></div></div><h3 class=heading-element id=查看sidecar证书详细><span>查看sidecar证书详细</span>
+<a href=#%e6%9f%a5%e7%9c%8bsidecar%e8%af%81%e4%b9%a6%e8%af%a6%e7%bb%86 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span><span class=lnt>76
+</span><span class=lnt>77
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>./istioctl proxy-config secret -f config_dump.json -o json<span class=p>|</span> jq <span class=s1>&#39;[.dynamicActiveSecrets[] | select(.name == &#34;default&#34;)][0].secret.tlsCertificate.certificateChain.inlineBytes&#39;</span> -r <span class=p>|</span> base64 -d <span class=p>|</span> openssl x509 -noout -text
+</span></span><span class=line><span class=cl>Certificate:
+</span></span><span class=line><span class=cl>    Data:
+</span></span><span class=line><span class=cl>        Version: <span class=m>3</span> <span class=o>(</span>0x2<span class=o>)</span>
+</span></span><span class=line><span class=cl>        Serial Number:
+</span></span><span class=line><span class=cl>            a5:04:6e:74:53:d1:3e:4c:c9:03:67:67:2e:2e:a1:82
+</span></span><span class=line><span class=cl>    Signature Algorithm: sha256WithRSAEncryption
+</span></span><span class=line><span class=cl>        Issuer: <span class=nv>O</span><span class=o>=</span>Istio, <span class=nv>CN</span><span class=o>=</span>Intermediate CA, <span class=nv>L</span><span class=o>=</span>dev
+</span></span><span class=line><span class=cl>        Validity
+</span></span><span class=line><span class=cl>            Not Before: Jul <span class=m>17</span> 01:54:01 <span class=m>2023</span> GMT
+</span></span><span class=line><span class=cl>            Not After : Jul <span class=m>18</span> 01:56:01 <span class=m>2023</span> GMT
+</span></span><span class=line><span class=cl>        Subject:
+</span></span><span class=line><span class=cl>        Subject Public Key Info:
+</span></span><span class=line><span class=cl>            Public Key Algorithm: rsaEncryption
+</span></span><span class=line><span class=cl>                Public-Key: <span class=o>(</span><span class=m>2048</span> bit<span class=o>)</span>
+</span></span><span class=line><span class=cl>                Modulus:
+</span></span><span class=line><span class=cl>                    00:ce:0d:56:32:6d:62:c0:27:df:eb:fa:21:03:1d:
+</span></span><span class=line><span class=cl>                    da:86:44:10:e5:89:5d:b1:2d:05:d7:5b:0d:4f:68:
+</span></span><span class=line><span class=cl>                    6e:27:39:46:2f:1c:6a:fd:ee:b3:29:e8:d8:5e:db:
+</span></span><span class=line><span class=cl>                    8c:d3:23:64:71:64:9a:11:d5:65:81:08:d0:55:24:
+</span></span><span class=line><span class=cl>                    2e:88:1d:08:d3:3c:20:57:a9:c4:9e:fe:8d:4e:8e:
+</span></span><span class=line><span class=cl>                    81:03:e0:e8:f2:0d:05:13:a5:1b:9b:54:18:73:ea:
+</span></span><span class=line><span class=cl>                    13:b2:9b:f0:63:34:23:77:eb:db:bc:fb:a8:56:2d:
+</span></span><span class=line><span class=cl>                    30:be:0c:55:ce:9b:38:ca:ba:05:03:9e:6a:88:26:
+</span></span><span class=line><span class=cl>                    4f:6c:49:18:00:d0:c7:41:a8:6d:73:96:76:ce:a5:
+</span></span><span class=line><span class=cl>                    ee:35:98:8a:b7:d0:c1:37:11:1e:3f:ff:42:e2:29:
+</span></span><span class=line><span class=cl>                    23:9c:3e:0c:ad:9a:70:56:b6:4f:dd:24:a4:17:19:
+</span></span><span class=line><span class=cl>                    33:c1:7b:cb:4d:2a:10:2a:20:6c:1f:1b:78:55:5a:
+</span></span><span class=line><span class=cl>                    a1:88:c0:d8:00:65:be:1c:df:5d:30:02:77:0c:c3:
+</span></span><span class=line><span class=cl>                    df:8e:59:78:2e:a1:31:29:2b:2c:ce:7f:80:74:18:
+</span></span><span class=line><span class=cl>                    4a:e3:db:34:b3:db:7e:1d:02:15:6d:b1:46:6f:e2:
+</span></span><span class=line><span class=cl>                    4f:60:c4:d9:1c:e7:29:86:6e:3c:b7:7a:12:e7:38:
+</span></span><span class=line><span class=cl>                    71:6e:36:ae:46:68:c7:a8:ea:7e:85:1f:6c:3b:0e:
+</span></span><span class=line><span class=cl>                    ab:81
+</span></span><span class=line><span class=cl>                Exponent: <span class=m>65537</span> <span class=o>(</span>0x10001<span class=o>)</span>
+</span></span><span class=line><span class=cl>        X509v3 extensions:
+</span></span><span class=line><span class=cl>            X509v3 Key Usage: critical
+</span></span><span class=line><span class=cl>                Digital Signature, Key Encipherment
+</span></span><span class=line><span class=cl>            X509v3 Extended Key Usage:
+</span></span><span class=line><span class=cl>                TLS Web Server Authentication, TLS Web Client Authentication
+</span></span><span class=line><span class=cl>            X509v3 Basic Constraints: critical
+</span></span><span class=line><span class=cl>                CA:FALSE
+</span></span><span class=line><span class=cl>            X509v3 Authority Key Identifier:
+</span></span><span class=line><span class=cl>                keyid:C0:C7:D4:2D:86:25:EF:D9:AF:0A:76:7B:CB:99:52:FB:67:C7:E0:6E
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            X509v3 Subject Alternative Name: critical
+</span></span><span class=line><span class=cl>                URI:spiffe://cluster.local/ns/zsl-test/sa/default
+</span></span><span class=line><span class=cl>    Signature Algorithm: sha256WithRSAEncryption
+</span></span><span class=line><span class=cl>         10:9d:85:38:7f:7f:7b:b2:1a:e1:69:de:68:f9:87:f2:64:c8:
+</span></span><span class=line><span class=cl>         0b:c6:ab:9c:9b:bf:2a:d3:c6:f1:b8:e1:fd:25:15:cf:05:5d:
+</span></span><span class=line><span class=cl>         17:73:79:44:fe:dd:b4:28:cf:70:6d:f7:58:91:85:27:33:02:
+</span></span><span class=line><span class=cl>         7b:95:1a:90:19:0c:1c:7b:03:6a:fa:da:a6:9b:59:a5:23:40:
+</span></span><span class=line><span class=cl>         4b:03:34:aa:20:65:18:de:8c:14:19:f4:7c:cb:04:83:a0:af:
+</span></span><span class=line><span class=cl>         c5:43:bf:93:94:ae:51:b7:92:a3:17:b3:10:4f:a0:f4:44:d4:
+</span></span><span class=line><span class=cl>         b3:24:aa:6b:1e:fd:cb:7a:50:9c:7d:1b:ac:be:dc:b3:2f:1e:
+</span></span><span class=line><span class=cl>         2f:76:ea:a5:81:a2:a8:ee:0b:d2:a6:cb:15:e4:23:08:66:e3:
+</span></span><span class=line><span class=cl>         3f:66:c2:ca:9a:71:d2:d9:5e:20:0d:bc:21:21:94:e3:68:1d:
+</span></span><span class=line><span class=cl>         fb:c8:de:d2:7c:78:68:7d:d1:5f:44:26:98:cc:3c:41:9b:dd:
+</span></span><span class=line><span class=cl>         cd:5f:73:cb:8a:56:a5:72:e5:21:27:49:a2:8b:3b:1c:06:c3:
+</span></span><span class=line><span class=cl>         f8:7b:98:10:7c:59:b2:6c:05:4e:ec:eb:d8:9f:33:19:4b:3e:
+</span></span><span class=line><span class=cl>         98:08:17:fa:bf:1a:3a:b7:76:8e:c2:7b:84:be:d2:f8:b8:55:
+</span></span><span class=line><span class=cl>         b1:f9:72:7b:e5:91:50:1a:09:bf:1c:b3:05:72:53:7b:f4:e2:
+</span></span><span class=line><span class=cl>         bd:66:d3:7e:5c:70:50:8b:b1:91:04:30:d5:52:74:fd:2a:18:
+</span></span><span class=line><span class=cl>         56:7d:a2:83:a9:25:d7:d4:0d:f4:45:5f:1f:a2:bd:52:7e:bf:
+</span></span><span class=line><span class=cl>         1b:99:92:63:20:cb:6f:18:24:83:4b:fa:1b:ab:49:44:11:58:
+</span></span><span class=line><span class=cl>         c2:ca:9f:4e:c4:8e:ea:18:09:a7:84:6b:75:ef:ea:fd:54:d9:
+</span></span><span class=line><span class=cl>         1e:36:b2:89:70:35:fb:f1:b3:c5:5e:e5:75:7b:a4:8b:1d:f6:
+</span></span><span class=line><span class=cl>         3b:13:92:90:de:09:3d:15:dd:e8:3c:e9:e6:50:28:17:88:85:
+</span></span><span class=line><span class=cl>         12:c4:80:c9:fe:ca:10:ae:eb:37:ed:5c:13:a4:f5:0d:6e:41:
+</span></span><span class=line><span class=cl>         4f:84:b3:94:1e:ea:a0:52:47:1d:6c:8e:fe:f5:1e:91:0e:7a:
+</span></span><span class=line><span class=cl>         fe:31:17:97:b5:04:1c:d4:27:af:d1:df:3f:e4:38:2d:78:11:
+</span></span><span class=line><span class=cl>         aa:d0:54:50:e8:4d:bf:10:55:7b:3d:29:18:e4:a8:f1:f7:e5:
+</span></span><span class=line><span class=cl>         c1:b1:41:de:6c:8b:d1:0e:ca:2f:69:5d:b8:08:da:fa:30:f9:
+</span></span><span class=line><span class=cl>         1a:5f:c2:93:56:52:1d:39:41:f7:0c:c9:c7:d7:bc:33:99:cc:
+</span></span><span class=line><span class=cl>         91:52:95:0b:35:0b:a9:10:29:66:0a:93:4e:50:ee:83:25:4c:
+</span></span><span class=line><span class=cl>         92:ff:6f:94:3d:f2:39:9c:3a:5b:0a:38:c1:c5:bd:50:b8:4d:
+</span></span><span class=line><span class=cl>         27:ea:f9:8f:89:e4:4c:8a</span></span></code></pre></td></tr></table></div></div><h2 class=heading-element id=常用yaml><span>常用yaml</span>
+<a href=#%e5%b8%b8%e7%94%a8yaml class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><h3 class=heading-element id=sidecar-注入相关><span>sidecar 注入相关</span>
+<a href=#sidecar-%e6%b3%a8%e5%85%a5%e7%9b%b8%e5%85%b3 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><p>为指定 workload 取消 sidecar 自动注入</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl label ns zsl-test istio-injection<span class=o>=</span>enabled</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=w>  </span><span class=nt>template</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>annotations</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>sidecar.istio.io/inject</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;false&#34;</span></span></span></code></pre></td></tr></table></div></div><h3 class=heading-element id=proxy-相关><span>proxy 相关</span>
+<a href=#proxy-%e7%9b%b8%e5%85%b3 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><h4 class=heading-element id=自定义资源><span>自定义资源</span>
+<a href=#%e8%87%aa%e5%ae%9a%e4%b9%89%e8%b5%84%e6%ba%90 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=w>  </span><span class=nt>template</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>annotations</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>&#34;sidecar.istio.io/proxyCPU&#34;: </span><span class=s2>&#34;10m&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>&#34;sidecar.istio.io/proxyCPULimit&#34;: </span><span class=s2>&#34;2&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>&#34;sidecar.istio.io/proxyMemory&#34;: </span><span class=s2>&#34;32Mi&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>&#34;sidecar.istio.io/proxyMemoryLimit&#34;: </span><span class=s2>&#34;1Gi&#34;</span></span></span></code></pre></td></tr></table></div></div><h4 class=heading-element id=自定义日志级别><span>自定义日志级别</span>
+<a href=#%e8%87%aa%e5%ae%9a%e4%b9%89%e6%97%a5%e5%bf%97%e7%ba%a7%e5%88%ab class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=w>  </span><span class=nt>template</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>annotations</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>&#34;sidecar.istio.io/logLevel&#34;: debug # 可选</span><span class=p>:</span><span class=w> </span><span class=l>trace, debug, info, warning, error, critical, off</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>&#34;sidecar.istio.io/componentLogLevel&#34;: </span><span class=s2>&#34;ext_authz:trace,filter:debug&#34;</span></span></span></code></pre></td></tr></table></div></div><h4 class=heading-element id=不劫持部分流量><span>不劫持部分流量</span>
+<a href=#%e4%b8%8d%e5%8a%ab%e6%8c%81%e9%83%a8%e5%88%86%e6%b5%81%e9%87%8f class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=w>  </span><span class=nt>template</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>annotations</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>traffic.sidecar.istio.io/excludeOutboundIPRanges</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;10.10.31.1/32,10.10.31.2/32&#34;</span><span class=w> </span><span class=c># 不劫持的出站目标地址</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>traffic.sidecar.istio.io/excludeInterfaces</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;&#34;</span><span class=w>  </span><span class=c># 过滤网卡接口</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>traffic.sidecar.istio.io/excludeInboundPorts</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;&#34;</span><span class=w>  </span><span class=c># 不劫持的入站端口</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>traffic.sidecar.istio.io/excludeOutboundPorts</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;&#34;</span><span class=w> </span><span class=c># 不劫持的出站端口</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>traffic.sidecar.istio.io/includeInboundPorts</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;&#34;</span><span class=w> </span><span class=c># 只劫持指定入站端口</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>traffic.sidecar.istio.io/includeOutboundPorts</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;&#34;</span><span class=w> </span><span class=c># 不管任意IP,指定出站端口的流量都将被重定向到Envoy</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>traffic.sidecar.istio.io/includeOutboundIPRanges</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;&#34;</span><span class=w> </span><span class=c># 只劫持指定出站目标地址</span></span></span></code></pre></td></tr></table></div></div><blockquote><p><code>istio</code> 流量劫持是通过 <code>iptable</code> 来实现。以上 <code>annotations</code> 都是通过 <code>istio-init</code> 初始化容器操作,当服务开启sidecar注入之后，发现流量异常为避免服务重启，可以通过修改iptable规则来紧急跳过sidecar流量劫持。
+<code>iptable</code> 使用 <code>iptables-legacy</code> 替换</p></blockquote><h5 class=heading-element id=不劫持指定出站端口443流量><span>不劫持指定出站端口(443)流量</span>
+<a href=#%e4%b8%8d%e5%8a%ab%e6%8c%81%e6%8c%87%e5%ae%9a%e5%87%ba%e7%ab%99%e7%ab%af%e5%8f%a3443%e6%b5%81%e9%87%8f class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h5><p>traffic.sidecar.istio.io/excludeInboundPorts: 443</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># Generated by iptables-save v1.8.7 on Wed Feb 26 18:35:36 2025</span>
+</span></span><span class=line><span class=cl>*raw
+</span></span><span class=line><span class=cl>:PREROUTING ACCEPT <span class=o>[</span>682:2361353<span class=o>]</span>
+</span></span><span class=line><span class=cl>:OUTPUT ACCEPT <span class=o>[</span>559:720418<span class=o>]</span>
+</span></span><span class=line><span class=cl>-A PREROUTING -d 169.254.20.10/32 -p udp -m udp --sport <span class=m>53</span> -j CT --zone <span class=m>1</span>
+</span></span><span class=line><span class=cl>-A OUTPUT -p udp -m udp --dport <span class=m>53</span> -m owner --uid-owner <span class=m>1337</span> -j CT --zone <span class=m>1</span>
+</span></span><span class=line><span class=cl>-A OUTPUT -p udp -m udp --sport <span class=m>15053</span> -m owner --uid-owner <span class=m>1337</span> -j CT --zone <span class=m>2</span>
+</span></span><span class=line><span class=cl>-A OUTPUT -p udp -m udp --dport <span class=m>53</span> -m owner --gid-owner <span class=m>1337</span> -j CT --zone <span class=m>1</span>
+</span></span><span class=line><span class=cl>-A OUTPUT -p udp -m udp --sport <span class=m>15053</span> -m owner --gid-owner <span class=m>1337</span> -j CT --zone <span class=m>2</span>
+</span></span><span class=line><span class=cl>-A OUTPUT -d 169.254.20.10/32 -p udp -m udp --dport <span class=m>53</span> -j CT --zone <span class=m>2</span>
+</span></span><span class=line><span class=cl>COMMIT
+</span></span><span class=line><span class=cl><span class=c1># Completed on Wed Feb 26 18:35:36 2025</span>
+</span></span><span class=line><span class=cl><span class=c1># Generated by iptables-save v1.8.7 on Wed Feb 26 18:35:36 2025</span>
+</span></span><span class=line><span class=cl>*nat
+</span></span><span class=line><span class=cl>:PREROUTING ACCEPT <span class=o>[</span>63:7951<span class=o>]</span>
+</span></span><span class=line><span class=cl>:INPUT ACCEPT <span class=o>[</span>63:7951<span class=o>]</span>
+</span></span><span class=line><span class=cl>:OUTPUT ACCEPT <span class=o>[</span>52:4025<span class=o>]</span>
+</span></span><span class=line><span class=cl>:POSTROUTING ACCEPT <span class=o>[</span>56:4359<span class=o>]</span>
+</span></span><span class=line><span class=cl>:ISTIO_INBOUND - <span class=o>[</span>0:0<span class=o>]</span>
+</span></span><span class=line><span class=cl>:ISTIO_IN_REDIRECT - <span class=o>[</span>0:0<span class=o>]</span>
+</span></span><span class=line><span class=cl>:ISTIO_OUTPUT - <span class=o>[</span>0:0<span class=o>]</span>
+</span></span><span class=line><span class=cl>:ISTIO_REDIRECT - <span class=o>[</span>0:0<span class=o>]</span>
+</span></span><span class=line><span class=cl>-A PREROUTING -p tcp -j ISTIO_INBOUND
+</span></span><span class=line><span class=cl>-A OUTPUT -p tcp -j ISTIO_OUTPUT
+</span></span><span class=line><span class=cl>-A OUTPUT -p udp -m udp --dport <span class=m>53</span> -m owner --uid-owner <span class=m>1337</span> -j RETURN
+</span></span><span class=line><span class=cl>-A OUTPUT -p udp -m udp --dport <span class=m>53</span> -m owner --gid-owner <span class=m>1337</span> -j RETURN
+</span></span><span class=line><span class=cl>-A OUTPUT -d 169.254.20.10/32 -p udp -m udp --dport <span class=m>53</span> -j REDIRECT --to-ports <span class=m>15053</span>
+</span></span><span class=line><span class=cl>-A ISTIO_INBOUND -p tcp -m tcp --dport <span class=m>15008</span> -j RETURN
+</span></span><span class=line><span class=cl>-A ISTIO_INBOUND -p tcp -m tcp --dport <span class=m>15090</span> -j RETURN
+</span></span><span class=line><span class=cl>-A ISTIO_INBOUND -p tcp -m tcp --dport <span class=m>15021</span> -j RETURN
+</span></span><span class=line><span class=cl>-A ISTIO_INBOUND -p tcp -m tcp --dport <span class=m>15020</span> -j RETURN
+</span></span><span class=line><span class=cl>-A ISTIO_INBOUND -p tcp -j ISTIO_IN_REDIRECT
+</span></span><span class=line><span class=cl>-A ISTIO_IN_REDIRECT -p tcp -j REDIRECT --to-ports <span class=m>15006</span>
+</span></span><span class=line><span class=cl>-A ISTIO_OUTPUT -p tcp -m tcp --dport <span class=m>443</span> -j RETURN
+</span></span><span class=line><span class=cl>-A ISTIO_OUTPUT -s 127.0.0.6/32 -o lo -j RETURN
+</span></span><span class=line><span class=cl>-A ISTIO_OUTPUT ! -d 127.0.0.1/32 -o lo -p tcp -m tcp ! --dport <span class=m>53</span> -m owner --uid-owner <span class=m>1337</span> -j ISTIO_IN_REDIRECT
+</span></span><span class=line><span class=cl>-A ISTIO_OUTPUT -o lo -p tcp -m tcp ! --dport <span class=m>53</span> -m owner ! --uid-owner <span class=m>1337</span> -j RETURN
+</span></span><span class=line><span class=cl>-A ISTIO_OUTPUT -m owner --uid-owner <span class=m>1337</span> -j RETURN
+</span></span><span class=line><span class=cl>-A ISTIO_OUTPUT ! -d 127.0.0.1/32 -o lo -m owner --gid-owner <span class=m>1337</span> -j ISTIO_IN_REDIRECT
+</span></span><span class=line><span class=cl>-A ISTIO_OUTPUT -o lo -p tcp -m tcp ! --dport <span class=m>53</span> -m owner ! --gid-owner <span class=m>1337</span> -j RETURN
+</span></span><span class=line><span class=cl>-A ISTIO_OUTPUT -m owner --gid-owner <span class=m>1337</span> -j RETURN
+</span></span><span class=line><span class=cl>-A ISTIO_OUTPUT -d 169.254.20.10/32 -p tcp -m tcp --dport <span class=m>53</span> -j REDIRECT --to-ports <span class=m>15053</span>
+</span></span><span class=line><span class=cl>-A ISTIO_OUTPUT -d 127.0.0.1/32 -j RETURN
+</span></span><span class=line><span class=cl>-A ISTIO_OUTPUT -j ISTIO_REDIRECT
+</span></span><span class=line><span class=cl>-A ISTIO_REDIRECT -p tcp -j REDIRECT --to-ports <span class=m>15001</span>
+</span></span><span class=line><span class=cl>COMMIT
+</span></span><span class=line><span class=cl><span class=c1># Completed on Wed Feb 26 18:35:36 2025</span></span></span></code></pre></td></tr></table></div></div><h5 class=heading-element id=劫持指定出站80端口><span>劫持指定出站(80)端口</span>
+<a href=#%e5%8a%ab%e6%8c%81%e6%8c%87%e5%ae%9a%e5%87%ba%e7%ab%9980%e7%ab%af%e5%8f%a3 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h5><p>traffic.sidecar.istio.io/includeOutboundPorts: 80</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># Generated by iptables-save v1.8.7 on Wed Feb 26 18:44:24 2025</span>
+</span></span><span class=line><span class=cl>*raw
+</span></span><span class=line><span class=cl>:PREROUTING ACCEPT <span class=o>[</span>1145:4103074<span class=o>]</span>
+</span></span><span class=line><span class=cl>:OUTPUT ACCEPT <span class=o>[</span>879:1066596<span class=o>]</span>
+</span></span><span class=line><span class=cl>-A PREROUTING -d 169.254.20.10/32 -p udp -m udp --sport <span class=m>53</span> -j CT --zone <span class=m>1</span>
+</span></span><span class=line><span class=cl>-A OUTPUT -p udp -m udp --dport <span class=m>53</span> -m owner --uid-owner <span class=m>1337</span> -j CT --zone <span class=m>1</span>
+</span></span><span class=line><span class=cl>-A OUTPUT -p udp -m udp --sport <span class=m>15053</span> -m owner --uid-owner <span class=m>1337</span> -j CT --zone <span class=m>2</span>
+</span></span><span class=line><span class=cl>-A OUTPUT -p udp -m udp --dport <span class=m>53</span> -m owner --gid-owner <span class=m>1337</span> -j CT --zone <span class=m>1</span>
+</span></span><span class=line><span class=cl>-A OUTPUT -p udp -m udp --sport <span class=m>15053</span> -m owner --gid-owner <span class=m>1337</span> -j CT --zone <span class=m>2</span>
+</span></span><span class=line><span class=cl>-A OUTPUT -d 169.254.20.10/32 -p udp -m udp --dport <span class=m>53</span> -j CT --zone <span class=m>2</span>
+</span></span><span class=line><span class=cl>COMMIT
+</span></span><span class=line><span class=cl><span class=c1># Completed on Wed Feb 26 18:44:24 2025</span>
+</span></span><span class=line><span class=cl><span class=c1># Generated by iptables-save v1.8.7 on Wed Feb 26 18:44:24 2025</span>
+</span></span><span class=line><span class=cl>*nat
+</span></span><span class=line><span class=cl>:PREROUTING ACCEPT <span class=o>[</span>106:12597<span class=o>]</span>
+</span></span><span class=line><span class=cl>:INPUT ACCEPT <span class=o>[</span>106:12597<span class=o>]</span>
+</span></span><span class=line><span class=cl>:OUTPUT ACCEPT <span class=o>[</span>68:5483<span class=o>]</span>
+</span></span><span class=line><span class=cl>:POSTROUTING ACCEPT <span class=o>[</span>73:5918<span class=o>]</span>
+</span></span><span class=line><span class=cl>:ISTIO_INBOUND - <span class=o>[</span>0:0<span class=o>]</span>
+</span></span><span class=line><span class=cl>:ISTIO_IN_REDIRECT - <span class=o>[</span>0:0<span class=o>]</span>
+</span></span><span class=line><span class=cl>:ISTIO_OUTPUT - <span class=o>[</span>0:0<span class=o>]</span>
+</span></span><span class=line><span class=cl>:ISTIO_REDIRECT - <span class=o>[</span>0:0<span class=o>]</span>
+</span></span><span class=line><span class=cl>-A PREROUTING -p tcp -j ISTIO_INBOUND
+</span></span><span class=line><span class=cl>-A OUTPUT -p tcp -j ISTIO_OUTPUT
+</span></span><span class=line><span class=cl>-A OUTPUT -p udp -m udp --dport <span class=m>53</span> -m owner --uid-owner <span class=m>1337</span> -j RETURN
+</span></span><span class=line><span class=cl>-A OUTPUT -p udp -m udp --dport <span class=m>53</span> -m owner --gid-owner <span class=m>1337</span> -j RETURN
+</span></span><span class=line><span class=cl>-A OUTPUT -d 169.254.20.10/32 -p udp -m udp --dport <span class=m>53</span> -j REDIRECT --to-ports <span class=m>15053</span>
+</span></span><span class=line><span class=cl>-A ISTIO_INBOUND -p tcp -m tcp --dport <span class=m>15008</span> -j RETURN
+</span></span><span class=line><span class=cl>-A ISTIO_INBOUND -p tcp -m tcp --dport <span class=m>15090</span> -j RETURN
+</span></span><span class=line><span class=cl>-A ISTIO_INBOUND -p tcp -m tcp --dport <span class=m>15021</span> -j RETURN
+</span></span><span class=line><span class=cl>-A ISTIO_INBOUND -p tcp -m tcp --dport <span class=m>15020</span> -j RETURN
+</span></span><span class=line><span class=cl>-A ISTIO_INBOUND -p tcp -j ISTIO_IN_REDIRECT
+</span></span><span class=line><span class=cl>-A ISTIO_IN_REDIRECT -p tcp -j REDIRECT --to-ports <span class=m>15006</span>
+</span></span><span class=line><span class=cl>-A ISTIO_OUTPUT -p tcp -m tcp --dport <span class=m>443</span> -j RETURN
+</span></span><span class=line><span class=cl>-A ISTIO_OUTPUT -s 127.0.0.6/32 -o lo -j RETURN
+</span></span><span class=line><span class=cl>-A ISTIO_OUTPUT ! -d 127.0.0.1/32 -o lo -p tcp -m tcp ! --dport <span class=m>53</span> -m owner --uid-owner <span class=m>1337</span> -j ISTIO_IN_REDIRECT
+</span></span><span class=line><span class=cl>-A ISTIO_OUTPUT -o lo -p tcp -m tcp ! --dport <span class=m>53</span> -m owner ! --uid-owner <span class=m>1337</span> -j RETURN
+</span></span><span class=line><span class=cl>-A ISTIO_OUTPUT -m owner --uid-owner <span class=m>1337</span> -j RETURN
+</span></span><span class=line><span class=cl>-A ISTIO_OUTPUT ! -d 127.0.0.1/32 -o lo -m owner --gid-owner <span class=m>1337</span> -j ISTIO_IN_REDIRECT
+</span></span><span class=line><span class=cl>-A ISTIO_OUTPUT -o lo -p tcp -m tcp ! --dport <span class=m>53</span> -m owner ! --gid-owner <span class=m>1337</span> -j RETURN
+</span></span><span class=line><span class=cl>-A ISTIO_OUTPUT -m owner --gid-owner <span class=m>1337</span> -j RETURN
+</span></span><span class=line><span class=cl>-A ISTIO_OUTPUT -d 169.254.20.10/32 -p tcp -m tcp --dport <span class=m>53</span> -j REDIRECT --to-ports <span class=m>15053</span>
+</span></span><span class=line><span class=cl>-A ISTIO_OUTPUT -d 127.0.0.1/32 -j RETURN
+</span></span><span class=line><span class=cl>-A ISTIO_OUTPUT -p tcp -m tcp --dport <span class=m>80</span> -j ISTIO_REDIRECT
+</span></span><span class=line><span class=cl>-A ISTIO_OUTPUT -j ISTIO_REDIRECT
+</span></span><span class=line><span class=cl>-A ISTIO_REDIRECT -p tcp -j REDIRECT --to-ports <span class=m>15001</span>
+</span></span><span class=line><span class=cl>COMMIT
+</span></span><span class=line><span class=cl><span class=c1># Completed on Wed Feb 26 18:44:24 2025</span></span></span></code></pre></td></tr></table></div></div><ul><li>默认所有流量都被重定向到 <code>Envoy Port</code>,默认<code>15001</code></li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=c1>// https://github.com/kbsonlong/istio/blob/1.13.4/tools/istio-iptables/pkg/capture/run.go#L370</span>
+</span></span><span class=line><span class=cl><span class=c1>// -A ISTIO_REDIRECT -p tcp -j REDIRECT --to-ports 15001</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// Create a new chain for redirecting outbound traffic to the common Envoy port.</span>
+</span></span><span class=line><span class=cl><span class=c1>// In both chains, &#39;-j RETURN&#39; bypasses Envoy and &#39;-j ISTIOREDIRECT&#39;</span>
+</span></span><span class=line><span class=cl><span class=c1>// redirects to Envoy.</span>
+</span></span><span class=line><span class=cl><span class=nx>cfg</span><span class=p>.</span><span class=nx>iptables</span><span class=p>.</span><span class=nf>AppendRule</span><span class=p>(</span><span class=nx>iptableslog</span><span class=p>.</span><span class=nx>UndefinedCommand</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>		<span class=nx>constants</span><span class=p>.</span><span class=nx>ISTIOREDIRECT</span><span class=p>,</span> <span class=nx>constants</span><span class=p>.</span><span class=nx>NAT</span><span class=p>,</span> <span class=s>&#34;-p&#34;</span><span class=p>,</span> <span class=nx>constants</span><span class=p>.</span><span class=nx>TCP</span><span class=p>,</span> <span class=s>&#34;-j&#34;</span><span class=p>,</span> <span class=nx>constants</span><span class=p>.</span><span class=nx>REDIRECT</span><span class=p>,</span> <span class=s>&#34;--to-ports&#34;</span><span class=p>,</span> <span class=nx>cfg</span><span class=p>.</span><span class=nx>cfg</span><span class=p>.</span><span class=nx>ProxyPort</span><span class=p>)</span></span></span></code></pre></td></tr></table></div></div><h5 class=heading-element id=劫持指定出站网段><span>劫持指定出站网段</span>
+<a href=#%e5%8a%ab%e6%8c%81%e6%8c%87%e5%ae%9a%e5%87%ba%e7%ab%99%e7%bd%91%e6%ae%b5 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h5><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>traffic.sidecar.istio.io/includeOutboundIPRanges: 192.168.0.0/24</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># iptables-legacy-save</span>
+</span></span><span class=line><span class=cl><span class=c1># Generated by iptables-save v1.8.7 on Thu Feb 27 17:43:36 2025</span>
+</span></span><span class=line><span class=cl>*raw
+</span></span><span class=line><span class=cl>:PREROUTING ACCEPT <span class=o>[</span>1355:3778929<span class=o>]</span>
+</span></span><span class=line><span class=cl>:OUTPUT ACCEPT <span class=o>[</span>1038:734741<span class=o>]</span>
+</span></span><span class=line><span class=cl>-A PREROUTING -d 169.254.20.10/32 -p udp -m udp --sport <span class=m>53</span> -j CT --zone <span class=m>1</span>
+</span></span><span class=line><span class=cl>-A OUTPUT -p udp -m udp --dport <span class=m>53</span> -m owner --uid-owner <span class=m>1337</span> -j CT --zone <span class=m>1</span>
+</span></span><span class=line><span class=cl>-A OUTPUT -p udp -m udp --sport <span class=m>15053</span> -m owner --uid-owner <span class=m>1337</span> -j CT --zone <span class=m>2</span>
+</span></span><span class=line><span class=cl>-A OUTPUT -p udp -m udp --dport <span class=m>53</span> -m owner --gid-owner <span class=m>1337</span> -j CT --zone <span class=m>1</span>
+</span></span><span class=line><span class=cl>-A OUTPUT -p udp -m udp --sport <span class=m>15053</span> -m owner --gid-owner <span class=m>1337</span> -j CT --zone <span class=m>2</span>
+</span></span><span class=line><span class=cl>-A OUTPUT -d 169.254.20.10/32 -p udp -m udp --dport <span class=m>53</span> -j CT --zone <span class=m>2</span>
+</span></span><span class=line><span class=cl>COMMIT
+</span></span><span class=line><span class=cl><span class=c1># Completed on Thu Feb 27 17:43:36 2025</span>
+</span></span><span class=line><span class=cl><span class=c1># Generated by iptables-save v1.8.7 on Thu Feb 27 17:43:36 2025</span>
+</span></span><span class=line><span class=cl>*nat
+</span></span><span class=line><span class=cl>:PREROUTING ACCEPT <span class=o>[</span>131:13456<span class=o>]</span>
+</span></span><span class=line><span class=cl>:INPUT ACCEPT <span class=o>[</span>131:13456<span class=o>]</span>
+</span></span><span class=line><span class=cl>:OUTPUT ACCEPT <span class=o>[</span>67:5370<span class=o>]</span>
+</span></span><span class=line><span class=cl>:POSTROUTING ACCEPT <span class=o>[</span>67:5382<span class=o>]</span>
+</span></span><span class=line><span class=cl>:ISTIO_INBOUND - <span class=o>[</span>0:0<span class=o>]</span>
+</span></span><span class=line><span class=cl>:ISTIO_IN_REDIRECT - <span class=o>[</span>0:0<span class=o>]</span>
+</span></span><span class=line><span class=cl>:ISTIO_OUTPUT - <span class=o>[</span>0:0<span class=o>]</span>
+</span></span><span class=line><span class=cl>:ISTIO_REDIRECT - <span class=o>[</span>0:0<span class=o>]</span>
+</span></span><span class=line><span class=cl>-A PREROUTING -p tcp -j ISTIO_INBOUND
+</span></span><span class=line><span class=cl>-A OUTPUT -p tcp -j ISTIO_OUTPUT
+</span></span><span class=line><span class=cl>-A OUTPUT -p udp -m udp --dport <span class=m>53</span> -m owner --uid-owner <span class=m>1337</span> -j RETURN
+</span></span><span class=line><span class=cl>-A OUTPUT -p udp -m udp --dport <span class=m>53</span> -m owner --gid-owner <span class=m>1337</span> -j RETURN
+</span></span><span class=line><span class=cl>-A OUTPUT -d 169.254.20.10/32 -p udp -m udp --dport <span class=m>53</span> -j REDIRECT --to-ports <span class=m>15053</span>
+</span></span><span class=line><span class=cl>-A ISTIO_INBOUND -p tcp -m tcp --dport <span class=m>15008</span> -j RETURN
+</span></span><span class=line><span class=cl>-A ISTIO_INBOUND -p tcp -m tcp --dport <span class=m>15090</span> -j RETURN
+</span></span><span class=line><span class=cl>-A ISTIO_INBOUND -p tcp -m tcp --dport <span class=m>15021</span> -j RETURN
+</span></span><span class=line><span class=cl>-A ISTIO_INBOUND -p tcp -m tcp --dport <span class=m>15020</span> -j RETURN
+</span></span><span class=line><span class=cl>-A ISTIO_INBOUND -p tcp -j ISTIO_IN_REDIRECT
+</span></span><span class=line><span class=cl>-A ISTIO_IN_REDIRECT -p tcp -j REDIRECT --to-ports <span class=m>15006</span>
+</span></span><span class=line><span class=cl>-A ISTIO_OUTPUT -p tcp -m tcp --dport <span class=m>443</span> -j RETURN
+</span></span><span class=line><span class=cl>-A ISTIO_OUTPUT -s 127.0.0.6/32 -o lo -j RETURN
+</span></span><span class=line><span class=cl>-A ISTIO_OUTPUT ! -d 127.0.0.1/32 -o lo -p tcp -m tcp ! --dport <span class=m>53</span> -m owner --uid-owner <span class=m>1337</span> -j ISTIO_IN_REDIRECT
+</span></span><span class=line><span class=cl>-A ISTIO_OUTPUT -o lo -p tcp -m tcp ! --dport <span class=m>53</span> -m owner ! --uid-owner <span class=m>1337</span> -j RETURN
+</span></span><span class=line><span class=cl>-A ISTIO_OUTPUT -m owner --uid-owner <span class=m>1337</span> -j RETURN
+</span></span><span class=line><span class=cl>-A ISTIO_OUTPUT ! -d 127.0.0.1/32 -o lo -m owner --gid-owner <span class=m>1337</span> -j ISTIO_IN_REDIRECT
+</span></span><span class=line><span class=cl>-A ISTIO_OUTPUT -o lo -p tcp -m tcp ! --dport <span class=m>53</span> -m owner ! --gid-owner <span class=m>1337</span> -j RETURN
+</span></span><span class=line><span class=cl>-A ISTIO_OUTPUT -m owner --gid-owner <span class=m>1337</span> -j RETURN
+</span></span><span class=line><span class=cl>-A ISTIO_OUTPUT -d 169.254.20.10/32 -p tcp -m tcp --dport <span class=m>53</span> -j REDIRECT --to-ports <span class=m>15053</span>
+</span></span><span class=line><span class=cl>-A ISTIO_OUTPUT -d 127.0.0.1/32 -j RETURN
+</span></span><span class=line><span class=cl>-A ISTIO_OUTPUT -p tcp -m tcp --dport <span class=m>80</span> -j ISTIO_REDIRECT
+</span></span><span class=line><span class=cl>-A ISTIO_OUTPUT -d 192.168.0.0/24 -j ISTIO_REDIRECT
+</span></span><span class=line><span class=cl>-A ISTIO_OUTPUT -j RETURN
+</span></span><span class=line><span class=cl>-A ISTIO_REDIRECT -p tcp -j REDIRECT --to-ports <span class=m>15001</span>
+</span></span><span class=line><span class=cl>COMMIT
+</span></span><span class=line><span class=cl><span class=c1># Completed on Thu Feb 27 17:43:36 2025</span></span></span></code></pre></td></tr></table></div></div><p><code>includeOutboundIPRanges</code>源码,默认所有流量都被重定向到<code>Envoy</code>,当存在合法<code>CIDR</code> 时,其他流量都不被重定向<code>ISTIO_REDIRECT</code>,都被<code>RETURN</code>回去</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=c1>// https://github.com/kbsonlong/istio/blob/1.13.4/tools/istio-iptables/pkg/capture/run.go#L209</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>cfg</span> <span class=o>*</span><span class=nx>IptablesConfigurator</span><span class=p>)</span> <span class=nf>handleOutboundIncludeRules</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>	<span class=nx>rangeInclude</span> <span class=nx>NetworkRange</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>	<span class=nx>appendRule</span> <span class=kd>func</span><span class=p>(</span><span class=nx>command</span> <span class=nx>iptableslog</span><span class=p>.</span><span class=nx>Command</span><span class=p>,</span> <span class=nx>chain</span> <span class=kt>string</span><span class=p>,</span> <span class=nx>table</span> <span class=kt>string</span><span class=p>,</span> <span class=nx>params</span> <span class=o>...</span><span class=kt>string</span><span class=p>)</span> <span class=o>*</span><span class=nx>builder</span><span class=p>.</span><span class=nx>IptablesBuilder</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>	<span class=nx>insert</span> <span class=kd>func</span><span class=p>(</span><span class=nx>command</span> <span class=nx>iptableslog</span><span class=p>.</span><span class=nx>Command</span><span class=p>,</span> <span class=nx>chain</span> <span class=kt>string</span><span class=p>,</span> <span class=nx>table</span> <span class=kt>string</span><span class=p>,</span> <span class=nx>position</span> <span class=kt>int</span><span class=p>,</span> <span class=nx>params</span> <span class=o>...</span><span class=kt>string</span><span class=p>)</span> <span class=o>*</span><span class=nx>builder</span><span class=p>.</span><span class=nx>IptablesBuilder</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=c1>// Apply outbound IP inclusions.</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>rangeInclude</span><span class=p>.</span><span class=nx>IsWildcard</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=c1>// Wildcard specified. Redirect all remaining outbound traffic to Envoy.</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// -A ISTIO_OUTPUT -j ISTIO_REDIRECT</span>
+</span></span><span class=line><span class=cl>		<span class=nf>appendRule</span><span class=p>(</span><span class=nx>iptableslog</span><span class=p>.</span><span class=nx>UndefinedCommand</span><span class=p>,</span> <span class=nx>constants</span><span class=p>.</span><span class=nx>ISTIOOUTPUT</span><span class=p>,</span> <span class=nx>constants</span><span class=p>.</span><span class=nx>NAT</span><span class=p>,</span> <span class=s>&#34;-j&#34;</span><span class=p>,</span> <span class=nx>constants</span><span class=p>.</span><span class=nx>ISTIOREDIRECT</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=k>for</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>internalInterface</span> <span class=o>:=</span> <span class=k>range</span> <span class=nf>split</span><span class=p>(</span><span class=nx>cfg</span><span class=p>.</span><span class=nx>cfg</span><span class=p>.</span><span class=nx>KubeVirtInterfaces</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=nf>insert</span><span class=p>(</span><span class=nx>iptableslog</span><span class=p>.</span><span class=nx>KubevirtCommand</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>				<span class=nx>constants</span><span class=p>.</span><span class=nx>PREROUTING</span><span class=p>,</span> <span class=nx>constants</span><span class=p>.</span><span class=nx>NAT</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=s>&#34;-i&#34;</span><span class=p>,</span> <span class=nx>internalInterface</span><span class=p>,</span> <span class=s>&#34;-j&#34;</span><span class=p>,</span> <span class=nx>constants</span><span class=p>.</span><span class=nx>ISTIOREDIRECT</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span> <span class=k>else</span> <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=nx>rangeInclude</span><span class=p>.</span><span class=nx>IPNets</span><span class=p>)</span> <span class=p>&gt;</span> <span class=mi>0</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=c1>// User has specified a non-empty list of cidrs to be redirected to Envoy.</span>
+</span></span><span class=line><span class=cl>		<span class=k>for</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>cidr</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>rangeInclude</span><span class=p>.</span><span class=nx>IPNets</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=k>for</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>internalInterface</span> <span class=o>:=</span> <span class=k>range</span> <span class=nf>split</span><span class=p>(</span><span class=nx>cfg</span><span class=p>.</span><span class=nx>cfg</span><span class=p>.</span><span class=nx>KubeVirtInterfaces</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>				<span class=nf>insert</span><span class=p>(</span><span class=nx>iptableslog</span><span class=p>.</span><span class=nx>KubevirtCommand</span><span class=p>,</span> <span class=nx>constants</span><span class=p>.</span><span class=nx>PREROUTING</span><span class=p>,</span> <span class=nx>constants</span><span class=p>.</span><span class=nx>NAT</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=s>&#34;-i&#34;</span><span class=p>,</span> <span class=nx>internalInterface</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>					<span class=s>&#34;-d&#34;</span><span class=p>,</span> <span class=nx>cidr</span><span class=p>.</span><span class=nf>String</span><span class=p>(),</span> <span class=s>&#34;-j&#34;</span><span class=p>,</span> <span class=nx>constants</span><span class=p>.</span><span class=nx>ISTIOREDIRECT</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>			<span class=p>}</span>
+</span></span><span class=line><span class=cl>			<span class=nf>appendRule</span><span class=p>(</span><span class=nx>iptableslog</span><span class=p>.</span><span class=nx>UndefinedCommand</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>				<span class=nx>constants</span><span class=p>.</span><span class=nx>ISTIOOUTPUT</span><span class=p>,</span> <span class=nx>constants</span><span class=p>.</span><span class=nx>NAT</span><span class=p>,</span> <span class=s>&#34;-d&#34;</span><span class=p>,</span> <span class=nx>cidr</span><span class=p>.</span><span class=nf>String</span><span class=p>(),</span> <span class=s>&#34;-j&#34;</span><span class=p>,</span> <span class=nx>constants</span><span class=p>.</span><span class=nx>ISTIOREDIRECT</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=c1>// All other traffic is not redirected.</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// -A ISTIO_OUTPUT -j RETURN</span>
+</span></span><span class=line><span class=cl>		<span class=nf>appendRule</span><span class=p>(</span><span class=nx>iptableslog</span><span class=p>.</span><span class=nx>UndefinedCommand</span><span class=p>,</span> <span class=nx>constants</span><span class=p>.</span><span class=nx>ISTIOOUTPUT</span><span class=p>,</span> <span class=nx>constants</span><span class=p>.</span><span class=nx>NAT</span><span class=p>,</span> <span class=s>&#34;-j&#34;</span><span class=p>,</span> <span class=nx>constants</span><span class=p>.</span><span class=nx>RETURN</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># </span>
+</span></span><span class=line><span class=cl>nsenter -t <span class=m>126481</span> -n
+</span></span><span class=line><span class=cl>iptables-legacy-save
+</span></span><span class=line><span class=cl>iptables-legacy -t nat -I ISTIO_OUTPUT -p tcp -m tcp --dport <span class=m>4033</span> -j RETURN
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 不劫持指定入站端口(80)流量</span>
+</span></span><span class=line><span class=cl>traffic.sidecar.istio.io/excludeInboundPorts: <span class=s2>&#34;80&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>iptables-legacy -t nat -I ISTIO_OUTPUT -p tcp -m tcp --dport <span class=m>80</span> -j ISTIO_REDIRECT
+</span></span><span class=line><span class=cl>iptables-legacy -t nat -nL ISTIO_OUTPUT --line-numbers
+</span></span><span class=line><span class=cl><span class=c1># 删除第一条规则</span>
+</span></span><span class=line><span class=cl>iptables-legacy -t nat -D ISTIO_OUTPUT <span class=m>1</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 不劫持指定出站端口(443)流量</span>
+</span></span><span class=line><span class=cl>traffic.sidecar.istio.io/excludeOutboundPorts: <span class=s2>&#34;443&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>iptables-legacy -t nat -I ISTIO_OUTPUT -p tcp -m tcp --dport <span class=m>443</span> -j RETURN
+</span></span><span class=line><span class=cl>iptables-legacy -t nat -nL ISTIO_OUTPUT --line-numbers
+</span></span><span class=line><span class=cl><span class=c1># 删除第一条规则</span>
+</span></span><span class=line><span class=cl>iptables-legacy -t nat -D ISTIO_OUTPUT <span class=m>1</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 只劫持指定入站端口(8443)流量</span>
+</span></span><span class=line><span class=cl>traffic.sidecar.istio.io/includeInboundPorts: <span class=s2>&#34;8443&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>iptables-legacy -t nat -I ISTIO_INBOUND -p tcp -m tcp --dport <span class=m>8443</span> -j ISTIO_IN_REDIRECT
+</span></span><span class=line><span class=cl>iptables-legacy -t nat -nL ISTIO_INBOUND --line-numbers
+</span></span><span class=line><span class=cl><span class=c1># 删除第一条规则</span>
+</span></span><span class=line><span class=cl>iptables-legacy -t nat -D ISTIO_INBOUND <span class=m>1</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 不劫持的出站目标地址(114.114.114.114/32)流量</span>
+</span></span><span class=line><span class=cl>traffic.sidecar.istio.io/excludeOutboundIPRanges: 114.114.114.114/32
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>iptables-legacy -t nat -I ISTIO_OUTPUT -d 114.114.114.114/32 -j RETURN
+</span></span><span class=line><span class=cl>iptables-legacy -t nat -nL ISTIO_OUTPUT --line-numbers
+</span></span><span class=line><span class=cl><span class=c1># 删除第一条规则</span>
+</span></span><span class=line><span class=cl>iptables-legacy -t nat -D ISTIO_OUTPUT <span class=m>1</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 不管任意IP,80端口流量都将被重定向到Envoy</span>
+</span></span><span class=line><span class=cl>traffic.sidecar.istio.io/includeOutboundPorts: <span class=s2>&#34;80&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>iptables-legacy -t nat -I ISTIO_OUTPUT -p tcp -m tcp --dport <span class=m>80</span> -j ISTIO_REDIRECT
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 只劫持指定出站目标地址(8.8.8.8/32)流量</span>
+</span></span><span class=line><span class=cl>traffic.sidecar.istio.io/includeOutboundIPRanges: 8.8.8.8/32
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>iptables-legacy -t nat -I ISTIO_OUTPUT -d 8.8.8.8/32 -j ISTIO_REDIRECT
+</span></span><span class=line><span class=cl>iptables-legacy -t nat -nL ISTIO_OUTPUT --line-numbers
+</span></span><span class=line><span class=cl><span class=c1># 删除第一条规则</span>
+</span></span><span class=line><span class=cl>iptables-legacy -t nat -D ISTIO_OUTPUT <span class=m>1</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 需要劫持指定出站端口,其他流量不被劫持到Envoy</span>
+</span></span><span class=line><span class=cl>traffic.sidecar.istio.io/includeOutboundPorts: <span class=s2>&#34;80&#34;</span>
+</span></span><span class=line><span class=cl>traffic.sidecar.istio.io/includeOutboundIPRanges: 192.168.0.1/32
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>-A ISTIO_OUTPUT -p tcp -m tcp --dport <span class=m>80</span> -j ISTIO_REDIRECT
+</span></span><span class=line><span class=cl>-A ISTIO_OUTPUT -d 192.168.0.1/32 -j ISTIO_REDIRECT
+</span></span><span class=line><span class=cl>-A ISTIO_OUTPUT -j RETURN</span></span></code></pre></td></tr></table></div></div><blockquote><p>当单独设置 <code>traffic.sidecar.istio.io/includeOutboundPorts</code> 时会跟预想存在区别</p><p>因为默认全部流量都被劫持到Envoy, -A ISTIO_OUTPUT -j ISTIO_REDIRECT,</p><p>当设置指定IP地址段拦截 <code>traffic.sidecar.istio.io/includeOutboundIPRanges</code> 时,其他流量都不被重定向</p><p>-A ISTIO_OUTPUT -j RETURN,所以当需要劫持指定出站端口,并且其他流量不被劫持时两者配合使用可以达到奇效。</p></blockquote><h3 class=heading-element id=全局禁用mtls><span>全局禁用<code>mTLS</code></span>
+<a href=#%e5%85%a8%e5%b1%80%e7%a6%81%e7%94%a8mtls class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>security.istio.io/v1beta1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>PeerAuthentication</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>default</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class=l>istio-system</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>mtls</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>mode</span><span class=p>:</span><span class=w> </span><span class=l>DISABLE</span></span></span></code></pre></td></tr></table></div></div><h2 class=heading-element id=常用envoyfilter><span>常用<code>EnvoyFilter</code></span>
+<a href=#%e5%b8%b8%e7%94%a8envoyfilter class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><h3 class=heading-element id=请求限制><span>请求限制</span>
+<a href=#%e8%af%b7%e6%b1%82%e9%99%90%e5%88%b6 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>networking.istio.io/v1alpha3</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>EnvoyFilter</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>http-options</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class=l>istio-system</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>configPatches</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>applyTo</span><span class=p>:</span><span class=w> </span><span class=l>NETWORK_FILTER</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>match</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>context</span><span class=p>:</span><span class=w> </span><span class=l>ANY</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>listener</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>filterChain</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>filter</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;envoy.filters.network.http_connection_manager&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>patch</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>operation</span><span class=p>:</span><span class=w> </span><span class=l>MERGE</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>value</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>typed_config</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>&#34;@type&#34;: </span><span class=s2>&#34;type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>max_request_headers_kb</span><span class=p>:</span><span class=w> </span><span class=m>96</span><span class=w> </span><span class=c># 96KB, 请求 header 最大限制</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>applyTo</span><span class=p>:</span><span class=w> </span><span class=l>HTTP_FILTER</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>match</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>context</span><span class=p>:</span><span class=w> </span><span class=l>GATEWAY</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>listener</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>filterChain</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>filter</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;envoy.filters.network.http_connection_manager&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>patch</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>operation</span><span class=p>:</span><span class=w> </span><span class=l>INSERT_BEFORE</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>value</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;envoy.filters.http.buffer&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>typed_config</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>&#39;@type&#39;</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;type.googleapis.com/envoy.extensions.filters.http.buffer.v3.Buffer&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>max_request_bytes</span><span class=p>:</span><span class=w> </span><span class=m>1048576</span><span class=w>  </span><span class=c># 1MB, 请求最大限制</span></span></span></code></pre></td></tr></table></div></div><h3 class=heading-element id=保留请求头大小写><span>保留请求头大小写</span>
+<a href=#%e4%bf%9d%e7%95%99%e8%af%b7%e6%b1%82%e5%a4%b4%e5%a4%a7%e5%b0%8f%e5%86%99 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>networking.istio.io/v1alpha3</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>EnvoyFilter</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>header-casing</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class=l>istio-system</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>configPatches</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>applyTo</span><span class=p>:</span><span class=w> </span><span class=l>CLUSTER</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>match</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>context</span><span class=p>:</span><span class=w> </span><span class=l>SIDECAR_INBOUND</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>patch</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>operation</span><span class=p>:</span><span class=w> </span><span class=l>MERGE</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>value</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>typed_extension_protocol_options</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>envoy.extensions.upstreams.http.v3.HttpProtocolOptions</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>              </span><span class=nt>&#39;@type&#39;</span><span class=p>:</span><span class=w> </span><span class=l>type.googleapis.com/envoy.extensions.upstreams.http.v3.HttpProtocolOptions</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>              </span><span class=nt>explicit_http_config</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=nt>http_protocol_options</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                  </span><span class=nt>header_key_format</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                    </span><span class=nt>stateful_formatter</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                      </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>preserve_case</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                      </span><span class=nt>typed_config</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                        </span><span class=nt>&#39;@type&#39;</span><span class=p>:</span><span class=w> </span><span class=l>type.googleapis.com/envoy.extensions.http.header_formatters.preserve_case.v3.PreserveCaseFormatterConfig</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>applyTo</span><span class=p>:</span><span class=w> </span><span class=l>NETWORK_FILTER</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>match</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>listener</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>filterChain</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>filter</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>              </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>envoy.filters.network.http_connection_manager</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>patch</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>operation</span><span class=p>:</span><span class=w> </span><span class=l>MERGE</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>value</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>typed_config</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>&#39;@type&#39;</span><span class=p>:</span><span class=w> </span><span class=l>type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>http_protocol_options</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>              </span><span class=nt>header_key_format</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=nt>stateful_formatter</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>preserve_case</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                  </span><span class=nt>typed_config</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                    </span><span class=nt>&#39;@type&#39;</span><span class=p>:</span><span class=w> </span><span class=l>type.googleapis.com/envoy.extensions.http.header_formatters.preserve_case.v3.PreserveCaseFormatterConfig</span></span></span></code></pre></td></tr></table></div></div><h3 class=heading-element id=删除header><span>删除header</span>
+<a href=#%e5%88%a0%e9%99%a4header class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><ul><li>全局删除</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=l>cat &lt;&lt; EOF | kubectl apply -f - </span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>networking.istio.io/v1alpha3</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>EnvoyFilter</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>remove-header</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class=l>istio-system</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>configPatches</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>applyTo</span><span class=p>:</span><span class=w> </span><span class=l>NETWORK_FILTER</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>match</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>listener</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>filterChain</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>filter</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;envoy.filters.network.http_connection_manager&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>patch</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>operation</span><span class=p>:</span><span class=w> </span><span class=l>MERGE</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>value</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>typed_config</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>&#34;@type&#34;: </span><span class=s2>&#34;type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>server_header_transformation</span><span class=p>:</span><span class=w> </span><span class=l>PASS_THROUGH</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>applyTo</span><span class=p>:</span><span class=w> </span><span class=l>ROUTE_CONFIGURATION</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>patch</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>operation</span><span class=p>:</span><span class=w> </span><span class=l>MERGE</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>value</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>request_headers_to_remove</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span>- <span class=s2>&#34;x-envoy-peer-metadata&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>response_headers_to_remove</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span>- <span class=s2>&#34;x-envoy-upstream-service-time&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>EOF</span></span></span></code></pre></td></tr></table></div></div><h2 class=heading-element id=高频使用链接><span>高频使用链接</span>
+<a href=#%e9%ab%98%e9%a2%91%e4%bd%bf%e7%94%a8%e9%93%be%e6%8e%a5 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><h3 class=heading-element id=istio-相关><span>istio 相关</span>
+<a href=#istio-%e7%9b%b8%e5%85%b3 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><ul><li><a href=https://space.bilibili.com/515485124 target=_blank rel="external nofollow noopener noreferrer">云原生学院B站视频</a></li><li><a href=https://istio.io/latest/docs/ops/deployment/requirements/#ports-used-by-istio target=_blank rel="external nofollow noopener noreferrer">istio 端口列表</a></li><li><a href=https://istio.io/latest/docs/reference/config/annotations/ target=_blank rel="external nofollow noopener noreferrer">istio annotation 列表</a></li><li><a href=https://istio.io/latest/docs/reference/config/istio.mesh.v1alpha1/ target=_blank rel="external nofollow noopener noreferrer">istio 全局配置</a></li><li><a href=https://istio.io/latest/about/supported-releases/#support-status-of-istio-releases target=_blank rel="external nofollow noopener noreferrer">istio 与 k8s 版本兼容性矩阵</a></li></ul><h3 class=heading-element id=envoy-相关><span>Envoy 相关</span>
+<a href=#envoy-%e7%9b%b8%e5%85%b3 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><ul><li><a href=https://www.envoyproxy.io/docs/envoy/latest/operations/admin target=_blank rel="external nofollow noopener noreferrer">Envoy 15000 管理端口接口列表</a></li><li><a href=https://www.envoyproxy.io/docs/envoy/latest/configuration/observability/access_log/usage#config-access-log-format-response-flags target=_blank rel="external nofollow noopener noreferrer">Envoy 响应码标识</a></li><li><a href=https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/router_filter#x-envoy-retry-on target=_blank rel="external nofollow noopener noreferrer">Envoy HTTP重试策略</a></li><li><a href=https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/router_filter#x-envoy-retry-grpc-on target=_blank rel="external nofollow noopener noreferrer">Envoy GRPC重试策略</a></li></ul></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span title="更新于 2023-03-31 21:13:29">更新于 2023-03-31&nbsp;</span></div><div class=post-info-license><span><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span></div></div><div class=post-info-line><div class=post-info-md><span><a href=/posts/istio-failure-exclusion-common-instruction/index.md title=阅读原始文档 class=link-to-markdown>阅读原始文档</a></span></div><div class=post-info-share><span><a href=javascript:void(0); title="分享到 X" data-sharer=twitter data-url=https://www.kbsonlong.com/posts/istio-failure-exclusion-common-instruction/ data-title=Istio故障排除常用指令 data-hashtags=faq,istio><i class="fa-brands fa-x-twitter fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="分享到 Facebook" data-sharer=facebook data-url=https://www.kbsonlong.com/posts/istio-failure-exclusion-common-instruction/ data-hashtag=faq><i class="fa-brands fa-facebook-square fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="分享到 WhatsApp" data-sharer=whatsapp data-url=https://www.kbsonlong.com/posts/istio-failure-exclusion-common-instruction/ data-title=Istio故障排除常用指令 data-web><i class="fa-brands fa-whatsapp fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="分享到 Line" data-sharer=line data-url=https://www.kbsonlong.com/posts/istio-failure-exclusion-common-instruction/ data-title=Istio故障排除常用指令><svg class="icon" role="img" viewBox="0 0 24 24"><title>LINE</title><path d="M19.365 9.863c.349.0.63.285.63.631.0.345-.281.63-.63.63H17.61v1.125h1.755c.349.0.63.283.63.63.0.344-.281.629-.63.629h-2.386c-.345.0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346.0.627.285.627.63.0.349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211.0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346.0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195.0.375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345.0.63.285.63.63v4.771zm-5.741.0c0 .344-.282.629-.631.629-.345.0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346.0.628.285.628.63v4.771zm-2.466.629H4.917c-.345.0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348.0.63.285.63.63v4.141h1.756c.348.0.629.283.629.63.0.344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943.0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg></a>
+<a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://www.kbsonlong.com/posts/istio-failure-exclusion-common-instruction/ data-title=Istio故障排除常用指令><i class="fa-brands fa-weibo fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="分享到 Myspace" data-sharer=myspace data-url=https://www.kbsonlong.com/posts/istio-failure-exclusion-common-instruction/ data-title=Istio故障排除常用指令 data-description><svg class="icon" role="img" viewBox="0 0 24 24"><title>Myspace</title><path d="M19.802 12.274A3.811 3.811.0 0023.62 8.47c0-2.101-1.71-3.795-3.818-3.795a3.816 3.816.0 00-3.818 3.81 3.817 3.817.0 003.818 3.811zm-8.602.705a3.43 3.43.0 003.435-3.424A3.43 3.43.0 0011.2 6.13 3.44 3.44.0 007.764 9.566 3.436 3.436.0 0011.2 13zm-7.8.635c1.71.0 3.093-1.38 3.093-3.081.0-1.704-1.395-3.084-3.105-3.084A3.086 3.086.0 00.3 10.539c0 1.7 1.387 3.078 3.095 3.078zm0 .705c-1.96.0-3.4 1.717-3.4 3.495v1.196c0 .17.138.31.31.31h6.18a.31.31.0 00.309-.31v-1.196c0-1.779-1.437-3.5-3.398-3.5zm7.8-.56c-2.18.0-3.78 1.915-3.78 3.891v1.331c0 .188.156.344.345.344h6.87a.344.344.0 00.342-.344V17.65c0-1.976-1.598-3.891-3.777-3.891zm8.602-.617c-2.422.0-4.197 2.126-4.197 4.323v1.477c0 .21.172.381.382.381h7.63c.21.0.383-.171.383-.381v-1.477c-.001-2.197-1.776-4.323-4.198-4.323z"/></svg></a>
+<a href=javascript:void(0); title="分享到 Blogger" data-sharer=blogger data-url=https://www.kbsonlong.com/posts/istio-failure-exclusion-common-instruction/ data-title=Istio故障排除常用指令 data-description><i class="fa-brands fa-blogger fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="分享到 Evernote" data-sharer=evernote data-url=https://www.kbsonlong.com/posts/istio-failure-exclusion-common-instruction/ data-title=Istio故障排除常用指令><i class="fa-brands fa-evernote fa-fw" aria-hidden=true></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fa-solid fa-tags fa-fw me-1" aria-hidden=true></i><a href=/tags/faq/ class=post-tag title="标签 - Faq">Faq</a><a href=/tags/istio/ class=post-tag title="标签 - Istio">Istio</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span></section></div><div class=post-nav><a href=/posts/argo-workflow-of-argo/ class=post-nav-item rel=prev title=Argo全家桶之argo-Workflow><i class="fa-solid fa-angle-left fa-fw" aria-hidden=true></i>Argo全家桶之argo-Workflow</a><a href=/posts/source-code-analysis-of-the-implementation-principles-of-kubernetes-scheduler-core-schedu/ class=post-nav-item rel=next title="源码分析 Kubernetes Scheduler 核心调度器的实现原理">源码分析 Kubernetes Scheduler 核心调度器的实现原理<i class="fa-solid fa-angle-right fa-fw" aria-hidden=true></i></a></div></div><div id=comments><div id=giscus class=comment><script src=https://giscus.app/client.js data-repo=kbsonlong/sre data-repo-id=R_kgDOMFzwNA data-category=Announcements data-category-id=DIC_kwDOMFzwNM4Cn0gn data-mapping=title data-strict=0 data-theme=preferred_color_scheme data-reactions-enabled=1 data-emit-metadata=0 data-input-position=bottom data-lang=zh-CN data-loading=lazy crossorigin=anonymous async defer></script></div><noscript>Please enable JavaScript to view the comments powered by <a href=https://giscus.app/ rel="external nofollow noopener noreferrer">giscus</a>.</noscript></div></article><aside class=toc id=toc-auto aria-label=目录><h2 class=toc-title>目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden=true></i></h2><div class=toc-content id=toc-content-auto></div></aside></main><footer class=footer><div class=footer-container><div class="footer-line copyright" itemscope itemtype=http://schema.org/CreativeWork><i class="fa-regular fa-copyright fa-fw" aria-hidden=true></i>
+<span itemprop=copyrightYear>2018 - 2025</span><span class=author itemprop=copyrightHolder>
+<a href=/></a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span></div><div class="footer-line statistics"><span class=site-time title=网站运行中……><i class="fa-solid fa-heartbeat fa-fw animate-icon" aria-hidden=true></i><span class="run-times ms-1">网站运行中……</span></span></div><div class="footer-line visitor"><span id=busuanzi_container_site_uv title=总访客数><i class="fa-regular fa-user fa-fw me-1" aria-hidden=true></i><span id=busuanzi_value_site_uv><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden=true></i></span></span><span id=busuanzi_container_site_pv class=footer-divider title=总访问量><i class="fa-regular fa-eye fa-fw me-1" aria-hidden=true></i><span id=busuanzi_value_site_pv><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden=true></i></span></span></div><div class="footer-line beian"><span class="icp footer-divider"><a target=_blank href=https://beian.miit.gov.cn/>粤ICP备18122209号</a></span></div></div></footer></div><div class=widgets><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role=button aria-label=回到顶部><i class="fa-solid fa-arrow-up fa-fw" aria-hidden=true></i><span class=variant-numeric>0%</span></div><div class="fixed-button view-comments d-none" role=button aria-label=查看评论><i class="fa-solid fa-comment fa-fw" aria-hidden=true></i></div></div><a href=https://github.com/kbsonlong title="在 GitHub 上查看源代码" target=_blank rel="external nofollow" class="github-corner right d-none-mobile"><svg viewBox="0 0 250 250" aria-hidden="true" width="56" height="56"><path d="M0 0 115 115h15l12 27L250 250V0z"/><path d="M128.3 109C113.8 99.7 119 89.6 119 89.6 122 82.7 120.5 78.6 120.5 78.6 119.2 72 123.4 76.3 123.4 76.3 127.3 80.9 125.5 87.3 125.5 87.3 122.9 97.6 130.6 101.9 134.4 103.2" fill="currentcolor" style="transform-origin:130px 106px" class="octo-arm"/><path d="M115 115C114.9 115.1 118.7 116.5 119.8 115.4l13.9-13.8C136.9 99.2 139.9 98.4 142.2 98.6 133.8 88 127.5 74.4 143.8 58 148.5 53.4 154 51.2 159.7 51 160.3 49.4 163.2 43.6 171.4 40.1 171.4 40.1 176.1 42.5 178.8 56.2 183.1 58.6 187.2 61.8 190.9 65.4 194.5 69 197.7 73.2 200.1 77.6 213.8 80.2 216.3 84.9 216.3 84.9 212.7 93.1 206.9 96 205.4 96.6 205.1 102.4 203 107.8 198.3 112.5 181.9 128.9 168.3 122.5 157.7 114.1 157.9 116.9 156.7 120.9 152.7 124.9L141 136.5C139.8 137.7 141.6 141.9 141.8 141.8z" fill="currentcolor" class="octo-body"/></svg></a><div id=mask></div><div class=reading-progress-bar style=left:0;top:0></div><noscript><div class=noscript-warning>该网站在启用 JavaScript 的情况下效果最佳。</div></noscript></div><link rel=preload href=/lib/katex/katex.min.css as=style onload='this.removeAttribute("onload"),this.rel="stylesheet"'><noscript><link rel=stylesheet href=/lib/katex/katex.min.css></noscript><link rel=stylesheet href=/lib/cookieconsent/cookieconsent.min.css><script src=/lib/autocomplete/autocomplete.min.js defer></script><script src=/lib/algoliasearch/algoliasearch-lite.umd.min.js defer></script><script src=/lib/sharer/sharer.min.js async defer></script><script src=/lib/katex/katex.min.js defer></script><script src=/lib/katex/auto-render.min.js defer></script><script src=/lib/katex/copy-tex.min.js defer></script><script src=/lib/katex/mhchem.min.js defer></script><script src=/lib/cookieconsent/cookieconsent.min.js defer></script><script src=/lib/pangu/pangu.min.js defer></script><script src=/lib/cell-watermark/watermark.min.js defer></script><script src=https://vercount.one/js async defer></script><script>window.config={code:{copyTitle:"复制到剪贴板",editLockTitle:"锁定可编辑代码块",editUnLockTitle:"解锁可编辑代码块",editable:!0,maxShownLines:10},comment:{enable:!0,expired:!1,giscus:{darkTheme:"dark",lightTheme:"light",origin:"https://giscus.app"}},cookieconsent:{content:{dismiss:"同意",link:"了解更多",message:"本网站使用 Cookies 来改善您的浏览体验。"},enable:!0,palette:{button:{background:"#f0f0f0"},popup:{background:"#1aa3ff"}},theme:"edgeless"},enablePWA:!0,math:{delimiters:[{display:!0,left:"$$",right:"$$"},{display:!0,left:"\\[",right:"\\]"},{display:!0,left:"\\begin{equation}",right:"\\end{equation}"},{display:!0,left:"\\begin{equation*}",right:"\\end{equation*}"},{display:!0,left:"\\begin{align}",right:"\\end{align}"},{display:!0,left:"\\begin{align*}",right:"\\end{align*}"},{display:!0,left:"\\begin{alignat}",right:"\\end{alignat}"},{display:!0,left:"\\begin{alignat*}",right:"\\end{alignat*}"},{display:!0,left:"\\begin{gather}",right:"\\end{gather}"},{display:!0,left:"\\begin{CD}",right:"\\end{CD}"},{display:!1,left:"$",right:"$"},{display:!1,left:"\\(",right:"\\)"}],strict:!1},pangu:{enable:!0,selector:"article"},search:{algoliaAppID:"WFOR67TML1",algoliaIndex:"along",algoliaSearchKey:"ea1fe535f9a7ae353f3922489c829cc1",highlightTag:"em",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"algolia"},siteTime:"2018-12-18T16:15:22+08:00",version:"v0.3.20",watermark:{appendto:".wrapper>main",colspacing:30,content:'<img class="fixit-icon" src="/favicon-16x16.png" alt="FixIt logo" /> FixIt 主题',enable:!0,fontfamily:"inherit",fontsize:.85,height:21,opacity:.0125,rotate:15,rowspacing:60,width:150}}</script><script src=/js/theme.min.js defer></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","6272760969",{anonymize_ip:!0})</script><script src="https://www.googletagmanager.com/gtag/js?id=6272760969" async></script></body></html>

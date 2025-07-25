@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Kube-Controller-Manager - 标签 - 蜷缩的蜗牛</title><link>https://www.kbsonlong.com/tags/kube-controller-manager/</link><description>云原生时代运维</description><generator>Hugo 0.145.0 &amp; FixIt v0.3.20</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 02 Jan 2024 10:09:54 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/tags/kube-controller-manager/index.xml" rel="self" type="application/rss+xml"/><item><title>04-kube-controller-manager源码分析(EndpointSlice控制器)</title><link>https://www.kbsonlong.com/posts/04-kube-controller-manager-source-code-analysis-endpointslice-controller/</link><pubDate>Tue, 02 Jan 2024 10:09:54 +0800</pubDate><guid>https://www.kbsonlong.com/posts/04-kube-controller-manager-source-code-analysis-endpointslice-controller/</guid><category domain="https://www.kbsonlong.com/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">源码分析</category><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><description>&lt;p>本文基于&lt;a href="https://github.com/kubernetes/kubernetes/tree/v1.29.0"target="_blank" rel="external nofollow noopener noreferrer">1.29.0&lt;/a>版本&lt;/p>
+&lt;h2 class="heading-element" id="背景">&lt;span>背景&lt;/span>
+ &lt;a href="#%e8%83%8c%e6%99%af" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>在 &lt;code>kubernetes&lt;/code> 1.16版本中，&lt;code>EndpointSlice&lt;/code> 作为 &lt;code>alpha&lt;/code> 特性被引入，主要用于解决 &lt;code>Endpoints&lt;/code> 资源可伸缩性改进、双堆栈服务和拓扑感知路由等问题，在&lt;code>Kubernetes&lt;/code> 1.19版本之后默认启用，并在1.21版本后&lt;code>EndpointSlice API&lt;/code> 版本改为 &lt;code>discovery.k8s.io/v1&lt;/code>。&lt;/p></description></item><item><title>02-kube-controller-manager源码分析(主流程)</title><link>https://www.kbsonlong.com/posts/02-kube-controller-manager-source-code-analysis-main-process/</link><pubDate>Fri, 28 Jul 2023 17:19:10 +0800</pubDate><guid>https://www.kbsonlong.com/posts/02-kube-controller-manager-source-code-analysis-main-process/</guid><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><description>&lt;p>本文基于&lt;a href="https://github.com/kubernetes/kubernetes/tree/v1.29.0"target="_blank" rel="external nofollow noopener noreferrer">1.29.0&lt;/a>版本&lt;/p>
+&lt;p>本文主要分析 kubernetes/cmd/kube-controller-manager 部分，该部分主要涉及各种类型的controller的参数解析，及初始化，例如 deployment controller 和statefulset controller。&lt;/p>
+&lt;h2 class="heading-element" id="代码结构">&lt;span>代码结构&lt;/span>
+ &lt;a href="#%e4%bb%a3%e7%a0%81%e7%bb%93%e6%9e%84" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;span class="lnt">56
+&lt;/span>&lt;span class="lnt">57
+&lt;/span>&lt;span class="lnt">58
+&lt;/span>&lt;span class="lnt">59
+&lt;/span>&lt;span class="lnt">60
+&lt;/span>&lt;span class="lnt">61
+&lt;/span>&lt;span class="lnt">62
+&lt;/span>&lt;span class="lnt">63
+&lt;/span>&lt;span class="lnt">64
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">tree cmd/kube-controller-manager 
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">cmd/kube-controller-manager
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── OWNERS
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── app
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── apps.go &lt;span class="c1"># 包含:startDeploymentController、startReplicaSetController、startStatefulSetController、startDaemonSetController&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── autoscaling.go &lt;span class="c1"># startHPAController&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── batch.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── bootstrap.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── certificates.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── certificates_test.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── cloudproviders.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── config &lt;span class="c1"># config: controller manager执行的上下文&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ └── config.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── controllermanager.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── controllermanager_test.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── core.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── core_test.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── discovery.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── flags_providerless.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── flags_providers.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── import_known_versions.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── networking.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── options &lt;span class="c1"># 包含不同controller的option参数&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── attachdetachcontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── cronjobcontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── csrsigningcontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── daemonsetcontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── deploymentcontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── deprecatedcontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── endpointcontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── endpointslicecontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── endpointslicemirroringcontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── ephemeralcontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── garbagecollectorcontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── hpacontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── jobcontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── legacyserviceaccounttokencleaner.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── namespacecontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── nodeipamcontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── nodelifecyclecontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── options.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── options_test.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── persistentvolumebindercontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── podgccontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── replicasetcontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── replicationcontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── resourcequotacontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── serviceaccountcontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── statefulsetcontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ ├── ttlafterfinishedcontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ └── validatingadmissionpolicycontroller.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── plugins.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── plugins_providerless.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── plugins_providers.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── policy.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── rbac.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ├── testing
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ │ └── testserver.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ └── validatingadmissionpolicystatus.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── controller-manager.go &lt;span class="c1"># main入口函数&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">└── names
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> └── controller_names.go
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="m">5&lt;/span> directories, &lt;span class="m">55&lt;/span> files&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item><item><title>03-kube-controller-manager源码分析(Deployment控制器)</title><link>https://www.kbsonlong.com/posts/03-kube-controller-manager-source-code-analysis-deployment-controller/</link><pubDate>Fri, 28 Jul 2023 17:18:49 +0800</pubDate><guid>https://www.kbsonlong.com/posts/03-kube-controller-manager-source-code-analysis-deployment-controller/</guid><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><category domain="https://www.kbsonlong.com/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">源码分析</category><description>&lt;p>本文基于&lt;a href="https://github.com/kubernetes/kubernetes/tree/v1.29.0"target="_blank" rel="external nofollow noopener noreferrer">1.29.0&lt;/a>版本&lt;/p>
+&lt;h2 class="heading-element" id="kube-controller-manager">&lt;span>kube-controller-manager&lt;/span>
+ &lt;a href="#kube-controller-manager" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>pkg/controller目录结构,包含各控制器的具体实现&lt;/p></description></item></channel></rss>

@@ -1,0 +1,107 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  annotations:
+    pod-policies.kyverno.io/autogen-controllers: none
+    policies.kyverno.io/category: Replace
+    policies.kyverno.io/minversion: 1.6.0
+    policies.kyverno.io/subject: Pod, Scheduler
+    policies.kyverno.io/title: Replace Scheduler Name
+  name: replace-scheduler
+spec:
+  background: true
+  failurePolicy: Fail
+  rules:
+  - match:
+      any:
+      - resources:
+          annotations:
+            aquaman.shopline.com/schedulername: ?*
+          kinds:
+          - Pod
+    mutate:
+      patchesJson6902: |-
+        - op: replace
+          path: /spec/schedulerName
+          value: '{{request.object.metadata.annotations."aquaman.shopline.com/schedulername"}}'
+    name: replace-scheduler
+    preconditions:
+      any:
+      - key: '{{request.operation || ''BACKGROUND''}}'
+        operator: AnyIn
+        value:
+        - CREATE
+  validationFailureAction: audit
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  annotations:
+    pod-policies.kyverno.io/autogen-controllers: none
+    policies.kyverno.io/category: Mutate
+    policies.kyverno.io/description: 'A Pod enableServiceLinks entry defines fields
+      ,Add enableServiceLinks and disable Service makeLinkVariables.'
+    policies.kyverno.io/minversion: 1.6.0
+    policies.kyverno.io/subject: Pod
+    policies.kyverno.io/title: Disable  Service  Links Variables
+  name: disable-service-links
+spec:
+  background: true
+  failurePolicy: Fail
+  rules:
+  - match:
+      any:
+      - resources:
+          kinds:
+          - Pod
+    mutate:
+      patchesJson6902: |-
+        - op: replace
+          path: /spec/enableServiceLinks
+          value: false
+    name: disable-service-links
+    preconditions:
+      any:
+      - key: '{{request.operation || ''BACKGROUND''}}'
+        operator: AnyIn
+        value:
+        - CREATE
+  validationFailureAction: audit
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  annotations:
+    pod-policies.kyverno.io/autogen-controllers: none
+    policies.kyverno.io/category: Mutate
+    policies.kyverno.io/description: Pod Enable  Cluster Autoscaler safe to evict
+    policies.kyverno.io/minversion: 1.6.0
+    policies.kyverno.io/subject: Pod
+    policies.kyverno.io/title: Enable  Cluster Autoscaler
+  name: enable-cluster-autoscaler-evict
+spec:
+  background: true
+  failurePolicy: Fail
+  rules:
+  - match:
+      any:
+      - resources:
+          kinds:
+          - Pod
+          selector:
+            matchLabels:
+              project-name: layout-engine
+    mutate:
+      patchStrategicMerge:
+        metadata:
+          annotations:
+            cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+    name: enable-cluster-autoscaler-evict
+    preconditions:
+      any:
+      - key: '{{request.operation || ''BACKGROUND''}}'
+        operator: AnyIn
+        value:
+        - CREATE
+        - UPDATE
+  validationFailureAction: audit

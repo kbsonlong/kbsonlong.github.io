@@ -1,0 +1,923 @@
+<!doctype html><html itemscope itemtype=http://schema.org/WebPage lang=zh-CN><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=2"><meta name=robots content="noodp"><title>Karmada多集群部署 - 蜷缩的蜗牛</title><meta name=author content="kbsonlong">
+<meta name=description content=' 20231031 快速建立karmada集群 20240304 补充手动注册集群方法 创建 Kind 集群 karmada 控制面 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 export VIP=172.26.145.27 cat << EOF | kind create cluster --name=karmada-controller --kubeconfig=karmada-controller --config=- kind: Cluster apiVersion: "kind.x-k8s.io/v1alpha4" networking: apiServerAddress: "${VIP}" nodes: - role: control-plane image: registry.cn-hangzhou.aliyuncs.com/seam/node:v1.20.15 extraPortMappings: - containerPort: 5443 hostPort: 5443 protocol: TCP listenAddress: "${VIP}" EOF 创建 karmada 成员集群 member1 1 2 3 4 5 6 7 8 9 10 11 cat << EOF | kind create cluster --name=member1 --kubeconfig=member1 --config=- kind: Cluster apiVersion: "kind.x-k8s.io/v1alpha4" networking: apiServerAddress: "${VIP}" podSubnet: "10.10.0.0/16" serviceSubnet: "10.11.0.0/16" nodes: - role: control-plane image: registry.cn-hangzhou.aliyuncs.com/seam/node:v1.26.0 EOF member2 1 2 3 4 5 6 7 8 9 10 11 cat << EOF | kind create cluster --name=member2 --kubeconfig=member2 --config=- kind: Cluster apiVersion: "kind.x-k8s.io/v1alpha4" networking: apiServerAddress: "${VIP}" podSubnet: "10.12.0.0/16" serviceSubnet: "10.13.0.0/16" nodes: - role: control-plane image: registry.cn-hangzhou.aliyuncs.com/seam/node:v1.26.0 EOF member3 1 2 3 4 5 6 7 8 9 10 11 cat << EOF | kind create cluster --name=member3 --kubeconfig=member3 --config=- kind: Cluster apiVersion: "kind.x-k8s.io/v1alpha4" networking: apiServerAddress: "${VIP}" podSubnet: "10.8.0.0/16" serviceSubnet: "10.9.0.0/16" nodes: - role: control-plane image: registry.cn-hangzhou.aliyuncs.com/seam/node:v1.23.0 EOF 安装 Karmada Operator 1 helm install karmada-operator -n karmada-system --create-namespace --dependency-update ./charts/karmada-operator --kubeconfig karmada-controller 创建 Karmada 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 kubectl apply -f - <<EOF apiVersion: operator.karmada.io/v1alpha1 kind: Karmada metadata: name: karmada namespace: karmada-system spec: components: karmadaAPIServer: serviceType: NodePort certSANs: - "kubernetes.default.svc" - "127.0.0.1" - "${VIP}" EOF 通过 Helm 安装 Karmada karmada 配置 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 cat <<EOF>> values.yaml installMode: "host" clusterDomain: "cluster.local" systemNamespace: "karmada-system" components: [] cfssl: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/cfssl tag: latest pullPolicy: IfNotPresent kubectl: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/kubectl tag: latest pullPolicy: IfNotPresent certs: mode: auto auto: expiry: 43800h hosts: [ "kubernetes.default.svc", "*.etcd.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}", "*.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}", "*.{{ .Release.Namespace }}.svc", "localhost", "127.0.0.1", "${VIP}" ] scheduler: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/karmada-scheduler webhook: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/karmada-webhook controllerManager: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/karmada-controller-manager apiServer: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/kube-apiserver tag: "v1.25.4" pullPolicy: IfNotPresent aggregatedApiServer: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/karmada-aggregated-apiserver metricsAdapter: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/karmada-metrics-adapter kubeControllerManager: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/kube-controller-manager tag: "v1.25.4" etcd: internal: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/etcd tag: "3.5.9-0" pullPolicy: IfNotPresent agent: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/karmada-agent schedulerEstimator: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/karmada-scheduler-estimator descheduler: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/karmada-descheduler search: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/karmada-search apiServer: hostNetwork: true EOF 1 2 3 4 5 6 helm repo add karmada-charts https://raw.githubusercontent.com/karmada-io/karmada/master/charts helm --namespace karmada-system upgrade --install karmada karmada-charts/karmada -f values.yaml --kubeconfig karmada-controller --create-namespace helm --namespace karmada-system template karmada karmada-charts/karmada --version=1.8.0 -f values.yaml 1 kubectl get secret -n karmada-system karmada-admin-config -o jsonpath={.data.kubeconfig} | base64 -d | sed "s/karmada-apiserver.karmada-system.svc.cluster.local/${VIP}/" > karmada-api 注册成员集群 安装 karmada 客户端 1 kubectl krew install karmada 加入集群 1 kubectl karmada join member1 --kubeconfig=<karmada api kubeconfig> --cluster-kubeconfig=<member kubeconfig> 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 # kind get kubeconfig --name member1 > member1 # kubectl karmada join member1 --kubeconfig=karmada-api --cluster-kubeconfig=member1 cluster(member1) is joined successfully # kubectl get secret --kubeconfig member1 -n karmada-cluster NAME TYPE DATA AGE karmada-impersonator kubernetes.io/service-account-token 3 7m21s karmada-member1 kubernetes.io/service-account-token 3 7m19s # kubectl get sa --kubeconfig member1 -n karmada-cluster NAME SECRETS AGE default 0 7m33s karmada-impersonator 0 7m33s karmada-member1 0 7m31s # kubectl get clusterRole --kubeconfig member1|grep karmada karmada-controller-manager:karmada-member1 2024-03-01T02:57:24Z karmada-impersonator 2024-03-01T02:57:27Z # kubectl get ClusterRoleBinding --kubeconfig member1|grep karmada karmada-controller-manager:karmada-member1 ClusterRole/karmada-controller-manager:karmada-member1 8m4s karmada-impersonator ClusterRole/karmada-impersonator 8m1s # kubectl get secret --kubeconfig karmada-api -n karmada-cluster NAME TYPE DATA AGE member1 Opaque 2 10m member1-impersonator Opaque 1 10m # kubectl get clusters --kubeconfig karmada-api NAME VERSION MODE READY AGE member1 v1.26.0 Push True 7s # kubectl karmada join member2 --kubeconfig=karmada-api --cluster-kubeconfig=kindyaml/member2 cluster(member2) is joined successfully # kubectl get clusters --kubeconfig karmada-api NAME VERSION MODE READY AGE member1 v1.26.0 Push True 93s member2 v1.26.0 Push True 4s 手动加入集群 成员集群配置 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 member=member3 # 获取kubeconfig kind get kubeconfig --name ${member} > ${member} # 获取ca证书 ca_data=$(yq eval &#39;.clusters[0].cluster.certificate-authority-data&#39; ${member}) # 获取成员集群ID cluster_id=$(kubectl get ns kube-system --kubeconfig ${member} -o jsonpath={.metadata.uid}) # 获取API地址 apiEndpoint=$(yq eval &#39;.clusters[0].cluster.server&#39; ${member}) # 创建名称空间 kubectl create ns karmada-cluster --kubeconfig ${member} 创建Clusterrole | ClusterRoleBinding | ServiceAccount 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 cat << EOF | kubectl apply -f - --kubeconfig ${member} apiVersion: rbac.authorization.k8s.io/v1 kind: ClusterRole metadata: name: karmada-controller-manager:karmada-${member} rules: - apiGroups: - &#39;*&#39; resources: - &#39;*&#39; verbs: - &#39;*&#39; - nonResourceURLs: - &#39;*&#39; verbs: - get --- apiVersion: rbac.authorization.k8s.io/v1 kind: ClusterRole metadata: labels: karmada.io/managed: "true" work.karmada.io/namespace: karmada-es-${member} name: karmada-impersonator rules: - apiGroups: - "" resourceNames: - system:admin - system:kube-controller-manager resources: - users verbs: - impersonate - apiGroups: - "" resourceNames: - generic-garbage-collector - namespace-controller - resourcequota-controller resources: - serviceaccounts verbs: - impersonate - apiGroups: - "" resourceNames: - system:masters resources: - groups verbs: - impersonate --- apiVersion: rbac.authorization.k8s.io/v1 kind: ClusterRoleBinding metadata: name: karmada-controller-manager:karmada-${member} roleRef: apiGroup: rbac.authorization.k8s.io kind: ClusterRole name: karmada-controller-manager:karmada-${member} subjects: - kind: ServiceAccount name: karmada-${member} namespace: karmada-cluster --- apiVersion: rbac.authorization.k8s.io/v1 kind: ClusterRoleBinding metadata: labels: karmada.io/managed: "true" work.karmada.io/namespace: karmada-es-${member} name: karmada-impersonator roleRef: apiGroup: rbac.authorization.k8s.io kind: ClusterRole name: karmada-impersonator subjects: - kind: ServiceAccount name: karmada-impersonator namespace: karmada-cluster --- apiVersion: v1 kind: ServiceAccount metadata: name: karmada-impersonator namespace: karmada-cluster --- apiVersion: v1 kind: ServiceAccount metadata: name: karmada-member3 namespace: karmada-cluster EOF 成员集群创建Secret 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 cat << EOF | kubectl apply -f - --kubeconfig ${member} apiVersion: v1 data: ca.crt: ${ca_data} namespace: a2FybWFkYS1jbHVzdGVy kind: Secret metadata: annotations: kubernetes.io/service-account.name: karmada-${member} name: karmada-${member} namespace: karmada-cluster type: kubernetes.io/service-account-token --- apiVersion: v1 data: ca.crt: ${ca_data} namespace: a2FybWFkYS1jbHVzdGVy kind: Secret metadata: annotations: kubernetes.io/service-account.name: karmada-impersonator name: karmada-impersonator namespace: karmada-cluster type: kubernetes.io/service-account-token EOF 获取成员集群Token 1 2 member_token="$(kubectl get secret -n karmada-cluster --kubeconfig ${member} karmada-${member} -o jsonpath="{.data.token}")" impersonator_token="$(kubectl get secret -n karmada-cluster --kubeconfig ${member} karmada-impersonator -o jsonpath="{.data.token}")" 控制面创建Secret 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 cat << EOF | kubectl apply -f - --kubeconfig karmada-api apiVersion: v1 data: caBundle: ${ca_data} token: ${member_token} kind: Secret metadata: name: ${member} namespace: karmada-cluster type: Opaque --- apiVersion: v1 data: token: ${impersonator_token} kind: Secret metadata: name: ${member}-impersonator namespace: karmada-cluster type: Opaque EOF 创建Cluster 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 cat << EOF | kubectl apply -f - --kubeconfig karmada-api --- apiVersion: cluster.karmada.io/v1alpha1 kind: Cluster metadata: name: ${member} spec: apiEndpoint: ${apiEndpoint} id: ${cluster_id} secretRef: name: ${member} namespace: karmada-cluster impersonatorSecretRef: name: ${member}-impersonator namespace: karmada-cluster syncMode: Push resourceModels: - grade: 0 ranges: - max: "1" min: "0" name: cpu - max: 4Gi min: "0" name: memory - grade: 1 ranges: - max: "2" min: "1" name: cpu - max: 16Gi min: 4Gi name: memory - grade: 2 ranges: - max: "4" min: "2" name: cpu - max: 32Gi min: 16Gi name: memory - grade: 3 ranges: - max: "8" min: "4" name: cpu - max: 64Gi min: 32Gi name: memory - grade: 4 ranges: - max: "16" min: "8" name: cpu - max: 128Gi min: 64Gi name: memory - grade: 5 ranges: - max: "32" min: "16" name: cpu - max: 256Gi min: 128Gi name: memory - grade: 6 ranges: - max: "64" min: "32" name: cpu - max: 512Gi min: 256Gi name: memory - grade: 7 ranges: - max: "128" min: "64" name: cpu - max: 1Ti min: 512Gi name: memory - grade: 8 ranges: - max: "9223372036854775807" min: "128" name: cpu - max: "9223372036854775807" min: 1Ti name: memory EOF 1 2 3 4 5 # kubectl get cluster -n karmada-cluster --kubeconfig karmada-api NAME VERSION MODE READY AGE member1 v1.29.0 Push True 3d member2 v1.29.0 Push True 2d20h member3 v1.29.0 Push True 2d18h '><meta name=keywords content='karmada'><meta itemprop=name content="Karmada多集群部署"><meta itemprop=description content='20231031 快速建立karmada集群 20240304 补充手动注册集群方法 创建 Kind 集群 karmada 控制面 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 export VIP=172.26.145.27 cat << EOF | kind create cluster --name=karmada-controller --kubeconfig=karmada-controller --config=- kind: Cluster apiVersion: "kind.x-k8s.io/v1alpha4" networking: apiServerAddress: "${VIP}" nodes: - role: control-plane image: registry.cn-hangzhou.aliyuncs.com/seam/node:v1.20.15 extraPortMappings: - containerPort: 5443 hostPort: 5443 protocol: TCP listenAddress: "${VIP}" EOF 创建 karmada 成员集群 member1 1 2 3 4 5 6 7 8 9 10 11 cat << EOF | kind create cluster --name=member1 --kubeconfig=member1 --config=- kind: Cluster apiVersion: "kind.x-k8s.io/v1alpha4" networking: apiServerAddress: "${VIP}" podSubnet: "10.10.0.0/16" serviceSubnet: "10.11.0.0/16" nodes: - role: control-plane image: registry.cn-hangzhou.aliyuncs.com/seam/node:v1.26.0 EOF member2 1 2 3 4 5 6 7 8 9 10 11 cat << EOF | kind create cluster --name=member2 --kubeconfig=member2 --config=- kind: Cluster apiVersion: "kind.x-k8s.io/v1alpha4" networking: apiServerAddress: "${VIP}" podSubnet: "10.12.0.0/16" serviceSubnet: "10.13.0.0/16" nodes: - role: control-plane image: registry.cn-hangzhou.aliyuncs.com/seam/node:v1.26.0 EOF member3 1 2 3 4 5 6 7 8 9 10 11 cat << EOF | kind create cluster --name=member3 --kubeconfig=member3 --config=- kind: Cluster apiVersion: "kind.x-k8s.io/v1alpha4" networking: apiServerAddress: "${VIP}" podSubnet: "10.8.0.0/16" serviceSubnet: "10.9.0.0/16" nodes: - role: control-plane image: registry.cn-hangzhou.aliyuncs.com/seam/node:v1.23.0 EOF 安装 Karmada Operator 1 helm install karmada-operator -n karmada-system --create-namespace --dependency-update ./charts/karmada-operator --kubeconfig karmada-controller 创建 Karmada 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 kubectl apply -f - <<EOF apiVersion: operator.karmada.io/v1alpha1 kind: Karmada metadata: name: karmada namespace: karmada-system spec: components: karmadaAPIServer: serviceType: NodePort certSANs: - "kubernetes.default.svc" - "127.0.0.1" - "${VIP}" EOF 通过 Helm 安装 Karmada karmada 配置 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 cat <<EOF>> values.yaml installMode: "host" clusterDomain: "cluster.local" systemNamespace: "karmada-system" components: [] cfssl: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/cfssl tag: latest pullPolicy: IfNotPresent kubectl: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/kubectl tag: latest pullPolicy: IfNotPresent certs: mode: auto auto: expiry: 43800h hosts: [ "kubernetes.default.svc", "*.etcd.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}", "*.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}", "*.{{ .Release.Namespace }}.svc", "localhost", "127.0.0.1", "${VIP}" ] scheduler: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/karmada-scheduler webhook: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/karmada-webhook controllerManager: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/karmada-controller-manager apiServer: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/kube-apiserver tag: "v1.25.4" pullPolicy: IfNotPresent aggregatedApiServer: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/karmada-aggregated-apiserver metricsAdapter: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/karmada-metrics-adapter kubeControllerManager: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/kube-controller-manager tag: "v1.25.4" etcd: internal: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/etcd tag: "3.5.9-0" pullPolicy: IfNotPresent agent: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/karmada-agent schedulerEstimator: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/karmada-scheduler-estimator descheduler: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/karmada-descheduler search: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/karmada-search apiServer: hostNetwork: true EOF 1 2 3 4 5 6 helm repo add karmada-charts https://raw.githubusercontent.com/karmada-io/karmada/master/charts helm --namespace karmada-system upgrade --install karmada karmada-charts/karmada -f values.yaml --kubeconfig karmada-controller --create-namespace helm --namespace karmada-system template karmada karmada-charts/karmada --version=1.8.0 -f values.yaml 1 kubectl get secret -n karmada-system karmada-admin-config -o jsonpath={.data.kubeconfig} | base64 -d | sed "s/karmada-apiserver.karmada-system.svc.cluster.local/${VIP}/" > karmada-api 注册成员集群 安装 karmada 客户端 1 kubectl krew install karmada 加入集群 1 kubectl karmada join member1 --kubeconfig=<karmada api kubeconfig> --cluster-kubeconfig=<member kubeconfig> 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 # kind get kubeconfig --name member1 > member1 # kubectl karmada join member1 --kubeconfig=karmada-api --cluster-kubeconfig=member1 cluster(member1) is joined successfully # kubectl get secret --kubeconfig member1 -n karmada-cluster NAME TYPE DATA AGE karmada-impersonator kubernetes.io/service-account-token 3 7m21s karmada-member1 kubernetes.io/service-account-token 3 7m19s # kubectl get sa --kubeconfig member1 -n karmada-cluster NAME SECRETS AGE default 0 7m33s karmada-impersonator 0 7m33s karmada-member1 0 7m31s # kubectl get clusterRole --kubeconfig member1|grep karmada karmada-controller-manager:karmada-member1 2024-03-01T02:57:24Z karmada-impersonator 2024-03-01T02:57:27Z # kubectl get ClusterRoleBinding --kubeconfig member1|grep karmada karmada-controller-manager:karmada-member1 ClusterRole/karmada-controller-manager:karmada-member1 8m4s karmada-impersonator ClusterRole/karmada-impersonator 8m1s # kubectl get secret --kubeconfig karmada-api -n karmada-cluster NAME TYPE DATA AGE member1 Opaque 2 10m member1-impersonator Opaque 1 10m # kubectl get clusters --kubeconfig karmada-api NAME VERSION MODE READY AGE member1 v1.26.0 Push True 7s # kubectl karmada join member2 --kubeconfig=karmada-api --cluster-kubeconfig=kindyaml/member2 cluster(member2) is joined successfully # kubectl get clusters --kubeconfig karmada-api NAME VERSION MODE READY AGE member1 v1.26.0 Push True 93s member2 v1.26.0 Push True 4s 手动加入集群 成员集群配置 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 member=member3 # 获取kubeconfig kind get kubeconfig --name ${member} > ${member} # 获取ca证书 ca_data=$(yq eval &#39;.clusters[0].cluster.certificate-authority-data&#39; ${member}) # 获取成员集群ID cluster_id=$(kubectl get ns kube-system --kubeconfig ${member} -o jsonpath={.metadata.uid}) # 获取API地址 apiEndpoint=$(yq eval &#39;.clusters[0].cluster.server&#39; ${member}) # 创建名称空间 kubectl create ns karmada-cluster --kubeconfig ${member} 创建Clusterrole | ClusterRoleBinding | ServiceAccount 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 cat << EOF | kubectl apply -f - --kubeconfig ${member} apiVersion: rbac.authorization.k8s.io/v1 kind: ClusterRole metadata: name: karmada-controller-manager:karmada-${member} rules: - apiGroups: - &#39;*&#39; resources: - &#39;*&#39; verbs: - &#39;*&#39; - nonResourceURLs: - &#39;*&#39; verbs: - get --- apiVersion: rbac.authorization.k8s.io/v1 kind: ClusterRole metadata: labels: karmada.io/managed: "true" work.karmada.io/namespace: karmada-es-${member} name: karmada-impersonator rules: - apiGroups: - "" resourceNames: - system:admin - system:kube-controller-manager resources: - users verbs: - impersonate - apiGroups: - "" resourceNames: - generic-garbage-collector - namespace-controller - resourcequota-controller resources: - serviceaccounts verbs: - impersonate - apiGroups: - "" resourceNames: - system:masters resources: - groups verbs: - impersonate --- apiVersion: rbac.authorization.k8s.io/v1 kind: ClusterRoleBinding metadata: name: karmada-controller-manager:karmada-${member} roleRef: apiGroup: rbac.authorization.k8s.io kind: ClusterRole name: karmada-controller-manager:karmada-${member} subjects: - kind: ServiceAccount name: karmada-${member} namespace: karmada-cluster --- apiVersion: rbac.authorization.k8s.io/v1 kind: ClusterRoleBinding metadata: labels: karmada.io/managed: "true" work.karmada.io/namespace: karmada-es-${member} name: karmada-impersonator roleRef: apiGroup: rbac.authorization.k8s.io kind: ClusterRole name: karmada-impersonator subjects: - kind: ServiceAccount name: karmada-impersonator namespace: karmada-cluster --- apiVersion: v1 kind: ServiceAccount metadata: name: karmada-impersonator namespace: karmada-cluster --- apiVersion: v1 kind: ServiceAccount metadata: name: karmada-member3 namespace: karmada-cluster EOF 成员集群创建Secret 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 cat << EOF | kubectl apply -f - --kubeconfig ${member} apiVersion: v1 data: ca.crt: ${ca_data} namespace: a2FybWFkYS1jbHVzdGVy kind: Secret metadata: annotations: kubernetes.io/service-account.name: karmada-${member} name: karmada-${member} namespace: karmada-cluster type: kubernetes.io/service-account-token --- apiVersion: v1 data: ca.crt: ${ca_data} namespace: a2FybWFkYS1jbHVzdGVy kind: Secret metadata: annotations: kubernetes.io/service-account.name: karmada-impersonator name: karmada-impersonator namespace: karmada-cluster type: kubernetes.io/service-account-token EOF 获取成员集群Token 1 2 member_token="$(kubectl get secret -n karmada-cluster --kubeconfig ${member} karmada-${member} -o jsonpath="{.data.token}")" impersonator_token="$(kubectl get secret -n karmada-cluster --kubeconfig ${member} karmada-impersonator -o jsonpath="{.data.token}")" 控制面创建Secret 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 cat << EOF | kubectl apply -f - --kubeconfig karmada-api apiVersion: v1 data: caBundle: ${ca_data} token: ${member_token} kind: Secret metadata: name: ${member} namespace: karmada-cluster type: Opaque --- apiVersion: v1 data: token: ${impersonator_token} kind: Secret metadata: name: ${member}-impersonator namespace: karmada-cluster type: Opaque EOF 创建Cluster 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 cat << EOF | kubectl apply -f - --kubeconfig karmada-api --- apiVersion: cluster.karmada.io/v1alpha1 kind: Cluster metadata: name: ${member} spec: apiEndpoint: ${apiEndpoint} id: ${cluster_id} secretRef: name: ${member} namespace: karmada-cluster impersonatorSecretRef: name: ${member}-impersonator namespace: karmada-cluster syncMode: Push resourceModels: - grade: 0 ranges: - max: "1" min: "0" name: cpu - max: 4Gi min: "0" name: memory - grade: 1 ranges: - max: "2" min: "1" name: cpu - max: 16Gi min: 4Gi name: memory - grade: 2 ranges: - max: "4" min: "2" name: cpu - max: 32Gi min: 16Gi name: memory - grade: 3 ranges: - max: "8" min: "4" name: cpu - max: 64Gi min: 32Gi name: memory - grade: 4 ranges: - max: "16" min: "8" name: cpu - max: 128Gi min: 64Gi name: memory - grade: 5 ranges: - max: "32" min: "16" name: cpu - max: 256Gi min: 128Gi name: memory - grade: 6 ranges: - max: "64" min: "32" name: cpu - max: 512Gi min: 256Gi name: memory - grade: 7 ranges: - max: "128" min: "64" name: cpu - max: 1Ti min: 512Gi name: memory - grade: 8 ranges: - max: "9223372036854775807" min: "128" name: cpu - max: "9223372036854775807" min: 1Ti name: memory EOF 1 2 3 4 5 # kubectl get cluster -n karmada-cluster --kubeconfig karmada-api NAME VERSION MODE READY AGE member1 v1.29.0 Push True 3d member2 v1.29.0 Push True 2d20h member3 v1.29.0 Push True 2d18h'><meta itemprop=datePublished content="2023-10-31T15:24:42+08:00"><meta itemprop=dateModified content="2023-10-31T15:24:42+08:00"><meta itemprop=wordCount content="1687"><meta itemprop=image content="https://www.kbsonlong.com/logo_transparent.png"><meta itemprop=keywords content="Karmada"><meta property="og:url" content="https://www.kbsonlong.com/posts/karmada-multi--cluster-deployment/"><meta property="og:site_name" content="蜷缩的蜗牛"><meta property="og:title" content="Karmada多集群部署"><meta property="og:description" content='20231031 快速建立karmada集群 20240304 补充手动注册集群方法 创建 Kind 集群 karmada 控制面 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 export VIP=172.26.145.27 cat << EOF | kind create cluster --name=karmada-controller --kubeconfig=karmada-controller --config=- kind: Cluster apiVersion: "kind.x-k8s.io/v1alpha4" networking: apiServerAddress: "${VIP}" nodes: - role: control-plane image: registry.cn-hangzhou.aliyuncs.com/seam/node:v1.20.15 extraPortMappings: - containerPort: 5443 hostPort: 5443 protocol: TCP listenAddress: "${VIP}" EOF 创建 karmada 成员集群 member1 1 2 3 4 5 6 7 8 9 10 11 cat << EOF | kind create cluster --name=member1 --kubeconfig=member1 --config=- kind: Cluster apiVersion: "kind.x-k8s.io/v1alpha4" networking: apiServerAddress: "${VIP}" podSubnet: "10.10.0.0/16" serviceSubnet: "10.11.0.0/16" nodes: - role: control-plane image: registry.cn-hangzhou.aliyuncs.com/seam/node:v1.26.0 EOF member2 1 2 3 4 5 6 7 8 9 10 11 cat << EOF | kind create cluster --name=member2 --kubeconfig=member2 --config=- kind: Cluster apiVersion: "kind.x-k8s.io/v1alpha4" networking: apiServerAddress: "${VIP}" podSubnet: "10.12.0.0/16" serviceSubnet: "10.13.0.0/16" nodes: - role: control-plane image: registry.cn-hangzhou.aliyuncs.com/seam/node:v1.26.0 EOF member3 1 2 3 4 5 6 7 8 9 10 11 cat << EOF | kind create cluster --name=member3 --kubeconfig=member3 --config=- kind: Cluster apiVersion: "kind.x-k8s.io/v1alpha4" networking: apiServerAddress: "${VIP}" podSubnet: "10.8.0.0/16" serviceSubnet: "10.9.0.0/16" nodes: - role: control-plane image: registry.cn-hangzhou.aliyuncs.com/seam/node:v1.23.0 EOF 安装 Karmada Operator 1 helm install karmada-operator -n karmada-system --create-namespace --dependency-update ./charts/karmada-operator --kubeconfig karmada-controller 创建 Karmada 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 kubectl apply -f - <<EOF apiVersion: operator.karmada.io/v1alpha1 kind: Karmada metadata: name: karmada namespace: karmada-system spec: components: karmadaAPIServer: serviceType: NodePort certSANs: - "kubernetes.default.svc" - "127.0.0.1" - "${VIP}" EOF 通过 Helm 安装 Karmada karmada 配置 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 cat <<EOF>> values.yaml installMode: "host" clusterDomain: "cluster.local" systemNamespace: "karmada-system" components: [] cfssl: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/cfssl tag: latest pullPolicy: IfNotPresent kubectl: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/kubectl tag: latest pullPolicy: IfNotPresent certs: mode: auto auto: expiry: 43800h hosts: [ "kubernetes.default.svc", "*.etcd.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}", "*.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}", "*.{{ .Release.Namespace }}.svc", "localhost", "127.0.0.1", "${VIP}" ] scheduler: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/karmada-scheduler webhook: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/karmada-webhook controllerManager: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/karmada-controller-manager apiServer: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/kube-apiserver tag: "v1.25.4" pullPolicy: IfNotPresent aggregatedApiServer: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/karmada-aggregated-apiserver metricsAdapter: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/karmada-metrics-adapter kubeControllerManager: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/kube-controller-manager tag: "v1.25.4" etcd: internal: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/etcd tag: "3.5.9-0" pullPolicy: IfNotPresent agent: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/karmada-agent schedulerEstimator: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/karmada-scheduler-estimator descheduler: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/karmada-descheduler search: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/karmada-search apiServer: hostNetwork: true EOF 1 2 3 4 5 6 helm repo add karmada-charts https://raw.githubusercontent.com/karmada-io/karmada/master/charts helm --namespace karmada-system upgrade --install karmada karmada-charts/karmada -f values.yaml --kubeconfig karmada-controller --create-namespace helm --namespace karmada-system template karmada karmada-charts/karmada --version=1.8.0 -f values.yaml 1 kubectl get secret -n karmada-system karmada-admin-config -o jsonpath={.data.kubeconfig} | base64 -d | sed "s/karmada-apiserver.karmada-system.svc.cluster.local/${VIP}/" > karmada-api 注册成员集群 安装 karmada 客户端 1 kubectl krew install karmada 加入集群 1 kubectl karmada join member1 --kubeconfig=<karmada api kubeconfig> --cluster-kubeconfig=<member kubeconfig> 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 # kind get kubeconfig --name member1 > member1 # kubectl karmada join member1 --kubeconfig=karmada-api --cluster-kubeconfig=member1 cluster(member1) is joined successfully # kubectl get secret --kubeconfig member1 -n karmada-cluster NAME TYPE DATA AGE karmada-impersonator kubernetes.io/service-account-token 3 7m21s karmada-member1 kubernetes.io/service-account-token 3 7m19s # kubectl get sa --kubeconfig member1 -n karmada-cluster NAME SECRETS AGE default 0 7m33s karmada-impersonator 0 7m33s karmada-member1 0 7m31s # kubectl get clusterRole --kubeconfig member1|grep karmada karmada-controller-manager:karmada-member1 2024-03-01T02:57:24Z karmada-impersonator 2024-03-01T02:57:27Z # kubectl get ClusterRoleBinding --kubeconfig member1|grep karmada karmada-controller-manager:karmada-member1 ClusterRole/karmada-controller-manager:karmada-member1 8m4s karmada-impersonator ClusterRole/karmada-impersonator 8m1s # kubectl get secret --kubeconfig karmada-api -n karmada-cluster NAME TYPE DATA AGE member1 Opaque 2 10m member1-impersonator Opaque 1 10m # kubectl get clusters --kubeconfig karmada-api NAME VERSION MODE READY AGE member1 v1.26.0 Push True 7s # kubectl karmada join member2 --kubeconfig=karmada-api --cluster-kubeconfig=kindyaml/member2 cluster(member2) is joined successfully # kubectl get clusters --kubeconfig karmada-api NAME VERSION MODE READY AGE member1 v1.26.0 Push True 93s member2 v1.26.0 Push True 4s 手动加入集群 成员集群配置 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 member=member3 # 获取kubeconfig kind get kubeconfig --name ${member} > ${member} # 获取ca证书 ca_data=$(yq eval &#39;.clusters[0].cluster.certificate-authority-data&#39; ${member}) # 获取成员集群ID cluster_id=$(kubectl get ns kube-system --kubeconfig ${member} -o jsonpath={.metadata.uid}) # 获取API地址 apiEndpoint=$(yq eval &#39;.clusters[0].cluster.server&#39; ${member}) # 创建名称空间 kubectl create ns karmada-cluster --kubeconfig ${member} 创建Clusterrole | ClusterRoleBinding | ServiceAccount 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 cat << EOF | kubectl apply -f - --kubeconfig ${member} apiVersion: rbac.authorization.k8s.io/v1 kind: ClusterRole metadata: name: karmada-controller-manager:karmada-${member} rules: - apiGroups: - &#39;*&#39; resources: - &#39;*&#39; verbs: - &#39;*&#39; - nonResourceURLs: - &#39;*&#39; verbs: - get --- apiVersion: rbac.authorization.k8s.io/v1 kind: ClusterRole metadata: labels: karmada.io/managed: "true" work.karmada.io/namespace: karmada-es-${member} name: karmada-impersonator rules: - apiGroups: - "" resourceNames: - system:admin - system:kube-controller-manager resources: - users verbs: - impersonate - apiGroups: - "" resourceNames: - generic-garbage-collector - namespace-controller - resourcequota-controller resources: - serviceaccounts verbs: - impersonate - apiGroups: - "" resourceNames: - system:masters resources: - groups verbs: - impersonate --- apiVersion: rbac.authorization.k8s.io/v1 kind: ClusterRoleBinding metadata: name: karmada-controller-manager:karmada-${member} roleRef: apiGroup: rbac.authorization.k8s.io kind: ClusterRole name: karmada-controller-manager:karmada-${member} subjects: - kind: ServiceAccount name: karmada-${member} namespace: karmada-cluster --- apiVersion: rbac.authorization.k8s.io/v1 kind: ClusterRoleBinding metadata: labels: karmada.io/managed: "true" work.karmada.io/namespace: karmada-es-${member} name: karmada-impersonator roleRef: apiGroup: rbac.authorization.k8s.io kind: ClusterRole name: karmada-impersonator subjects: - kind: ServiceAccount name: karmada-impersonator namespace: karmada-cluster --- apiVersion: v1 kind: ServiceAccount metadata: name: karmada-impersonator namespace: karmada-cluster --- apiVersion: v1 kind: ServiceAccount metadata: name: karmada-member3 namespace: karmada-cluster EOF 成员集群创建Secret 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 cat << EOF | kubectl apply -f - --kubeconfig ${member} apiVersion: v1 data: ca.crt: ${ca_data} namespace: a2FybWFkYS1jbHVzdGVy kind: Secret metadata: annotations: kubernetes.io/service-account.name: karmada-${member} name: karmada-${member} namespace: karmada-cluster type: kubernetes.io/service-account-token --- apiVersion: v1 data: ca.crt: ${ca_data} namespace: a2FybWFkYS1jbHVzdGVy kind: Secret metadata: annotations: kubernetes.io/service-account.name: karmada-impersonator name: karmada-impersonator namespace: karmada-cluster type: kubernetes.io/service-account-token EOF 获取成员集群Token 1 2 member_token="$(kubectl get secret -n karmada-cluster --kubeconfig ${member} karmada-${member} -o jsonpath="{.data.token}")" impersonator_token="$(kubectl get secret -n karmada-cluster --kubeconfig ${member} karmada-impersonator -o jsonpath="{.data.token}")" 控制面创建Secret 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 cat << EOF | kubectl apply -f - --kubeconfig karmada-api apiVersion: v1 data: caBundle: ${ca_data} token: ${member_token} kind: Secret metadata: name: ${member} namespace: karmada-cluster type: Opaque --- apiVersion: v1 data: token: ${impersonator_token} kind: Secret metadata: name: ${member}-impersonator namespace: karmada-cluster type: Opaque EOF 创建Cluster 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 cat << EOF | kubectl apply -f - --kubeconfig karmada-api --- apiVersion: cluster.karmada.io/v1alpha1 kind: Cluster metadata: name: ${member} spec: apiEndpoint: ${apiEndpoint} id: ${cluster_id} secretRef: name: ${member} namespace: karmada-cluster impersonatorSecretRef: name: ${member}-impersonator namespace: karmada-cluster syncMode: Push resourceModels: - grade: 0 ranges: - max: "1" min: "0" name: cpu - max: 4Gi min: "0" name: memory - grade: 1 ranges: - max: "2" min: "1" name: cpu - max: 16Gi min: 4Gi name: memory - grade: 2 ranges: - max: "4" min: "2" name: cpu - max: 32Gi min: 16Gi name: memory - grade: 3 ranges: - max: "8" min: "4" name: cpu - max: 64Gi min: 32Gi name: memory - grade: 4 ranges: - max: "16" min: "8" name: cpu - max: 128Gi min: 64Gi name: memory - grade: 5 ranges: - max: "32" min: "16" name: cpu - max: 256Gi min: 128Gi name: memory - grade: 6 ranges: - max: "64" min: "32" name: cpu - max: 512Gi min: 256Gi name: memory - grade: 7 ranges: - max: "128" min: "64" name: cpu - max: 1Ti min: 512Gi name: memory - grade: 8 ranges: - max: "9223372036854775807" min: "128" name: cpu - max: "9223372036854775807" min: 1Ti name: memory EOF 1 2 3 4 5 # kubectl get cluster -n karmada-cluster --kubeconfig karmada-api NAME VERSION MODE READY AGE member1 v1.29.0 Push True 3d member2 v1.29.0 Push True 2d20h member3 v1.29.0 Push True 2d18h'><meta property="og:locale" content="zh_CN"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2023-10-31T15:24:42+08:00"><meta property="article:modified_time" content="2023-10-31T15:24:42+08:00"><meta property="article:tag" content="Karmada"><meta property="og:image" content="https://www.kbsonlong.com/logo_transparent.png"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://www.kbsonlong.com/logo_transparent.png"><meta name=twitter:title content="Karmada多集群部署"><meta name=twitter:description content='20231031 快速建立karmada集群 20240304 补充手动注册集群方法 创建 Kind 集群 karmada 控制面 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 export VIP=172.26.145.27 cat << EOF | kind create cluster --name=karmada-controller --kubeconfig=karmada-controller --config=- kind: Cluster apiVersion: "kind.x-k8s.io/v1alpha4" networking: apiServerAddress: "${VIP}" nodes: - role: control-plane image: registry.cn-hangzhou.aliyuncs.com/seam/node:v1.20.15 extraPortMappings: - containerPort: 5443 hostPort: 5443 protocol: TCP listenAddress: "${VIP}" EOF 创建 karmada 成员集群 member1 1 2 3 4 5 6 7 8 9 10 11 cat << EOF | kind create cluster --name=member1 --kubeconfig=member1 --config=- kind: Cluster apiVersion: "kind.x-k8s.io/v1alpha4" networking: apiServerAddress: "${VIP}" podSubnet: "10.10.0.0/16" serviceSubnet: "10.11.0.0/16" nodes: - role: control-plane image: registry.cn-hangzhou.aliyuncs.com/seam/node:v1.26.0 EOF member2 1 2 3 4 5 6 7 8 9 10 11 cat << EOF | kind create cluster --name=member2 --kubeconfig=member2 --config=- kind: Cluster apiVersion: "kind.x-k8s.io/v1alpha4" networking: apiServerAddress: "${VIP}" podSubnet: "10.12.0.0/16" serviceSubnet: "10.13.0.0/16" nodes: - role: control-plane image: registry.cn-hangzhou.aliyuncs.com/seam/node:v1.26.0 EOF member3 1 2 3 4 5 6 7 8 9 10 11 cat << EOF | kind create cluster --name=member3 --kubeconfig=member3 --config=- kind: Cluster apiVersion: "kind.x-k8s.io/v1alpha4" networking: apiServerAddress: "${VIP}" podSubnet: "10.8.0.0/16" serviceSubnet: "10.9.0.0/16" nodes: - role: control-plane image: registry.cn-hangzhou.aliyuncs.com/seam/node:v1.23.0 EOF 安装 Karmada Operator 1 helm install karmada-operator -n karmada-system --create-namespace --dependency-update ./charts/karmada-operator --kubeconfig karmada-controller 创建 Karmada 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 kubectl apply -f - <<EOF apiVersion: operator.karmada.io/v1alpha1 kind: Karmada metadata: name: karmada namespace: karmada-system spec: components: karmadaAPIServer: serviceType: NodePort certSANs: - "kubernetes.default.svc" - "127.0.0.1" - "${VIP}" EOF 通过 Helm 安装 Karmada karmada 配置 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 cat <<EOF>> values.yaml installMode: "host" clusterDomain: "cluster.local" systemNamespace: "karmada-system" components: [] cfssl: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/cfssl tag: latest pullPolicy: IfNotPresent kubectl: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/kubectl tag: latest pullPolicy: IfNotPresent certs: mode: auto auto: expiry: 43800h hosts: [ "kubernetes.default.svc", "*.etcd.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}", "*.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}", "*.{{ .Release.Namespace }}.svc", "localhost", "127.0.0.1", "${VIP}" ] scheduler: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/karmada-scheduler webhook: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/karmada-webhook controllerManager: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/karmada-controller-manager apiServer: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/kube-apiserver tag: "v1.25.4" pullPolicy: IfNotPresent aggregatedApiServer: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/karmada-aggregated-apiserver metricsAdapter: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/karmada-metrics-adapter kubeControllerManager: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/kube-controller-manager tag: "v1.25.4" etcd: internal: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/etcd tag: "3.5.9-0" pullPolicy: IfNotPresent agent: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/karmada-agent schedulerEstimator: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/karmada-scheduler-estimator descheduler: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/karmada-descheduler search: image: registry: registry.cn-hangzhou.aliyuncs.com repository: seam/karmada-search apiServer: hostNetwork: true EOF 1 2 3 4 5 6 helm repo add karmada-charts https://raw.githubusercontent.com/karmada-io/karmada/master/charts helm --namespace karmada-system upgrade --install karmada karmada-charts/karmada -f values.yaml --kubeconfig karmada-controller --create-namespace helm --namespace karmada-system template karmada karmada-charts/karmada --version=1.8.0 -f values.yaml 1 kubectl get secret -n karmada-system karmada-admin-config -o jsonpath={.data.kubeconfig} | base64 -d | sed "s/karmada-apiserver.karmada-system.svc.cluster.local/${VIP}/" > karmada-api 注册成员集群 安装 karmada 客户端 1 kubectl krew install karmada 加入集群 1 kubectl karmada join member1 --kubeconfig=<karmada api kubeconfig> --cluster-kubeconfig=<member kubeconfig> 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 # kind get kubeconfig --name member1 > member1 # kubectl karmada join member1 --kubeconfig=karmada-api --cluster-kubeconfig=member1 cluster(member1) is joined successfully # kubectl get secret --kubeconfig member1 -n karmada-cluster NAME TYPE DATA AGE karmada-impersonator kubernetes.io/service-account-token 3 7m21s karmada-member1 kubernetes.io/service-account-token 3 7m19s # kubectl get sa --kubeconfig member1 -n karmada-cluster NAME SECRETS AGE default 0 7m33s karmada-impersonator 0 7m33s karmada-member1 0 7m31s # kubectl get clusterRole --kubeconfig member1|grep karmada karmada-controller-manager:karmada-member1 2024-03-01T02:57:24Z karmada-impersonator 2024-03-01T02:57:27Z # kubectl get ClusterRoleBinding --kubeconfig member1|grep karmada karmada-controller-manager:karmada-member1 ClusterRole/karmada-controller-manager:karmada-member1 8m4s karmada-impersonator ClusterRole/karmada-impersonator 8m1s # kubectl get secret --kubeconfig karmada-api -n karmada-cluster NAME TYPE DATA AGE member1 Opaque 2 10m member1-impersonator Opaque 1 10m # kubectl get clusters --kubeconfig karmada-api NAME VERSION MODE READY AGE member1 v1.26.0 Push True 7s # kubectl karmada join member2 --kubeconfig=karmada-api --cluster-kubeconfig=kindyaml/member2 cluster(member2) is joined successfully # kubectl get clusters --kubeconfig karmada-api NAME VERSION MODE READY AGE member1 v1.26.0 Push True 93s member2 v1.26.0 Push True 4s 手动加入集群 成员集群配置 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 member=member3 # 获取kubeconfig kind get kubeconfig --name ${member} > ${member} # 获取ca证书 ca_data=$(yq eval &#39;.clusters[0].cluster.certificate-authority-data&#39; ${member}) # 获取成员集群ID cluster_id=$(kubectl get ns kube-system --kubeconfig ${member} -o jsonpath={.metadata.uid}) # 获取API地址 apiEndpoint=$(yq eval &#39;.clusters[0].cluster.server&#39; ${member}) # 创建名称空间 kubectl create ns karmada-cluster --kubeconfig ${member} 创建Clusterrole | ClusterRoleBinding | ServiceAccount 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 cat << EOF | kubectl apply -f - --kubeconfig ${member} apiVersion: rbac.authorization.k8s.io/v1 kind: ClusterRole metadata: name: karmada-controller-manager:karmada-${member} rules: - apiGroups: - &#39;*&#39; resources: - &#39;*&#39; verbs: - &#39;*&#39; - nonResourceURLs: - &#39;*&#39; verbs: - get --- apiVersion: rbac.authorization.k8s.io/v1 kind: ClusterRole metadata: labels: karmada.io/managed: "true" work.karmada.io/namespace: karmada-es-${member} name: karmada-impersonator rules: - apiGroups: - "" resourceNames: - system:admin - system:kube-controller-manager resources: - users verbs: - impersonate - apiGroups: - "" resourceNames: - generic-garbage-collector - namespace-controller - resourcequota-controller resources: - serviceaccounts verbs: - impersonate - apiGroups: - "" resourceNames: - system:masters resources: - groups verbs: - impersonate --- apiVersion: rbac.authorization.k8s.io/v1 kind: ClusterRoleBinding metadata: name: karmada-controller-manager:karmada-${member} roleRef: apiGroup: rbac.authorization.k8s.io kind: ClusterRole name: karmada-controller-manager:karmada-${member} subjects: - kind: ServiceAccount name: karmada-${member} namespace: karmada-cluster --- apiVersion: rbac.authorization.k8s.io/v1 kind: ClusterRoleBinding metadata: labels: karmada.io/managed: "true" work.karmada.io/namespace: karmada-es-${member} name: karmada-impersonator roleRef: apiGroup: rbac.authorization.k8s.io kind: ClusterRole name: karmada-impersonator subjects: - kind: ServiceAccount name: karmada-impersonator namespace: karmada-cluster --- apiVersion: v1 kind: ServiceAccount metadata: name: karmada-impersonator namespace: karmada-cluster --- apiVersion: v1 kind: ServiceAccount metadata: name: karmada-member3 namespace: karmada-cluster EOF 成员集群创建Secret 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 cat << EOF | kubectl apply -f - --kubeconfig ${member} apiVersion: v1 data: ca.crt: ${ca_data} namespace: a2FybWFkYS1jbHVzdGVy kind: Secret metadata: annotations: kubernetes.io/service-account.name: karmada-${member} name: karmada-${member} namespace: karmada-cluster type: kubernetes.io/service-account-token --- apiVersion: v1 data: ca.crt: ${ca_data} namespace: a2FybWFkYS1jbHVzdGVy kind: Secret metadata: annotations: kubernetes.io/service-account.name: karmada-impersonator name: karmada-impersonator namespace: karmada-cluster type: kubernetes.io/service-account-token EOF 获取成员集群Token 1 2 member_token="$(kubectl get secret -n karmada-cluster --kubeconfig ${member} karmada-${member} -o jsonpath="{.data.token}")" impersonator_token="$(kubectl get secret -n karmada-cluster --kubeconfig ${member} karmada-impersonator -o jsonpath="{.data.token}")" 控制面创建Secret 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 cat << EOF | kubectl apply -f - --kubeconfig karmada-api apiVersion: v1 data: caBundle: ${ca_data} token: ${member_token} kind: Secret metadata: name: ${member} namespace: karmada-cluster type: Opaque --- apiVersion: v1 data: token: ${impersonator_token} kind: Secret metadata: name: ${member}-impersonator namespace: karmada-cluster type: Opaque EOF 创建Cluster 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 cat << EOF | kubectl apply -f - --kubeconfig karmada-api --- apiVersion: cluster.karmada.io/v1alpha1 kind: Cluster metadata: name: ${member} spec: apiEndpoint: ${apiEndpoint} id: ${cluster_id} secretRef: name: ${member} namespace: karmada-cluster impersonatorSecretRef: name: ${member}-impersonator namespace: karmada-cluster syncMode: Push resourceModels: - grade: 0 ranges: - max: "1" min: "0" name: cpu - max: 4Gi min: "0" name: memory - grade: 1 ranges: - max: "2" min: "1" name: cpu - max: 16Gi min: 4Gi name: memory - grade: 2 ranges: - max: "4" min: "2" name: cpu - max: 32Gi min: 16Gi name: memory - grade: 3 ranges: - max: "8" min: "4" name: cpu - max: 64Gi min: 32Gi name: memory - grade: 4 ranges: - max: "16" min: "8" name: cpu - max: 128Gi min: 64Gi name: memory - grade: 5 ranges: - max: "32" min: "16" name: cpu - max: 256Gi min: 128Gi name: memory - grade: 6 ranges: - max: "64" min: "32" name: cpu - max: 512Gi min: 256Gi name: memory - grade: 7 ranges: - max: "128" min: "64" name: cpu - max: 1Ti min: 512Gi name: memory - grade: 8 ranges: - max: "9223372036854775807" min: "128" name: cpu - max: "9223372036854775807" min: 1Ti name: memory EOF 1 2 3 4 5 # kubectl get cluster -n karmada-cluster --kubeconfig karmada-api NAME VERSION MODE READY AGE member1 v1.29.0 Push True 3d member2 v1.29.0 Push True 2d20h member3 v1.29.0 Push True 2d18h'><meta name=application-name content="FixIt"><meta name=apple-mobile-web-app-title content="FixIt"><meta name=theme-color data-light=#ffffff data-dark=#252627 content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical type=text/html href=https://www.kbsonlong.com/posts/karmada-multi--cluster-deployment/ title="Karmada多集群部署 - 蜷缩的蜗牛"><link rel=prev type=text/html href=https://www.kbsonlong.com/posts/kubebuilder-2.0-learning-notes--advanced-use/ title=kubebuilder2.0学习笔记——进阶使用><link rel=next type=text/html href=https://www.kbsonlong.com/posts/use-fluent-bit-to-collect-tidb-slow-query-logs/ title="使用Fluent bit采集TIDB慢查询日志"><link rel=alternate type=text/markdown href=https://www.kbsonlong.com/posts/karmada-multi--cluster-deployment/index.md title="Karmada多集群部署 - 蜷缩的蜗牛"><link rel=stylesheet href=/css/style.min.css><link rel=preload href=/lib/fontawesome-free/all.min.css as=style onload='this.removeAttribute("onload"),this.rel="stylesheet"'><noscript><link rel=stylesheet href=/lib/fontawesome-free/all.min.css></noscript><link rel=preload href=/lib/animate/animate.min.css as=style onload='this.removeAttribute("onload"),this.rel="stylesheet"'><noscript><link rel=stylesheet href=/lib/animate/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Karmada多集群部署","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/www.kbsonlong.com\/posts\/karmada-multi--cluster-deployment\/"},"genre":"posts","keywords":"karmada","wordcount":1687,"url":"https:\/\/www.kbsonlong.com\/posts\/karmada-multi--cluster-deployment\/","datePublished":"2023-10-31T15:24:42+08:00","dateModified":"2023-10-31T15:24:42+08:00","license":"This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"kbsonlong"},"description":""}</script><script src=/js/head/color-scheme.min.js></script></head><body data-header-desktop=sticky data-header-mobile=auto><div class=wrapper data-page-style=normal><header class="desktop animate__faster" id=header-desktop><div class=header-wrapper data-github-corner=right><div class=header-title><a href=/ title=蜷缩的蜗牛><img class=logo src=/logo_transparent.png alt=蜷缩的蜗牛 height=32 width=32><span class=header-title-text>蜷缩的蜗牛</span></a><span class=header-subtitle></span></div><nav><ul class=menu><li class=menu-item><a class=menu-link href=/posts/><i class='fa-solid fa-archive fa-fw fa-sm'></i> 文章</a></li><li class=menu-item><a class=menu-link href=/categories/><i class='fa-solid fa-th fa-fw fa-sm'></i> 分类</a></li><li class=menu-item><a class=menu-link href=/tags/><i class='fa-solid fa-tags fa-fw fa-sm'></i> 标签</a></li><li class=menu-item><a class=menu-link href=/friends/ title=友情链接><i class='fa-solid fa-users fa-fw fa-sm'></i> 友链</a></li><li class=menu-item><a class=menu-link href=/about/><i class='fa-solid fa-info-circle fa-fw fa-sm'></i> 关于</a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=https://github.com/kbsonlong/ title=GitHub rel="noopener noreferrer" target=_blank><i class='fa-brands fa-github fa-fw'></i></a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=/messages/><i class='fa-solid fa-messages'></i> 留言板</a></li><li class=menu-item><a class=menu-link href=/messages/ title=留言板>留言板</a></li><li class="menu-item delimiter"></li><li class="menu-item search" id=search-desktop><input type=text placeholder=搜索文章标题或内容…… id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fa-solid fa-search fa-fw" aria-hidden=true></i>
+</a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fa-solid fa-times-circle fa-fw" aria-hidden=true></i>
+</a><span class="search-button search-loading" id=search-loading-desktop><i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></li><li class="menu-item theme-switch" title=切换主题><i class="fa-solid fa-adjust fa-fw" aria-hidden=true></i></li><li class="menu-item language-switch"><span role=button aria-label=选择语言 title=选择语言><i class="fa-solid fa-language fa-fw" aria-hidden=true></i></span><ul class=sub-menu><li class=menu-item>没有更多翻译</li></ul></li></ul></nav></div></header><header class="mobile animate__faster" id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title=蜷缩的蜗牛><img class=logo src=/logo_transparent.png alt=蜷缩的蜗牛 height=26 width=26><span class=header-title-text>蜷缩的蜗牛</span></a><span class=header-subtitle></span></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><nav><ul class=menu id=menu-mobile><li class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容…… id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fa-solid fa-search fa-fw" aria-hidden=true></i>
+</a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fa-solid fa-times-circle fa-fw" aria-hidden=true></i>
+</a><span class="search-button search-loading" id=search-loading-mobile><i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></li><li class=menu-item><a class=menu-link href=/posts/><i class='fa-solid fa-archive fa-fw fa-sm'></i> 文章</a></li><li class=menu-item><a class=menu-link href=/categories/><i class='fa-solid fa-th fa-fw fa-sm'></i> 分类</a></li><li class=menu-item><a class=menu-link href=/tags/><i class='fa-solid fa-tags fa-fw fa-sm'></i> 标签</a></li><li class=menu-item><a class=menu-link href=/friends/ title=友情链接><i class='fa-solid fa-users fa-fw fa-sm'></i> 友链</a></li><li class=menu-item><a class=menu-link href=/about/><i class='fa-solid fa-info-circle fa-fw fa-sm'></i> 关于</a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=https://github.com/kbsonlong/ title=GitHub rel="noopener noreferrer" target=_blank><i class='fa-brands fa-github fa-fw'></i></a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=/messages/><i class='fa-solid fa-messages'></i> 留言板</a></li><li class=menu-item><a class=menu-link href=/messages/ title=留言板>留言板</a></li><li class="menu-item menu-system"><span class="menu-system-item theme-switch" title=切换主题><i class="fa-solid fa-adjust fa-fw" aria-hidden=true></i></span><span class="menu-system-item language-switch">
+<span role=button aria-label=选择语言 title=选择语言>简体中文<i class="dropdown-icon fa-solid fa-chevron-down" aria-hidden=true></i></span>
+<select class=language-select onchange="location=this.value"><option disabled>没有更多翻译</option></select></span></li></ul></nav></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=container><aside class="aside-collection animate__animated animate__fadeIn animate__faster" aria-label=合集></aside><article class="page single"><div class=header><h1 class="single-title animate__animated animate__flipInX"><span>Karmada多集群部署</span></h1></div><div class=post-meta><div class=post-meta-line><span class=post-author><span class=author><i class="fa-solid fa-user-circle" aria-hidden=true></i>
+kbsonlong</span></span><span class=post-included-in>&nbsp;收录于 <a href=/categories/karmada/ class=post-category title="分类 - Karmada"><i class="fa-regular fa-folder fa-fw" aria-hidden=true></i> Karmada</a>&ensp;<a href=/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/ class=post-category title="分类 - 云原生"><i class="fa-regular fa-folder fa-fw" aria-hidden=true></i> 云原生</a></span></div><div class=post-meta-line><span title="发布于 2023-10-31 15:24:42"><i class="fa-solid fa-calendar-days fa-fw me-1" aria-hidden=true></i><time datetime=2023-10-31>2023-10-31</time></span>&nbsp;<span title="1687 字"><i class="fa-solid fa-pencil-alt fa-fw me-1" aria-hidden=true></i>约 1700 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw me-1" aria-hidden=true></i>预计阅读 4 分钟</span>&nbsp;<span id=busuanzi_container_page_pv class="busuanzi_visitors comment-visitors" data-flag-title=Karmada多集群部署><i class="fa-regular fa-eye fa-fw me-1" aria-hidden=true></i><span id=busuanzi_value_page_pv>-</span>&nbsp;次阅读
+</span>&nbsp;</div></div><div class="details toc" id=toc-static data-kept=false><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fa-solid fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><ul><li><a href=#创建-kind-集群>创建 Kind 集群</a><ul><li><a href=#karmada-控制面>karmada 控制面</a></li><li><a href=#创建-karmada-成员集群>创建 karmada 成员集群</a><ul><li><a href=#member1>member1</a></li><li><a href=#member2>member2</a></li><li><a href=#member3>member3</a></li></ul></li></ul></li><li><a href=#安装-karmada-operator>安装 Karmada Operator</a></li><li><a href=#创建-karmada>创建 Karmada</a></li><li><a href=#通过-helm-安装-karmada>通过 Helm 安装 Karmada</a><ul><li><a href=#karmada-配置>karmada 配置</a></li></ul></li><li><a href=#注册成员集群>注册成员集群</a><ul><li><a href=#安装-karmada-客户端>安装 karmada 客户端</a></li><li><a href=#加入集群>加入集群</a></li><li><a href=#手动加入集群>手动加入集群</a></li></ul></li></ul></li></ul></nav></div></div><div class=content id=content><blockquote><ol><li>20231031 快速建立karmada集群</li><li>20240304 补充手动注册集群方法</li></ol></blockquote><h3 class=heading-element id=创建-kind-集群><span>创建 Kind 集群</span>
+<a href=#%e5%88%9b%e5%bb%ba-kind-%e9%9b%86%e7%be%a4 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><h4 class=heading-element id=karmada-控制面><span>karmada 控制面</span>
+<a href=#karmada-%e6%8e%a7%e5%88%b6%e9%9d%a2 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=l>export VIP=172.26.145.27</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>cat &lt;&lt; EOF | kind create cluster --name=karmada-controller --kubeconfig=karmada-controller --config=-</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Cluster</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;kind.x-k8s.io/v1alpha4&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>networking</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>apiServerAddress</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${VIP}&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>nodes</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>role</span><span class=p>:</span><span class=w> </span><span class=l>control-plane</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>image</span><span class=p>:</span><span class=w> </span><span class=l>registry.cn-hangzhou.aliyuncs.com/seam/node:v1.20.15</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>extraPortMappings</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=nt>containerPort</span><span class=p>:</span><span class=w> </span><span class=m>5443</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>hostPort</span><span class=p>:</span><span class=w> </span><span class=m>5443</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>protocol</span><span class=p>:</span><span class=w> </span><span class=l>TCP</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>listenAddress</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${VIP}&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>EOF</span></span></span></code></pre></td></tr></table></div></div><h4 class=heading-element id=创建-karmada-成员集群><span>创建 karmada 成员集群</span>
+<a href=#%e5%88%9b%e5%bb%ba-karmada-%e6%88%90%e5%91%98%e9%9b%86%e7%be%a4 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h4><h5 class=heading-element id=member1><span>member1</span>
+<a href=#member1 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h5><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=l>cat &lt;&lt; EOF | kind create cluster --name=member1 --kubeconfig=member1 --config=-</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Cluster</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;kind.x-k8s.io/v1alpha4&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>networking</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>apiServerAddress</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${VIP}&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>podSubnet</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;10.10.0.0/16&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>serviceSubnet</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;10.11.0.0/16&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>nodes</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>role</span><span class=p>:</span><span class=w> </span><span class=l>control-plane</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>image</span><span class=p>:</span><span class=w> </span><span class=l>registry.cn-hangzhou.aliyuncs.com/seam/node:v1.26.0</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>EOF</span></span></span></code></pre></td></tr></table></div></div><h5 class=heading-element id=member2><span>member2</span>
+<a href=#member2 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h5><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=l>cat &lt;&lt; EOF | kind create cluster --name=member2 --kubeconfig=member2 --config=-</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Cluster</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;kind.x-k8s.io/v1alpha4&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>networking</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>apiServerAddress</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${VIP}&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>podSubnet</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;10.12.0.0/16&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>serviceSubnet</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;10.13.0.0/16&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>nodes</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>role</span><span class=p>:</span><span class=w> </span><span class=l>control-plane</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>image</span><span class=p>:</span><span class=w> </span><span class=l>registry.cn-hangzhou.aliyuncs.com/seam/node:v1.26.0</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>EOF</span></span></span></code></pre></td></tr></table></div></div><h5 class=heading-element id=member3><span>member3</span>
+<a href=#member3 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h5><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=l>cat &lt;&lt; EOF | kind create cluster --name=member3 --kubeconfig=member3 --config=-</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Cluster</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;kind.x-k8s.io/v1alpha4&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>networking</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>apiServerAddress</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;${VIP}&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>podSubnet</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;10.8.0.0/16&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>serviceSubnet</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;10.9.0.0/16&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>nodes</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>role</span><span class=p>:</span><span class=w> </span><span class=l>control-plane</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>image</span><span class=p>:</span><span class=w> </span><span class=l>registry.cn-hangzhou.aliyuncs.com/seam/node:v1.23.0</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>EOF</span></span></span></code></pre></td></tr></table></div></div><h3 class=heading-element id=安装-karmada-operator><span>安装 Karmada Operator</span>
+<a href=#%e5%ae%89%e8%a3%85-karmada-operator class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>helm install karmada-operator -n karmada-system  --create-namespace --dependency-update ./charts/karmada-operator  --kubeconfig karmada-controller</span></span></code></pre></td></tr></table></div></div><h3 class=heading-element id=创建-karmada><span>创建 Karmada</span>
+<a href=#%e5%88%9b%e5%bb%ba-karmada class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=l>kubectl apply -f - &lt;&lt;EOF</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>operator.karmada.io/v1alpha1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Karmada</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>karmada</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class=l>karmada-system</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>components</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>karmadaAPIServer</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>serviceType</span><span class=p>:</span><span class=w> </span><span class=l>NodePort</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>certSANs</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span>- <span class=s2>&#34;kubernetes.default.svc&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span>- <span class=s2>&#34;127.0.0.1&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span>- <span class=s2>&#34;${VIP}&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>EOF</span></span></span></code></pre></td></tr></table></div></div><h3 class=heading-element id=通过-helm-安装-karmada><span>通过 Helm 安装 Karmada</span>
+<a href=#%e9%80%9a%e8%bf%87-helm-%e5%ae%89%e8%a3%85-karmada class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><h4 class=heading-element id=karmada-配置><span>karmada 配置</span>
+<a href=#karmada-%e9%85%8d%e7%bd%ae class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span><span class=lnt>76
+</span><span class=lnt>77
+</span><span class=lnt>78
+</span><span class=lnt>79
+</span><span class=lnt>80
+</span><span class=lnt>81
+</span><span class=lnt>82
+</span><span class=lnt>83
+</span><span class=lnt>84
+</span><span class=lnt>85
+</span><span class=lnt>86
+</span><span class=lnt>87
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=l>cat &lt;&lt;EOF&gt;&gt; values.yaml</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>installMode</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;host&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>clusterDomain</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;cluster.local&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>systemNamespace</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;karmada-system&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>components</span><span class=p>:</span><span class=w> </span><span class=p>[]</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>cfssl</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>image</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>registry</span><span class=p>:</span><span class=w> </span><span class=l>registry.cn-hangzhou.aliyuncs.com</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>repository</span><span class=p>:</span><span class=w> </span><span class=l>seam/cfssl</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>tag</span><span class=p>:</span><span class=w> </span><span class=l>latest</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>pullPolicy</span><span class=p>:</span><span class=w> </span><span class=l>IfNotPresent</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kubectl</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>image</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>registry</span><span class=p>:</span><span class=w> </span><span class=l>registry.cn-hangzhou.aliyuncs.com</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>repository</span><span class=p>:</span><span class=w> </span><span class=l>seam/kubectl</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>tag</span><span class=p>:</span><span class=w> </span><span class=l>latest</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>pullPolicy</span><span class=p>:</span><span class=w> </span><span class=l>IfNotPresent</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>certs</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>mode</span><span class=p>:</span><span class=w> </span><span class=l>auto</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>auto</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>expiry</span><span class=p>:</span><span class=w> </span><span class=l>43800h</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>hosts</span><span class=p>:</span><span class=w> </span><span class=p>[</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=s2>&#34;kubernetes.default.svc&#34;</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=s2>&#34;*.etcd.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}&#34;</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=s2>&#34;*.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}&#34;</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=s2>&#34;*.{{ .Release.Namespace }}.svc&#34;</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=s2>&#34;localhost&#34;</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=s2>&#34;127.0.0.1&#34;</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=s2>&#34;${VIP}&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>]</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>scheduler</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>image</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>registry</span><span class=p>:</span><span class=w> </span><span class=l>registry.cn-hangzhou.aliyuncs.com</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>repository</span><span class=p>:</span><span class=w> </span><span class=l>seam/karmada-scheduler</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>webhook</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>image</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>registry</span><span class=p>:</span><span class=w> </span><span class=l>registry.cn-hangzhou.aliyuncs.com</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>repository</span><span class=p>:</span><span class=w> </span><span class=l>seam/karmada-webhook</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>controllerManager</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>image</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>registry</span><span class=p>:</span><span class=w> </span><span class=l>registry.cn-hangzhou.aliyuncs.com</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>repository</span><span class=p>:</span><span class=w> </span><span class=l>seam/karmada-controller-manager</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>apiServer</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>image</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>registry</span><span class=p>:</span><span class=w> </span><span class=l>registry.cn-hangzhou.aliyuncs.com</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>repository</span><span class=p>:</span><span class=w> </span><span class=l>seam/kube-apiserver</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>tag</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;v1.25.4&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>pullPolicy</span><span class=p>:</span><span class=w> </span><span class=l>IfNotPresent</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>aggregatedApiServer</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>image</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>registry</span><span class=p>:</span><span class=w> </span><span class=l>registry.cn-hangzhou.aliyuncs.com</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>repository</span><span class=p>:</span><span class=w> </span><span class=l>seam/karmada-aggregated-apiserver</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metricsAdapter</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>image</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>registry</span><span class=p>:</span><span class=w> </span><span class=l>registry.cn-hangzhou.aliyuncs.com</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>repository</span><span class=p>:</span><span class=w> </span><span class=l>seam/karmada-metrics-adapter</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kubeControllerManager</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>image</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>registry</span><span class=p>:</span><span class=w> </span><span class=l>registry.cn-hangzhou.aliyuncs.com</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>repository</span><span class=p>:</span><span class=w> </span><span class=l>seam/kube-controller-manager</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>tag</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;v1.25.4&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>etcd</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>internal</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>image</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>registry</span><span class=p>:</span><span class=w> </span><span class=l>registry.cn-hangzhou.aliyuncs.com</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>repository</span><span class=p>:</span><span class=w> </span><span class=l>seam/etcd</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>tag</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;3.5.9-0&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>pullPolicy</span><span class=p>:</span><span class=w> </span><span class=l>IfNotPresent</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>agent</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>image</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>registry</span><span class=p>:</span><span class=w> </span><span class=l>registry.cn-hangzhou.aliyuncs.com</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>repository</span><span class=p>:</span><span class=w> </span><span class=l>seam/karmada-agent</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>schedulerEstimator</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>image</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>registry</span><span class=p>:</span><span class=w> </span><span class=l>registry.cn-hangzhou.aliyuncs.com</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>repository</span><span class=p>:</span><span class=w> </span><span class=l>seam/karmada-scheduler-estimator</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>descheduler</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>image</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>registry</span><span class=p>:</span><span class=w> </span><span class=l>registry.cn-hangzhou.aliyuncs.com</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>repository</span><span class=p>:</span><span class=w> </span><span class=l>seam/karmada-descheduler</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>search</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>image</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>registry</span><span class=p>:</span><span class=w> </span><span class=l>registry.cn-hangzhou.aliyuncs.com</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>repository</span><span class=p>:</span><span class=w> </span><span class=l>seam/karmada-search</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>apiServer</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>hostNetwork</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>EOF</span></span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>helm repo add karmada-charts https://raw.githubusercontent.com/karmada-io/karmada/master/charts
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>helm --namespace karmada-system upgrade --install   karmada karmada-charts/karmada -f values.yaml --kubeconfig karmada-controller --create-namespace
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>helm --namespace karmada-system  template karmada karmada-charts/karmada --version<span class=o>=</span>1.8.0 -f values.yaml</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl get secret -n karmada-system  karmada-admin-config -o <span class=nv>jsonpath</span><span class=o>={</span>.data.kubeconfig<span class=o>}</span> <span class=p>|</span> base64 -d <span class=p>|</span>  sed <span class=s2>&#34;s/karmada-apiserver.karmada-system.svc.cluster.local/</span><span class=si>${</span><span class=nv>VIP</span><span class=si>}</span><span class=s2>/&#34;</span> &gt; karmada-api</span></span></code></pre></td></tr></table></div></div><h3 class=heading-element id=注册成员集群><span>注册成员集群</span>
+<a href=#%e6%b3%a8%e5%86%8c%e6%88%90%e5%91%98%e9%9b%86%e7%be%a4 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><h4 class=heading-element id=安装-karmada-客户端><span>安装 karmada 客户端</span>
+<a href=#%e5%ae%89%e8%a3%85-karmada-%e5%ae%a2%e6%88%b7%e7%ab%af class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl krew install karmada</span></span></code></pre></td></tr></table></div></div><h4 class=heading-element id=加入集群><span>加入集群</span>
+<a href=#%e5%8a%a0%e5%85%a5%e9%9b%86%e7%be%a4 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl karmada join member1 --kubeconfig<span class=o>=</span>&lt;karmada api kubeconfig&gt; --cluster-kubeconfig<span class=o>=</span>&lt;member kubeconfig&gt;</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># kind get kubeconfig --name member1 &gt; member1</span>
+</span></span><span class=line><span class=cl><span class=c1># kubectl karmada join member1 --kubeconfig=karmada-api --cluster-kubeconfig=member1</span>
+</span></span><span class=line><span class=cl>cluster<span class=o>(</span>member1<span class=o>)</span> is joined successfully
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># kubectl get secret --kubeconfig member1 -n karmada-cluster</span>
+</span></span><span class=line><span class=cl>NAME                   TYPE                                  DATA   AGE
+</span></span><span class=line><span class=cl>karmada-impersonator   kubernetes.io/service-account-token   <span class=m>3</span>      7m21s
+</span></span><span class=line><span class=cl>karmada-member1        kubernetes.io/service-account-token   <span class=m>3</span>      7m19s
+</span></span><span class=line><span class=cl><span class=c1># kubectl get sa --kubeconfig member1 -n karmada-cluster</span>
+</span></span><span class=line><span class=cl>NAME                   SECRETS   AGE
+</span></span><span class=line><span class=cl>default                <span class=m>0</span>         7m33s
+</span></span><span class=line><span class=cl>karmada-impersonator   <span class=m>0</span>         7m33s
+</span></span><span class=line><span class=cl>karmada-member1        <span class=m>0</span>         7m31s
+</span></span><span class=line><span class=cl><span class=c1># kubectl get clusterRole --kubeconfig member1|grep karmada</span>
+</span></span><span class=line><span class=cl>karmada-controller-manager:karmada-member1                             2024-03-01T02:57:24Z
+</span></span><span class=line><span class=cl>karmada-impersonator                                                   2024-03-01T02:57:27Z
+</span></span><span class=line><span class=cl><span class=c1># kubectl get ClusterRoleBinding --kubeconfig member1|grep karmada</span>
+</span></span><span class=line><span class=cl>karmada-controller-manager:karmada-member1               ClusterRole/karmada-controller-manager:karmada-member1                             8m4s
+</span></span><span class=line><span class=cl>karmada-impersonator                                     ClusterRole/karmada-impersonator                                                   8m1s
+</span></span><span class=line><span class=cl><span class=c1># kubectl get secret --kubeconfig karmada-api -n karmada-cluster</span>
+</span></span><span class=line><span class=cl>NAME                   TYPE     DATA   AGE
+</span></span><span class=line><span class=cl>member1                Opaque   <span class=m>2</span>      10m
+</span></span><span class=line><span class=cl>member1-impersonator   Opaque   <span class=m>1</span>      10m
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># kubectl get clusters --kubeconfig karmada-api</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>NAME      VERSION   MODE   READY   AGE
+</span></span><span class=line><span class=cl>member1   v1.26.0   Push   True    7s
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># kubectl karmada join member2 --kubeconfig=karmada-api --cluster-kubeconfig=kindyaml/member2</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>cluster<span class=o>(</span>member2<span class=o>)</span> is joined successfully
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># kubectl get clusters --kubeconfig karmada-api</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>NAME      VERSION   MODE   READY   AGE
+</span></span><span class=line><span class=cl>member1   v1.26.0   Push   True    93s
+</span></span><span class=line><span class=cl>member2   v1.26.0   Push   True    4s</span></span></code></pre></td></tr></table></div></div><h4 class=heading-element id=手动加入集群><span>手动加入集群</span>
+<a href=#%e6%89%8b%e5%8a%a8%e5%8a%a0%e5%85%a5%e9%9b%86%e7%be%a4 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h4><ul><li><ol><li>成员集群配置</li></ol></li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=nv>member</span><span class=o>=</span>member3
+</span></span><span class=line><span class=cl><span class=c1># 获取kubeconfig</span>
+</span></span><span class=line><span class=cl>kind get kubeconfig --name <span class=si>${</span><span class=nv>member</span><span class=si>}</span> &gt; <span class=si>${</span><span class=nv>member</span><span class=si>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 获取ca证书</span>
+</span></span><span class=line><span class=cl><span class=nv>ca_data</span><span class=o>=</span><span class=k>$(</span>yq  <span class=nb>eval</span> <span class=s1>&#39;.clusters[0].cluster.certificate-authority-data&#39;</span> <span class=si>${</span><span class=nv>member</span><span class=si>}</span><span class=k>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 获取成员集群ID</span>
+</span></span><span class=line><span class=cl><span class=nv>cluster_id</span><span class=o>=</span><span class=k>$(</span>kubectl get ns kube-system  --kubeconfig <span class=si>${</span><span class=nv>member</span><span class=si>}</span> -o <span class=nv>jsonpath</span><span class=o>={</span>.metadata.uid<span class=o>}</span><span class=k>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 获取API地址</span>
+</span></span><span class=line><span class=cl><span class=nv>apiEndpoint</span><span class=o>=</span><span class=k>$(</span>yq <span class=nb>eval</span> <span class=s1>&#39;.clusters[0].cluster.server&#39;</span> <span class=si>${</span><span class=nv>member</span><span class=si>}</span><span class=k>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 创建名称空间</span>
+</span></span><span class=line><span class=cl>kubectl create ns karmada-cluster --kubeconfig <span class=si>${</span><span class=nv>member</span><span class=si>}</span></span></span></code></pre></td></tr></table></div></div><ul><li><ol start=2><li>创建Clusterrole | ClusterRoleBinding | ServiceAccount</li></ol></li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span><span class=lnt>76
+</span><span class=lnt>77
+</span><span class=lnt>78
+</span><span class=lnt>79
+</span><span class=lnt>80
+</span><span class=lnt>81
+</span><span class=lnt>82
+</span><span class=lnt>83
+</span><span class=lnt>84
+</span><span class=lnt>85
+</span><span class=lnt>86
+</span><span class=lnt>87
+</span><span class=lnt>88
+</span><span class=lnt>89
+</span><span class=lnt>90
+</span><span class=lnt>91
+</span><span class=lnt>92
+</span><span class=lnt>93
+</span><span class=lnt>94
+</span><span class=lnt>95
+</span><span class=lnt>96
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=l>cat &lt;&lt; EOF | kubectl apply -f - --kubeconfig ${member}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>rbac.authorization.k8s.io/v1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>ClusterRole</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>karmada-controller-manager:karmada-${member}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>rules</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span>- <span class=nt>apiGroups</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=s1>&#39;*&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>resources</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=s1>&#39;*&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>verbs</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=s1>&#39;*&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span>- <span class=nt>nonResourceURLs</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=s1>&#39;*&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>verbs</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=l>get</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nn>---</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>rbac.authorization.k8s.io/v1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>ClusterRole</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>labels</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>karmada.io/managed</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;true&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>work.karmada.io/namespace</span><span class=p>:</span><span class=w> </span><span class=l>karmada-es-${member}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>karmada-impersonator</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>rules</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span>- <span class=nt>apiGroups</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=s2>&#34;&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>resourceNames</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=l>system:admin</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=l>system:kube-controller-manager</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>resources</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=l>users</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>verbs</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=l>impersonate</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span>- <span class=nt>apiGroups</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=s2>&#34;&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>resourceNames</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=l>generic-garbage-collector</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=l>namespace-controller</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=l>resourcequota-controller</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>resources</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=l>serviceaccounts</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>verbs</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=l>impersonate</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span>- <span class=nt>apiGroups</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=s2>&#34;&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>resourceNames</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=l>system:masters</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>resources</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=l>groups</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>verbs</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=l>impersonate</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nn>---</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>rbac.authorization.k8s.io/v1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>ClusterRoleBinding</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>karmada-controller-manager:karmada-${member}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>roleRef</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>apiGroup</span><span class=p>:</span><span class=w> </span><span class=l>rbac.authorization.k8s.io</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>ClusterRole</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>karmada-controller-manager:karmada-${member}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>subjects</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span>- <span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>ServiceAccount</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>karmada-${member}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class=l>karmada-cluster</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nn>---</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>rbac.authorization.k8s.io/v1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>ClusterRoleBinding</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>labels</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>karmada.io/managed</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;true&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>work.karmada.io/namespace</span><span class=p>:</span><span class=w> </span><span class=l>karmada-es-${member}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>karmada-impersonator</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>roleRef</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>apiGroup</span><span class=p>:</span><span class=w> </span><span class=l>rbac.authorization.k8s.io</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>ClusterRole</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>karmada-impersonator</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>subjects</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span>- <span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>ServiceAccount</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>karmada-impersonator</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class=l>karmada-cluster</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nn>---</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>v1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>ServiceAccount</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>karmada-impersonator</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class=l>karmada-cluster</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nn>---</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>v1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>ServiceAccount</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>karmada-member3</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class=l>karmada-cluster</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>EOF</span></span></span></code></pre></td></tr></table></div></div><ul><li><ol start=3><li>成员集群创建Secret</li></ol></li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=l>cat &lt;&lt; EOF | kubectl apply -f - --kubeconfig ${member}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>v1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>data</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>ca.crt</span><span class=p>:</span><span class=w> </span><span class=l>${ca_data}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class=l>a2FybWFkYS1jbHVzdGVy</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Secret</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>annotations</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>kubernetes.io/service-account.name</span><span class=p>:</span><span class=w> </span><span class=l>karmada-${member}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>karmada-${member}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class=l>karmada-cluster</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=l>kubernetes.io/service-account-token</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nn>---</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>v1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>data</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>ca.crt</span><span class=p>:</span><span class=w> </span><span class=l>${ca_data}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class=l>a2FybWFkYS1jbHVzdGVy</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Secret</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>annotations</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>kubernetes.io/service-account.name</span><span class=p>:</span><span class=w> </span><span class=l>karmada-impersonator</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>karmada-impersonator</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class=l>karmada-cluster</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=l>kubernetes.io/service-account-token</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>EOF</span></span></span></code></pre></td></tr></table></div></div><ul><li><ol start=4><li>获取成员集群Token</li></ol></li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=nv>member_token</span><span class=o>=</span><span class=s2>&#34;</span><span class=k>$(</span>kubectl get secret -n karmada-cluster --kubeconfig  <span class=si>${</span><span class=nv>member</span><span class=si>}</span> karmada-<span class=si>${</span><span class=nv>member</span><span class=si>}</span> -o <span class=nv>jsonpath</span><span class=o>=</span><span class=s2>&#34;{.data.token}&#34;</span><span class=k>)</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl><span class=nv>impersonator_token</span><span class=o>=</span><span class=s2>&#34;</span><span class=k>$(</span>kubectl get secret -n karmada-cluster --kubeconfig <span class=si>${</span><span class=nv>member</span><span class=si>}</span> karmada-impersonator -o <span class=nv>jsonpath</span><span class=o>=</span><span class=s2>&#34;{.data.token}&#34;</span><span class=k>)</span><span class=s2>&#34;</span></span></span></code></pre></td></tr></table></div></div><ul><li><ol start=5><li>控制面创建Secret</li></ol></li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=l>cat &lt;&lt; EOF | kubectl apply -f - --kubeconfig karmada-api</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>v1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>data</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>caBundle</span><span class=p>:</span><span class=w> </span><span class=l>${ca_data}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>token</span><span class=p>:</span><span class=w> </span><span class=l>${member_token}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Secret</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>${member}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class=l>karmada-cluster</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=l>Opaque</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nn>---</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>v1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>data</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>token</span><span class=p>:</span><span class=w> </span><span class=l>${impersonator_token}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Secret</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>${member}-impersonator</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class=l>karmada-cluster</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=l>Opaque</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>EOF</span></span></span></code></pre></td></tr></table></div></div><ul><li><ol start=6><li>创建Cluster</li></ol></li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span><span class=lnt>76
+</span><span class=lnt>77
+</span><span class=lnt>78
+</span><span class=lnt>79
+</span><span class=lnt>80
+</span><span class=lnt>81
+</span><span class=lnt>82
+</span><span class=lnt>83
+</span><span class=lnt>84
+</span><span class=lnt>85
+</span><span class=lnt>86
+</span><span class=lnt>87
+</span><span class=lnt>88
+</span><span class=lnt>89
+</span><span class=lnt>90
+</span><span class=lnt>91
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=l>cat &lt;&lt; EOF | kubectl apply -f - --kubeconfig karmada-api</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nn>---</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>cluster.karmada.io/v1alpha1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Cluster</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>${member}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>apiEndpoint</span><span class=p>:</span><span class=w> </span><span class=l>${apiEndpoint}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>id</span><span class=p>:</span><span class=w> </span><span class=l>${cluster_id}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>secretRef</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>${member}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class=l>karmada-cluster</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>impersonatorSecretRef</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>${member}-impersonator</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class=l>karmada-cluster</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>syncMode</span><span class=p>:</span><span class=w> </span><span class=l>Push</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>resourceModels</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>grade</span><span class=p>:</span><span class=w> </span><span class=m>0</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>ranges</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>max</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;1&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>min</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;0&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>cpu</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>max</span><span class=p>:</span><span class=w> </span><span class=l>4Gi</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>min</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;0&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>memory</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>grade</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>ranges</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>max</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;2&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>min</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;1&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>cpu</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>max</span><span class=p>:</span><span class=w> </span><span class=l>16Gi</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>min</span><span class=p>:</span><span class=w> </span><span class=l>4Gi</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>memory</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>grade</span><span class=p>:</span><span class=w> </span><span class=m>2</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>ranges</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>max</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;4&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>min</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;2&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>cpu</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>max</span><span class=p>:</span><span class=w> </span><span class=l>32Gi</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>min</span><span class=p>:</span><span class=w> </span><span class=l>16Gi</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>memory</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>grade</span><span class=p>:</span><span class=w> </span><span class=m>3</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>ranges</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>max</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;8&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>min</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;4&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>cpu</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>max</span><span class=p>:</span><span class=w> </span><span class=l>64Gi</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>min</span><span class=p>:</span><span class=w> </span><span class=l>32Gi</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>memory</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>grade</span><span class=p>:</span><span class=w> </span><span class=m>4</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>ranges</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>max</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;16&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>min</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;8&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>cpu</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>max</span><span class=p>:</span><span class=w> </span><span class=l>128Gi</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>min</span><span class=p>:</span><span class=w> </span><span class=l>64Gi</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>memory</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>grade</span><span class=p>:</span><span class=w> </span><span class=m>5</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>ranges</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>max</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;32&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>min</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;16&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>cpu</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>max</span><span class=p>:</span><span class=w> </span><span class=l>256Gi</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>min</span><span class=p>:</span><span class=w> </span><span class=l>128Gi</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>memory</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>grade</span><span class=p>:</span><span class=w> </span><span class=m>6</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>ranges</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>max</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;64&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>min</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;32&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>cpu</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>max</span><span class=p>:</span><span class=w> </span><span class=l>512Gi</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>min</span><span class=p>:</span><span class=w> </span><span class=l>256Gi</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>memory</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>grade</span><span class=p>:</span><span class=w> </span><span class=m>7</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>ranges</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>max</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;128&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>min</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;64&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>cpu</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>max</span><span class=p>:</span><span class=w> </span><span class=l>1Ti</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>min</span><span class=p>:</span><span class=w> </span><span class=l>512Gi</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>memory</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>grade</span><span class=p>:</span><span class=w> </span><span class=m>8</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>ranges</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>max</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;9223372036854775807&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>min</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;128&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>cpu</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>max</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;9223372036854775807&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>min</span><span class=p>:</span><span class=w> </span><span class=l>1Ti</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>memory</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>EOF</span></span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># kubectl get cluster -n karmada-cluster --kubeconfig karmada-api</span>
+</span></span><span class=line><span class=cl>NAME      VERSION   MODE   READY   AGE
+</span></span><span class=line><span class=cl>member1   v1.29.0   Push   True    3d
+</span></span><span class=line><span class=cl>member2   v1.29.0   Push   True    2d20h
+</span></span><span class=line><span class=cl>member3   v1.29.0   Push   True    2d18h</span></span></code></pre></td></tr></table></div></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span title="更新于 2023-10-31 15:24:42">更新于 2023-10-31&nbsp;</span></div><div class=post-info-license><span><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span></div></div><div class=post-info-line><div class=post-info-md><span><a href=/posts/karmada-multi--cluster-deployment/index.md title=阅读原始文档 class=link-to-markdown>阅读原始文档</a></span></div><div class=post-info-share><span><a href=javascript:void(0); title="分享到 X" data-sharer=twitter data-url=https://www.kbsonlong.com/posts/karmada-multi--cluster-deployment/ data-title=Karmada多集群部署 data-hashtags=karmada><i class="fa-brands fa-x-twitter fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="分享到 Facebook" data-sharer=facebook data-url=https://www.kbsonlong.com/posts/karmada-multi--cluster-deployment/ data-hashtag=karmada><i class="fa-brands fa-facebook-square fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="分享到 WhatsApp" data-sharer=whatsapp data-url=https://www.kbsonlong.com/posts/karmada-multi--cluster-deployment/ data-title=Karmada多集群部署 data-web><i class="fa-brands fa-whatsapp fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="分享到 Line" data-sharer=line data-url=https://www.kbsonlong.com/posts/karmada-multi--cluster-deployment/ data-title=Karmada多集群部署><svg class="icon" role="img" viewBox="0 0 24 24"><title>LINE</title><path d="M19.365 9.863c.349.0.63.285.63.631.0.345-.281.63-.63.63H17.61v1.125h1.755c.349.0.63.283.63.63.0.344-.281.629-.63.629h-2.386c-.345.0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346.0.627.285.627.63.0.349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211.0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346.0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195.0.375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345.0.63.285.63.63v4.771zm-5.741.0c0 .344-.282.629-.631.629-.345.0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346.0.628.285.628.63v4.771zm-2.466.629H4.917c-.345.0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348.0.63.285.63.63v4.141h1.756c.348.0.629.283.629.63.0.344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943.0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg></a>
+<a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://www.kbsonlong.com/posts/karmada-multi--cluster-deployment/ data-title=Karmada多集群部署><i class="fa-brands fa-weibo fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="分享到 Myspace" data-sharer=myspace data-url=https://www.kbsonlong.com/posts/karmada-multi--cluster-deployment/ data-title=Karmada多集群部署 data-description><svg class="icon" role="img" viewBox="0 0 24 24"><title>Myspace</title><path d="M19.802 12.274A3.811 3.811.0 0023.62 8.47c0-2.101-1.71-3.795-3.818-3.795a3.816 3.816.0 00-3.818 3.81 3.817 3.817.0 003.818 3.811zm-8.602.705a3.43 3.43.0 003.435-3.424A3.43 3.43.0 0011.2 6.13 3.44 3.44.0 007.764 9.566 3.436 3.436.0 0011.2 13zm-7.8.635c1.71.0 3.093-1.38 3.093-3.081.0-1.704-1.395-3.084-3.105-3.084A3.086 3.086.0 00.3 10.539c0 1.7 1.387 3.078 3.095 3.078zm0 .705c-1.96.0-3.4 1.717-3.4 3.495v1.196c0 .17.138.31.31.31h6.18a.31.31.0 00.309-.31v-1.196c0-1.779-1.437-3.5-3.398-3.5zm7.8-.56c-2.18.0-3.78 1.915-3.78 3.891v1.331c0 .188.156.344.345.344h6.87a.344.344.0 00.342-.344V17.65c0-1.976-1.598-3.891-3.777-3.891zm8.602-.617c-2.422.0-4.197 2.126-4.197 4.323v1.477c0 .21.172.381.382.381h7.63c.21.0.383-.171.383-.381v-1.477c-.001-2.197-1.776-4.323-4.198-4.323z"/></svg></a>
+<a href=javascript:void(0); title="分享到 Blogger" data-sharer=blogger data-url=https://www.kbsonlong.com/posts/karmada-multi--cluster-deployment/ data-title=Karmada多集群部署 data-description><i class="fa-brands fa-blogger fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="分享到 Evernote" data-sharer=evernote data-url=https://www.kbsonlong.com/posts/karmada-multi--cluster-deployment/ data-title=Karmada多集群部署><i class="fa-brands fa-evernote fa-fw" aria-hidden=true></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fa-solid fa-tags fa-fw me-1" aria-hidden=true></i><a href=/tags/karmada/ class=post-tag title="标签 - Karmada">Karmada</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span></section></div><div class=post-nav><a href=/posts/kubebuilder-2.0-learning-notes--advanced-use/ class=post-nav-item rel=prev title=Kubebuilder2.0学习笔记——进阶使用><i class="fa-solid fa-angle-left fa-fw" aria-hidden=true></i>Kubebuilder2.0学习笔记——进阶使用</a><a href=/posts/use-fluent-bit-to-collect-tidb-slow-query-logs/ class=post-nav-item rel=next title="使用Fluent Bit采集TIDB慢查询日志">使用Fluent Bit采集TIDB慢查询日志<i class="fa-solid fa-angle-right fa-fw" aria-hidden=true></i></a></div></div><div id=comments><div id=giscus class=comment><script src=https://giscus.app/client.js data-repo=kbsonlong/sre data-repo-id=R_kgDOMFzwNA data-category=Announcements data-category-id=DIC_kwDOMFzwNM4Cn0gn data-mapping=title data-strict=0 data-theme=preferred_color_scheme data-reactions-enabled=1 data-emit-metadata=0 data-input-position=bottom data-lang=zh-CN data-loading=lazy crossorigin=anonymous async defer></script></div><noscript>Please enable JavaScript to view the comments powered by <a href=https://giscus.app/ rel="external nofollow noopener noreferrer">giscus</a>.</noscript></div></article><aside class=toc id=toc-auto aria-label=目录><h2 class=toc-title>目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden=true></i></h2><div class=toc-content id=toc-content-auto></div></aside></main><footer class=footer><div class=footer-container><div class="footer-line copyright" itemscope itemtype=http://schema.org/CreativeWork><i class="fa-regular fa-copyright fa-fw" aria-hidden=true></i>
+<span itemprop=copyrightYear>2018 - 2025</span><span class=author itemprop=copyrightHolder>
+<a href=/></a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span></div><div class="footer-line statistics"><span class=site-time title=网站运行中……><i class="fa-solid fa-heartbeat fa-fw animate-icon" aria-hidden=true></i><span class="run-times ms-1">网站运行中……</span></span></div><div class="footer-line visitor"><span id=busuanzi_container_site_uv title=总访客数><i class="fa-regular fa-user fa-fw me-1" aria-hidden=true></i><span id=busuanzi_value_site_uv><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden=true></i></span></span><span id=busuanzi_container_site_pv class=footer-divider title=总访问量><i class="fa-regular fa-eye fa-fw me-1" aria-hidden=true></i><span id=busuanzi_value_site_pv><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden=true></i></span></span></div><div class="footer-line beian"><span class="icp footer-divider"><a target=_blank href=https://beian.miit.gov.cn/>粤ICP备18122209号</a></span></div></div></footer></div><div class=widgets><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role=button aria-label=回到顶部><i class="fa-solid fa-arrow-up fa-fw" aria-hidden=true></i><span class=variant-numeric>0%</span></div><div class="fixed-button view-comments d-none" role=button aria-label=查看评论><i class="fa-solid fa-comment fa-fw" aria-hidden=true></i></div></div><a href=https://github.com/kbsonlong title="在 GitHub 上查看源代码" target=_blank rel="external nofollow" class="github-corner right d-none-mobile"><svg viewBox="0 0 250 250" aria-hidden="true" width="56" height="56"><path d="M0 0 115 115h15l12 27L250 250V0z"/><path d="M128.3 109C113.8 99.7 119 89.6 119 89.6 122 82.7 120.5 78.6 120.5 78.6 119.2 72 123.4 76.3 123.4 76.3 127.3 80.9 125.5 87.3 125.5 87.3 122.9 97.6 130.6 101.9 134.4 103.2" fill="currentcolor" style="transform-origin:130px 106px" class="octo-arm"/><path d="M115 115C114.9 115.1 118.7 116.5 119.8 115.4l13.9-13.8C136.9 99.2 139.9 98.4 142.2 98.6 133.8 88 127.5 74.4 143.8 58 148.5 53.4 154 51.2 159.7 51 160.3 49.4 163.2 43.6 171.4 40.1 171.4 40.1 176.1 42.5 178.8 56.2 183.1 58.6 187.2 61.8 190.9 65.4 194.5 69 197.7 73.2 200.1 77.6 213.8 80.2 216.3 84.9 216.3 84.9 212.7 93.1 206.9 96 205.4 96.6 205.1 102.4 203 107.8 198.3 112.5 181.9 128.9 168.3 122.5 157.7 114.1 157.9 116.9 156.7 120.9 152.7 124.9L141 136.5C139.8 137.7 141.6 141.9 141.8 141.8z" fill="currentcolor" class="octo-body"/></svg></a><div id=mask></div><div class=reading-progress-bar style=left:0;top:0></div><noscript><div class=noscript-warning>该网站在启用 JavaScript 的情况下效果最佳。</div></noscript></div><link rel=preload href=/lib/katex/katex.min.css as=style onload='this.removeAttribute("onload"),this.rel="stylesheet"'><noscript><link rel=stylesheet href=/lib/katex/katex.min.css></noscript><link rel=stylesheet href=/lib/cookieconsent/cookieconsent.min.css><script src=/lib/autocomplete/autocomplete.min.js defer></script><script src=/lib/algoliasearch/algoliasearch-lite.umd.min.js defer></script><script src=/lib/sharer/sharer.min.js async defer></script><script src=/lib/katex/katex.min.js defer></script><script src=/lib/katex/auto-render.min.js defer></script><script src=/lib/katex/copy-tex.min.js defer></script><script src=/lib/katex/mhchem.min.js defer></script><script src=/lib/cookieconsent/cookieconsent.min.js defer></script><script src=/lib/pangu/pangu.min.js defer></script><script src=/lib/cell-watermark/watermark.min.js defer></script><script src=https://vercount.one/js async defer></script><script>window.config={code:{copyTitle:"复制到剪贴板",editLockTitle:"锁定可编辑代码块",editUnLockTitle:"解锁可编辑代码块",editable:!0,maxShownLines:10},comment:{enable:!0,expired:!1,giscus:{darkTheme:"dark",lightTheme:"light",origin:"https://giscus.app"}},cookieconsent:{content:{dismiss:"同意",link:"了解更多",message:"本网站使用 Cookies 来改善您的浏览体验。"},enable:!0,palette:{button:{background:"#f0f0f0"},popup:{background:"#1aa3ff"}},theme:"edgeless"},enablePWA:!0,math:{delimiters:[{display:!0,left:"$$",right:"$$"},{display:!0,left:"\\[",right:"\\]"},{display:!0,left:"\\begin{equation}",right:"\\end{equation}"},{display:!0,left:"\\begin{equation*}",right:"\\end{equation*}"},{display:!0,left:"\\begin{align}",right:"\\end{align}"},{display:!0,left:"\\begin{align*}",right:"\\end{align*}"},{display:!0,left:"\\begin{alignat}",right:"\\end{alignat}"},{display:!0,left:"\\begin{alignat*}",right:"\\end{alignat*}"},{display:!0,left:"\\begin{gather}",right:"\\end{gather}"},{display:!0,left:"\\begin{CD}",right:"\\end{CD}"},{display:!1,left:"$",right:"$"},{display:!1,left:"\\(",right:"\\)"}],strict:!1},pangu:{enable:!0,selector:"article"},search:{algoliaAppID:"WFOR67TML1",algoliaIndex:"along",algoliaSearchKey:"ea1fe535f9a7ae353f3922489c829cc1",highlightTag:"em",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"algolia"},siteTime:"2018-12-18T16:15:22+08:00",version:"v0.3.20",watermark:{appendto:".wrapper>main",colspacing:30,content:'<img class="fixit-icon" src="/favicon-16x16.png" alt="FixIt logo" /> FixIt 主题',enable:!0,fontfamily:"inherit",fontsize:.85,height:21,opacity:.0125,rotate:15,rowspacing:60,width:150}}</script><script src=/js/theme.min.js defer></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","6272760969",{anonymize_ip:!0})</script><script src="https://www.googletagmanager.com/gtag/js?id=6272760969" async></script></body></html>
