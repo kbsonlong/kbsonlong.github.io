@@ -161,7 +161,7 @@ loki.write "victorialogs" {
     url = "http://10.90.216.129:9491/insert/opentelemetry"
     headers = {
       "VL-Stream-Fields" = "service,component,status_group,request_method,client_type"
-      "VL-Extra-Fields" = "cluster=shopline-xinjiapo-aws-a,env=prod"
+      "VL-Extra-Fields" = "shopline-xinjiapo-ali-prod,env=prod"
     }
   }
 }
@@ -267,7 +267,7 @@ prometheus.remote_write "victoriametrics" {
     url = "http://victoriametrics:8428/api/v1/write"
   }
   external_labels = {
-    cluster = "production",
+    cluster = "shopline-xinjiapo-ali-prod",
     service = "nginx-proxy",
   }
 }
