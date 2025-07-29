@@ -1,0 +1,276 @@
+// /etc/alloy/config.alloy
+// Nginx 正向代理日志和指标收集配置
+
+// 定义日志文件输入
+local.file_match "nginx_logs" {
+  path_targets = [{
+    __path__   = "/data/yy/logs/nginx/access.log",
+    service    = "nginx-proxy",
+    component  = "proxy",
+    job        = "nginx-access-logs",
+  }]
+}
+
+// 采集日志文件
+loki.source.file "nginx_access" {
+  targets    = local.file_match.nginx_logs.targets
+  forward_to = [loki.process.nginx_json_parser.receiver]
+}
+
+// 解析 JSON 格式日志
+loki.process "nginx_json_parser" {
+  stage.static_labels {
+    values = {
+      service   = "nginx-proxy",
+      component = "proxy",
+      job       = "nginx-access-logs",
+    }
+  }
+
+  // 解析 JSON 日志
+  stage.json {
+    expressions = {
+      timestamp            = "@timestamp",
+      remote_addr          = "remote_addr",
+      remote_user          = "remote_user",
+      request              = "request",
+      request_method       = "request_method",
+      uri                  = "uri",
+      status               = "status",
+      body_bytes_sent      = "body_bytes_sent",
+      bytes_sent           = "bytes_sent",
+      request_length       = "request_length",
+      http_referer         = "http_referer",
+      http_user_agent      = "http_user_agent",
+      http_x_forwarded_for = "http_x_forwarded_for",
+      http_host            = "http_host",
+      request_time         = "request_time",
+      upstream_connect_time = "upstream_connect_time",
+      upstream_header_time = "upstream_header_time",
+      upstream_response_time = "upstream_response_time",
+      server_protocol      = "server_protocol",
+      scheme               = "scheme",
+    }
+  }
+
+  // 转换时间戳
+  stage.timestamp {
+    source = "timestamp"
+    format = "RFC3339"
+  }
+
+  // 状态码分组（避免高基数）
+  stage.template {
+    source   = "status"
+    template = "{{ if le .status \"299\" }}2xx{{ else if le .status \"399\" }}3xx{{ else if le .status \"499\" }}4xx{{ else }}5xx{{ end }}"
+    output   = "status_group"
+  }
+
+  // 客户端类型分组（避免直接使用IP）
+  stage.template {
+    source   = "remote_addr"
+    template = "{{ if eq .remote_addr \"127.0.0.1\" }}localhost{{ else if or (hasPrefix .remote_addr \"10.\") (or (hasPrefix .remote_addr \"192.168.\") (hasPrefix .remote_addr \"172.\")) }}internal{{ else }}external{{ end }}"
+    output   = "client_type"
+  }
+
+  forward_to = [
+    loki.process.nginx_labels.receiver,
+    loki.process.nginx_metrics.receiver
+  ]
+}
+
+// 低基数标签设置
+loki.process "nginx_labels" {
+  stage.labels {
+    values = {
+      // 只使用低基数标签
+      status_group   = "",
+      request_method = "",
+      client_type    = "",
+    }
+  }
+
+  forward_to = [loki.write.victorialogs.receiver]
+}
+
+// 转换为指标
+loki.process "nginx_metrics" {
+  stage.metrics {
+    // 请求总数计数器
+    metric.counter "nginx_requests_total" {
+      description = "Total number of HTTP requests"
+      source      = "request_method"
+      match_all   = true
+      count_entry = true
+      labels = {
+        method       = "request_method",
+        status_group = "status_group",
+        client_type  = "client_type",
+      }
+    }
+
+    // 请求持续时间直方图
+    metric.histogram "nginx_request_duration_seconds" {
+      description = "HTTP request duration in seconds"
+      source      = "request_time"
+      buckets     = [0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1.0, 2.5, 5.0, 10.0, 30.0]
+      labels = {
+        method       = "request_method",
+        status_group = "status_group",
+      }
+    }
+
+    // 响应大小计数器
+    metric.counter "nginx_response_bytes_total" {
+      description = "Total response bytes sent"
+      source      = "body_bytes_sent"
+      action      = "add"
+      labels = {
+        status_group = "status_group",
+        client_type  = "client_type",
+      }
+    }
+
+    // 请求大小计数器
+    metric.counter "nginx_request_bytes_total" {
+      description = "Total request bytes received"
+      source      = "request_length"
+      action      = "add"
+      labels = {
+        status_group = "status_group",
+      }
+    }
+
+    // 上游响应时间直方图
+    metric.histogram "nginx_upstream_response_seconds" {
+      description = "Upstream response time in seconds"
+      source      = "upstream_response_time"
+      buckets     = [0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1.0, 2.5, 5.0, 10.0]
+      labels = {
+        status_group = "status_group",
+      }
+    }
+  }
+
+  forward_to = [prometheus.exporter.loki.nginx_metrics.receiver]
+}
+
+// 发送到 VictoriaLogs，使用 OTLP HTTP 协议
+loki.write "victorialogs" {
+  endpoint {
+    url = "http://victorialogs:9428/insert/otlp-http/"
+    headers = {
+      "VL-Stream-Fields" = "job,service,component,status_group,request_method,client_type,_stream_duration_minutes=60"
+    }
+  }
+  external_labels = {
+    cluster = "production",
+    service = "nginx-proxy",
+  }
+}
+
+// Prometheus 指标导出
+prometheus.exporter.loki "nginx_metrics" {
+  loki_push_api {
+    server {
+      http_listen_port = 9100
+      grpc_listen_port = 0
+    }
+    tenants = []
+  }
+}
+
+// 抓取指标
+prometheus.scrape "nginx_metrics" {
+  targets    = prometheus.exporter.loki.nginx_metrics.targets
+  forward_to = [prometheus.remote_write.victoriametrics.receiver]
+}
+
+
+
+// Nginx stub_status 指标收集
+// 通过 HTTP 轮询收集 Nginx 基础指标
+remote.http "nginx_status" {
+  url = "http://localhost:8081/nginx_status"
+  method = "GET"
+  poll_frequency = "15s"
+  poll_timeout   = "10s"
+}
+
+
+prometheus.exporter.http "nginx_status" {
+  include_body = true
+  metrics = [
+    {
+      name = "nginx_active_connections"
+      type = "gauge"
+      help = "Active client connections"
+      match = "Active connections: (\\d+)"
+      values = [1]
+    },
+    {
+      name = "nginx_accepts_total"
+      type = "counter"
+      help = "Total accepts"
+      match = "server accepts handled requests\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)"
+      values = [1]
+    },
+    {
+      name = "nginx_handled_total"
+      type = "counter"
+      help = "Total handled"
+      match = "server accepts handled requests\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)"
+      values = [2]
+    },
+    {
+      name = "nginx_requests_total"
+      type = "counter"
+      help = "Total requests"
+      match = "server accepts handled requests\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)"
+      values = [3]
+    },
+    {
+      name = "nginx_reading_connections"
+      type = "gauge"
+      help = "Reading connections"
+      match = "Reading: (\\d+) Writing: (\\d+) Waiting: (\\d+)"
+      values = [1]
+    },
+    {
+      name = "nginx_writing_connections"
+      type = "gauge"
+      help = "Writing connections"
+      match = "Reading: (\\d+) Writing: (\\d+) Waiting: (\\d+)"
+      values = [2]
+    },
+    {
+      name = "nginx_waiting_connections"
+      type = "gauge"
+      help = "Waiting connections"
+      match = "Reading: (\\d+) Writing: (\\d+) Waiting: (\\d+)"
+      values = [3]
+    },
+  ]
+}
+
+// 抓取 Nginx stub_status 指标
+prometheus.scrape "nginx_status" {
+  targets    = prometheus.exporter.http.nginx_status.targets
+  forward_to = [prometheus.remote_write.victoriametrics.receiver]
+}
+
+// 解析 stub_status 数据并转换为指标
+remote.http "nginx_status_parser" {
+  forward_to = [prometheus.exporter.http.nginx_status.receiver]
+}
+
+// 发送到 VictoriaMetrics
+prometheus.remote_write "victoriametrics" {
+  endpoint {
+    url = "http://victoriametrics:8428/api/v1/write"
+  }
+  external_labels = {
+    cluster = "production",
+    service = "nginx-proxy",
+  }
+}
