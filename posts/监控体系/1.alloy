@@ -158,14 +158,11 @@ loki.process "nginx_metrics" {
 // 发送到 VictoriaLogs，使用 OTLP HTTP 协议
 loki.write "victorialogs" {
   endpoint {
-    url = "http://victorialogs:9428/insert/otlp-http/"
+    url = "http://10.90.216.129:9491/insert/opentelemetry"
     headers = {
-      "VL-Stream-Fields" = "job,service,component,status_group,request_method,client_type,_stream_duration_minutes=60"
+      "VL-Stream-Fields" = "service,component,status_group,request_method,client_type"
+      "VL-Extra-Fields" = "cluster=shopline-xinjiapo-aws-a,env=prod"
     }
-  }
-  external_labels = {
-    cluster = "production",
-    service = "nginx-proxy",
   }
 }
 
