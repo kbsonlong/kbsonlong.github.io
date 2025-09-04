@@ -5,7 +5,7 @@ FROM openresty/openresty:1.21.4.1-alpine
 LABEL maintainer="nginx-lua-auth"
 LABEL description="OpenResty with Lua JWT Authentication for Grafana"
 
-# 安装必要的包和依赖
+# 安装必要的依赖
 RUN apk add --no-cache \
     curl \
     ca-certificates \
@@ -16,41 +16,24 @@ RUN apk add --no-cache \
     musl-dev \
     make \
     unzip \
+    perl \
     && rm -rf /var/cache/apk/*
 
 # 设置时区
 ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# 安装 LuaRocks
-RUN wget https://luarocks.org/releases/luarocks-3.9.2.tar.gz \
-    && tar zxpf luarocks-3.9.2.tar.gz \
-    && cd luarocks-3.9.2 \
-    && ./configure --prefix=/usr/local/openresty/luajit \
-        --with-lua=/usr/local/openresty/luajit/ \
-        --lua-suffix=jit \
-        --with-lua-include=/usr/local/openresty/luajit/include/luajit-2.1 \
-        --lua-version=5.1 \
-    && make build \
-    && make install \
-    && cd .. \
-    && rm -rf luarocks-3.9.2 luarocks-3.9.2.tar.gz
+# 使用 opm 安装 Lua 模块（OpenResty 官方包管理器）
+RUN /usr/local/openresty/bin/opm get ledgetech/lua-resty-http \
+    && /usr/local/openresty/bin/opm get bungle/lua-resty-template
 
-# 设置 LuaRocks 路径和配置
-ENV PATH="/usr/local/openresty/luajit/bin:$PATH"
-ENV LUA_PATH="/usr/local/openresty/luajit/share/lua/5.1/?.lua;/usr/local/openresty/luajit/share/lua/5.1/?/init.lua;;"
-ENV LUA_CPATH="/usr/local/openresty/luajit/lib/lua/5.1/?.so;;"
-
-# 安装 lua-resty-jwt 模块
-RUN luarocks install lua-resty-jwt
-
-# 安装其他有用的 Lua 模块
-RUN luarocks install lua-resty-http \
-    && luarocks install lua-resty-redis \
-    && luarocks install lua-resty-template
+# 安装 lua-resty-jwt 及其依赖模块
+RUN /usr/local/openresty/bin/opm get fffonion/lua-resty-openssl \
+    && /usr/local/openresty/bin/opm get cdbattags/lua-resty-jwt
 
 # 创建必要的目录
-RUN mkdir -p /etc/nginx/lua \
+RUN mkdir -p /usr/local/openresty/nginx/conf/conf.d \
+    && mkdir -p /etc/nginx/lua \
     && mkdir -p /etc/nginx/html \
     && mkdir -p /etc/nginx/ssl \
     && mkdir -p /var/log/nginx \
@@ -63,8 +46,8 @@ RUN chown -R nobody:nobody /var/log/nginx \
     && chown -R nobody:nobody /tmp/nginx
 
 # 复制配置文件（如果存在）
-COPY nginx/conf/nginx.conf /etc/nginx/nginx.conf
-COPY nginx/conf/grafana.conf /etc/nginx/conf.d/grafana.conf
+COPY nginx/conf/nginx.conf /usr/local/openresty/nginx/conf/nginx.conf
+COPY nginx/conf/grafana.conf /usr/local/openresty/nginx/conf/conf.d/grafana.conf
 
 # 复制 Lua 脚本
 COPY nginx/lua/ /etc/nginx/lua/

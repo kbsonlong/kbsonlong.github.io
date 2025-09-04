@@ -13,14 +13,14 @@ services:
       - "8080:8080"   # HTTP 开发环境
     volumes:
       # Nginx 配置
-      - ./nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/conf/grafana.conf:/etc/nginx/conf.d/grafana.conf:ro
+      - ./nginx/conf/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf:ro
+      - ./nginx/conf/grafana.conf:/usr/local/openresty/nginx/conf/conf.d/grafana.conf:ro
       # Lua 脚本
-      - ./nginx/lua:/etc/nginx/lua:ro
+      - ./nginx/lua:/usr/local/openresty/nginx/lua:ro
       # 静态文件
-      - ./nginx/html:/etc/nginx/html:ro
+      - ./nginx/html:/usr/local/openresty/nginx/html:ro
       # SSL 证书（如果有）
-      - ./docker/ssl:/etc/nginx/ssl:ro
+      - ./docker/ssl:/usr/local/openresty/nginx/ssl:ro
       # 日志
       - nginx_logs:/var/log/nginx
       # 缓存目录
@@ -35,8 +35,10 @@ services:
       # 环境配置
       - ENVIRONMENT=${ENVIRONMENT:-development}
     depends_on:
-      - grafana
-      - postgres
+      grafana:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
     networks:
       - grafana-net
     restart: unless-stopped

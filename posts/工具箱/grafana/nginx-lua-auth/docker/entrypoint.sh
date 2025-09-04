@@ -26,12 +26,12 @@ echo "  - COOKIE_SECURE: $COOKIE_SECURE"
 echo "  - ENVIRONMENT: $ENVIRONMENT"
 
 # 检查配置文件
-if [ ! -f "/etc/nginx/nginx.conf" ]; then
+if [ ! -f "/usr/local/openresty/nginx/conf/nginx.conf" ]; then
     echo "[ERROR] nginx.conf not found!"
     exit 1
 fi
 
-if [ ! -f "/etc/nginx/conf.d/grafana.conf" ]; then
+if [ ! -f "/usr/local/openresty/nginx/conf/conf.d/grafana.conf" ]; then
     echo "[ERROR] grafana.conf not found!"
     exit 1
 fi
