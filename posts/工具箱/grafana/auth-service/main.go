@@ -417,10 +417,24 @@ func grafanaAuthHandler(w http.ResponseWriter, r *http.Request) {
 	
 	log.Printf("Token is valid for user: %s", claims.Subject)
 	
-	// Token 有效，通过 JavaScript 设置认证 cookie 并重定向到 Grafana
-	log.Printf("Token is valid, setting cookie via JavaScript")
+	// Token 有效，设置认证 cookie 并重定向到 Grafana
+	log.Printf("Token is valid, setting cookie and redirecting")
+	
+	// 设置 HTTP cookie 到根路径
+	cookie := &http.Cookie{
+		Name:     "grafana_jwt_token",
+		Value:    tokenString,
+		Path:     "/",
+		MaxAge:   86400,
+		SameSite: http.SameSiteLaxMode,
+	}
+	http.SetCookie(w, cookie)
 	
 	// 重定向到 Grafana
+	// 使用相对路径重定向，避免容器内部主机名问题
+	redirectURL := "/grafana/"
+	log.Printf("Redirecting to: %s", redirectURL)
+	
 	// 使用 JavaScript 重定向，确保 cookie 被正确设置
 	htmlResponse := fmt.Sprintf(`
 <!DOCTYPE html>
@@ -432,19 +446,15 @@ func grafanaAuthHandler(w http.ResponseWriter, r *http.Request) {
 <body>
     <p>Authentication successful. Redirecting to Grafana...</p>
     <script>
-        // 确保 cookie 已设置到根路径
-        document.cookie = "grafana_jwt_token=%s; path=/; max-age=86400; samesite=Lax";
-        console.log('Cookie set:', document.cookie);
-        // 重定向到 Grafana - 使用当前浏览器的域名
+        console.log('Cookie should be set by server');
+        // 重定向到 Grafana
         setTimeout(function() {
-            var protocol = window.location.protocol;
-            var host = window.location.host;
-            window.location.href = protocol + "//" + host + "/grafana/";
+            window.location.href = "%s";
         }, 100);
     </script>
 </body>
 </html>
-`, tokenString)
+`, redirectURL)
 	
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	fmt.Fprint(w, htmlResponse)
