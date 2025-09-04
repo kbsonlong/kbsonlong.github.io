@@ -1,0 +1,245 @@
+version: '3.8'
+
+services:
+  # OpenResty (Nginx + Lua) 认证代理
+  openresty:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nginx-lua-auth
+    ports:
+      - "80:80"       # HTTP (重定向到 HTTPS)
+      - "443:443"     # HTTPS 主服务
+      - "8080:8080"   # HTTP 开发环境
+    volumes:
+      # Nginx 配置
+      - ./nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf/grafana.conf:/etc/nginx/conf.d/grafana.conf:ro
+      # Lua 脚本
+      - ./nginx/lua:/etc/nginx/lua:ro
+      # 静态文件
+      - ./nginx/html:/etc/nginx/html:ro
+      # SSL 证书（如果有）
+      - ./docker/ssl:/etc/nginx/ssl:ro
+      # 日志
+      - nginx_logs:/var/log/nginx
+      # 缓存目录
+      - nginx_cache:/var/cache/nginx
+    environment:
+      # JWT 配置
+      - JWT_SECRET=${JWT_SECRET:-your-super-secret-jwt-key-change-in-production}
+      - JWT_EXPIRE=${JWT_EXPIRE:-86400}
+      # Cookie 配置
+      - COOKIE_DOMAIN=${COOKIE_DOMAIN:-localhost}
+      - COOKIE_SECURE=${COOKIE_SECURE:-false}
+      # 环境配置
+      - ENVIRONMENT=${ENVIRONMENT:-development}
+    depends_on:
+      - grafana
+      - postgres
+    networks:
+      - grafana-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/auth/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Grafana 监控服务
+  grafana:
+    image: grafana/grafana:12.0.2
+    container_name: grafana-server
+    ports:
+      - "3000:3000"   # 直接访问端口（可选）
+    volumes:
+      # Grafana 配置
+      - ./grafana/config/grafana.ini:/etc/grafana/grafana.ini:ro
+      # 数据持久化
+      - grafana_data:/var/lib/grafana
+      # 日志
+      - grafana_logs:/var/log/grafana
+      # 插件
+      - grafana_plugins:/var/lib/grafana/plugins
+    environment:
+      # 数据库配置
+      - GF_DATABASE_TYPE=postgres
+      - GF_DATABASE_HOST=postgres:5432
+      - GF_DATABASE_NAME=${POSTGRES_DB:-grafana}
+      - GF_DATABASE_USER=${POSTGRES_USER:-grafana}
+      - GF_DATABASE_PASSWORD=${POSTGRES_PASSWORD:-grafana123}
+      - GF_DATABASE_SSL_MODE=disable
+      
+      # 代理认证配置
+      - GF_AUTH_PROXY_ENABLED=true
+      - GF_AUTH_PROXY_HEADER_NAME=X-WEBAUTH-USER
+      - GF_AUTH_PROXY_HEADER_PROPERTY=username
+      - GF_AUTH_PROXY_AUTO_SIGN_UP=true
+      - GF_AUTH_PROXY_SYNC_TTL=60
+      - GF_AUTH_PROXY_WHITELIST=nginx-lua-auth
+      - GF_AUTH_PROXY_HEADERS=Name:X-WEBAUTH-NAME Email:X-WEBAUTH-EMAIL Role:X-WEBAUTH-ROLE
+      
+      # 安全配置
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin123}
+      - GF_SECURITY_SECRET_KEY=${GRAFANA_SECRET_KEY:-your-secret-key}
+      - GF_SECURITY_DISABLE_GRAVATAR=true
+      
+      # 服务器配置
+      - GF_SERVER_PROTOCOL=http
+      - GF_SERVER_HTTP_PORT=3000
+      - GF_SERVER_DOMAIN=${GRAFANA_DOMAIN:-localhost}
+      - GF_SERVER_ROOT_URL=%(protocol)s://%(domain)s/grafana/
+      - GF_SERVER_SERVE_FROM_SUB_PATH=true
+      
+      # 用户配置
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_USERS_ALLOW_ORG_CREATE=false
+      - GF_USERS_AUTO_ASSIGN_ORG=true
+      - GF_USERS_AUTO_ASSIGN_ORG_ID=1
+      - GF_USERS_AUTO_ASSIGN_ORG_ROLE=${GRAFANA_DEFAULT_ROLE:-Viewer}
+      
+      # 日志配置
+      - GF_LOG_MODE=console,file
+      - GF_LOG_LEVEL=${GRAFANA_LOG_LEVEL:-info}
+      
+      # 插件配置
+      - GF_INSTALL_PLUGINS=${GRAFANA_PLUGINS:-}
+    depends_on:
+      - postgres
+    networks:
+      - grafana-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/api/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # PostgreSQL 数据库
+  postgres:
+    image: postgres:15
+    container_name: postgres-grafana
+    ports:
+      - "5432:5432"   # 数据库端口（可选）
+    volumes:
+      # 数据持久化
+      - postgres_data:/var/lib/postgresql/data
+      # 初始化脚本
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d:ro
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-grafana}
+      - POSTGRES_USER=${POSTGRES_USER:-grafana}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-grafana123}
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --lc-collate=C --lc-ctype=C
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    networks:
+      - grafana-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-grafana} -d ${POSTGRES_DB:-grafana}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Redis 缓存（可选，用于会话存储）
+  redis:
+    image: redis:7-alpine
+    container_name: redis-cache
+    ports:
+      - "6379:6379"   # Redis 端口（可选）
+    volumes:
+      - redis_data:/data
+      - ./docker/redis/redis.conf:/etc/redis/redis.conf:ro
+    command: redis-server /etc/redis/redis.conf
+    networks:
+      - grafana-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # Prometheus 监控（可选）
+  prometheus:
+    image: prom/prometheus:v2.45.0
+    container_name: prometheus-server
+    ports:
+      - "9090:9090"   # Prometheus Web UI
+    volumes:
+      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    networks:
+      - grafana-net
+    restart: unless-stopped
+    profiles:
+      - monitoring
+
+  # Node Exporter 系统监控（可选）
+  node-exporter:
+    image: prom/node-exporter:v1.6.0
+    container_name: node-exporter
+    ports:
+      - "9100:9100"   # Node Exporter 端口
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    networks:
+      - grafana-net
+    restart: unless-stopped
+    profiles:
+      - monitoring
+
+# 网络配置
+networks:
+  grafana-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+# 数据卷配置
+volumes:
+  # Nginx 相关
+  nginx_logs:
+    driver: local
+  nginx_cache:
+    driver: local
+  
+  # Grafana 相关
+  grafana_data:
+    driver: local
+  grafana_logs:
+    driver: local
+  grafana_plugins:
+    driver: local
+  
+  # PostgreSQL 数据
+  postgres_data:
+    driver: local
+  
+  # Redis 数据
+  redis_data:
+    driver: local
+  
+  # Prometheus 数据
+  prometheus_data:
+    driver: local
