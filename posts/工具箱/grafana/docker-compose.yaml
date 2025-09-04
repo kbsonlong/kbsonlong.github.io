@@ -12,6 +12,26 @@ services:
       - ./postgresql.conf:/etc/postgresql/postgresql.conf
       - ./pg_hba.conf:/etc/postgresql/pg_hba.conf
     command: postgres -c config_file=/etc/postgresql/postgresql.conf -c hba_file=/etc/postgresql/pg_hba.conf
+  
+  auth-service:
+    build: ./auth-service
+    container_name: auth-service
+    network_mode: host
+    ports:
+      - "8080:8080"
+    
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    network_mode: host
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - auth-service
+      - grafana
+  
   grafana:
     image: grafana/grafana:12.0.2
     container_name: grafana

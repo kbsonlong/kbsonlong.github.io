@@ -418,19 +418,11 @@ func grafanaAuthHandler(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Token is valid for user: %s", claims.Subject)
 	
 	// Token 有效，设置认证 cookie 并重定向到 Grafana
-	// 修复 cookie 设置，确保路径和域正确
-	cookie := &http.Cookie{
-		Name:     "grafana_jwt_token",
-		Value:    tokenString,
-		Path:     "/",  // 更改路径为根路径，确保所有路径都能访问
-		Domain:   "",   // 空字符串表示当前域
-		HttpOnly: false, // 设置为 false 以便 JavaScript 可以访问
-		MaxAge:   86400, // 24小时
-		SameSite: http.SameSiteLaxMode,
-	}
-	http.SetCookie(w, cookie)
+	// 直接设置 Set-Cookie 头，强制路径为根路径
+	cookieValue := fmt.Sprintf("grafana_jwt_token=%s; Path=/; Max-Age=86400; SameSite=Lax", tokenString)
+	w.Header().Set("Set-Cookie", cookieValue)
 	
-	log.Printf("Cookie set: %+v", cookie)
+	log.Printf("Cookie set with header: %s", cookieValue)
 	
 	// 重定向到 Grafana
 	// 使用 JavaScript 重定向，确保 cookie 被正确设置
@@ -444,10 +436,13 @@ func grafanaAuthHandler(w http.ResponseWriter, r *http.Request) {
 <body>
     <p>Authentication successful. Redirecting to Grafana...</p>
     <script>
-        // 确保 cookie 已设置
-        document.cookie = "grafana_jwt_token=%s; path=/; max-age=86400; sameSite=Lax";
+        // 确保 cookie 已设置到根路径
+        document.cookie = "grafana_jwt_token=%s; path=/; max-age=86400; samesite=Lax";
+        console.log('Cookie set:', document.cookie);
         // 重定向到 Grafana
-        window.location.href = "http://localhost/grafana/";
+        setTimeout(function() {
+            window.location.href = "http://localhost/grafana/";
+        }, 100);
     </script>
 </body>
 </html>
@@ -525,13 +520,13 @@ func verifyHandler(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Verify handler called with method: %s", r.Method)
 	log.Printf("Request headers: Authorization=%s, X-JWT-Token=%s", 
 		r.Header.Get("Authorization"), r.Header.Get("X-JWT-Token"))
-	
+
 	// 记录所有 cookies
 	log.Printf("All cookies:")
 	for _, cookie := range r.Cookies() {
 		log.Printf("  Cookie %s=%s", cookie.Name, cookie.Value)
 	}
-	
+
 	// 首先尝试从 cookie 获取 token
 	tokenString := ""
 	if cookie, err := r.Cookie("grafana_jwt_token"); err == nil {
