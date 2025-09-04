@@ -46,7 +46,6 @@ RUN chown -R nobody:nobody /var/log/nginx \
 
 # 复制配置文件（如果存在）
 COPY nginx/conf/nginx.conf /usr/local/openresty/nginx/conf/nginx.conf
-COPY nginx/conf/grafana.conf /usr/local/openresty/nginx/conf/conf.d/grafana.conf
 
 # 复制 Lua 脚本
 COPY nginx/lua/ /etc/nginx/lua/

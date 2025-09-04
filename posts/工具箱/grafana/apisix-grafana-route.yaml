@@ -1,0 +1,59 @@
+apiVersion: apisix.apache.org/v2
+kind: ApisixRoute
+metadata:
+  name: grafana-auth
+  namespace: monitoring
+spec:
+  http:
+  - name: grafana-login
+    match:
+      paths:
+      - /login
+      - /grafana/auth
+      hosts:
+      - grafana.kbsonlong.com
+    backends:
+    - serviceName: apisix-a571881f0e8-42099b4af02
+      servicePort: 80
+      weight: 10
+    plugins:
+    - name: forward-auth
+      enable: true
+      config:
+        uri: http://sysop.kbsonlong.com/ws/aquaman/grafanaLoginAuth
+        request_headers:
+        - Authorization
+        - Cookie
+        client_headers:
+        - Location
+        upstream_headers:
+        - X-WEBAUTH-USER
+    - name: client-control
+      enable: true
+      config:
+        max_body_size: 50000000
+
+---
+apiVersion: apisix.apache.org/v2
+kind: ApisixRoute
+metadata:
+  name: grafana-main
+  namespace: monitoring
+spec:
+  http:
+  - name: grafana-main
+    match:
+      paths:
+      - /*
+      hosts:
+      - grafana.kbsonlong.com
+    backends:
+    - serviceName: grafana-service
+      servicePort: 3000
+      weight: 10
+    plugins:
+    - name: client-control
+      enable: true
+      config:
+        max_body_size: 50000000
+    websocket: true

@@ -31,10 +31,8 @@ if [ ! -f "/usr/local/openresty/nginx/conf/nginx.conf" ]; then
     exit 1
 fi
 
-if [ ! -f "/usr/local/openresty/nginx/conf/conf.d/grafana.conf" ]; then
-    echo "[ERROR] grafana.conf not found!"
-    exit 1
-fi
+# grafana.conf is now integrated into main nginx.conf
+# No separate grafana.conf file needed
 
 # 检查 Lua 脚本
 for lua_file in "jwt.lua" "auth.lua" "login.lua"; do

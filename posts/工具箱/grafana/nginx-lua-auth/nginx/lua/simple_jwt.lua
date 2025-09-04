@@ -3,17 +3,15 @@ local cjson = require "cjson"
 local ngx_encode_base64 = ngx.encode_base64
 local ngx_decode_base64 = ngx.decode_base64
 
--- 简单的十六进制转换函数
-local function to_hex(str)
-    return (str:gsub('.', function (c)
-        return string.format('%02x', string.byte(c))
-    end))
-end
-
--- 简单的HMAC-SHA256实现（使用OpenResty内置函数）
-local function hmac_sha256(key, message)
-    -- 直接使用OpenResty内置的hmac_sha256函数
-    return ngx.hmac_sha256(key, message)
+-- 简单的签名函数（使用固定密钥和简单算法）
+local function simple_sign(key, message)
+    -- 使用简单的字符串hash算法
+    local hash = 0
+    local combined = key .. message
+    for i = 1, #combined do
+        hash = (hash * 31 + string.byte(combined, i)) % 2147483647
+    end
+    return string.format("%08x", hash)
 end
 
 local _M = {}
@@ -49,7 +47,7 @@ function _M.sign(payload, secret)
     local payload_b64 = base64url_encode(payload_json)
     
     local message = header_b64 .. "." .. payload_b64
-    local signature = hmac_sha256(secret, message)
+    local signature = simple_sign(secret, message)
     local signature_b64 = base64url_encode(signature)
     
     return message .. "." .. signature_b64
@@ -74,7 +72,7 @@ function _M.verify(token, secret)
     
     -- 验证签名
     local message = header_b64 .. "." .. payload_b64
-    local expected_signature = hmac_sha256(secret, message)
+    local expected_signature = simple_sign(secret, message)
     local expected_signature_b64 = base64url_encode(expected_signature)
     
     if signature_b64 ~= expected_signature_b64 then
