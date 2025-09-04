@@ -71,9 +71,314 @@ func main() {
 
 	http.HandleFunc("/login", loginHandler)
 	http.HandleFunc("/verify", verifyHandler)
+	http.HandleFunc("/", loginPageHandler)
+	http.HandleFunc("/grafana/", grafanaAuthHandler)
 
 	log.Println("Auth service starting on :8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
+}
+
+func loginPageHandler(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/" {
+		http.NotFound(w, r)
+		return
+	}
+
+	html := `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Grafana SSO Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .login-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #337ab7;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #286090;
+        }
+        .message {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .error {
+            background-color: #f2dede;
+            color: #a94442;
+            border: 1px solid #ebccd1;
+        }
+        .success {
+            background-color: #dff0d8;
+            color: #3c763d;
+            border: 1px solid #d6e9c6;
+        }
+        .hidden {
+            display: none;
+        }
+        .grafana-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .grafana-link a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #e65252;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .grafana-link a:hover {
+            background-color: #cc3333;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Grafana SSO Login</h2>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+        <div id="message" class="message hidden"></div>
+        <div id="grafanaLink" class="grafana-link hidden">
+            <a href="#" id="grafanaLinkBtn">Access Grafana</a>
+        </div>
+    </div>
+
+    <script>
+        // 页面加载时检查是否有保存的token
+        window.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('grafana_jwt_token');
+            if (token) {
+                document.getElementById('grafanaLink').classList.remove('hidden');
+            }
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const messageDiv = document.getElementById('message');
+            const grafanaLinkDiv = document.getElementById('grafanaLink');
+            
+            // 清除之前的消息
+            messageDiv.className = 'message hidden';
+            
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, password }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.token) {
+                    // 保存 token 到 localStorage
+                    localStorage.setItem('grafana_jwt_token', data.token);
+                    
+                    // 显示成功消息
+                    messageDiv.className = 'message success';
+                    messageDiv.textContent = 'Login successful! You can now access Grafana.';
+                    messageDiv.classList.remove('hidden');
+                    
+                    // 显示 Grafana 链接
+                    grafanaLinkDiv.classList.remove('hidden');
+                } else {
+                    // 显示错误消息
+                    messageDiv.className = 'message error';
+                    messageDiv.textContent = 'Login failed: ' + (data.error || 'Unknown error');
+                    messageDiv.classList.remove('hidden');
+                }
+            })
+            .catch(error => {
+                // 显示错误消息
+                messageDiv.className = 'message error';
+                messageDiv.textContent = 'Error: ' + error.message;
+                messageDiv.classList.remove('hidden');
+            });
+        });
+        
+        // 为 Grafana 链接添加事件处理器
+        document.getElementById('grafanaLinkBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            const token = localStorage.getItem('grafana_jwt_token');
+            if (token) {
+                // 通过一个中间页面传递 token 到 Grafana
+                window.open('/grafana/auth?token=' + encodeURIComponent(token), '_blank');
+            } else {
+                alert('No token found. Please login first.');
+            }
+        });
+    </script>
+</body>
+</html>
+`
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	fmt.Fprint(w, html)
+}
+
+func grafanaAuthHandler(w http.ResponseWriter, r *http.Request) {
+	// 从查询参数获取 token
+	tokenString := r.URL.Query().Get("token")
+	
+	if tokenString == "" {
+		// 如果没有 token，尝试从 Authorization 头获取
+		authHeader := r.Header.Get("Authorization")
+		if strings.HasPrefix(authHeader, "Bearer ") {
+			tokenString = authHeader[7:]
+		}
+	}
+	
+	if tokenString == "" {
+		// 如果仍然没有 token，返回错误页面
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		fmt.Fprint(w, `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Access Denied</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 100px;
+        }
+        .error {
+            color: #d9534f;
+            font-size: 18px;
+        }
+        .back-link {
+            margin-top: 20px;
+        }
+        .back-link a {
+            color: #337ab7;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="error">
+        <h2>Access Denied</h2>
+        <p>No valid authentication token found.</p>
+        <p>Please <a href="/">login</a> first to access Grafana.</p>
+    </div>
+</body>
+</html>
+`)
+		return
+	}
+	
+	// 验证 token
+	claims := &Claims{}
+	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		return jwtSecret, nil
+	})
+	
+	if err != nil || !token.Valid {
+		// Token 无效，返回错误页面
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		fmt.Fprint(w, `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Access Denied</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 100px;
+        }
+        .error {
+            color: #d9534f;
+            font-size: 18px;
+        }
+        .back-link {
+            margin-top: 20px;
+        }
+        .back-link a {
+            color: #337ab7;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="error">
+        <h2>Access Denied</h2>
+        <p>Invalid or expired authentication token.</p>
+        <p>Please <a href="/">login</a> again to access Grafana.</p>
+    </div>
+</body>
+</html>
+`)
+		return
+	}
+	
+	// Token 有效，设置认证 cookie 并重定向到 Grafana
+	http.SetCookie(w, &http.Cookie{
+		Name:     "grafana_jwt_token",
+		Value:    tokenString,
+		Path:     "/grafana/",
+		HttpOnly: false, // 设置为 false 以便 JavaScript 可以访问
+		MaxAge:   86400, // 24小时
+		SameSite: http.SameSiteLaxMode,
+	})
+	
+	// 重定向到 Grafana
+	http.Redirect(w, r, "http://localhost/grafana/", http.StatusTemporaryRedirect)
 }
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
@@ -130,26 +435,34 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func verifyHandler(w http.ResponseWriter, r *http.Request) {
-	authHeader := r.Header.Get("Authorization")
-	jwtToken := r.Header.Get("X-JWT-Token")
-
-	if authHeader == "" && jwtToken == "" {
-		http.Error(w, "Missing authorization header", http.StatusUnauthorized)
-		return
-	}
-
-	// 如果没有从 Authorization 头获取，则从自定义头获取
-	if authHeader == "" && jwtToken != "" {
-		authHeader = "Bearer " + jwtToken
-	}
-
-	// 提取 token
+	// 首先尝试从 cookie 获取 token
 	tokenString := ""
-	if strings.HasPrefix(authHeader, "Bearer ") {
-		tokenString = authHeader[7:]
-	} else {
-		http.Error(w, "Invalid authorization header", http.StatusUnauthorized)
-		return
+	if cookie, err := r.Cookie("grafana_jwt_token"); err == nil {
+		tokenString = cookie.Value
+	}
+	
+	// 如果 cookie 中没有 token，则尝试从 header 获取
+	if tokenString == "" {
+		authHeader := r.Header.Get("Authorization")
+		jwtToken := r.Header.Get("X-JWT-Token")
+
+		if authHeader == "" && jwtToken == "" {
+			http.Error(w, "Missing authorization header", http.StatusUnauthorized)
+			return
+		}
+
+		// 如果没有从 Authorization 头获取，则从自定义头获取
+		if authHeader == "" && jwtToken != "" {
+			authHeader = "Bearer " + jwtToken
+		}
+
+		// 提取 token
+		if strings.HasPrefix(authHeader, "Bearer ") {
+			tokenString = authHeader[7:]
+		} else {
+			http.Error(w, "Invalid authorization header", http.StatusUnauthorized)
+			return
+		}
 	}
 
 	// 解析和验证 token
