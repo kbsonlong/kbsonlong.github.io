@@ -206,9 +206,40 @@ function _M.show_login_page()
     if token then
         local payload, err = jwt_lib.verify_token(token)
         if payload then
-            -- 已登录，重定向到原始URL或默认页面
+            -- 已登录，显示已登录状态页面而不是重定向
+            local user_info = jwt_lib.get_user_info(payload)
             local redirect_url = ngx.var.arg_redirect or "/grafana/"
-            ngx.redirect(redirect_url)
+            
+            ngx.header.content_type = "text/html; charset=utf-8"
+            ngx.say([[
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Already Logged In</title>
+    <meta charset="utf-8">
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+        .container { max-width: 400px; margin: 0 auto; }
+        .success { color: #28a745; }
+        .btn { padding: 10px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="success">Already Logged In</h2>
+        <p>Welcome back, ]] .. (user_info and user_info.display_name or "User") .. [[!</p>
+        <p><a href="]] .. redirect_url .. [[" class="btn">Continue to Application</a></p>
+        <p><a href="/auth/api/logout">Logout</a></p>
+    </div>
+    <script>
+        // 自动重定向到目标页面
+        setTimeout(function() {
+            window.location.href = ']] .. redirect_url .. [[';
+        }, 3000);
+    </script>
+</body>
+</html>
+            ]])
             return
         end
     end

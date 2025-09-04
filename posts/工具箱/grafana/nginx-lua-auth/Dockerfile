@@ -27,9 +27,8 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN /usr/local/openresty/bin/opm get ledgetech/lua-resty-http \
     && /usr/local/openresty/bin/opm get bungle/lua-resty-template
 
-# 安装 lua-resty-jwt 及其依赖模块
-RUN /usr/local/openresty/bin/opm get fffonion/lua-resty-openssl \
-    && /usr/local/openresty/bin/opm get cdbattags/lua-resty-jwt
+# 创建简单的JWT模块目录
+RUN mkdir -p /usr/local/openresty/site/lualib/resty
 
 # 创建必要的目录
 RUN mkdir -p /usr/local/openresty/nginx/conf/conf.d \
@@ -51,6 +50,10 @@ COPY nginx/conf/grafana.conf /usr/local/openresty/nginx/conf/conf.d/grafana.conf
 
 # 复制 Lua 脚本
 COPY nginx/lua/ /etc/nginx/lua/
+
+# 删除系统自带的 resty/jwt 相关文件以避免冲突
+RUN rm -rf /usr/local/openresty/lualib/resty/jwt* \
+    && rm -rf /usr/local/openresty/site/lualib/resty/jwt*
 
 # 复制静态文件
 COPY nginx/html/ /etc/nginx/html/

@@ -1,6 +1,6 @@
 -- JWT处理模块
--- 依赖: lua-resty-jwt
-local jwt = require "resty.jwt"
+-- 使用简单的JWT实现，避免复杂依赖
+local simple_jwt = require "simple_jwt"
 local cjson = require "cjson"
 
 local _M = {}
@@ -28,13 +28,7 @@ function _M.generate_token(user_info)
         }
     }
     
-    local token = jwt:sign(JWT_SECRET, {
-        header = {
-            typ = "JWT",
-            alg = JWT_ALGORITHM
-        },
-        payload = payload
-    })
+    local token = simple_jwt.sign(payload, JWT_SECRET)
     
     return token
 end
@@ -48,19 +42,13 @@ function _M.verify_token(token)
     -- 移除Bearer前缀
     token = string.gsub(token, "Bearer ", "")
     
-    local jwt_obj = jwt:verify(JWT_SECRET, token)
+    local payload, err = simple_jwt.verify(token, JWT_SECRET)
     
-    if not jwt_obj.valid then
-        return nil, jwt_obj.reason or "Invalid token"
+    if not payload then
+        return nil, err or "Invalid token"
     end
     
-    -- 检查过期时间
-    local now = ngx.time()
-    if jwt_obj.payload.exp and jwt_obj.payload.exp < now then
-        return nil, "Token expired"
-    end
-    
-    return jwt_obj.payload, nil
+    return payload, nil
 end
 
 -- 从请求中提取Token
