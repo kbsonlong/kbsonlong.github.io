@@ -2,7 +2,8 @@ version: '3.8'
 services:
   postgres-primary:
     image: postgres:15
-    network_mode: host
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_DB: grafana
       POSTGRES_USER: grafana
@@ -16,14 +17,12 @@ services:
   auth-service:
     build: ./auth-service
     container_name: auth-service
-    network_mode: host
     ports:
       - "8080:8080"
     
   nginx:
     image: nginx:alpine
     container_name: nginx
-    network_mode: host
     ports:
       - "80:80"
     volumes:
@@ -35,10 +34,13 @@ services:
   grafana:
     image: grafana/grafana:12.0.2
     container_name: grafana
-    network_mode: host
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
     environment:
       - GF_DATABASE_TYPE=postgres
-      - GF_DATABASE_HOST=localhost:5432
+      - GF_DATABASE_HOST=postgres-primary:5432
       - GF_DATABASE_NAME=grafana
       - GF_DATABASE_USER=grafana
       - GF_DATABASE_PASSWORD=grafana

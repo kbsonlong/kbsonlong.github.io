@@ -72,7 +72,7 @@ func main() {
 	http.HandleFunc("/login", loginHandler)
 	http.HandleFunc("/verify", verifyHandler)
 	http.HandleFunc("/", loginPageHandler)
-	http.HandleFunc("/grafana/", grafanaAuthHandler)
+	http.HandleFunc("/grafana/auth", grafanaAuthHandler)
 
 	log.Println("Auth service starting on :8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
@@ -417,12 +417,8 @@ func grafanaAuthHandler(w http.ResponseWriter, r *http.Request) {
 	
 	log.Printf("Token is valid for user: %s", claims.Subject)
 	
-	// Token 有效，设置认证 cookie 并重定向到 Grafana
-	// 直接设置 Set-Cookie 头，强制路径为根路径
-	cookieValue := fmt.Sprintf("grafana_jwt_token=%s; Path=/; Max-Age=86400; SameSite=Lax", tokenString)
-	w.Header().Set("Set-Cookie", cookieValue)
-	
-	log.Printf("Cookie set with header: %s", cookieValue)
+	// Token 有效，通过 JavaScript 设置认证 cookie 并重定向到 Grafana
+	log.Printf("Token is valid, setting cookie via JavaScript")
 	
 	// 重定向到 Grafana
 	// 使用 JavaScript 重定向，确保 cookie 被正确设置
@@ -439,9 +435,11 @@ func grafanaAuthHandler(w http.ResponseWriter, r *http.Request) {
         // 确保 cookie 已设置到根路径
         document.cookie = "grafana_jwt_token=%s; path=/; max-age=86400; samesite=Lax";
         console.log('Cookie set:', document.cookie);
-        // 重定向到 Grafana
+        // 重定向到 Grafana - 使用当前浏览器的域名
         setTimeout(function() {
-            window.location.href = "http://localhost/grafana/";
+            var protocol = window.location.protocol;
+            var host = window.location.host;
+            window.location.href = protocol + "//" + host + "/grafana/";
         }, 100);
     </script>
 </body>
@@ -594,9 +592,9 @@ func verifyHandler(w http.ResponseWriter, r *http.Request) {
 
 	log.Printf("Token verified successfully for user: %s", claims.Subject)
 	
-	// 设置认证用户信息头部
-	w.Header().Set("X-Auth-User", claims.Subject)
-	w.Header().Set("X-Auth-Name", claims.Name)
+	// 设置认证用户信息头部 - 使用Grafana期望的头部名称
+	w.Header().Set("X-WEBAUTH-USER", claims.Subject)
+	w.Header().Set("X-WEBAUTH-NAME", claims.Name)
 	w.WriteHeader(http.StatusOK)
 }
 
