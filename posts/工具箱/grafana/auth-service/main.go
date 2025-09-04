@@ -267,18 +267,23 @@ func loginPageHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func grafanaAuthHandler(w http.ResponseWriter, r *http.Request) {
+	log.Printf("Grafana auth handler called with URL: %s", r.URL.String())
+	
 	// 从查询参数获取 token
 	tokenString := r.URL.Query().Get("token")
+	log.Printf("Token from URL query parameter: %s", tokenString)
 	
 	if tokenString == "" {
 		// 如果没有 token，尝试从 Authorization 头获取
 		authHeader := r.Header.Get("Authorization")
+		log.Printf("Authorization header: %s", authHeader)
 		if strings.HasPrefix(authHeader, "Bearer ") {
 			tokenString = authHeader[7:]
 		}
 	}
 	
 	if tokenString == "" {
+		log.Println("No token found in request")
 		// 如果仍然没有 token，返回错误页面
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		fmt.Fprint(w, `
@@ -318,6 +323,7 @@ func grafanaAuthHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	
+	log.Println("Token found, validating...")
 	// 验证 token
 	claims := &Claims{}
 	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
@@ -327,7 +333,8 @@ func grafanaAuthHandler(w http.ResponseWriter, r *http.Request) {
 		return jwtSecret, nil
 	})
 	
-	if err != nil || !token.Valid {
+	if err != nil {
+		log.Printf("Token parsing error: %v", err)
 		// Token 无效，返回错误页面
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		fmt.Fprint(w, `
@@ -367,40 +374,117 @@ func grafanaAuthHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	
+	if !token.Valid {
+		log.Println("Token is invalid")
+		// Token 无效，返回错误页面
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		fmt.Fprint(w, `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Access Denied</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 100px;
+        }
+        .error {
+            color: #d9534f;
+            font-size: 18px;
+        }
+        .back-link {
+            margin-top: 20px;
+        }
+        .back-link a {
+            color: #337ab7;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="error">
+        <h2>Access Denied</h2>
+        <p>Invalid or expired authentication token.</p>
+        <p>Please <a href="/">login</a> again to access Grafana.</p>
+    </div>
+</body>
+</html>
+`)
+		return
+	}
+	
+	log.Printf("Token is valid for user: %s", claims.Subject)
+	
 	// Token 有效，设置认证 cookie 并重定向到 Grafana
-	http.SetCookie(w, &http.Cookie{
+	// 修复 cookie 设置，确保路径和域正确
+	cookie := &http.Cookie{
 		Name:     "grafana_jwt_token",
 		Value:    tokenString,
-		Path:     "/grafana/",
+		Path:     "/",  // 更改路径为根路径，确保所有路径都能访问
+		Domain:   "",   // 空字符串表示当前域
 		HttpOnly: false, // 设置为 false 以便 JavaScript 可以访问
 		MaxAge:   86400, // 24小时
 		SameSite: http.SameSiteLaxMode,
-	})
+	}
+	http.SetCookie(w, cookie)
+	
+	log.Printf("Cookie set: %+v", cookie)
 	
 	// 重定向到 Grafana
-	http.Redirect(w, r, "http://localhost/grafana/", http.StatusTemporaryRedirect)
+	// 使用 JavaScript 重定向，确保 cookie 被正确设置
+	htmlResponse := fmt.Sprintf(`
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Redirecting...</title>
+</head>
+<body>
+    <p>Authentication successful. Redirecting to Grafana...</p>
+    <script>
+        // 确保 cookie 已设置
+        document.cookie = "grafana_jwt_token=%s; path=/; max-age=86400; sameSite=Lax";
+        // 重定向到 Grafana
+        window.location.href = "http://localhost/grafana/";
+    </script>
+</body>
+</html>
+`, tokenString)
+	
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	fmt.Fprint(w, htmlResponse)
 }
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
+	log.Printf("Login handler called with method: %s", r.Method)
+	
 	if r.Method != http.MethodPost {
+		log.Printf("Invalid method: %s", r.Method)
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
 	var req LoginRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		log.Printf("Error decoding request body: %v", err)
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
 
+	log.Printf("Login request for user: %s", req.Username)
+	
 	user, ok := users[req.Username]
 	if !ok {
+		log.Printf("User not found: %s", req.Username)
 		http.Error(w, "Invalid credentials", http.StatusUnauthorized)
 		return
 	}
 
 	// 简单密码验证（实际应用中应使用加密密码）
 	if req.Password != "password" {
+		log.Printf("Invalid password for user: %s", req.Username)
 		http.Error(w, "Invalid credentials", http.StatusUnauthorized)
 		return
 	}
@@ -421,10 +505,13 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString(jwtSecret)
 	if err != nil {
+		log.Printf("Error generating token: %v", err)
 		http.Error(w, "Could not generate token", http.StatusInternalServerError)
 		return
 	}
 
+	log.Printf("Token generated successfully for user: %s", req.Username)
+	
 	response := LoginResponse{
 		Token: tokenString,
 		User:  user,
@@ -435,10 +522,23 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func verifyHandler(w http.ResponseWriter, r *http.Request) {
+	log.Printf("Verify handler called with method: %s", r.Method)
+	log.Printf("Request headers: Authorization=%s, X-JWT-Token=%s", 
+		r.Header.Get("Authorization"), r.Header.Get("X-JWT-Token"))
+	
+	// 记录所有 cookies
+	log.Printf("All cookies:")
+	for _, cookie := range r.Cookies() {
+		log.Printf("  Cookie %s=%s", cookie.Name, cookie.Value)
+	}
+	
 	// 首先尝试从 cookie 获取 token
 	tokenString := ""
 	if cookie, err := r.Cookie("grafana_jwt_token"); err == nil {
 		tokenString = cookie.Value
+		log.Printf("Token found in cookie: %s", tokenString)
+	} else {
+		log.Printf("No grafana_jwt_token cookie found: %v", err)
 	}
 	
 	// 如果 cookie 中没有 token，则尝试从 header 获取
@@ -446,7 +546,10 @@ func verifyHandler(w http.ResponseWriter, r *http.Request) {
 		authHeader := r.Header.Get("Authorization")
 		jwtToken := r.Header.Get("X-JWT-Token")
 
+		log.Printf("Headers - Authorization: %s, X-JWT-Token: %s", authHeader, jwtToken)
+
 		if authHeader == "" && jwtToken == "" {
+			log.Println("Missing authorization header")
 			http.Error(w, "Missing authorization header", http.StatusUnauthorized)
 			return
 		}
@@ -459,10 +562,18 @@ func verifyHandler(w http.ResponseWriter, r *http.Request) {
 		// 提取 token
 		if strings.HasPrefix(authHeader, "Bearer ") {
 			tokenString = authHeader[7:]
+			log.Printf("Token extracted from header: %s", tokenString)
 		} else {
+			log.Println("Invalid authorization header format")
 			http.Error(w, "Invalid authorization header", http.StatusUnauthorized)
 			return
 		}
+	}
+
+	if tokenString == "" {
+		log.Println("No token found in request")
+		http.Error(w, "No token provided", http.StatusUnauthorized)
+		return
 	}
 
 	// 解析和验证 token
@@ -474,11 +585,20 @@ func verifyHandler(w http.ResponseWriter, r *http.Request) {
 		return jwtSecret, nil
 	})
 
-	if err != nil || !token.Valid {
+	if err != nil {
+		log.Printf("Token parsing error: %v", err)
 		http.Error(w, "Invalid token", http.StatusUnauthorized)
 		return
 	}
 
+	if !token.Valid {
+		log.Println("Token is invalid")
+		http.Error(w, "Invalid token", http.StatusUnauthorized)
+		return
+	}
+
+	log.Printf("Token verified successfully for user: %s", claims.Subject)
+	
 	// 设置认证用户信息头部
 	w.Header().Set("X-Auth-User", claims.Subject)
 	w.Header().Set("X-Auth-Name", claims.Name)

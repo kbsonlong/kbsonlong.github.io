@@ -1,6 +1,6 @@
 <!doctype html><html itemscope itemtype=http://schema.org/WebPage lang=zh-CN><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=2"><meta name=robots content="noodp"><title>- 蜷缩的蜗牛</title><meta name=author content>
 <meta name=description content="Grafana Auth Proxy with Nginx 完整配置指南 在现代监控系统中，集中认证和单点登录(SSO)是保障安全的重要组成部分。本指南将详细介绍如何使用 Nginx 作为反向代理，通过 auth_request 模块实现 Grafana 的 auth.proxy 认证机制。
-"><meta name=keywords content='云原生,运维,SRE,DEVOPS'><meta itemprop=name content="蜷缩的蜗牛"><meta itemprop=description content="Grafana Auth Proxy with Nginx 完整配置指南 在现代监控系统中，集中认证和单点登录(SSO)是保障安全的重要组成部分。本指南将详细介绍如何使用 Nginx 作为反向代理，通过 auth_request 模块实现 Grafana 的 auth.proxy 认证机制。"><meta itemprop=wordCount content="3150"><meta itemprop=image content="https://www.kbsonlong.com/logo_transparent.png"><meta property="og:url" content="https://www.kbsonlong.com/posts/"><meta property="og:site_name" content="蜷缩的蜗牛"><meta property="og:title" content="蜷缩的蜗牛"><meta property="og:description" content="Grafana Auth Proxy with Nginx 完整配置指南 在现代监控系统中，集中认证和单点登录(SSO)是保障安全的重要组成部分。本指南将详细介绍如何使用 Nginx 作为反向代理，通过 auth_request 模块实现 Grafana 的 auth.proxy 认证机制。"><meta property="og:locale" content="zh_CN"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="og:image" content="https://www.kbsonlong.com/logo_transparent.png"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://www.kbsonlong.com/logo_transparent.png"><meta name=twitter:title content="蜷缩的蜗牛"><meta name=twitter:description content="Grafana Auth Proxy with Nginx 完整配置指南 在现代监控系统中，集中认证和单点登录(SSO)是保障安全的重要组成部分。本指南将详细介绍如何使用 Nginx 作为反向代理，通过 auth_request 模块实现 Grafana 的 auth.proxy 认证机制。"><meta name=application-name content="FixIt"><meta name=apple-mobile-web-app-title content="FixIt"><meta name=theme-color data-light=#ffffff data-dark=#252627 content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical type=text/html href=https://www.kbsonlong.com/posts/ title=" - 蜷缩的蜗牛"><link rel=next type=text/html href=https://www.kbsonlong.com/offline/ title><link rel=alternate type=text/markdown href=https://www.kbsonlong.com/posts/index.md title=" - 蜷缩的蜗牛"><link rel=stylesheet href=/css/style.min.css><link rel=preload href=/lib/fontawesome-free/all.min.css as=style onload='this.removeAttribute("onload"),this.rel="stylesheet"'><noscript><link rel=stylesheet href=/lib/fontawesome-free/all.min.css></noscript><link rel=preload href=/lib/animate/animate.min.css as=style onload='this.removeAttribute("onload"),this.rel="stylesheet"'><noscript><link rel=stylesheet href=/lib/animate/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/www.kbsonlong.com\/posts\/"},"genre":"posts","wordcount":3150,"url":"https:\/\/www.kbsonlong.com\/posts\/","license":"This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"作者"},"description":""}</script><script src=/js/head/color-scheme.min.js></script></head><body data-header-desktop=sticky data-header-mobile=auto><div class=wrapper data-page-style=normal><header class="desktop animate__faster" id=header-desktop><div class=header-wrapper data-github-corner=right><div class=header-title><a href=/ title=蜷缩的蜗牛><img class=logo src=/logo_transparent.png alt=蜷缩的蜗牛 height=32 width=32><span class=header-title-text>蜷缩的蜗牛</span></a><span class=header-subtitle></span></div><nav><ul class=menu><li class="menu-item active"><a class=menu-link href=/posts/><i class='fa-solid fa-archive fa-fw fa-sm'></i> 文章</a></li><li class=menu-item><a class=menu-link href=/categories/><i class='fa-solid fa-th fa-fw fa-sm'></i> 分类</a></li><li class=menu-item><a class=menu-link href=/tags/><i class='fa-solid fa-tags fa-fw fa-sm'></i> 标签</a></li><li class=menu-item><a class=menu-link href=/friends/ title=友情链接><i class='fa-solid fa-users fa-fw fa-sm'></i> 友链</a></li><li class=menu-item><a class=menu-link href=/about/><i class='fa-solid fa-info-circle fa-fw fa-sm'></i> 关于</a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=https://github.com/kbsonlong/ title=GitHub rel="noopener noreferrer" target=_blank><i class='fa-brands fa-github fa-fw'></i></a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=/messages/><i class='fa-solid fa-messages'></i> 留言板</a></li><li class=menu-item><a class=menu-link href=/messages/ title=留言板>留言板</a></li><li class="menu-item delimiter"></li><li class="menu-item search" id=search-desktop><input type=text placeholder=搜索文章标题或内容…… id=search-input-desktop>
+"><meta name=keywords content='云原生,运维,SRE,DEVOPS'><meta itemprop=name content="蜷缩的蜗牛"><meta itemprop=description content="Grafana Auth Proxy with Nginx 完整配置指南 在现代监控系统中，集中认证和单点登录(SSO)是保障安全的重要组成部分。本指南将详细介绍如何使用 Nginx 作为反向代理，通过 auth_request 模块实现 Grafana 的 auth.proxy 认证机制。"><meta itemprop=wordCount content="3555"><meta itemprop=image content="https://www.kbsonlong.com/logo_transparent.png"><meta property="og:url" content="https://www.kbsonlong.com/posts/"><meta property="og:site_name" content="蜷缩的蜗牛"><meta property="og:title" content="蜷缩的蜗牛"><meta property="og:description" content="Grafana Auth Proxy with Nginx 完整配置指南 在现代监控系统中，集中认证和单点登录(SSO)是保障安全的重要组成部分。本指南将详细介绍如何使用 Nginx 作为反向代理，通过 auth_request 模块实现 Grafana 的 auth.proxy 认证机制。"><meta property="og:locale" content="zh_CN"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="og:image" content="https://www.kbsonlong.com/logo_transparent.png"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://www.kbsonlong.com/logo_transparent.png"><meta name=twitter:title content="蜷缩的蜗牛"><meta name=twitter:description content="Grafana Auth Proxy with Nginx 完整配置指南 在现代监控系统中，集中认证和单点登录(SSO)是保障安全的重要组成部分。本指南将详细介绍如何使用 Nginx 作为反向代理，通过 auth_request 模块实现 Grafana 的 auth.proxy 认证机制。"><meta name=application-name content="FixIt"><meta name=apple-mobile-web-app-title content="FixIt"><meta name=theme-color data-light=#ffffff data-dark=#252627 content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical type=text/html href=https://www.kbsonlong.com/posts/ title=" - 蜷缩的蜗牛"><link rel=next type=text/html href=https://www.kbsonlong.com/offline/ title><link rel=alternate type=text/markdown href=https://www.kbsonlong.com/posts/index.md title=" - 蜷缩的蜗牛"><link rel=stylesheet href=/css/style.min.css><link rel=preload href=/lib/fontawesome-free/all.min.css as=style onload='this.removeAttribute("onload"),this.rel="stylesheet"'><noscript><link rel=stylesheet href=/lib/fontawesome-free/all.min.css></noscript><link rel=preload href=/lib/animate/animate.min.css as=style onload='this.removeAttribute("onload"),this.rel="stylesheet"'><noscript><link rel=stylesheet href=/lib/animate/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/www.kbsonlong.com\/posts\/"},"genre":"posts","wordcount":3555,"url":"https:\/\/www.kbsonlong.com\/posts\/","license":"This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"作者"},"description":""}</script><script src=/js/head/color-scheme.min.js></script></head><body data-header-desktop=sticky data-header-mobile=auto><div class=wrapper data-page-style=normal><header class="desktop animate__faster" id=header-desktop><div class=header-wrapper data-github-corner=right><div class=header-title><a href=/ title=蜷缩的蜗牛><img class=logo src=/logo_transparent.png alt=蜷缩的蜗牛 height=32 width=32><span class=header-title-text>蜷缩的蜗牛</span></a><span class=header-subtitle></span></div><nav><ul class=menu><li class="menu-item active"><a class=menu-link href=/posts/><i class='fa-solid fa-archive fa-fw fa-sm'></i> 文章</a></li><li class=menu-item><a class=menu-link href=/categories/><i class='fa-solid fa-th fa-fw fa-sm'></i> 分类</a></li><li class=menu-item><a class=menu-link href=/tags/><i class='fa-solid fa-tags fa-fw fa-sm'></i> 标签</a></li><li class=menu-item><a class=menu-link href=/friends/ title=友情链接><i class='fa-solid fa-users fa-fw fa-sm'></i> 友链</a></li><li class=menu-item><a class=menu-link href=/about/><i class='fa-solid fa-info-circle fa-fw fa-sm'></i> 关于</a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=https://github.com/kbsonlong/ title=GitHub rel="noopener noreferrer" target=_blank><i class='fa-brands fa-github fa-fw'></i></a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=/messages/><i class='fa-solid fa-messages'></i> 留言板</a></li><li class=menu-item><a class=menu-link href=/messages/ title=留言板>留言板</a></li><li class="menu-item delimiter"></li><li class="menu-item search" id=search-desktop><input type=text placeholder=搜索文章标题或内容…… id=search-input-desktop>
 <a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fa-solid fa-search fa-fw" aria-hidden=true></i>
 </a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fa-solid fa-times-circle fa-fw" aria-hidden=true></i>
 </a><span class="search-button search-loading" id=search-loading-desktop><i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></li><li class="menu-item theme-switch" title=切换主题><i class="fa-solid fa-adjust fa-fw" aria-hidden=true></i></li><li class="menu-item language-switch"><span role=button aria-label=选择语言 title=选择语言><i class="fa-solid fa-language fa-fw" aria-hidden=true></i></span><ul class=sub-menu><li class=menu-item>没有更多翻译</li></ul></li></ul></nav></div></header><header class="mobile animate__faster" id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title=蜷缩的蜗牛><img class=logo src=/logo_transparent.png alt=蜷缩的蜗牛 height=26 width=26><span class=header-title-text>蜷缩的蜗牛</span></a><span class=header-subtitle></span></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><nav><ul class=menu id=menu-mobile><li class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容…… id=search-input-mobile>
@@ -9,7 +9,7 @@
 </a><span class="search-button search-loading" id=search-loading-mobile><i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></li><li class="menu-item active"><a class=menu-link href=/posts/><i class='fa-solid fa-archive fa-fw fa-sm'></i> 文章</a></li><li class=menu-item><a class=menu-link href=/categories/><i class='fa-solid fa-th fa-fw fa-sm'></i> 分类</a></li><li class=menu-item><a class=menu-link href=/tags/><i class='fa-solid fa-tags fa-fw fa-sm'></i> 标签</a></li><li class=menu-item><a class=menu-link href=/friends/ title=友情链接><i class='fa-solid fa-users fa-fw fa-sm'></i> 友链</a></li><li class=menu-item><a class=menu-link href=/about/><i class='fa-solid fa-info-circle fa-fw fa-sm'></i> 关于</a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=https://github.com/kbsonlong/ title=GitHub rel="noopener noreferrer" target=_blank><i class='fa-brands fa-github fa-fw'></i></a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=/messages/><i class='fa-solid fa-messages'></i> 留言板</a></li><li class=menu-item><a class=menu-link href=/messages/ title=留言板>留言板</a></li><li class="menu-item menu-system"><span class="menu-system-item theme-switch" title=切换主题><i class="fa-solid fa-adjust fa-fw" aria-hidden=true></i></span><span class="menu-system-item language-switch">
 <span role=button aria-label=选择语言 title=选择语言>简体中文<i class="dropdown-icon fa-solid fa-chevron-down" aria-hidden=true></i></span>
 <select class=language-select onchange="location=this.value"><option disabled>没有更多翻译</option></select></span></li></ul></nav></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=container><aside class="aside-collection animate__animated animate__fadeIn animate__faster" aria-label=合集></aside><article class="page single"><div class=header><h1 class="single-title animate__animated animate__flipInX"><span></span></h1></div><div class=post-meta><div class=post-meta-line><span class=post-author><span class=author><i class="fa-solid fa-user-circle" aria-hidden=true></i>
-Anonymous</span></span></div><div class=post-meta-line><span title="发布于 0001-01-01 00:00:00"><i class="fa-solid fa-calendar-days fa-fw me-1" aria-hidden=true></i><time datetime=0001-01-01>0001-01-01</time></span>&nbsp;<span title="3150 字"><i class="fa-solid fa-pencil-alt fa-fw me-1" aria-hidden=true></i>约 3200 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw me-1" aria-hidden=true></i>预计阅读 7 分钟</span>&nbsp;<span id=busuanzi_container_page_pv class="busuanzi_visitors comment-visitors" data-flag-title><i class="fa-regular fa-eye fa-fw me-1" aria-hidden=true></i><span id=busuanzi_value_page_pv>-</span>&nbsp;次阅读
+Anonymous</span></span></div><div class=post-meta-line><span title="发布于 0001-01-01 00:00:00"><i class="fa-solid fa-calendar-days fa-fw me-1" aria-hidden=true></i><time datetime=0001-01-01>0001-01-01</time></span>&nbsp;<span title="3555 字"><i class="fa-solid fa-pencil-alt fa-fw me-1" aria-hidden=true></i>约 3600 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw me-1" aria-hidden=true></i>预计阅读 8 分钟</span>&nbsp;<span id=busuanzi_container_page_pv class="busuanzi_visitors comment-visitors" data-flag-title><i class="fa-regular fa-eye fa-fw me-1" aria-hidden=true></i><span id=busuanzi_value_page_pv>-</span>&nbsp;次阅读
 </span>&nbsp;</div></div><div class="details toc" id=toc-static data-kept=false><div class="details-summary toc-title"><span>目录</span>
 <span><i class="details-icon fa-solid fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#架构概述>架构概述</a></li><li><a href=#1-grafana-配置>1. Grafana 配置</a></li><li><a href=#2-nginx-配置>2. Nginx 配置</a><ul><li><a href=#主配置文件-nginxconf>主配置文件 (nginx.conf)</a></li><li><a href=#站点配置文件-confdgrafanaconf>站点配置文件 (conf.d/grafana.conf)</a></li></ul></li><li><a href=#3-认证服务实现>3. 认证服务实现</a><ul><li><a href=#认证服务-dockerfile>认证服务 Dockerfile</a></li></ul></li><li><a href=#4-docker-compose-部署配置>4. Docker Compose 部署配置</a></li><li><a href=#5-部署步骤>5. 部署步骤</a></li><li><a href=#6-测试方法>6. 测试方法</a><ul><li><a href=#通过浏览器登录>通过浏览器登录</a></li><li><a href=#通过-api-获取访问令牌>通过 API 获取访问令牌</a></li><li><a href=#使用令牌访问-grafana>使用令牌访问 Grafana</a></li></ul></li><li><a href=#7-安全注意事项>7. 安全注意事项</a></li><li><a href=#8-故障排除>8. 故障排除</a><ul><li><a href=#查看日志>查看日志</a></li><li><a href=#常见问题>常见问题</a></li></ul></li></ul></nav></div></div><div class=content id=content><h2 class=heading-element id=grafana-auth-proxy-with-nginx-完整配置指南><span>Grafana Auth Proxy with Nginx 完整配置指南</span>
 <a href=#grafana-auth-proxy-with-nginx-%e5%ae%8c%e6%95%b4%e9%85%8d%e7%bd%ae%e6%8c%87%e5%8d%97 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p>在现代监控系统中，集中认证和单点登录(SSO)是保障安全的重要组成部分。本指南将详细介绍如何使用 Nginx 作为反向代理，通过 auth_request 模块实现 Grafana 的 auth.proxy 认证机制。</p><h2 class=heading-element id=架构概述><span>架构概述</span>
@@ -92,6 +92,12 @@ Anonymous</span></span></div><div class=post-meta-line><span title="发布于 00
 </span><span class=lnt>26
 </span><span class=lnt>27
 </span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
 </span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-nginx data-lang=nginx><span class=line><span class=cl><span class=k>events</span> <span class=p>{</span>
 </span></span><span class=line><span class=cl>    <span class=kn>worker_connections</span> <span class=mi>1024</span><span class=p>;</span>
 </span></span><span class=line><span class=cl><span class=p>}</span>
@@ -102,10 +108,16 @@ Anonymous</span></span></div><div class=post-meta-line><span title="发布于 00
 </span></span><span class=line><span class=cl>
 </span></span><span class=line><span class=cl>    <span class=kn>log_format</span> <span class=s>main</span> <span class=s>&#39;</span><span class=nv>$remote_addr</span> <span class=s>-</span> <span class=nv>$remote_user</span> <span class=s>[</span><span class=nv>$time_local]</span> <span class=s>&#34;</span><span class=nv>$request&#34;</span> <span class=s>&#39;</span>
 </span></span><span class=line><span class=cl>                    <span class=s>&#39;</span><span class=nv>$status</span> <span class=nv>$body_bytes_sent</span> <span class=s>&#34;</span><span class=nv>$http_referer&#34;</span> <span class=s>&#39;</span>
-</span></span><span class=line><span class=cl>                    <span class=s>&#39;&#34;</span><span class=nv>$http_user_agent&#34;</span> <span class=s>&#34;</span><span class=nv>$http_x_forwarded_for&#34;&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                    <span class=s>&#39;&#34;</span><span class=nv>$http_user_agent&#34;</span> <span class=s>&#34;</span><span class=nv>$http_x_forwarded_for&#34;</span> <span class=s>&#39;</span>
+</span></span><span class=line><span class=cl>                    <span class=s>&#39;&#34;</span><span class=nv>$http_cookie&#34;&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kn>log_format</span> <span class=s>detailed</span> <span class=s>&#39;</span><span class=nv>$remote_addr</span> <span class=s>-</span> <span class=nv>$remote_user</span> <span class=s>[</span><span class=nv>$time_local]</span> <span class=s>&#34;</span><span class=nv>$request&#34;</span> <span class=s>&#39;</span>
+</span></span><span class=line><span class=cl>                        <span class=s>&#39;</span><span class=nv>$status</span> <span class=nv>$body_bytes_sent</span> <span class=s>&#34;</span><span class=nv>$http_referer&#34;</span> <span class=s>&#39;</span>
+</span></span><span class=line><span class=cl>                        <span class=s>&#39;&#34;</span><span class=nv>$http_user_agent&#34;</span> <span class=s>&#34;</span><span class=nv>$http_x_forwarded_for&#34;</span> <span class=s>&#39;</span>
+</span></span><span class=line><span class=cl>                        <span class=s>&#39;&#34;</span><span class=nv>$http_cookie&#34;</span> <span class=s>&#34;</span><span class=nv>$upstream_http_x_auth_user&#34;&#39;</span><span class=p>;</span>
 </span></span><span class=line><span class=cl>
 </span></span><span class=line><span class=cl>    <span class=kn>access_log</span> <span class=s>/var/log/nginx/access.log</span> <span class=s>main</span><span class=p>;</span>
-</span></span><span class=line><span class=cl>    <span class=kn>error_log</span> <span class=s>/var/log/nginx/error.log</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kn>error_log</span> <span class=s>/var/log/nginx/error.log</span> <span class=s>debug</span><span class=p>;</span>
 </span></span><span class=line><span class=cl>
 </span></span><span class=line><span class=cl>    <span class=kn>sendfile</span>        <span class=no>on</span><span class=p>;</span>
 </span></span><span class=line><span class=cl>    <span class=kn>keepalive_timeout</span>  <span class=mi>65</span><span class=p>;</span>
@@ -184,6 +196,13 @@ Anonymous</span></span></div><div class=post-meta-line><span title="发布于 00
 </span><span class=lnt>62
 </span><span class=lnt>63
 </span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
 </span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-nginx data-lang=nginx><span class=line><span class=cl><span class=k>map</span> <span class=nv>$http_authorization</span> <span class=nv>$jwt_token</span> <span class=p>{</span>
 </span></span><span class=line><span class=cl>    <span class=kn>~Bearer(.*)</span> <span class=nv>$1</span><span class=p>;</span>
 </span></span><span class=line><span class=cl>    <span class=kn>default</span> <span class=s>&#34;&#34;</span><span class=p>;</span>
@@ -221,9 +240,15 @@ Anonymous</span></span></div><div class=post-meta-line><span title="发布于 00
 </span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kn>location</span> <span class=s>/grafana/auth</span> <span class=p>{</span>
 </span></span><span class=line><span class=cl>        <span class=kn>proxy_pass</span> <span class=s>http://auth-service/grafana/auth</span><span class=p>;</span>
 </span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
 </span></span><span class=line><span class=cl>    <span class=c1># 认证端点
 </span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kn>location</span> <span class=p>=</span> <span class=s>/auth</span> <span class=p>{</span>
 </span></span><span class=line><span class=cl>        <span class=kn>internal</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1># 启用详细日志
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=kn>access_log</span> <span class=s>/var/log/nginx/auth_access.log</span> <span class=s>main</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kn>error_log</span> <span class=s>/var/log/nginx/auth_error.log</span> <span class=s>debug</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
 </span></span><span class=line><span class=cl>        <span class=kn>proxy_pass</span> <span class=s>http://auth-service/verify</span><span class=p>;</span>
 </span></span><span class=line><span class=cl>        <span class=kn>proxy_pass_request_body</span> <span class=no>off</span><span class=p>;</span>
 </span></span><span class=line><span class=cl>        <span class=kn>proxy_set_header</span> <span class=s>Content-Length</span> <span class=s>&#34;&#34;</span><span class=p>;</span>
@@ -242,6 +267,7 @@ Anonymous</span></span></div><div class=post-meta-line><span title="发布于 00
 </span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kn>location</span> <span class=s>/</span> <span class=p>{</span>
 </span></span><span class=line><span class=cl>        <span class=kn>proxy_pass</span> <span class=s>http://auth-service/</span><span class=p>;</span>
 </span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    
 </span></span><span class=line><span class=cl>    <span class=c1># 健康检查
 </span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kn>location</span> <span class=s>/health</span> <span class=p>{</span>
 </span></span><span class=line><span class=cl>        <span class=kn>return</span> <span class=mi>200</span> <span class=s>&#34;OK&#34;</span><span class=p>;</span>
@@ -732,6 +758,102 @@ Anonymous</span></span></div><div class=post-meta-line><span title="发布于 00
 </span><span class=lnt>482
 </span><span class=lnt>483
 </span><span class=lnt>484
+</span><span class=lnt>485
+</span><span class=lnt>486
+</span><span class=lnt>487
+</span><span class=lnt>488
+</span><span class=lnt>489
+</span><span class=lnt>490
+</span><span class=lnt>491
+</span><span class=lnt>492
+</span><span class=lnt>493
+</span><span class=lnt>494
+</span><span class=lnt>495
+</span><span class=lnt>496
+</span><span class=lnt>497
+</span><span class=lnt>498
+</span><span class=lnt>499
+</span><span class=lnt>500
+</span><span class=lnt>501
+</span><span class=lnt>502
+</span><span class=lnt>503
+</span><span class=lnt>504
+</span><span class=lnt>505
+</span><span class=lnt>506
+</span><span class=lnt>507
+</span><span class=lnt>508
+</span><span class=lnt>509
+</span><span class=lnt>510
+</span><span class=lnt>511
+</span><span class=lnt>512
+</span><span class=lnt>513
+</span><span class=lnt>514
+</span><span class=lnt>515
+</span><span class=lnt>516
+</span><span class=lnt>517
+</span><span class=lnt>518
+</span><span class=lnt>519
+</span><span class=lnt>520
+</span><span class=lnt>521
+</span><span class=lnt>522
+</span><span class=lnt>523
+</span><span class=lnt>524
+</span><span class=lnt>525
+</span><span class=lnt>526
+</span><span class=lnt>527
+</span><span class=lnt>528
+</span><span class=lnt>529
+</span><span class=lnt>530
+</span><span class=lnt>531
+</span><span class=lnt>532
+</span><span class=lnt>533
+</span><span class=lnt>534
+</span><span class=lnt>535
+</span><span class=lnt>536
+</span><span class=lnt>537
+</span><span class=lnt>538
+</span><span class=lnt>539
+</span><span class=lnt>540
+</span><span class=lnt>541
+</span><span class=lnt>542
+</span><span class=lnt>543
+</span><span class=lnt>544
+</span><span class=lnt>545
+</span><span class=lnt>546
+</span><span class=lnt>547
+</span><span class=lnt>548
+</span><span class=lnt>549
+</span><span class=lnt>550
+</span><span class=lnt>551
+</span><span class=lnt>552
+</span><span class=lnt>553
+</span><span class=lnt>554
+</span><span class=lnt>555
+</span><span class=lnt>556
+</span><span class=lnt>557
+</span><span class=lnt>558
+</span><span class=lnt>559
+</span><span class=lnt>560
+</span><span class=lnt>561
+</span><span class=lnt>562
+</span><span class=lnt>563
+</span><span class=lnt>564
+</span><span class=lnt>565
+</span><span class=lnt>566
+</span><span class=lnt>567
+</span><span class=lnt>568
+</span><span class=lnt>569
+</span><span class=lnt>570
+</span><span class=lnt>571
+</span><span class=lnt>572
+</span><span class=lnt>573
+</span><span class=lnt>574
+</span><span class=lnt>575
+</span><span class=lnt>576
+</span><span class=lnt>577
+</span><span class=lnt>578
+</span><span class=lnt>579
+</span><span class=lnt>580
 </span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
 </span></span><span class=line><span class=cl>
 </span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
@@ -937,12 +1059,15 @@ Anonymous</span></span></div><div class=post-meta-line><span title="发布于 00
 </span></span></span><span class=line><span class=cl><span class=s>
 </span></span></span><span class=line><span class=cl><span class=s>        document.getElementById(&#39;loginForm&#39;).addEventListener(&#39;submit&#39;, function(e) {
 </span></span></span><span class=line><span class=cl><span class=s>            e.preventDefault();
+</span></span></span><span class=line><span class=cl><span class=s>            
 </span></span></span><span class=line><span class=cl><span class=s>            const username = document.getElementById(&#39;username&#39;).value;
 </span></span></span><span class=line><span class=cl><span class=s>            const password = document.getElementById(&#39;password&#39;).value;
 </span></span></span><span class=line><span class=cl><span class=s>            const messageDiv = document.getElementById(&#39;message&#39;);
 </span></span></span><span class=line><span class=cl><span class=s>            const grafanaLinkDiv = document.getElementById(&#39;grafanaLink&#39;);
+</span></span></span><span class=line><span class=cl><span class=s>            
 </span></span></span><span class=line><span class=cl><span class=s>            // 清除之前的消息
 </span></span></span><span class=line><span class=cl><span class=s>            messageDiv.className = &#39;message hidden&#39;;
+</span></span></span><span class=line><span class=cl><span class=s>            
 </span></span></span><span class=line><span class=cl><span class=s>            fetch(&#39;/login&#39;, {
 </span></span></span><span class=line><span class=cl><span class=s>                method: &#39;POST&#39;,
 </span></span></span><span class=line><span class=cl><span class=s>                headers: {
@@ -955,10 +1080,12 @@ Anonymous</span></span></div><div class=post-meta-line><span title="发布于 00
 </span></span></span><span class=line><span class=cl><span class=s>                if (data.token) {
 </span></span></span><span class=line><span class=cl><span class=s>                    // 保存 token 到 localStorage
 </span></span></span><span class=line><span class=cl><span class=s>                    localStorage.setItem(&#39;grafana_jwt_token&#39;, data.token);
+</span></span></span><span class=line><span class=cl><span class=s>                    
 </span></span></span><span class=line><span class=cl><span class=s>                    // 显示成功消息
 </span></span></span><span class=line><span class=cl><span class=s>                    messageDiv.className = &#39;message success&#39;;
 </span></span></span><span class=line><span class=cl><span class=s>                    messageDiv.textContent = &#39;Login successful! You can now access Grafana.&#39;;
 </span></span></span><span class=line><span class=cl><span class=s>                    messageDiv.classList.remove(&#39;hidden&#39;);
+</span></span></span><span class=line><span class=cl><span class=s>                    
 </span></span></span><span class=line><span class=cl><span class=s>                    // 显示 Grafana 链接
 </span></span></span><span class=line><span class=cl><span class=s>                    grafanaLinkDiv.classList.remove(&#39;hidden&#39;);
 </span></span></span><span class=line><span class=cl><span class=s>                } else {
@@ -975,6 +1102,7 @@ Anonymous</span></span></div><div class=post-meta-line><span title="发布于 00
 </span></span></span><span class=line><span class=cl><span class=s>                messageDiv.classList.remove(&#39;hidden&#39;);
 </span></span></span><span class=line><span class=cl><span class=s>            });
 </span></span></span><span class=line><span class=cl><span class=s>        });
+</span></span></span><span class=line><span class=cl><span class=s>        
 </span></span></span><span class=line><span class=cl><span class=s>        // 为 Grafana 链接添加事件处理器
 </span></span></span><span class=line><span class=cl><span class=s>        document.getElementById(&#39;grafanaLinkBtn&#39;).addEventListener(&#39;click&#39;, function(e) {
 </span></span></span><span class=line><span class=cl><span class=s>            e.preventDefault();
@@ -995,16 +1123,23 @@ Anonymous</span></span></div><div class=post-meta-line><span title="发布于 00
 </span></span><span class=line><span class=cl><span class=p>}</span>
 </span></span><span class=line><span class=cl>
 </span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>grafanaAuthHandler</span><span class=p>(</span><span class=nx>w</span> <span class=nx>http</span><span class=p>.</span><span class=nx>ResponseWriter</span><span class=p>,</span> <span class=nx>r</span> <span class=o>*</span><span class=nx>http</span><span class=p>.</span><span class=nx>Request</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>log</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Grafana auth handler called with URL: %s&#34;</span><span class=p>,</span> <span class=nx>r</span><span class=p>.</span><span class=nx>URL</span><span class=p>.</span><span class=nf>String</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>	
 </span></span><span class=line><span class=cl>	<span class=c1>// 从查询参数获取 token</span>
 </span></span><span class=line><span class=cl>	<span class=nx>tokenString</span> <span class=o>:=</span> <span class=nx>r</span><span class=p>.</span><span class=nx>URL</span><span class=p>.</span><span class=nf>Query</span><span class=p>().</span><span class=nf>Get</span><span class=p>(</span><span class=s>&#34;token&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=nx>log</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Token from URL query parameter: %s&#34;</span><span class=p>,</span> <span class=nx>tokenString</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	
 </span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>tokenString</span> <span class=o>==</span> <span class=s>&#34;&#34;</span> <span class=p>{</span>
 </span></span><span class=line><span class=cl>		<span class=c1>// 如果没有 token，尝试从 Authorization 头获取</span>
 </span></span><span class=line><span class=cl>		<span class=nx>authHeader</span> <span class=o>:=</span> <span class=nx>r</span><span class=p>.</span><span class=nx>Header</span><span class=p>.</span><span class=nf>Get</span><span class=p>(</span><span class=s>&#34;Authorization&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=nx>log</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Authorization header: %s&#34;</span><span class=p>,</span> <span class=nx>authHeader</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=nx>strings</span><span class=p>.</span><span class=nf>HasPrefix</span><span class=p>(</span><span class=nx>authHeader</span><span class=p>,</span> <span class=s>&#34;Bearer &#34;</span><span class=p>)</span> <span class=p>{</span>
 </span></span><span class=line><span class=cl>			<span class=nx>tokenString</span> <span class=p>=</span> <span class=nx>authHeader</span><span class=p>[</span><span class=mi>7</span><span class=p>:]</span>
 </span></span><span class=line><span class=cl>		<span class=p>}</span>
 </span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	
 </span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>tokenString</span> <span class=o>==</span> <span class=s>&#34;&#34;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>log</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=s>&#34;No token found in request&#34;</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>		<span class=c1>// 如果仍然没有 token，返回错误页面</span>
 </span></span><span class=line><span class=cl>		<span class=nx>w</span><span class=p>.</span><span class=nf>Header</span><span class=p>().</span><span class=nf>Set</span><span class=p>(</span><span class=s>&#34;Content-Type&#34;</span><span class=p>,</span> <span class=s>&#34;text/html; charset=utf-8&#34;</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>		<span class=nx>fmt</span><span class=p>.</span><span class=nf>Fprint</span><span class=p>(</span><span class=nx>w</span><span class=p>,</span> <span class=s>`
@@ -1043,7 +1178,8 @@ Anonymous</span></span></div><div class=post-meta-line><span title="发布于 00
 </span></span></span><span class=line><span class=cl><span class=s>`</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>		<span class=k>return</span>
 </span></span><span class=line><span class=cl>	<span class=p>}</span>
-</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	
+</span></span><span class=line><span class=cl>	<span class=nx>log</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=s>&#34;Token found, validating...&#34;</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>	<span class=c1>// 验证 token</span>
 </span></span><span class=line><span class=cl>	<span class=nx>claims</span> <span class=o>:=</span> <span class=o>&amp;</span><span class=nx>Claims</span><span class=p>{}</span>
 </span></span><span class=line><span class=cl>	<span class=nx>token</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>jwt</span><span class=p>.</span><span class=nf>ParseWithClaims</span><span class=p>(</span><span class=nx>tokenString</span><span class=p>,</span> <span class=nx>claims</span><span class=p>,</span> <span class=kd>func</span><span class=p>(</span><span class=nx>token</span> <span class=o>*</span><span class=nx>jwt</span><span class=p>.</span><span class=nx>Token</span><span class=p>)</span> <span class=p>(</span><span class=kd>interface</span><span class=p>{},</span> <span class=kt>error</span><span class=p>)</span> <span class=p>{</span>
@@ -1052,8 +1188,9 @@ Anonymous</span></span></div><div class=post-meta-line><span title="发布于 00
 </span></span><span class=line><span class=cl>		<span class=p>}</span>
 </span></span><span class=line><span class=cl>		<span class=k>return</span> <span class=nx>jwtSecret</span><span class=p>,</span> <span class=kc>nil</span>
 </span></span><span class=line><span class=cl>	<span class=p>})</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=o>||</span> <span class=p>!</span><span class=nx>token</span><span class=p>.</span><span class=nx>Valid</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>log</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Token parsing error: %v&#34;</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>		<span class=c1>// Token 无效，返回错误页面</span>
 </span></span><span class=line><span class=cl>		<span class=nx>w</span><span class=p>.</span><span class=nf>Header</span><span class=p>().</span><span class=nf>Set</span><span class=p>(</span><span class=s>&#34;Content-Type&#34;</span><span class=p>,</span> <span class=s>&#34;text/html; charset=utf-8&#34;</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>		<span class=nx>fmt</span><span class=p>.</span><span class=nf>Fprint</span><span class=p>(</span><span class=nx>w</span><span class=p>,</span> <span class=s>`
@@ -1092,7 +1229,50 @@ Anonymous</span></span></div><div class=post-meta-line><span title="发布于 00
 </span></span></span><span class=line><span class=cl><span class=s>`</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>		<span class=k>return</span>
 </span></span><span class=line><span class=cl>	<span class=p>}</span>
-</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=p>!</span><span class=nx>token</span><span class=p>.</span><span class=nx>Valid</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>log</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=s>&#34;Token is invalid&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=c1>// Token 无效，返回错误页面</span>
+</span></span><span class=line><span class=cl>		<span class=nx>w</span><span class=p>.</span><span class=nf>Header</span><span class=p>().</span><span class=nf>Set</span><span class=p>(</span><span class=s>&#34;Content-Type&#34;</span><span class=p>,</span> <span class=s>&#34;text/html; charset=utf-8&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=nx>fmt</span><span class=p>.</span><span class=nf>Fprint</span><span class=p>(</span><span class=nx>w</span><span class=p>,</span> <span class=s>`
+</span></span></span><span class=line><span class=cl><span class=s>&lt;!DOCTYPE html&gt;
+</span></span></span><span class=line><span class=cl><span class=s>&lt;html&gt;
+</span></span></span><span class=line><span class=cl><span class=s>&lt;head&gt;
+</span></span></span><span class=line><span class=cl><span class=s>    &lt;meta charset=&#34;UTF-8&#34;&gt;
+</span></span></span><span class=line><span class=cl><span class=s>    &lt;title&gt;Access Denied&lt;/title&gt;
+</span></span></span><span class=line><span class=cl><span class=s>    &lt;style&gt;
+</span></span></span><span class=line><span class=cl><span class=s>        body {
+</span></span></span><span class=line><span class=cl><span class=s>            font-family: Arial, sans-serif;
+</span></span></span><span class=line><span class=cl><span class=s>            text-align: center;
+</span></span></span><span class=line><span class=cl><span class=s>            margin-top: 100px;
+</span></span></span><span class=line><span class=cl><span class=s>        }
+</span></span></span><span class=line><span class=cl><span class=s>        .error {
+</span></span></span><span class=line><span class=cl><span class=s>            color: #d9534f;
+</span></span></span><span class=line><span class=cl><span class=s>            font-size: 18px;
+</span></span></span><span class=line><span class=cl><span class=s>        }
+</span></span></span><span class=line><span class=cl><span class=s>        .back-link {
+</span></span></span><span class=line><span class=cl><span class=s>            margin-top: 20px;
+</span></span></span><span class=line><span class=cl><span class=s>        }
+</span></span></span><span class=line><span class=cl><span class=s>        .back-link a {
+</span></span></span><span class=line><span class=cl><span class=s>            color: #337ab7;
+</span></span></span><span class=line><span class=cl><span class=s>            text-decoration: none;
+</span></span></span><span class=line><span class=cl><span class=s>        }
+</span></span></span><span class=line><span class=cl><span class=s>    &lt;/style&gt;
+</span></span></span><span class=line><span class=cl><span class=s>&lt;/head&gt;
+</span></span></span><span class=line><span class=cl><span class=s>&lt;body&gt;
+</span></span></span><span class=line><span class=cl><span class=s>    &lt;div class=&#34;error&#34;&gt;
+</span></span></span><span class=line><span class=cl><span class=s>        &lt;h2&gt;Access Denied&lt;/h2&gt;
+</span></span></span><span class=line><span class=cl><span class=s>        &lt;p&gt;Invalid or expired authentication token.&lt;/p&gt;
+</span></span></span><span class=line><span class=cl><span class=s>        &lt;p&gt;Please &lt;a href=&#34;/&#34;&gt;login&lt;/a&gt; again to access Grafana.&lt;/p&gt;
+</span></span></span><span class=line><span class=cl><span class=s>    &lt;/div&gt;
+</span></span></span><span class=line><span class=cl><span class=s>&lt;/body&gt;
+</span></span></span><span class=line><span class=cl><span class=s>&lt;/html&gt;
+</span></span></span><span class=line><span class=cl><span class=s>`</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=k>return</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	
+</span></span><span class=line><span class=cl>	<span class=nx>log</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Token is valid for user: %s&#34;</span><span class=p>,</span> <span class=nx>claims</span><span class=p>.</span><span class=nx>Subject</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	
 </span></span><span class=line><span class=cl>	<span class=c1>// Token 有效，设置认证 cookie 并重定向到 Grafana</span>
 </span></span><span class=line><span class=cl>	<span class=nx>http</span><span class=p>.</span><span class=nf>SetCookie</span><span class=p>(</span><span class=nx>w</span><span class=p>,</span> <span class=o>&amp;</span><span class=nx>http</span><span class=p>.</span><span class=nx>Cookie</span><span class=p>{</span>
 </span></span><span class=line><span class=cl>		<span class=nx>Name</span><span class=p>:</span>     <span class=s>&#34;grafana_jwt_token&#34;</span><span class=p>,</span>
@@ -1102,31 +1282,40 @@ Anonymous</span></span></div><div class=post-meta-line><span title="发布于 00
 </span></span><span class=line><span class=cl>		<span class=nx>MaxAge</span><span class=p>:</span>   <span class=mi>86400</span><span class=p>,</span> <span class=c1>// 24小时</span>
 </span></span><span class=line><span class=cl>		<span class=nx>SameSite</span><span class=p>:</span> <span class=nx>http</span><span class=p>.</span><span class=nx>SameSiteLaxMode</span><span class=p>,</span>
 </span></span><span class=line><span class=cl>	<span class=p>})</span>
-</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	
+</span></span><span class=line><span class=cl>	<span class=nx>log</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=s>&#34;Cookie set, redirecting to Grafana&#34;</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>	<span class=c1>// 重定向到 Grafana</span>
 </span></span><span class=line><span class=cl>	<span class=nx>http</span><span class=p>.</span><span class=nf>Redirect</span><span class=p>(</span><span class=nx>w</span><span class=p>,</span> <span class=nx>r</span><span class=p>,</span> <span class=s>&#34;http://localhost/grafana/&#34;</span><span class=p>,</span> <span class=nx>http</span><span class=p>.</span><span class=nx>StatusTemporaryRedirect</span><span class=p>)</span>
 </span></span><span class=line><span class=cl><span class=p>}</span>
 </span></span><span class=line><span class=cl>
 </span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>loginHandler</span><span class=p>(</span><span class=nx>w</span> <span class=nx>http</span><span class=p>.</span><span class=nx>ResponseWriter</span><span class=p>,</span> <span class=nx>r</span> <span class=o>*</span><span class=nx>http</span><span class=p>.</span><span class=nx>Request</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>log</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Login handler called with method: %s&#34;</span><span class=p>,</span> <span class=nx>r</span><span class=p>.</span><span class=nx>Method</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	
 </span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>r</span><span class=p>.</span><span class=nx>Method</span> <span class=o>!=</span> <span class=nx>http</span><span class=p>.</span><span class=nx>MethodPost</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>log</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Invalid method: %s&#34;</span><span class=p>,</span> <span class=nx>r</span><span class=p>.</span><span class=nx>Method</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>		<span class=nx>http</span><span class=p>.</span><span class=nf>Error</span><span class=p>(</span><span class=nx>w</span><span class=p>,</span> <span class=s>&#34;Method not allowed&#34;</span><span class=p>,</span> <span class=nx>http</span><span class=p>.</span><span class=nx>StatusMethodNotAllowed</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>		<span class=k>return</span>
 </span></span><span class=line><span class=cl>	<span class=p>}</span>
 </span></span><span class=line><span class=cl>
 </span></span><span class=line><span class=cl>	<span class=kd>var</span> <span class=nx>req</span> <span class=nx>LoginRequest</span>
 </span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>json</span><span class=p>.</span><span class=nf>NewDecoder</span><span class=p>(</span><span class=nx>r</span><span class=p>.</span><span class=nx>Body</span><span class=p>).</span><span class=nf>Decode</span><span class=p>(</span><span class=o>&amp;</span><span class=nx>req</span><span class=p>);</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>log</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Error decoding request body: %v&#34;</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>		<span class=nx>http</span><span class=p>.</span><span class=nf>Error</span><span class=p>(</span><span class=nx>w</span><span class=p>,</span> <span class=s>&#34;Invalid request body&#34;</span><span class=p>,</span> <span class=nx>http</span><span class=p>.</span><span class=nx>StatusBadRequest</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>		<span class=k>return</span>
 </span></span><span class=line><span class=cl>	<span class=p>}</span>
 </span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=nx>log</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Login request for user: %s&#34;</span><span class=p>,</span> <span class=nx>req</span><span class=p>.</span><span class=nx>Username</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	
 </span></span><span class=line><span class=cl>	<span class=nx>user</span><span class=p>,</span> <span class=nx>ok</span> <span class=o>:=</span> <span class=nx>users</span><span class=p>[</span><span class=nx>req</span><span class=p>.</span><span class=nx>Username</span><span class=p>]</span>
 </span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=p>!</span><span class=nx>ok</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>log</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;User not found: %s&#34;</span><span class=p>,</span> <span class=nx>req</span><span class=p>.</span><span class=nx>Username</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>		<span class=nx>http</span><span class=p>.</span><span class=nf>Error</span><span class=p>(</span><span class=nx>w</span><span class=p>,</span> <span class=s>&#34;Invalid credentials&#34;</span><span class=p>,</span> <span class=nx>http</span><span class=p>.</span><span class=nx>StatusUnauthorized</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>		<span class=k>return</span>
 </span></span><span class=line><span class=cl>	<span class=p>}</span>
 </span></span><span class=line><span class=cl>
 </span></span><span class=line><span class=cl>	<span class=c1>// 简单密码验证（实际应用中应使用加密密码）</span>
 </span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>req</span><span class=p>.</span><span class=nx>Password</span> <span class=o>!=</span> <span class=s>&#34;password&#34;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>log</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Invalid password for user: %s&#34;</span><span class=p>,</span> <span class=nx>req</span><span class=p>.</span><span class=nx>Username</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>		<span class=nx>http</span><span class=p>.</span><span class=nf>Error</span><span class=p>(</span><span class=nx>w</span><span class=p>,</span> <span class=s>&#34;Invalid credentials&#34;</span><span class=p>,</span> <span class=nx>http</span><span class=p>.</span><span class=nx>StatusUnauthorized</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>		<span class=k>return</span>
 </span></span><span class=line><span class=cl>	<span class=p>}</span>
@@ -1147,10 +1336,12 @@ Anonymous</span></span></div><div class=post-meta-line><span title="发布于 00
 </span></span><span class=line><span class=cl>	<span class=nx>token</span> <span class=o>:=</span> <span class=nx>jwt</span><span class=p>.</span><span class=nf>NewWithClaims</span><span class=p>(</span><span class=nx>jwt</span><span class=p>.</span><span class=nx>SigningMethodHS256</span><span class=p>,</span> <span class=nx>claims</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>	<span class=nx>tokenString</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>token</span><span class=p>.</span><span class=nf>SignedString</span><span class=p>(</span><span class=nx>jwtSecret</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>log</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Error generating token: %v&#34;</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>		<span class=nx>http</span><span class=p>.</span><span class=nf>Error</span><span class=p>(</span><span class=nx>w</span><span class=p>,</span> <span class=s>&#34;Could not generate token&#34;</span><span class=p>,</span> <span class=nx>http</span><span class=p>.</span><span class=nx>StatusInternalServerError</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>		<span class=k>return</span>
 </span></span><span class=line><span class=cl>	<span class=p>}</span>
 </span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=nx>log</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Token generated successfully for user: %s&#34;</span><span class=p>,</span> <span class=nx>req</span><span class=p>.</span><span class=nx>Username</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>	<span class=nx>response</span> <span class=o>:=</span> <span class=nx>LoginResponse</span><span class=p>{</span>
 </span></span><span class=line><span class=cl>		<span class=nx>Token</span><span class=p>:</span> <span class=nx>tokenString</span><span class=p>,</span>
 </span></span><span class=line><span class=cl>		<span class=nx>User</span><span class=p>:</span>  <span class=nx>user</span><span class=p>,</span>
@@ -1161,18 +1352,28 @@ Anonymous</span></span></div><div class=post-meta-line><span title="发布于 00
 </span></span><span class=line><span class=cl><span class=p>}</span>
 </span></span><span class=line><span class=cl>
 </span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>verifyHandler</span><span class=p>(</span><span class=nx>w</span> <span class=nx>http</span><span class=p>.</span><span class=nx>ResponseWriter</span><span class=p>,</span> <span class=nx>r</span> <span class=o>*</span><span class=nx>http</span><span class=p>.</span><span class=nx>Request</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>log</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Verify handler called with method: %s&#34;</span><span class=p>,</span> <span class=nx>r</span><span class=p>.</span><span class=nx>Method</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=nx>log</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Request headers: Authorization=%s, X-JWT-Token=%s&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>		<span class=nx>r</span><span class=p>.</span><span class=nx>Header</span><span class=p>.</span><span class=nf>Get</span><span class=p>(</span><span class=s>&#34;Authorization&#34;</span><span class=p>),</span> <span class=nx>r</span><span class=p>.</span><span class=nx>Header</span><span class=p>.</span><span class=nf>Get</span><span class=p>(</span><span class=s>&#34;X-JWT-Token&#34;</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>	
 </span></span><span class=line><span class=cl>	<span class=c1>// 首先尝试从 cookie 获取 token</span>
 </span></span><span class=line><span class=cl>	<span class=nx>tokenString</span> <span class=o>:=</span> <span class=s>&#34;&#34;</span>
 </span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>cookie</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>r</span><span class=p>.</span><span class=nf>Cookie</span><span class=p>(</span><span class=s>&#34;grafana_jwt_token&#34;</span><span class=p>);</span> <span class=nx>err</span> <span class=o>==</span> <span class=kc>nil</span> <span class=p>{</span>
 </span></span><span class=line><span class=cl>		<span class=nx>tokenString</span> <span class=p>=</span> <span class=nx>cookie</span><span class=p>.</span><span class=nx>Value</span>
+</span></span><span class=line><span class=cl>		<span class=nx>log</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Token found in cookie: %s&#34;</span><span class=p>,</span> <span class=nx>tokenString</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>log</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=s>&#34;No token found in cookie&#34;</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>	<span class=p>}</span>
-</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	
 </span></span><span class=line><span class=cl>	<span class=c1>// 如果 cookie 中没有 token，则尝试从 header 获取</span>
 </span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>tokenString</span> <span class=o>==</span> <span class=s>&#34;&#34;</span> <span class=p>{</span>
 </span></span><span class=line><span class=cl>		<span class=nx>authHeader</span> <span class=o>:=</span> <span class=nx>r</span><span class=p>.</span><span class=nx>Header</span><span class=p>.</span><span class=nf>Get</span><span class=p>(</span><span class=s>&#34;Authorization&#34;</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>		<span class=nx>jwtToken</span> <span class=o>:=</span> <span class=nx>r</span><span class=p>.</span><span class=nx>Header</span><span class=p>.</span><span class=nf>Get</span><span class=p>(</span><span class=s>&#34;X-JWT-Token&#34;</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>		<span class=nx>log</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Headers - Authorization: %s, X-JWT-Token: %s&#34;</span><span class=p>,</span> <span class=nx>authHeader</span><span class=p>,</span> <span class=nx>jwtToken</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
 </span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=nx>authHeader</span> <span class=o>==</span> <span class=s>&#34;&#34;</span> <span class=o>&amp;&amp;</span> <span class=nx>jwtToken</span> <span class=o>==</span> <span class=s>&#34;&#34;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=nx>log</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=s>&#34;Missing authorization header&#34;</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>			<span class=nx>http</span><span class=p>.</span><span class=nf>Error</span><span class=p>(</span><span class=nx>w</span><span class=p>,</span> <span class=s>&#34;Missing authorization header&#34;</span><span class=p>,</span> <span class=nx>http</span><span class=p>.</span><span class=nx>StatusUnauthorized</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>			<span class=k>return</span>
 </span></span><span class=line><span class=cl>		<span class=p>}</span>
@@ -1185,10 +1386,18 @@ Anonymous</span></span></div><div class=post-meta-line><span title="发布于 00
 </span></span><span class=line><span class=cl>		<span class=c1>// 提取 token</span>
 </span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=nx>strings</span><span class=p>.</span><span class=nf>HasPrefix</span><span class=p>(</span><span class=nx>authHeader</span><span class=p>,</span> <span class=s>&#34;Bearer &#34;</span><span class=p>)</span> <span class=p>{</span>
 </span></span><span class=line><span class=cl>			<span class=nx>tokenString</span> <span class=p>=</span> <span class=nx>authHeader</span><span class=p>[</span><span class=mi>7</span><span class=p>:]</span>
+</span></span><span class=line><span class=cl>			<span class=nx>log</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Token extracted from header: %s&#34;</span><span class=p>,</span> <span class=nx>tokenString</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>		<span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=nx>log</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=s>&#34;Invalid authorization header format&#34;</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>			<span class=nx>http</span><span class=p>.</span><span class=nf>Error</span><span class=p>(</span><span class=nx>w</span><span class=p>,</span> <span class=s>&#34;Invalid authorization header&#34;</span><span class=p>,</span> <span class=nx>http</span><span class=p>.</span><span class=nx>StatusUnauthorized</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>			<span class=k>return</span>
 </span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>tokenString</span> <span class=o>==</span> <span class=s>&#34;&#34;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>log</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=s>&#34;No token found in request&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=nx>http</span><span class=p>.</span><span class=nf>Error</span><span class=p>(</span><span class=nx>w</span><span class=p>,</span> <span class=s>&#34;No token provided&#34;</span><span class=p>,</span> <span class=nx>http</span><span class=p>.</span><span class=nx>StatusUnauthorized</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=k>return</span>
 </span></span><span class=line><span class=cl>	<span class=p>}</span>
 </span></span><span class=line><span class=cl>
 </span></span><span class=line><span class=cl>	<span class=c1>// 解析和验证 token</span>
@@ -1200,11 +1409,20 @@ Anonymous</span></span></div><div class=post-meta-line><span title="发布于 00
 </span></span><span class=line><span class=cl>		<span class=k>return</span> <span class=nx>jwtSecret</span><span class=p>,</span> <span class=kc>nil</span>
 </span></span><span class=line><span class=cl>	<span class=p>})</span>
 </span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=o>||</span> <span class=p>!</span><span class=nx>token</span><span class=p>.</span><span class=nx>Valid</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>log</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Token parsing error: %v&#34;</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>		<span class=nx>http</span><span class=p>.</span><span class=nf>Error</span><span class=p>(</span><span class=nx>w</span><span class=p>,</span> <span class=s>&#34;Invalid token&#34;</span><span class=p>,</span> <span class=nx>http</span><span class=p>.</span><span class=nx>StatusUnauthorized</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>		<span class=k>return</span>
 </span></span><span class=line><span class=cl>	<span class=p>}</span>
 </span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=p>!</span><span class=nx>token</span><span class=p>.</span><span class=nx>Valid</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>log</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=s>&#34;Token is invalid&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=nx>http</span><span class=p>.</span><span class=nf>Error</span><span class=p>(</span><span class=nx>w</span><span class=p>,</span> <span class=s>&#34;Invalid token&#34;</span><span class=p>,</span> <span class=nx>http</span><span class=p>.</span><span class=nx>StatusUnauthorized</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=k>return</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=nx>log</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Token verified successfully for user: %s&#34;</span><span class=p>,</span> <span class=nx>claims</span><span class=p>.</span><span class=nx>Subject</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	
 </span></span><span class=line><span class=cl>	<span class=c1>// 设置认证用户信息头部</span>
 </span></span><span class=line><span class=cl>	<span class=nx>w</span><span class=p>.</span><span class=nf>Header</span><span class=p>().</span><span class=nf>Set</span><span class=p>(</span><span class=s>&#34;X-Auth-User&#34;</span><span class=p>,</span> <span class=nx>claims</span><span class=p>.</span><span class=nx>Subject</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>	<span class=nx>w</span><span class=p>.</span><span class=nf>Header</span><span class=p>().</span><span class=nf>Set</span><span class=p>(</span><span class=s>&#34;X-Auth-Name&#34;</span><span class=p>,</span> <span class=nx>claims</span><span class=p>.</span><span class=nx>Name</span><span class=p>)</span>
@@ -1284,6 +1502,7 @@ Anonymous</span></span></div><div class=post-meta-line><span title="发布于 00
 </span><span class=lnt>42
 </span><span class=lnt>43
 </span><span class=lnt>44
+</span><span class=lnt>45
 </span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>version</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;3.8&#39;</span><span class=w>
 </span></span></span><span class=line><span class=cl><span class=w>
 </span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>services</span><span class=p>:</span><span class=w>
@@ -1327,7 +1546,8 @@ Anonymous</span></span></div><div class=post-meta-line><span title="发布于 00
 </span></span></span><span class=line><span class=cl><span class=w>
 </span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>networks</span><span class=p>:</span><span class=w>
 </span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>grafana-net</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>driver</span><span class=p>:</span><span class=w> </span><span class=l>bridge</span></span></span></code></pre></td></tr></table></div></div><h2 class=heading-element id=5-部署步骤><span>5. 部署步骤</span>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>driver</span><span class=p>:</span><span class=w> </span><span class=l>bridge</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span>}</span></span></code></pre></td></tr></table></div></div><h2 class=heading-element id=5-部署步骤><span>5. 部署步骤</span>
 <a href=#5-%e9%83%a8%e7%bd%b2%e6%ad%a5%e9%aa%a4 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><ol><li>创建项目目录结构：</li></ol><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
 </span><span class=lnt>2
 </span><span class=lnt>3
