@@ -1,0 +1,57 @@
+# Grafana 路由配置 - 带缓存机制的认证
+apiVersion: apisix.apache.org/v2
+kind: ApisixRoute
+metadata:
+  name: grafana-cached-auth
+  namespace: monitoring
+spec:
+  http:
+  # 所有 Grafana 路由 - 使用带缓存的 forward-auth
+  - name: grafana-cached-auth
+    match:
+      paths:
+        - /*
+      hosts:
+        - grafana.kbsonlong.com
+    backends:
+      - serviceName: grafana-service
+        servicePort: 3000
+        weight: 10
+    plugins:
+      - name: forward-auth
+        enable: true
+        config:
+          uri: http://sysop.kbsonlong.com/ws/aquaman/grafanaLoginAuth
+          request_headers:
+            - Authorization
+            - Cookie
+          client_headers:
+            - Location
+            - Set-Cookie
+          upstream_headers:
+            - X-WEBAUTH-USER
+            - X-WEBAUTH-NAME
+      - name: proxy-cache
+        enable: true
+        config:
+          cache_method: 
+            - GET
+            - HEAD
+          cache_http_status:
+            - 200
+            - 301
+            - 302
+          cache_zone: disk_cache_one
+          cache_key: 
+            - "$host"
+            - "$request_uri"
+            - "$request_method"
+          cache_bypass:
+            - "$http_authorization"
+          no_cache:
+            - "$http_authorization"
+      - name: client-control
+        enable: true
+        config:
+          max_body_size: 50000000
+    websocket: true

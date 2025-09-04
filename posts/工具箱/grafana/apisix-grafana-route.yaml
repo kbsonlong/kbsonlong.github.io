@@ -1,59 +1,58 @@
+# Grafana 路由配置 - 使用 JWT 插件直接验证 token
 apiVersion: apisix.apache.org/v2
 kind: ApisixRoute
 metadata:
-  name: grafana-auth
+  name: grafana-jwt
   namespace: monitoring
 spec:
   http:
-  - name: grafana-login
+  # 所有 Grafana 路由 - 使用 JWT 插件验证 token
+  - name: grafana-jwt
     match:
       paths:
-      - /login
-      - /grafana/auth
+        - /*
       hosts:
-      - grafana.kbsonlong.com
+        - grafana.kbsonlong.com
     backends:
-    - serviceName: apisix-a571881f0e8-42099b4af02
-      servicePort: 80
-      weight: 10
+      - serviceName: grafana-service
+        servicePort: 3000
+        weight: 10
     plugins:
-    - name: forward-auth
-      enable: true
-      config:
-        uri: http://sysop.kbsonlong.com/ws/aquaman/grafanaLoginAuth
-        request_headers:
-        - Authorization
-        - Cookie
-        client_headers:
-        - Location
-        upstream_headers:
-        - X-WEBAUTH-USER
-    - name: client-control
-      enable: true
-      config:
-        max_body_size: 50000000
-
+      - name: jwt-auth
+        enable: true
+        config:
+          key: grafana-jwt-key
+          secret: mysecretkey
+          algorithm: HS256
+      - name: proxy-rewrite
+        enable: true
+        config:
+          headers:
+            X-WEBAUTH-USER: $jwt_claim_subject
+            X-WEBAUTH-NAME: $jwt_claim_name
+      - name: client-control
+        enable: true
+        config:
+          max_body_size: 50000000
+    websocket: true
 ---
 apiVersion: apisix.apache.org/v2
-kind: ApisixRoute
+kind: ApisixConsumer
 metadata:
-  name: grafana-main
+  name: grafana-user
   namespace: monitoring
 spec:
-  http:
-  - name: grafana-main
-    match:
-      paths:
-      - /*
-      hosts:
-      - grafana.kbsonlong.com
-    backends:
-    - serviceName: grafana-service
-      servicePort: 3000
-      weight: 10
-    plugins:
-    - name: client-control
-      enable: true
-      config:
-        max_body_size: 50000000
-    websocket: true
+  authParameter:
+    jwtAuth:
+      secretRef:
+        name: grafana-jwt-secret
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: grafana-jwt-secret
+  namespace: monitoring
+type: Opaque
+data:
+  key: Z3JhZmFuYS1qd3Qta2V5
+  secret: bXlzZWNyZXRrZXk=

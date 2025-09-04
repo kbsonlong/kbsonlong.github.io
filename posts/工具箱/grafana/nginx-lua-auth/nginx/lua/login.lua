@@ -120,19 +120,13 @@ function _M.handle_login()
     local domain = string.match(host, "([^:]+)")
     jwt_lib.set_auth_cookie(token, domain)
     
-    -- 返回成功响应
-    ngx.status = 200
-    ngx.say(cjson.encode({
-        success = true,
-        message = "Login successful",
-        user = {
-            username = user_info.username,
-            display_name = user_info.display_name,
-            email = user_info.email,
-            role = user_info.role
-        },
-        token = token
-    }))
+    -- 获取重定向URL，默认为/grafana/
+    local redirect_url = ngx.var.arg_redirect or "/grafana/"
+    
+    -- 执行重定向
+    ngx.status = 302
+    ngx.header.location = redirect_url
+    ngx.say("Redirecting to " .. redirect_url)
 end
 
 -- 处理登出请求
@@ -206,7 +200,7 @@ function _M.show_login_page()
     if token then
         local payload, err = jwt_lib.verify_token(token)
         if payload then
-            -- 已登录，显示已登录状态页面而不是重定向
+            -- 已登录，显示已登录状态页面，不自动重定向
             local user_info = jwt_lib.get_user_info(payload)
             local redirect_url = ngx.var.arg_redirect or "/grafana/"
             
@@ -231,12 +225,6 @@ function _M.show_login_page()
         <p><a href="]] .. redirect_url .. [[" class="btn">Continue to Application</a></p>
         <p><a href="/auth/api/logout">Logout</a></p>
     </div>
-    <script>
-        // 自动重定向到目标页面
-        setTimeout(function() {
-            window.location.href = ']] .. redirect_url .. [[';
-        }, 3000);
-    </script>
 </body>
 </html>
             ]])
