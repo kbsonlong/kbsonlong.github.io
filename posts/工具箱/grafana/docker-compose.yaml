@@ -1,25 +1,25 @@
 version: '3.8'
 services:
-  postgres-primary:
-    image: postgres:15
+  mysql:
+    image: mysql:8.0
+    container_name: grafana-mysql-1
     ports:
-      - "5432:5432"
+      - "3306:3306"
     environment:
-      POSTGRES_DB: grafana
-      POSTGRES_USER: grafana
-      POSTGRES_PASSWORD: grafana
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: grafana
+      MYSQL_USER: grafana
+      MYSQL_PASSWORD: grafana
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./postgresql.conf:/etc/postgresql/postgresql.conf
-      - ./pg_hba.conf:/etc/postgresql/pg_hba.conf
-    command: postgres -c config_file=/etc/postgresql/postgresql.conf -c hba_file=/etc/postgresql/pg_hba.conf
-  
-  auth-service:
-    build: ./auth-service
-    container_name: auth-service
-    ports:
-      - "8080:8080"
-    
+      - mysql_data:/var/lib/mysql
+      - ./mysql/conf.d:/etc/mysql/conf.d
+    command: --default-authentication-plugin=mysql_native_password --max_allowed_packet=256M --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
   nginx:
     image: nginx:alpine
     container_name: nginx
@@ -28,7 +28,6 @@ services:
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d
     depends_on:
-      - auth-service
       - grafana
   
   grafana:
@@ -39,16 +38,19 @@ services:
     volumes:
       - ./grafana/grafana.ini:/etc/grafana/grafana.ini
     environment:
-      - GF_DATABASE_TYPE=postgres
-      - GF_DATABASE_HOST=postgres-primary:5432
-      - GF_DATABASE_NAME=grafana
-      - GF_DATABASE_USER=grafana
-      - GF_DATABASE_PASSWORD=grafana
-      - GF_DATABASE_SSL_MODE=disable
-      # Feature Toggles for Kubernetes integration
-      - GF_FEATURE_TOGGLES_ENABLE=provisioning,kubernetesClientDashboardsFolders,kubernetesDashboards,grafanaAPIServerEnsureKubectlAccess
+      - GF_DATABASE_TYPE=mysql
+      - GF_DATABASE_HOST=mysql:3306
+      - GF_DATABASE_NAME=grafanatest
+      - GF_DATABASE_USER=grafanatest123
+      - GF_DATABASE_PASSWORD=grafanatest123
+      - GF_DATABASE_MAX_OPEN_CONN=300
+      - GF_DATABASE_MAX_IDLE_CONN=100
+      - GF_DATABASE_CONN_MAX_LIFETIME=14400
+      - SKIP_MIGRATIONS=true
+      - GF_FEATURE_TOGGLES_ENABLE=provisioning,kubernetesClientDashboardsFolders,kubernetesDashboards,grafanaAPIServerEnsureKubect-lAcc
     depends_on:
-      - postgres-primary
+      mysql:
+        condition: service_healthy
 volumes:
-  postgres_data:
+  mysql_data:
     driver: local

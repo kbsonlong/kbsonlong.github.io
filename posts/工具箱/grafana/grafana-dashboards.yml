@@ -1,0 +1,11 @@
+apiVersion: 1
+
+providers:
+  - name: 'Pgpool Dashboards'
+    orgId: 1
+    folder: 'Pgpool'
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /etc/grafana/provisioning/dashboards

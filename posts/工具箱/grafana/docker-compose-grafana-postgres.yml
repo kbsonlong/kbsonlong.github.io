@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:13
+    container_name: grafana-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_password
+      POSTGRES_DB: postgres
+      GRAFANA_PASSWORD: grafana_password
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./init-grafana-db.sh:/docker-entrypoint-initdb.d/init-grafana-db.sh:ro
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - grafana-network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana-server
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      GF_DATABASE_TYPE: postgres
+      GF_DATABASE_HOST: postgres:5432
+      GF_DATABASE_NAME: grafana
+      GF_DATABASE_USER: grafana
+      GF_DATABASE_PASSWORD: grafana_password
+      GF_DATABASE_SSL_MODE: disable
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin_password
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_SERVER_ROOT_URL: http://localhost:3000
+      GF_INSTALL_PLUGINS: grafana-clock-panel,grafana-simple-json-datasource
+    volumes:
+      - grafana-data:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    networks:
+      - grafana-network
+
+volumes:
+  postgres-data:
+  grafana-data:
+
+networks:
+  grafana-network:
+    driver: bridge

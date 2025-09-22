@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  # 临时PostgreSQL服务，用于迁移目标
+  postgres:
+    image: postgres:14-alpine
+    container_name: grafana-postgres
+    environment:
+      POSTGRES_USER: grafana
+      POSTGRES_PASSWORD: grafana
+      POSTGRES_DB: grafana
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "grafana"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # 迁移服务，执行SQLite到PostgreSQL的数据迁移
+  migration:
+    image: ghcr.io/dimitri/pgloader:latest
+    container_name: grafana-migration
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./:/data/services/grafana
+    command: >
+      pgloader /data/services/grafana/main.load
+    deploy:
+      resources:
+        limits:
+          memory: 2g
+    restart: "no"
+
+  # 迁移后的Grafana服务，连接到PostgreSQL
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_DATABASE_TYPE=postgres
+      - GF_DATABASE_HOST=postgres:5432
+      - GF_DATABASE_NAME=grafana
+      - GF_DATABASE_USER=grafana
+      - GF_DATABASE_PASSWORD=grafana
+      - GF_DATABASE_SSL_MODE=disable
+    volumes:
+      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
+    depends_on:
+      migration:
+        condition: service_completed_successfully
+
+volumes:
+  postgres_data:
+    driver: local

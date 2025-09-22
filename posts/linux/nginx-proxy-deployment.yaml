@@ -1,0 +1,215 @@
+---
+# Nginx代理容器配置
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-proxy-config
+  namespace: default
+data:
+  nginx.conf: |
+    user nginx;
+    worker_processes auto;
+    error_log /var/log/nginx/error.log notice;
+    pid /var/run/nginx.pid;
+
+    events {
+        worker_connections 1024;
+    }
+
+    http {
+        include /etc/nginx/mime.types;
+        default_type application/octet-stream;
+        
+        log_format main '$remote_addr - $remote_user [$time_local] "$request" '
+                        '$status $body_bytes_sent "$http_referer" '
+                        '"$http_user_agent" "$http_x_forwarded_for"';
+
+        access_log /var/log/nginx/access.log main;
+        
+        sendfile on;
+        keepalive_timeout 65;
+        
+        # DNS解析器配置
+        resolver kube-dns.kube-system.svc.cluster.local valid=30s ipv6=off;
+        
+        # Docker Hub代理
+        server {
+            listen 80;
+            server_name dockerhub-proxy;
+            
+            location / {
+                proxy_pass https://registry.cn-hangzhou.aliyuncs.com;
+                proxy_set_header Host registry.cn-hangzhou.aliyuncs.com;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+                proxy_set_header Docker-Distribution-Api-Version registry/2.0;
+                proxy_set_header User-Agent "Docker-Client/20.10.0 (linux)";
+                
+                # 超时配置
+                proxy_connect_timeout 60s;
+                proxy_send_timeout 60s;
+                proxy_read_timeout 60s;
+                
+                # 缓冲区配置
+                proxy_buffer_size 4k;
+                proxy_buffers 8 4k;
+                proxy_busy_buffers_size 8k;
+                
+                # 禁用请求缓冲
+                proxy_request_buffering off;
+                
+                # SSL配置
+                proxy_ssl_verify off;
+                proxy_ssl_session_reuse on;
+            }
+        }
+        
+        # GCR代理
+        server {
+            listen 8080;
+            server_name gcr-proxy;
+            
+            location / {
+                proxy_pass https://gcr.io;
+                proxy_set_header Host gcr.io;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+                proxy_set_header Docker-Distribution-Api-Version registry/2.0;
+                proxy_set_header User-Agent "Docker-Client/20.10.0 (linux)";
+                
+                proxy_connect_timeout 60s;
+                proxy_send_timeout 60s;
+                proxy_read_timeout 60s;
+                
+                proxy_ssl_verify off;
+                proxy_ssl_session_reuse on;
+            }
+        }
+        
+        # Quay.io代理
+        server {
+            listen 8081;
+            server_name quay-proxy;
+            
+            location / {
+                proxy_pass https://quay.io;
+                proxy_set_header Host quay.io;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+                proxy_set_header Docker-Distribution-Api-Version registry/2.0;
+                proxy_set_header User-Agent "Docker-Client/20.10.0 (linux)";
+                
+                proxy_connect_timeout 60s;
+                proxy_send_timeout 60s;
+                proxy_read_timeout 60s;
+                
+                proxy_ssl_verify off;
+                proxy_ssl_session_reuse on;
+            }
+        }
+        
+        # 健康检查
+        server {
+            listen 8082;
+            server_name health;
+            
+            location /health {
+                access_log off;
+                return 200 "healthy\n";
+                add_header Content-Type text/plain;
+            }
+        }
+    }
+
+---
+# Nginx代理部署
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-proxy
+  namespace: default
+  labels:
+    app: nginx-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-proxy
+  template:
+    metadata:
+      labels:
+        app: nginx-proxy
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:alpine
+        ports:
+        - containerPort: 80
+          name: dockerhub
+        - containerPort: 8080
+          name: gcr
+        - containerPort: 8081
+          name: quay
+        - containerPort: 8082
+          name: health
+        volumeMounts:
+        - name: nginx-config
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8082
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8082
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+      volumes:
+      - name: nginx-config
+        configMap:
+          name: nginx-proxy-config
+
+---
+# Nginx代理服务
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-proxy-service
+  namespace: default
+  labels:
+    app: nginx-proxy
+spec:
+  selector:
+    app: nginx-proxy
+  ports:
+  - name: dockerhub
+    port: 80
+    targetPort: 80
+    protocol: TCP
+  - name: gcr
+    port: 8080
+    targetPort: 8080
+    protocol: TCP
+  - name: quay
+    port: 8081
+    targetPort: 8081
+    protocol: TCP
+  - name: health
+    port: 8082
+    targetPort: 8082
+    protocol: TCP
+  type: ClusterIP

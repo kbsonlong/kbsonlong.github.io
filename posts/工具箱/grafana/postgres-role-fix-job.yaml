@@ -1,0 +1,146 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: postgres-role-fix
+  labels:
+    app: grafana-db-fix
+spec:
+  ttlSecondsAfterFinished: 86400  # 任务完成后保留24小时
+  backoffLimit: 3  # 最多重试3次
+  template:
+    metadata:
+      labels:
+        app: grafana-db-fix
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: postgres-role-fix
+        image: postgres:14-alpine
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+          echo "开始修复PostgreSQL角色问题..."
+          
+          # 等待PostgreSQL服务可用
+          until PGPASSWORD="${POSTGRES_PASSWORD}" psql -h "${POSTGRES_HOST}" -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" -c '\q'; do
+            echo "等待PostgreSQL服务可用..."
+            sleep 2
+          done
+          
+          echo "PostgreSQL服务已可用，开始修复角色问题..."
+          
+          # 创建grafana角色并授予权限
+          PGPASSWORD="${POSTGRES_PASSWORD}" psql -h "${POSTGRES_HOST}" -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" <<EOF
+          -- 检查并创建grafana角色
+          DO \$\$ 
+          BEGIN
+              IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'grafana') THEN
+                  CREATE ROLE grafana WITH LOGIN PASSWORD '${GRAFANA_DB_PASSWORD}';
+                  RAISE NOTICE 'Created role: grafana';
+              ELSE
+                  RAISE NOTICE 'Role already exists: grafana';
+                  -- 更新密码
+                  ALTER ROLE grafana WITH PASSWORD '${GRAFANA_DB_PASSWORD}';
+              END IF;
+          END
+          \$\$;
+          
+          -- 授予grafana角色对数据库的权限
+          GRANT ALL PRIVILEGES ON DATABASE ${POSTGRES_DB} TO grafana;
+          
+          -- 连接到grafana数据库以设置schema权限
+          \c ${POSTGRES_DB}
+          
+          -- 授予grafana角色对public schema的所有权限
+          GRANT ALL PRIVILEGES ON SCHEMA public TO grafana;
+          
+          -- 设置默认权限
+          ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON TABLES TO grafana;
+          ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON SEQUENCES TO grafana;
+          ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON FUNCTIONS TO grafana;
+          
+          -- 修复现有表的所有权
+          DO \$\$
+          DECLARE
+              t record;
+          BEGIN
+              FOR t IN SELECT tablename FROM pg_tables WHERE schemaname = 'public'
+              LOOP
+                  EXECUTE 'ALTER TABLE public.' || quote_ident(t.tablename) || ' OWNER TO grafana';
+                  RAISE NOTICE 'Changed ownership of table % to grafana', t.tablename;
+              END LOOP;
+          END
+          \$\$;
+          
+          -- 修复现有序列的所有权
+          DO \$\$
+          DECLARE
+              s record;
+          BEGIN
+              FOR s IN SELECT sequence_name FROM information_schema.sequences WHERE sequence_schema = 'public'
+              LOOP
+                  EXECUTE 'ALTER SEQUENCE public.' || quote_ident(s.sequence_name) || ' OWNER TO grafana';
+                  RAISE NOTICE 'Changed ownership of sequence % to grafana', s.sequence_name;
+              END LOOP;
+          END
+          \$\$;
+          
+          -- 修复现有视图的所有权
+          DO \$\$
+          DECLARE
+              v record;
+          BEGIN
+              FOR v IN SELECT table_name FROM information_schema.views WHERE table_schema = 'public'
+              LOOP
+                  EXECUTE 'ALTER VIEW public.' || quote_ident(v.table_name) || ' OWNER TO grafana';
+                  RAISE NOTICE 'Changed ownership of view % to grafana', v.table_name;
+              END LOOP;
+          END
+          \$\$;
+          EOF
+          
+          echo "PostgreSQL角色修复完成！"
+          
+          # 验证grafana角色是否可以连接
+          if PGPASSWORD="${GRAFANA_DB_PASSWORD}" psql -h "${POSTGRES_HOST}" -U "grafana" -d "${POSTGRES_DB}" -c '\q'; then
+            echo "验证成功：grafana角色可以连接到数据库。"
+            exit 0
+          else
+            echo "验证失败：grafana角色无法连接到数据库。"
+            exit 1
+          fi
+        env:
+        - name: POSTGRES_HOST
+          value: "postgres-service"  # 替换为您的PostgreSQL服务名称
+        - name: POSTGRES_DB
+          value: "grafana"  # 替换为您的数据库名称
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret  # 替换为您的Secret名称
+              key: username
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret  # 替换为您的Secret名称
+              key: password
+        - name: GRAFANA_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: grafana-db-secret  # 替换为您的Grafana数据库Secret名称
+              key: password
+      serviceAccountName: postgres-role-fix-sa  # 替换为具有适当权限的ServiceAccount
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: postgres-role-fix-sa
+---
+# 如果需要创建Secret，取消下面的注释并填入适当的值
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: grafana-db-secret
+# type: Opaque
+# data:
+#   password: Z3JhZmFuYV9wYXNzd29yZA==  # base64编码的'grafana_password'

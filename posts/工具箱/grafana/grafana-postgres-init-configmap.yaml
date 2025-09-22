@@ -1,0 +1,216 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init-scripts
+  namespace: monitoring
+data:
+  init-grafana-db.sh: |
+    #!/bin/bash
+    set -e
+
+    # 等待PostgreSQL服务可用
+    until pg_isready -h localhost -p 5432; do
+      echo "PostgreSQL服务不可用 - 等待..."
+      sleep 2
+    done
+
+    psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
+      -- 检查grafana数据库是否存在
+      SELECT 'CREATE DATABASE grafana'
+      WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'grafana')
+      \gexec
+
+      -- 检查grafana角色是否存在
+      DO \$\$
+      BEGIN
+        IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'grafana') THEN
+          CREATE ROLE grafana WITH LOGIN PASSWORD '${GRAFANA_PASSWORD:-grafana}';
+        ELSE
+          ALTER ROLE grafana WITH LOGIN PASSWORD '${GRAFANA_PASSWORD:-grafana}';
+        END IF;
+      END
+      \$\$;
+
+      -- 授予权限
+      GRANT ALL PRIVILEGES ON DATABASE grafana TO grafana;
+    EOSQL
+
+    # 连接到grafana数据库设置权限
+    psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "grafana" <<-EOSQL
+      -- 设置schema权限
+      GRANT ALL PRIVILEGES ON SCHEMA public TO grafana;
+      ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON TABLES TO grafana;
+      ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON SEQUENCES TO grafana;
+      ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON FUNCTIONS TO grafana;
+
+      -- 修复表的所有权
+      DO \$\$
+      DECLARE
+        t record;
+      BEGIN
+        FOR t IN SELECT tablename FROM pg_tables WHERE schemaname = 'public'
+        LOOP
+          EXECUTE 'ALTER TABLE public.' || quote_ident(t.tablename) || ' OWNER TO grafana';
+        END LOOP;
+      END
+      \$\$;
+
+      -- 修复序列的所有权
+      DO \$\$
+      DECLARE
+        s record;
+      BEGIN
+        FOR s IN SELECT sequence_name FROM information_schema.sequences WHERE sequence_schema = 'public'
+        LOOP
+          EXECUTE 'ALTER SEQUENCE public.' || quote_ident(s.sequence_name) || ' OWNER TO grafana';
+        END LOOP;
+      END
+      \$\$;
+    EOSQL
+
+    echo "PostgreSQL初始化完成：grafana角色和数据库已创建并配置"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-config
+  namespace: monitoring
+data:
+  grafana.ini: |
+    [paths]
+    data = /var/lib/grafana
+    logs = /var/log/grafana
+    plugins = /var/lib/grafana/plugins
+    provisioning = /etc/grafana/provisioning
+
+    [server]
+    protocol = http
+    http_port = 3000
+    domain = grafana.example.com
+    root_url = %(protocol)s://%(domain)s/
+
+    [database]
+    type = postgres
+    host = postgres:5432
+    name = grafana
+    user = grafana
+    password = ${GF_DATABASE_PASSWORD}
+    ssl_mode = disable
+
+    [security]
+    admin_user = admin
+    admin_password = ${GF_SECURITY_ADMIN_PASSWORD}
+    secret_key = ${GF_SECURITY_SECRET_KEY}
+
+    [users]
+    allow_sign_up = false
+    auto_assign_org = true
+    auto_assign_org_role = Viewer
+
+    [auth]
+    disable_login_form = false
+
+    [auth.anonymous]
+    enabled = true
+    org_name = Main Org.
+    org_role = Viewer
+
+    [log]
+    mode = console file
+    level = info
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasources
+  namespace: monitoring
+data:
+  datasources.yaml: |
+    apiVersion: 1
+    datasources:
+    - name: Prometheus
+      type: prometheus
+      url: http://prometheus-server:9090
+      access: proxy
+      isDefault: true
+    - name: PostgreSQL
+      type: postgres
+      url: postgres:5432
+      database: grafana
+      user: grafana
+      secureJsonData:
+        password: ${GF_DATABASE_PASSWORD}
+      jsonData:
+        sslmode: "disable"
+        postgresVersion: 1200
+        timescaledb: false
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-fix-job
+  namespace: monitoring
+data:
+  fix-postgres-role.sh: |
+    #!/bin/bash
+    set -e
+
+    # 等待PostgreSQL服务可用
+    until PGPASSWORD=$POSTGRES_PASSWORD psql -h $POSTGRES_HOST -U $POSTGRES_USER -d postgres -c '\q'; do
+      echo "PostgreSQL服务不可用 - 等待..."
+      sleep 2
+    done
+
+    # 检查grafana角色是否存在
+    ROLE_EXISTS=$(PGPASSWORD=$POSTGRES_PASSWORD psql -h $POSTGRES_HOST -U $POSTGRES_USER -d postgres -tAc "SELECT 1 FROM pg_roles WHERE rolname='grafana'")
+
+    if [ -z "$ROLE_EXISTS" ]; then
+      echo "创建grafana角色..."
+      PGPASSWORD=$POSTGRES_PASSWORD psql -h $POSTGRES_HOST -U $POSTGRES_USER -d postgres -c "CREATE ROLE grafana WITH LOGIN PASSWORD '$GRAFANA_PASSWORD';"
+    else
+      echo "更新grafana角色密码..."
+      PGPASSWORD=$POSTGRES_PASSWORD psql -h $POSTGRES_HOST -U $POSTGRES_USER -d postgres -c "ALTER ROLE grafana WITH LOGIN PASSWORD '$GRAFANA_PASSWORD';"
+    fi
+
+    # 检查grafana数据库是否存在
+    DB_EXISTS=$(PGPASSWORD=$POSTGRES_PASSWORD psql -h $POSTGRES_HOST -U $POSTGRES_USER -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='grafana'")
+
+    if [ -z "$DB_EXISTS" ]; then
+      echo "创建grafana数据库..."
+      PGPASSWORD=$POSTGRES_PASSWORD psql -h $POSTGRES_HOST -U $POSTGRES_USER -d postgres -c "CREATE DATABASE grafana;"
+    fi
+
+    # 授予权限
+    echo "授予权限..."
+    PGPASSWORD=$POSTGRES_PASSWORD psql -h $POSTGRES_HOST -U $POSTGRES_USER -d postgres -c "GRANT ALL PRIVILEGES ON DATABASE grafana TO grafana;"
+    PGPASSWORD=$POSTGRES_PASSWORD psql -h $POSTGRES_HOST -U $POSTGRES_USER -d grafana -c "GRANT ALL PRIVILEGES ON SCHEMA public TO grafana;"
+    PGPASSWORD=$POSTGRES_PASSWORD psql -h $POSTGRES_HOST -U $POSTGRES_USER -d grafana -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON TABLES TO grafana;"
+    PGPASSWORD=$POSTGRES_PASSWORD psql -h $POSTGRES_HOST -U $POSTGRES_USER -d grafana -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON SEQUENCES TO grafana;"
+
+    # 修复表的所有权
+    echo "修复表的所有权..."
+    PGPASSWORD=$POSTGRES_PASSWORD psql -h $POSTGRES_HOST -U $POSTGRES_USER -d grafana -c "DO \$\$
+    DECLARE
+        t record;
+    BEGIN
+        FOR t IN SELECT tablename FROM pg_tables WHERE schemaname = 'public'
+        LOOP
+            EXECUTE 'ALTER TABLE public.' || quote_ident(t.tablename) || ' OWNER TO grafana';
+        END LOOP;
+    END
+    \$\$;"
+
+    # 修复序列的所有权
+    echo "修复序列的所有权..."
+    PGPASSWORD=$POSTGRES_PASSWORD psql -h $POSTGRES_HOST -U $POSTGRES_USER -d grafana -c "DO \$\$
+    DECLARE
+        s record;
+    BEGIN
+        FOR s IN SELECT sequence_name FROM information_schema.sequences WHERE sequence_schema = 'public'
+        LOOP
+            EXECUTE 'ALTER SEQUENCE public.' || quote_ident(s.sequence_name) || ' OWNER TO grafana';
+        END LOOP;
+    END
+    \$\$;"
+
+    echo "角色修复完成！"

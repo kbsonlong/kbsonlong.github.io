@@ -1,0 +1,9 @@
+load database
+  from sqlite:///data/services/grafana/grafana.db
+  into postgresql://grafana:grafana@postgres:5432/grafana
+  with data only, reset sequences,
+       batch rows = 1000,
+       batch size = 10MB,
+       prefetch rows = 100
+  set work_mem to '16MB',
+      maintenance_work_mem to '512MB';

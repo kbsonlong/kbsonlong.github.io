@@ -1,0 +1,177 @@
+---
+# 增强版 Ingress Nginx 代理配置
+# 支持多个镜像仓库的代理配置
+
+# 1. Docker Hub 的 ExternalName Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: docker-hub-registry
+  namespace: default
+  labels:
+    app: registry-proxy
+    registry: docker-hub
+spec:
+  type: ExternalName
+  externalName: registry-1.docker.io
+---
+
+# 2. Google Container Registry (gcr.io) 的 ExternalName Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: gcr-registry
+  namespace: default
+  labels:
+    app: registry-proxy
+    registry: gcr
+spec:
+  type: ExternalName
+  externalName: gcr.io
+---
+
+# 3. Quay.io 的 ExternalName Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: quay-registry
+  namespace: default
+  labels:
+    app: registry-proxy
+    registry: quay
+spec:
+  type: ExternalName
+  externalName: quay.io
+---
+
+# 4. 主要的 Docker Hub 代理 Ingress 配置
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: docker-hub-proxy
+  namespace: default
+  annotations:
+    # 基本代理配置
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "600"
+    
+    # 高级配置
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "16k"
+    nginx.ingress.kubernetes.io/proxy-buffers-number: "8"
+    nginx.ingress.kubernetes.io/proxy-max-temp-file-size: "1024m"
+    nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
+    
+    # 缓存配置
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      # 缓存静态内容
+      location ~* \.(blob|manifest|config)$ {
+        proxy_cache_valid 200 302 10m;
+        proxy_cache_valid 404 1m;
+        proxy_cache_bypass $http_pragma;
+        proxy_cache_revalidate on;
+        expires 10m;
+      }
+      
+      # 添加安全头
+      add_header X-Content-Type-Options nosniff;
+      add_header X-Frame-Options DENY;
+      add_header X-XSS-Protection "1; mode=block";
+      
+      # 日志记录
+      access_log /var/log/nginx/registry_access.log;
+      error_log /var/log/nginx/registry_error.log;
+    
+    # 如果使用 cert-manager 自动管理证书
+    # cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: dockerhub.yourdomain.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: docker-hub-registry
+            port:
+              number: 443
+  tls:
+  - hosts:
+    - dockerhub.yourdomain.com
+    secretName: dockerhub-tls-secret
+---
+
+# 5. GCR 代理 Ingress 配置
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gcr-proxy
+  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "600"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      # GCR 特定的配置
+      proxy_set_header Authorization "";
+      proxy_set_header Host gcr.io;
+      
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: gcr.yourdomain.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: gcr-registry
+            port:
+              number: 443
+  tls:
+  - hosts:
+    - gcr.yourdomain.com
+    secretName: gcr-tls-secret
+---
+
+# 6. Quay.io 代理 Ingress 配置
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: quay-proxy
+  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "600"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      # Quay.io 特定的配置
+      proxy_set_header Host quay.io;
+      
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: quay.yourdomain.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: quay-registry
+            port:
+              number: 443
+  tls:
+  - hosts:
+    - quay.yourdomain.com
+    secretName: quay-tls-secret

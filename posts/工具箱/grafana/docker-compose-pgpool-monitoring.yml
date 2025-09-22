@@ -1,0 +1,161 @@
+version: '3.8'
+
+services:
+  # PostgreSQL主节点
+  postgres-primary:
+    image: postgres:15
+    container_name: postgres-primary
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - postgres-primary-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - pgpool-network
+
+  # PostgreSQL副本节点
+  postgres-replica:
+    image: postgres:15
+    container_name: postgres-replica
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - postgres-replica-data:/var/lib/postgresql/data
+    command: |
+      postgres -c wal_level=replica -c hot_standby=on -c max_wal_senders=10 -c max_replication_slots=10
+    depends_on:
+      postgres-primary:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - pgpool-network
+
+  # Pgpool-II负载均衡器
+  pgpool:
+    image: bitnami/pgpool:latest
+    container_name: pgpool
+    environment:
+      PGPOOL_ADMIN_USERNAME: admin
+      PGPOOL_ADMIN_PASSWORD: admin
+      PGPOOL_POSTGRES_USERNAME: postgres
+      PGPOOL_POSTGRES_PASSWORD: postgres
+      PGPOOL_BACKEND_NODES: 0:postgres-primary:5432,1:postgres-replica:5432
+      PGPOOL_SR_CHECK_USER: postgres
+      PGPOOL_SR_CHECK_PASSWORD: postgres
+      PGPOOL_ENABLE_LOAD_BALANCING: "yes"
+      PGPOOL_ENABLE_STATEMENT_LOAD_BALANCING: "yes"
+      PGPOOL_POSTGRES_CUSTOM_CONNECTIONS: 100
+      PGPOOL_MAX_POOL: 20
+      PGPOOL_HEALTH_CHECK_PERIOD: 10
+      PGPOOL_HEALTH_CHECK_TIMEOUT: 5
+      PGPOOL_HEALTH_CHECK_MAX_RETRIES: 3
+      PGPOOL_HEALTH_CHECK_RETRY_DELAY: 1
+      PGPOOL_ENABLE_POOL_HBA: "yes"
+      PGPOOL_ENABLE_POOL_PASSWD: "yes"
+    ports:
+      - "5432:5432"
+      - "9719:9719"
+    depends_on:
+      postgres-primary:
+        condition: service_healthy
+      postgres-replica:
+        condition: service_healthy
+    networks:
+      - pgpool-network
+
+  # PostgreSQL Exporter - 主节点
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter:latest
+    container_name: postgres-exporter
+    environment:
+      DATA_SOURCE_NAME: "postgresql://postgres:postgres@postgres-primary:5432/postgres?sslmode=disable"
+    ports:
+      - "9187:9187"
+    depends_on:
+      postgres-primary:
+        condition: service_healthy
+    networks:
+      - pgpool-network
+
+  # Prometheus监控系统
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./prometheus-pgpool-config.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    ports:
+      - "9090:9090"
+    networks:
+      - pgpool-network
+
+  # Loki日志聚合系统
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - pgpool-network
+
+  # Promtail日志收集器
+  promtail:
+    image: grafana/promtail:latest
+    container_name: promtail
+    volumes:
+      - /var/log:/var/log
+      - ./promtail-config.yml:/etc/promtail/config.yml
+    command: -config.file=/etc/promtail/config.yml
+    depends_on:
+      - loki
+    networks:
+      - pgpool-network
+
+  # Grafana可视化平台
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_INSTALL_PLUGINS: grafana-piechart-panel
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./pgpool-dashboard.json:/etc/grafana/provisioning/dashboards/pgpool-dashboard.json
+      - ./grafana-datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
+      - ./grafana-dashboards.yml:/etc/grafana/provisioning/dashboards/dashboards.yml
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+      - loki
+    networks:
+      - pgpool-network
+
+networks:
+  pgpool-network:
+    driver: bridge
+
+volumes:
+  postgres-primary-data:
+  postgres-replica-data:
+  prometheus-data:
+  grafana-data:

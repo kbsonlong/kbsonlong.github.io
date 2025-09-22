@@ -1,0 +1,65 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: grafana-sqlite-to-postgres-migration
+  labels:
+    app: grafana
+    component: migration
+spec:
+  backoffLimit: 2
+  template:
+    spec:
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app.kubernetes.io/instance
+                operator: In
+                values:
+                - sl-grafana-upgrade
+            topologyKey: kubernetes.io/hostname
+      restartPolicy: Never
+      containers:
+      - name: pgloader
+        image: ghcr.io/dimitri/pgloader:latest
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+        command:
+        - "pgloader"
+        - "/data/services/grafana/main.load"
+        volumeMounts:
+        - name: grafana-data
+          mountPath: /data/services/grafana
+        - name: migration-config
+          mountPath: /data/services/grafana/main.load
+          subPath: main.load
+      volumes:
+      - hostPath:
+          path: /data/fast-disks/monitoring-grafana
+          type: DirectoryOrCreate
+        name: grafana-data
+      - name: migration-config
+        configMap:
+          name: grafana-migration-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-migration-config
+data:
+  main.load: |
+    load database
+      from sqlite:///data/services/grafana/grafana.db
+      into postgresql://postgres:hBAXO5S2Op@postgresql-prod-postgresql-ha-pgpool:5432/grafana
+      with data only, reset sequences,
+           batch rows = 1000,
+           batch size = 10MB,
+           prefetch rows = 100
+      set work_mem to '16MB',
+          maintenance_work_mem to '512MB';

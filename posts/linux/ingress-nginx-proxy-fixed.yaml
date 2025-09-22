@@ -1,0 +1,213 @@
+---
+# 修复版 Ingress Nginx 代理配置
+# 解决503错误问题
+
+# 1. Docker Hub 的 ExternalName Service - 使用正确的阿里云地址
+apiVersion: v1
+kind: Service
+metadata:
+  name: docker-hub-registry
+  namespace: default
+  labels:
+    app: registry-proxy
+    registry: docker-hub
+spec:
+  type: ExternalName
+  externalName: registry.cn-hangzhou.aliyuncs.com
+---
+
+# 2. GCR 的 ExternalName Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: gcr-registry
+  namespace: default
+  labels:
+    app: registry-proxy
+    registry: gcr
+spec:
+  type: ExternalName
+  externalName: gcr.io
+---
+
+# 3. Quay.io 的 ExternalName Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: quay-registry
+  namespace: default
+  labels:
+    app: registry-proxy
+    registry: quay
+spec:
+  type: ExternalName
+  externalName: quay.io
+---
+
+# 4. 修复的 Docker Hub 代理 Ingress 配置
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: docker-hub-proxy-fixed
+  namespace: default
+  annotations:
+    # 基本代理配置
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "600"
+    
+    # 关键修复：使用代理头配置
+    nginx.ingress.kubernetes.io/proxy-set-headers: "default/docker-hub-headers"
+    
+    # 缓冲区配置
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "32k"
+    nginx.ingress.kubernetes.io/proxy-buffers-number: "8"
+    nginx.ingress.kubernetes.io/proxy-max-temp-file-size: "1024m"
+    nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
+    
+    # 连接池优化
+    nginx.ingress.kubernetes.io/upstream-keepalive-connections: "32"
+    nginx.ingress.kubernetes.io/upstream-keepalive-requests: "100"
+    nginx.ingress.kubernetes.io/upstream-keepalive-timeout: "60"
+    
+    # 重试配置
+    nginx.ingress.kubernetes.io/proxy-next-upstream: "error timeout"
+    nginx.ingress.kubernetes.io/proxy-next-upstream-timeout: "30"
+    nginx.ingress.kubernetes.io/proxy-next-upstream-tries: "2"
+    
+    # SSL配置
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: dockerhub.yourdomain.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: docker-hub-registry
+            port:
+              number: 443
+  tls:
+  - hosts:
+    - dockerhub.yourdomain.com
+    secretName: dockerhub-tls-secret-bmkkn-wrjbb
+---
+
+# 5. Docker Hub 代理头配置
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: docker-hub-headers
+  namespace: default
+data:
+  # 设置正确的Host头
+  Host: "registry.cn-hangzhou.aliyuncs.com"
+  # Docker Registry API版本
+  Docker-Distribution-Api-Version: "registry/2.0"
+  # 清理认证头避免冲突
+  Authorization: ""
+  # 基本的用户代理
+  User-Agent: "Docker-Client/20.10.0 (linux)"
+---
+
+# 6. GCR 代理 Ingress 配置
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gcr-proxy-fixed
+  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-set-headers: "default/gcr-headers"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: gcr.yourdomain.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: gcr-registry
+            port:
+              number: 443
+  tls:
+  - hosts:
+    - gcr.yourdomain.com
+    secretName: gcr-tls-secret
+---
+
+# 7. GCR 代理头配置
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gcr-headers
+  namespace: default
+data:
+  Host: "gcr.io"
+  Docker-Distribution-Api-Version: "registry/2.0"
+  Authorization: ""
+  User-Agent: "Docker-Client/20.10.0 (linux)"
+---
+
+# 8. Quay.io 代理 Ingress 配置
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: quay-proxy-fixed
+  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-set-headers: "default/quay-headers"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: quay.yourdomain.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: quay-registry
+            port:
+              number: 443
+  tls:
+  - hosts:
+    - quay.yourdomain.com
+    secretName: quay-tls-secret
+---
+
+# 9. Quay.io 代理头配置
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: quay-headers
+  namespace: default
+data:
+  Host: "quay.io"
+  Docker-Distribution-Api-Version: "registry/2.0"
+  Authorization: ""
+  User-Agent: "Docker-Client/20.10.0 (linux)"

@@ -1,0 +1,279 @@
+---
+# Ingress Nginx 镜像仓库代理配置 - 简化版 (无SSL)
+# 用于测试和开发环境，避免SSL证书问题
+
+# 1. Docker Hub 的 ExternalName Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: docker-hub-registry
+  namespace: default
+  labels:
+    app: registry-proxy
+    registry: docker-hub
+spec:
+  type: ExternalName
+  externalName: registry.cn-hangzhou.aliyuncs.com
+---
+
+# 2. GCR 的 ExternalName Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: gcr-registry
+  namespace: default
+  labels:
+    app: registry-proxy
+    registry: gcr
+spec:
+  type: ExternalName
+  externalName: gcr.io
+---
+
+# 3. Quay.io 的 ExternalName Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: quay-registry
+  namespace: default
+  labels:
+    app: registry-proxy
+    registry: quay
+spec:
+  type: ExternalName
+  externalName: quay.io
+---
+
+# 4. Docker Hub 代理 Ingress (HTTP版本 - 无SSL)
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: docker-hub-proxy-http
+  namespace: default
+  annotations:
+    # 基本代理配置
+    # DNS解析器配置
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      resolver kube-dns.kube-system.svc.cluster.local valid=30s ipv6=off;
+    
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "600"
+    
+    # 代理头配置
+    nginx.ingress.kubernetes.io/proxy-set-headers: "default/docker-hub-headers"
+    
+    # 缓冲区配置
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "32k"
+    nginx.ingress.kubernetes.io/proxy-buffers-number: "8"
+    nginx.ingress.kubernetes.io/proxy-max-temp-file-size: "1024m"
+    nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
+    
+    # 连接池优化
+    nginx.ingress.kubernetes.io/upstream-keepalive-connections: "32"
+    nginx.ingress.kubernetes.io/upstream-keepalive-requests: "100"
+    nginx.ingress.kubernetes.io/upstream-keepalive-timeout: "60"
+    
+    # 禁用SSL重定向 (用于HTTP测试)
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+    
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: dockerhub-http.yourdomain.com  # 使用不同的host避免冲突
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: docker-hub-registry
+            port:
+              number: 443
+---
+
+# 5. GCR 代理 Ingress (HTTP版本)
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gcr-proxy-http
+  namespace: default
+  annotations:
+    # DNS解析器配置
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      resolver kube-dns.kube-system.svc.cluster.local valid=30s ipv6=off;
+    
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-set-headers: "default/gcr-headers"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+    
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: gcr-http.yourdomain.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: gcr-registry
+            port:
+              number: 443
+---
+
+# 6. Quay.io 代理 Ingress (HTTP版本)
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: quay-proxy-http
+  namespace: default
+  annotations:
+    # DNS解析器配置
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      resolver kube-dns.kube-system.svc.cluster.local valid=30s ipv6=off;
+    
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-set-headers: "default/quay-headers"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+    
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: quay-http.yourdomain.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: quay-registry
+            port:
+              number: 443
+---
+
+# 7. Docker Hub 代理头配置
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: docker-hub-headers
+  namespace: default
+data:
+  Host: "registry.cn-hangzhou.aliyuncs.com"
+  Docker-Distribution-Api-Version: "registry/2.0"
+  Authorization: ""
+  User-Agent: "Docker-Client/20.10.0 (linux)"
+---
+
+# 8. GCR 代理头配置
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gcr-headers
+  namespace: default
+data:
+  Host: "gcr.io"
+  Docker-Distribution-Api-Version: "registry/2.0"
+  Authorization: ""
+  User-Agent: "Docker-Client/20.10.0 (linux)"
+---
+
+# 9. Quay.io 代理头配置
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: quay-headers
+  namespace: default
+data:
+  Host: "quay.io"
+  Docker-Distribution-Api-Version: "registry/2.0"
+  Authorization: ""
+  User-Agent: "Docker-Client/20.10.0 (linux)"
+---
+
+# 10. Docker Hub 代理 Ingress (HTTPS版本 - 使用默认证书)
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: docker-hub-proxy-https
+  namespace: default
+  annotations:
+    # 基本代理配置
+    # DNS解析器配置
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      resolver kube-dns.kube-system.svc.cluster.local valid=30s ipv6=off;
+    
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "600"
+    
+    # 代理头配置
+    nginx.ingress.kubernetes.io/proxy-set-headers: "default/docker-hub-headers"
+    
+    # 使用默认证书 (避免证书错误)
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    
+    # 如果使用 cert-manager，取消下面的注释
+    # cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: dockerhub.yourdomain.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: docker-hub-registry
+            port:
+              number: 443
+  # TLS配置 - 使用默认证书或自签名证书
+  tls:
+  - hosts:
+    - dockerhub.yourdomain.com
+    # 使用默认的fake证书，避免证书错误
+    # secretName: dockerhub-tls-secret  # 注释掉避免错误
+---
+
+# 11. 快速测试配置 - 使用默认证书和简单配置
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: docker-hub-proxy-simple
+  namespace: default
+  annotations:
+    # 最简单的配置，避免任何证书问题
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    nginx.ingress.kubernetes.io/proxy-set-headers: "default/docker-hub-headers"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: dockerhub-simple.yourdomain.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: docker-hub-registry
+            port:
+              number: 443

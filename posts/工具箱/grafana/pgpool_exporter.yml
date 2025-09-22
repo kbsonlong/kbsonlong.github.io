@@ -1,0 +1,96 @@
+# Pgpool-II Prometheus Exporter 配置文件
+
+# 监听地址和端口
+listen_address: "0.0.0.0"
+listen_port: 9719
+
+# Pgpool-II PCP 连接信息
+pcp_host: "localhost"
+pcp_port: 9898
+pcp_user: "admin"
+pcp_pass: "admin"
+
+# 指标收集间隔（秒）
+collect_interval: 15
+
+# 启用的指标收集器
+collectors:
+  # 基本信息收集器
+  - name: "up"
+    enabled: true
+    help: "Pgpool-II 实例是否在线"
+    
+  # 连接池指标收集器
+  - name: "connections"
+    enabled: true
+    help: "Pgpool-II 连接池统计信息"
+    metrics:
+      - name: "pgpool_connections_total"
+        help: "Pgpool-II 总连接数"
+      - name: "pgpool_active_connections"
+        help: "Pgpool-II 活跃连接数"
+      - name: "pgpool_idle_connections"
+        help: "Pgpool-II 空闲连接数"
+      - name: "pgpool_waiting_connections"
+        help: "Pgpool-II 等待连接数"
+        
+  # 节点状态指标收集器
+  - name: "nodes"
+    enabled: true
+    help: "PostgreSQL 节点状态信息"
+    metrics:
+      - name: "pgpool_node_status"
+        help: "PostgreSQL 节点状态 (0=宕机, 1=主节点, 2=备节点, 3=恢复中)"
+      - name: "pgpool_node_role"
+        help: "PostgreSQL 节点角色 (1=主节点, 0=备节点)"
+      - name: "pgpool_node_weight"
+        help: "PostgreSQL 节点权重"
+        
+  # 查询统计指标收集器
+  - name: "queries"
+    enabled: true
+    help: "Pgpool-II 查询统计信息"
+    metrics:
+      - name: "pgpool_queries_total"
+        help: "Pgpool-II 处理的查询总数"
+      - name: "pgpool_query_duration_seconds"
+        help: "Pgpool-II 查询执行时间"
+      - name: "pgpool_query_cache_hit_total"
+        help: "Pgpool-II 查询缓存命中总数"
+      - name: "pgpool_query_cache_miss_total"
+        help: "Pgpool-II 查询缓存未命中总数"
+        
+  # 负载均衡指标收集器
+  - name: "load_balance"
+    enabled: true
+    help: "Pgpool-II 负载均衡统计信息"
+    metrics:
+      - name: "pgpool_load_balance_node_total"
+        help: "Pgpool-II 负载均衡选择节点的次数"
+        
+  # 健康检查指标收集器
+  - name: "health_check"
+    enabled: true
+    help: "Pgpool-II 健康检查统计信息"
+    metrics:
+      - name: "pgpool_health_check_total"
+        help: "Pgpool-II 健康检查总次数"
+      - name: "pgpool_health_check_success_total"
+        help: "Pgpool-II 健康检查成功总次数"
+      - name: "pgpool_health_check_failure_total"
+        help: "Pgpool-II 健康检查失败总次数"
+        
+  # 复制延迟指标收集器
+  - name: "replication_delay"
+    enabled: true
+    help: "PostgreSQL 复制延迟统计信息"
+    metrics:
+      - name: "pgpool_replication_delay_seconds"
+        help: "PostgreSQL 复制延迟（秒）"
+
+# 日志配置
+logging:
+  level: "info"  # debug, info, warn, error
+  format: "text"  # text, json
+  output: "stdout"  # stdout, stderr, file
+  file: "/var/log/pgpool_exporter.log"  # 仅当 output 为 file 时使用

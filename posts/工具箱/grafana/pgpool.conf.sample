@@ -1,0 +1,136 @@
+#------------------------------------------------------------------------------
+# Pgpool-II 配置示例 - 监控和日志设置
+#------------------------------------------------------------------------------
+
+#------------------------------------------------------------------------------
+# 连接设置
+#------------------------------------------------------------------------------
+listen_addresses = '*'
+port = 5432
+socket_dir = '/tmp'
+
+#------------------------------------------------------------------------------
+# 认证设置
+#------------------------------------------------------------------------------
+enable_pool_hba = on
+pool_passwd = 'pool_passwd'
+authentication_timeout = 60
+
+#------------------------------------------------------------------------------
+# 后端连接设置
+#------------------------------------------------------------------------------
+backend_hostname0 = 'postgres-primary'
+backend_port0 = 5432
+backend_weight0 = 1
+backend_data_directory0 = '/var/lib/postgresql/data'
+backend_flag0 = 'ALLOW_TO_FAILOVER'
+
+backend_hostname1 = 'postgres-replica'
+backend_port1 = 5432
+backend_weight1 = 1
+backend_data_directory1 = '/var/lib/postgresql/data'
+backend_flag1 = 'ALLOW_TO_FAILOVER'
+
+#------------------------------------------------------------------------------
+# 连接池设置
+#------------------------------------------------------------------------------
+num_init_children = 32
+max_pool = 4
+
+#------------------------------------------------------------------------------
+# 负载均衡设置
+#------------------------------------------------------------------------------
+load_balance_mode = on
+master_slave_mode = on
+master_slave_sub_mode = 'stream'
+
+#------------------------------------------------------------------------------
+# 健康检查设置
+#------------------------------------------------------------------------------
+health_check_period = 10
+health_check_timeout = 20
+health_check_user = 'postgres'
+health_check_password = 'postgres'
+health_check_database = 'postgres'
+health_check_max_retries = 3
+health_check_retry_delay = 1
+
+#------------------------------------------------------------------------------
+# 故障转移设置
+#------------------------------------------------------------------------------
+failover_command = '/etc/pgpool-II/failover.sh %d %h %p %D %m %H %M %P %r %R'
+failback_command = ''
+failover_on_backend_error = on
+
+#------------------------------------------------------------------------------
+# 监控设置
+#------------------------------------------------------------------------------
+# 启用 Prometheus 导出器
+pcp_listen_addresses = '*'
+pcp_port = 9898
+
+# 启用统计信息收集
+enable_shared_relcache = on
+relcache_expire = 300
+relcache_size = 256
+
+# 启用查询统计
+enable_query_cache = on
+memory_cache_enabled = on
+memqcache_method = 'shmem'
+memqcache_expire = 60
+memqcache_maxcache = 409600
+
+#------------------------------------------------------------------------------
+# 日志设置
+#------------------------------------------------------------------------------
+log_destination = 'stderr'
+logging_collector = on
+log_directory = '/var/log/pgpool'
+log_filename = 'pgpool-%Y-%m-%d_%H%M%S.log'
+log_truncate_on_rotation = on
+log_rotation_age = 1d
+log_rotation_size = 10MB
+
+# 日志级别
+log_min_messages = 'warning'
+log_line_prefix = '%t: pid %p: '
+
+# 详细日志设置
+log_connections = on
+log_disconnections = on
+log_hostname = on
+log_statement = 'all'
+log_per_node_statement = on
+log_standby_delay = 'always'
+
+# 慢查询日志
+log_min_duration_statement = 1000  # 记录执行时间超过1秒的查询
+
+# 错误报告和追踪
+log_error_verbosity = 'verbose'  # 详细错误信息
+debug_level = 0                  # 调试级别，生产环境设为0
+
+# 特定事件日志
+log_client_messages = on         # 记录客户端消息
+log_checkpoints = on             # 记录检查点
+log_replication_checks = on      # 记录复制检查
+
+#------------------------------------------------------------------------------
+# 监控相关的其他设置
+#------------------------------------------------------------------------------
+# 启用详细统计信息
+log_status_interval = 300        # 每5分钟记录一次状态
+log_standby_delay = 'always'     # 总是记录备库延迟
+
+# 连接池状态监控
+sr_check_period = 10             # 流复制检查周期（秒）
+sr_check_user = 'postgres'       # 流复制检查用户
+sr_check_password = 'postgres'   # 流复制检查密码
+sr_check_database = 'postgres'   # 流复制检查数据库
+
+# 节点状态变更记录
+log_client_messages = on         # 记录客户端消息
+log_hostname = on                # 记录主机名
+log_connections = on             # 记录连接
+log_disconnections = on          # 记录断开连接

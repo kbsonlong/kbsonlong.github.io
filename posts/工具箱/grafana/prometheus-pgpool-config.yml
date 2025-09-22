@@ -1,0 +1,28 @@
+# Prometheus配置示例 - Pgpool-II监控
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'pgpool'
+    static_configs:
+      - targets: ['pgpool:9719']
+        labels:
+          instance: 'pgpool-main'
+
+  # 如果有多个Pgpool实例，可以添加更多目标
+  # - job_name: 'pgpool-replica'
+  #   static_configs:
+  #     - targets: ['pgpool-replica:9719']
+  #       labels:
+  #         instance: 'pgpool-replica'
+
+  # PostgreSQL节点监控 (如果使用postgres_exporter)
+  - job_name: 'postgresql'
+    static_configs:
+      - targets: ['postgres-exporter:9187']
+        labels:
+          instance: 'postgres-primary'
+      # - targets: ['postgres-exporter-replica:9187']
+      #   labels:
+      #     instance: 'postgres-replica'

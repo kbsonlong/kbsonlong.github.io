@@ -1,0 +1,141 @@
+---
+# Ingress Nginx Controller 全局配置
+# 在 ingress-nginx 命名空间中的 ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-configuration
+  namespace: ingress-nginx
+  labels:
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/component: controller
+data:
+  # 基本性能设置
+  worker-processes: "auto"
+  worker-connections: "65536"
+  worker-rlimit-nofile: "65536"
+  
+  # 客户端连接优化
+  keepalive-timeout: "65"
+  keepalive-requests: "10000"
+  client-header-timeout: "60"
+  client-body-timeout: "60"
+  
+  # 代理优化 - 适用于注册表代理
+  proxy-connect-timeout: "600"
+  proxy-send-timeout: "600"
+  proxy-read-timeout: "600"
+  proxy-buffer-size: "16k"
+  proxy-buffers-number: "8"
+  proxy-max-temp-file-size: "1024m"
+  proxy-body-size: "0"
+  proxy-buffering: "on"
+  
+  # 上游连接池
+  upstream-keepalive-connections: "320"
+  upstream-keepalive-requests: "10000"
+  upstream-keepalive-timeout: "60"
+  
+  # 日志格式 - 包含注册表相关信息
+  log-format-upstream: |
+    $remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent" $request_length $request_time [$proxy_upstream_name] $upstream_addr $upstream_response_length $upstream_response_time $upstream_status $req_id
+  
+  # 禁用 server-tokens 增加安全性
+  server-tokens: "false"
+  
+  # 启用压缩
+  use-gzip: "true"
+  gzip-level: "6"
+  gzip-min-length: "1024"
+  gzip-types: |
+    application/json
+    application/vnd.docker.distribution.manifest.v1+json
+    application/vnd.docker.distribution.manifest.v2+json
+    application/vnd.docker.distribution.manifest.list.v2+json
+    application/vnd.docker.distribution.config.v2+json
+    text/css
+    text/javascript
+    application/javascript
+    application/x-javascript
+    text/xml
+    application/xml
+    application/rss+xml
+    text/plain
+  
+  # 安全头配置
+  add-headers: "ingress-nginx/security-headers"
+  proxy-set-headers: "ingress-nginx/proxy-headers"
+  
+  # 缓存配置
+  proxy-cache-path: "/var/cache/nginx/registry levels=1:2 keys_zone=registry_cache:100m max_size=10g inactive=60m use_temp_path=off"
+  
+  # 限流配置
+  limit-req-status-code: "503"
+  limit-conn-status-code: "503"
+---
+
+# 安全头配置
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: security-headers
+  namespace: ingress-nginx
+data:
+  X-Content-Type-Options: "nosniff"
+  X-Frame-Options: "DENY"
+  X-XSS-Protection: "1; mode=block"
+  Strict-Transport-Security: "max-age=31536000; includeSubDomains"
+  X-Robots-Tag: "noindex, nofollow, nosnippet, noarchive"
+---
+
+# 代理头配置
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: proxy-headers
+  namespace: ingress-nginx
+data:
+  # Docker Registry API 版本
+  Docker-Distribution-Api-Version: "registry/2.0"
+  # 移除代理相关的头
+  X-Forwarded-Proto: "https"
+  X-Forwarded-Port: "443"
+---
+
+# 用于 Docker 注册表缓存的 ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: registry-cache-config
+  namespace: ingress-nginx
+data:
+  cache.conf: |
+    # 注册表缓存配置
+    proxy_cache registry_cache;
+    proxy_cache_valid 200 302 10m;
+    proxy_cache_valid 404 1m;
+    proxy_cache_bypass $http_pragma;
+    proxy_cache_revalidate on;
+    proxy_cache_lock on;
+    proxy_cache_lock_timeout 5s;
+    proxy_cache_use_stale error timeout invalid_header updating http_500 http_502 http_503 http_504;
+    
+    # 缓存键配置
+    proxy_cache_key "$scheme$proxy_host$request_uri";
+    
+    # 添加缓存状态头
+    add_header X-Cache-Status $upstream_cache_status;
+    add_header Cache-Control "public, max-age=600";
+    
+    # 针对不同类型的注册表内容
+    location ~* \.(blob|manifest|config)$ {
+      proxy_cache_valid 200 302 1h;
+      expires 1h;
+      add_header X-Cache-Blob "true";
+    }
+    
+    location ~* /v2/.*/manifests/ {
+      proxy_cache_valid 200 302 10m;
+      expires 10m;
+      add_header X-Cache-Manifest "true";
+    }

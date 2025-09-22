@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:14-alpine
+    container_name: postgres-grafana
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: grafana
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./init-grafana-db.sh:/docker-entrypoint-initdb.d/init-grafana-db.sh
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - grafana-network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana-server
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - GF_DATABASE_TYPE=postgres
+      - GF_DATABASE_HOST=postgres:5432
+      - GF_DATABASE_NAME=grafana
+      - GF_DATABASE_USER=grafana
+      - GF_DATABASE_PASSWORD=grafana_password
+      - GF_DATABASE_SSL_MODE=disable
+      # 可选：设置管理员密码
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      # 可选：允许匿名访问
+      - GF_AUTH_ANONYMOUS_ENABLED=false
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    restart: unless-stopped
+    networks:
+      - grafana-network
+
+volumes:
+  postgres-data:
+    driver: local
+  grafana-storage:
+    driver: local
+
+networks:
+  grafana-network:
+    driver: bridge

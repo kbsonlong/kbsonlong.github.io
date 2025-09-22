@@ -1,0 +1,644 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init-scripts
+  namespace: monitoring
+data:
+  init-grafana-db.sh: |
+    #!/bin/bash
+    set -e
+
+    # 更新日期: 2023-07-26
+    # 描述: 初始化Grafana所需的PostgreSQL角色和权限，并添加自动修复所有权的触发器
+
+    # 获取环境变量或使用默认值
+    GRAFANA_PASSWORD=${GRAFANA_PASSWORD:-"grafana_password"}
+
+    psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
+        -- 创建grafana角色（如果不存在）
+        DO \$\$ 
+        BEGIN
+            IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'grafana') THEN
+                CREATE ROLE grafana WITH LOGIN PASSWORD '${GRAFANA_PASSWORD}';
+            ELSE
+                -- 更新现有角色的密码
+                ALTER ROLE grafana WITH LOGIN PASSWORD '${GRAFANA_PASSWORD}';
+            END IF;
+        END
+        \$\$;
+
+        -- 创建grafana数据库（如果不存在）
+        SELECT 'CREATE DATABASE grafana'
+        WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'grafana')
+        \gexec
+
+        -- 授予grafana角色对grafana数据库的所有权限
+        GRANT ALL PRIVILEGES ON DATABASE grafana TO grafana;
+        
+        -- 连接到grafana数据库以设置schema权限
+        \c grafana
+        
+        -- 授予grafana角色对public schema的所有权限
+        GRANT ALL PRIVILEGES ON SCHEMA public TO grafana;
+        
+        -- 设置默认权限，使grafana角色成为未来创建的表的所有者
+        ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON TABLES TO grafana;
+        ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON SEQUENCES TO grafana;
+        ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON FUNCTIONS TO grafana;
+        
+        -- 创建触发器函数，自动将新表的所有权分配给grafana角色
+        CREATE OR REPLACE FUNCTION assign_ownership_to_grafana()
+        RETURNS event_trigger AS \$\$
+        DECLARE
+            obj record;
+        BEGIN
+            FOR obj IN SELECT * FROM pg_event_trigger_ddl_commands() WHERE command_tag IN ('CREATE TABLE', 'CREATE SEQUENCE')
+            LOOP
+                IF obj.object_type IN ('table', 'sequence') THEN
+                    EXECUTE format('ALTER %s %s OWNER TO grafana', obj.object_type, obj.object_identity);
+                END IF;
+            END LOOP;
+        END;
+        \$\$ LANGUAGE plpgsql;
+
+        -- 创建事件触发器
+        DO \$\$
+        BEGIN
+            IF NOT EXISTS (SELECT 1 FROM pg_event_trigger WHERE evtname = 'grafana_ownership_trigger') THEN
+                CREATE EVENT TRIGGER grafana_ownership_trigger ON ddl_command_end
+                WHEN TAG IN ('CREATE TABLE', 'CREATE SEQUENCE')
+                EXECUTE PROCEDURE assign_ownership_to_grafana();
+            END IF;
+        EXCEPTION
+            WHEN insufficient_privilege THEN
+                RAISE NOTICE 'Skipping event trigger creation due to insufficient privileges';
+        END
+        \$\$;
+
+        -- 修复现有表的所有权
+        DO \$\$
+        DECLARE
+            t record;
+        BEGIN
+            FOR t IN SELECT tablename FROM pg_tables WHERE schemaname = 'public'
+            LOOP
+                EXECUTE 'ALTER TABLE public.' || quote_ident(t.tablename) || ' OWNER TO grafana';
+            END LOOP;
+        END
+        \$\$;
+
+        -- 修复现有序列的所有权
+        DO \$\$
+        DECLARE
+            s record;
+        BEGIN
+            FOR s IN SELECT sequence_name FROM information_schema.sequences WHERE sequence_schema = 'public'
+            LOOP
+                EXECUTE 'ALTER SEQUENCE public.' || quote_ident(s.sequence_name) || ' OWNER TO grafana';
+            END LOOP;
+        END
+        \$\$;
+
+        -- 修复现有视图的所有权
+        DO \$\$
+        DECLARE
+            v record;
+        BEGIN
+            FOR v IN SELECT table_name FROM information_schema.views WHERE table_schema = 'public'
+            LOOP
+                EXECUTE 'ALTER VIEW public.' || quote_ident(v.table_name) || ' OWNER TO grafana';
+            END LOOP;
+        EXCEPTION
+            WHEN undefined_table THEN
+                RAISE NOTICE 'No views found or error accessing views';
+        END
+        \$\$;
+    EOSQL
+
+    echo "Grafana数据库、角色和权限设置完成，并添加了自动修复所有权的触发器"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-fix-job
+  namespace: monitoring
+data:
+  fix-postgres-role.sh: |
+    #!/bin/bash
+    set -e
+
+    # 更新日期: 2023-07-26
+    # 描述: 修复PostgreSQL中Grafana角色的脚本
+
+    # 等待PostgreSQL服务可用
+    until PGPASSWORD=$POSTGRES_PASSWORD psql -h $POSTGRES_HOST -U $POSTGRES_USER -d postgres -c '\q'; do
+      echo "PostgreSQL服务不可用 - 等待..."
+      sleep 2
+    done
+    
+    echo "PostgreSQL服务已就绪，开始修复角色..."
+    
+    # 检查grafana角色是否存在
+    ROLE_EXISTS=$(PGPASSWORD=$POSTGRES_PASSWORD psql -h $POSTGRES_HOST -U $POSTGRES_USER -d postgres -tAc "SELECT 1 FROM pg_roles WHERE rolname='grafana'")
+    
+    if [ -z "$ROLE_EXISTS" ]; then
+      echo "创建grafana角色..."
+      PGPASSWORD=$POSTGRES_PASSWORD psql -h $POSTGRES_HOST -U $POSTGRES_USER -d postgres -c "CREATE ROLE grafana WITH LOGIN PASSWORD '$GRAFANA_PASSWORD';"
+    else
+      echo "更新grafana角色密码..."
+      PGPASSWORD=$POSTGRES_PASSWORD psql -h $POSTGRES_HOST -U $POSTGRES_USER -d postgres -c "ALTER ROLE grafana WITH LOGIN PASSWORD '$GRAFANA_PASSWORD';"
+    fi
+    
+    # 检查grafana数据库是否存在
+    DB_EXISTS=$(PGPASSWORD=$POSTGRES_PASSWORD psql -h $POSTGRES_HOST -U $POSTGRES_USER -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='grafana'")
+    
+    if [ -z "$DB_EXISTS" ]; then
+      echo "创建grafana数据库..."
+      PGPASSWORD=$POSTGRES_PASSWORD psql -h $POSTGRES_HOST -U $POSTGRES_USER -d postgres -c "CREATE DATABASE grafana;"
+    fi
+    
+    # 授予权限
+    echo "授予权限..."
+    PGPASSWORD=$POSTGRES_PASSWORD psql -h $POSTGRES_HOST -U $POSTGRES_USER -d postgres -c "GRANT ALL PRIVILEGES ON DATABASE grafana TO grafana;"
+    PGPASSWORD=$POSTGRES_PASSWORD psql -h $POSTGRES_HOST -U $POSTGRES_USER -d grafana -c "GRANT ALL PRIVILEGES ON SCHEMA public TO grafana;"
+    PGPASSWORD=$POSTGRES_PASSWORD psql -h $POSTGRES_HOST -U $POSTGRES_USER -d grafana -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON TABLES TO grafana;"
+    PGPASSWORD=$POSTGRES_PASSWORD psql -h $POSTGRES_HOST -U $POSTGRES_USER -d grafana -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON SEQUENCES TO grafana;"
+    
+    # 创建触发器函数，自动将新表的所有权分配给grafana角色
+    echo "创建自动分配所有权的触发器函数..."
+    PGPASSWORD=$POSTGRES_PASSWORD psql -h $POSTGRES_HOST -U $POSTGRES_USER -d grafana -c "CREATE OR REPLACE FUNCTION assign_ownership_to_grafana()
+    RETURNS event_trigger AS \\\$\\\$
+    DECLARE
+        obj record;
+    BEGIN
+        FOR obj IN SELECT * FROM pg_event_trigger_ddl_commands() WHERE command_tag IN ('CREATE TABLE', 'CREATE SEQUENCE')
+        LOOP
+            IF obj.object_type IN ('table', 'sequence') THEN
+                EXECUTE format('ALTER %s %s OWNER TO grafana', obj.object_type, obj.object_identity);
+            END IF;
+        END LOOP;
+    END;
+    \\\$\\\$ LANGUAGE plpgsql;"
+    
+    # 创建事件触发器
+    echo "创建事件触发器..."
+    PGPASSWORD=$POSTGRES_PASSWORD psql -h $POSTGRES_HOST -U $POSTGRES_USER -d grafana -c "DO \\\$\\\$
+    BEGIN
+        IF NOT EXISTS (SELECT 1 FROM pg_event_trigger WHERE evtname = 'grafana_ownership_trigger') THEN
+            CREATE EVENT TRIGGER grafana_ownership_trigger ON ddl_command_end
+            WHEN TAG IN ('CREATE TABLE', 'CREATE SEQUENCE')
+            EXECUTE PROCEDURE assign_ownership_to_grafana();
+        END IF;
+    EXCEPTION
+        WHEN insufficient_privilege THEN
+            RAISE NOTICE 'Skipping event trigger creation due to insufficient privileges';
+    END
+    \\\$\\\$;"
+    
+    # 修复表的所有权
+    echo "修复表的所有权..."
+    PGPASSWORD=$POSTGRES_PASSWORD psql -h $POSTGRES_HOST -U $POSTGRES_USER -d grafana -c "DO \\\$\\\$
+    DECLARE
+        t record;
+    BEGIN
+        FOR t IN SELECT tablename FROM pg_tables WHERE schemaname = 'public'
+        LOOP
+            EXECUTE 'ALTER TABLE public.' || quote_ident(t.tablename) || ' OWNER TO grafana';
+        END LOOP;
+    END
+    \\\$\\\$;"
+    
+    # 修复序列的所有权
+    echo "修复序列的所有权..."
+    PGPASSWORD=$POSTGRES_PASSWORD psql -h $POSTGRES_HOST -U $POSTGRES_USER -d grafana -c "DO \\\$\\\$
+    DECLARE
+        s record;
+    BEGIN
+        FOR s IN SELECT sequence_name FROM information_schema.sequences WHERE sequence_schema = 'public'
+        LOOP
+            EXECUTE 'ALTER SEQUENCE public.' || quote_ident(s.sequence_name) || ' OWNER TO grafana';
+        END LOOP;
+    END
+    \\\$\\\$;"
+    
+    # 修复视图的所有权
+    echo "修复视图的所有权..."
+    PGPASSWORD=$POSTGRES_PASSWORD psql -h $POSTGRES_HOST -U $POSTGRES_USER -d grafana -c "DO \\\$\\\$
+    DECLARE
+        v record;
+    BEGIN
+        FOR v IN SELECT table_name FROM information_schema.views WHERE table_schema = 'public'
+        LOOP
+            EXECUTE 'ALTER VIEW public.' || quote_ident(v.table_name) || ' OWNER TO grafana';
+        END LOOP;
+    EXCEPTION
+        WHEN undefined_table THEN
+            RAISE NOTICE 'No views found or error accessing views';
+    END
+    \\\$\\\$;"
+    
+    # 验证连接
+    echo "验证grafana角色连接..."
+    if PGPASSWORD=$GRAFANA_PASSWORD psql -h $POSTGRES_HOST -U grafana -d grafana -c "SELECT 1;"; then
+      echo "验证成功：可以使用grafana角色连接数据库"
+    else
+      echo "验证失败：无法使用grafana角色连接数据库"
+      exit 1
+    fi
+    
+    echo "PostgreSQL角色修复完成！"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-config
+  namespace: monitoring
+data:
+  grafana.ini: |
+    [paths]
+    data = /var/lib/grafana
+    logs = /var/log/grafana
+    plugins = /var/lib/grafana/plugins
+    provisioning = /etc/grafana/provisioning
+
+    [server]
+    protocol = http
+    http_port = 3000
+    domain = localhost
+    root_url = %(protocol)s://%(domain)s:%(http_port)s/
+    serve_from_sub_path = false
+
+    [database]
+    type = postgres
+    host = postgres:5432
+    name = grafana
+    user = grafana
+    password = ${GF_DATABASE_PASSWORD}
+    ssl_mode = disable
+    
+    # 设置连接池参数
+    max_idle_conn = 10
+    max_open_conn = 100
+    conn_max_lifetime = 14400
+
+    [security]
+    admin_user = admin
+    admin_password = ${GF_SECURITY_ADMIN_PASSWORD}
+    secret_key = ${GF_SECURITY_SECRET_KEY}
+    disable_gravatar = true
+
+    [users]
+    allow_sign_up = false
+    auto_assign_org = true
+    auto_assign_org_role = Editor
+
+    [auth]
+    disable_login_form = false
+    disable_signout_menu = false
+
+    [auth.anonymous]
+    enabled = false
+
+    [analytics]
+    reporting_enabled = false
+    check_for_updates = true
+
+    [log]
+    mode = console
+    level = info
+
+    [metrics]
+    enabled = true
+    interval_seconds = 10
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasources
+  namespace: monitoring
+data:
+  datasources.yaml: |
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        access: proxy
+        url: http://prometheus:9090
+        isDefault: true
+        editable: true
+      - name: PostgreSQL
+        type: postgres
+        url: postgres:5432
+        database: grafana
+        user: grafana
+        secureJsonData:
+          password: ${GF_DATABASE_PASSWORD}
+        jsonData:
+          sslmode: disable
+          maxOpenConns: 100
+          maxIdleConns: 10
+          connMaxLifetime: 14400
+          postgresVersion: 1200
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: postgres-role-fix
+  namespace: monitoring
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    spec:
+      serviceAccountName: postgres-fix-job
+      containers:
+      - name: postgres-client
+        image: postgres:13
+        command: ["bash", "-c"]
+        args:
+        - |
+          /scripts/fix-postgres-role.sh
+        env:
+        - name: POSTGRES_HOST
+          value: "postgres"
+        - name: POSTGRES_USER
+          value: "postgres"
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: postgres-password
+        - name: GRAFANA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: grafana-secret
+              key: grafana-password
+        volumeMounts:
+        - name: fix-script
+          mountPath: /scripts
+      volumes:
+      - name: fix-script
+        configMap:
+          name: postgres-fix-job
+          defaultMode: 0755
+      restartPolicy: Never
+  backoffLimit: 3
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: postgres-fix-job
+  namespace: monitoring
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: postgres-fix-job
+  namespace: monitoring
+rules:
+- apiGroups: [""]
+  resources: ["pods", "pods/log"]
+  verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: postgres-fix-job
+  namespace: monitoring
+subjects:
+- kind: ServiceAccount
+  name: postgres-fix-job
+  namespace: monitoring
+roleRef:
+  kind: Role
+  name: postgres-fix-job
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana-postgres-monitor
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana-postgres-monitor
+  template:
+    metadata:
+      labels:
+        app: grafana-postgres-monitor
+    spec:
+      serviceAccountName: postgres-fix-job
+      containers:
+      - name: monitor
+        image: bitnami/kubectl:latest
+        command: ["bash", "-c"]
+        args:
+        - |
+          cat > /scripts/monitor.sh << 'EOF'
+          #!/bin/bash
+          
+          # 监控PostgreSQL角色状态并自动修复
+          
+          NAMESPACE="monitoring"
+          POSTGRES_POD_PREFIX="postgres"
+          POSTGRES_USER="postgres"
+          GRAFANA_DB="grafana"
+          GRAFANA_ROLE="grafana"
+          CHECK_INTERVAL=300 # 5分钟检查一次
+          
+          # 获取PostgreSQL Pod名称
+          get_postgres_pod() {
+            kubectl get pods -n "$NAMESPACE" | grep "$POSTGRES_POD_PREFIX" | grep Running | head -n 1 | awk '{print $1}'
+          }
+          
+          # 检查PostgreSQL角色
+          check_postgres_role() {
+            local pod_name=$1
+            
+            # 检查角色是否存在
+            role_exists=$(kubectl exec -n "$NAMESPACE" "$pod_name" -- bash -c "PGPASSWORD=$POSTGRES_PASSWORD psql -U $POSTGRES_USER -d postgres -tAc \"SELECT 1 FROM pg_roles WHERE rolname='$GRAFANA_ROLE'\"")
+            
+            if [ -z "$role_exists" ]; then
+              echo "角色 '$GRAFANA_ROLE' 不存在"
+              return 1
+            else
+              echo "角色 '$GRAFANA_ROLE' 存在"
+              return 0
+            fi
+          }
+          
+          # 检查表所有权
+          check_table_ownership() {
+            local pod_name=$1
+            
+            # 获取不属于grafana角色的表
+            wrong_ownership=$(kubectl exec -n "$NAMESPACE" "$pod_name" -- bash -c "PGPASSWORD=$POSTGRES_PASSWORD psql -U $POSTGRES_USER -d $GRAFANA_DB -tAc \"SELECT tablename FROM pg_tables WHERE schemaname='public' AND tableowner != '$GRAFANA_ROLE'\"")
+            
+            if [ -n "$wrong_ownership" ]; then
+              echo "发现表所有权问题:"
+              echo "$wrong_ownership"
+              return 1
+            else
+              echo "所有表所有权正确"
+              return 0
+            fi
+          }
+          
+          # 检查Grafana日志中的角色错误
+          check_grafana_logs() {
+            local grafana_pods=$(kubectl get pods -n "$NAMESPACE" | grep grafana | grep Running | awk '{print $1}' | grep -v monitor)
+            
+            if [ -z "$grafana_pods" ]; then
+              echo "未找到运行中的Grafana Pod"
+              return 0
+            fi
+            
+            for pod in $grafana_pods; do
+              echo "检查Grafana Pod: $pod 的日志"
+              
+              role_errors=$(kubectl logs -n "$NAMESPACE" "$pod" --tail=100 | grep -i "role.*does not exist" | wc -l)
+              
+              if [ "$role_errors" -gt 0 ]; then
+                echo "在Grafana Pod $pod 的日志中发现 $role_errors 个角色错误"
+                return 1
+              else
+                echo "Grafana Pod $pod 的日志中没有发现角色错误"
+              fi
+            done
+            
+            return 0
+          }
+          
+          # 修复角色问题
+          fix_role_issues() {
+            echo "检测到角色问题，创建修复Job"
+            
+            # 删除之前的Job（如果存在）
+            kubectl delete job -n "$NAMESPACE" postgres-role-fix --ignore-not-found
+            
+            # 创建新的修复Job
+            kubectl create job --from=cronjob/postgres-role-fix-cronjob -n "$NAMESPACE" postgres-role-fix
+            
+            echo "修复Job已创建，等待完成..."
+            kubectl wait --for=condition=complete job/postgres-role-fix -n "$NAMESPACE" --timeout=120s
+            
+            if [ $? -eq 0 ]; then
+              echo "修复Job已成功完成"
+              return 0
+            else
+              echo "修复Job未能成功完成"
+              return 1
+            fi
+          }
+          
+          # 主循环
+          while true; do
+            echo "开始检查PostgreSQL角色状态"
+            
+            # 获取PostgreSQL Pod
+            postgres_pod=$(get_postgres_pod)
+            
+            if [ -z "$postgres_pod" ]; then
+              echo "未找到运行中的PostgreSQL Pod"
+              sleep "$CHECK_INTERVAL"
+              continue
+            fi
+            
+            echo "找到PostgreSQL Pod: $postgres_pod"
+            
+            # 检查角色状态
+            role_ok=true
+            
+            if ! check_postgres_role "$postgres_pod"; then
+              role_ok=false
+            fi
+            
+            if check_database "$postgres_pod" && ! check_table_ownership "$postgres_pod"; then
+              role_ok=false
+            fi
+            
+            if ! check_grafana_logs; then
+              role_ok=false
+            fi
+            
+            # 如果发现问题，自动修复
+            if [ "$role_ok" = false ]; then
+              echo "检测到角色问题，开始自动修复"
+              fix_role_issues
+            else
+              echo "PostgreSQL角色状态正常"
+            fi
+            
+            echo "检查完成，等待 $CHECK_INTERVAL 秒后再次检查"
+            sleep "$CHECK_INTERVAL"
+          done
+          EOF
+          
+          chmod +x /scripts/monitor.sh
+          /scripts/monitor.sh
+        env:
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: postgres-password
+        - name: GRAFANA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: grafana-secret
+              key: grafana-password
+        volumeMounts:
+        - name: scripts
+          mountPath: /scripts
+      volumes:
+      - name: scripts
+        emptyDir: {}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: postgres-role-fix-cronjob
+  namespace: monitoring
+spec:
+  schedule: "0 */6 * * *"  # 每6小时执行一次
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: postgres-fix-job
+          containers:
+          - name: postgres-client
+            image: postgres:13
+            command: ["bash", "-c"]
+            args:
+            - |
+              /scripts/fix-postgres-role.sh
+            env:
+            - name: POSTGRES_HOST
+              value: "postgres"
+            - name: POSTGRES_USER
+              value: "postgres"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: postgres-password
+            - name: GRAFANA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: grafana-secret
+                  key: grafana-password
+            volumeMounts:
+            - name: fix-script
+              mountPath: /scripts
+          volumes:
+          - name: fix-script
+            configMap:
+              name: postgres-fix-job
+              defaultMode: 0755
+          restartPolicy: Never
