@@ -1,4 +1,220 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>蜷缩的蜗牛</title><link>https://www.kbsonlong.com/</link><description>云原生时代运维</description><generator>Hugo 0.147.7 &amp; FixIt v0.4.0-alpha.2-20251014082535-5c74d431</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 17 Oct 2025 10:51:25 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/index.xml" rel="self" type="application/rss+xml"/><item><title>Grafana SQLite 到 PostgreSQL 迁移 Job</title><link>https://www.kbsonlong.com/posts/grafana-sqlite-to-postgres-migration-job/</link><pubDate>Fri, 17 Oct 2025 10:51:25 +0800</pubDate><guid>https://www.kbsonlong.com/posts/grafana-sqlite-to-postgres-migration-job/</guid><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><category domain="https://www.kbsonlong.com/categories/%E7%9B%91%E6%8E%A7/">监控</category><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><description>&lt;h1 class="heading-element" id="grafana-sqlite-到-postgresql-迁移-job">&lt;span>Grafana SQLite 到 PostgreSQL 迁移 Job&lt;/span>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>蜷缩的蜗牛</title><link>https://www.kbsonlong.com/</link><description>云原生时代运维</description><generator>Hugo 0.147.7 &amp; FixIt v0.4.0-alpha.2-20251014082535-5c74d431</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 20 Oct 2025 11:43:57 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/index.xml" rel="self" type="application/rss+xml"/><item><title>何时使用 RAG vs 微调</title><link>https://www.kbsonlong.com/posts/when-to-use-rag-vs-fine-tuning/</link><pubDate>Mon, 20 Oct 2025 11:43:57 +0800</pubDate><guid>https://www.kbsonlong.com/posts/when-to-use-rag-vs-fine-tuning/</guid><category domain="https://www.kbsonlong.com/categories/aiml/">AIML</category><description>&lt;p>&lt;img loading="lazy" src='https://miro.medium.com/v2/resize:fit:700/1*_YcEeuvDIfqh7nl1sDc3ww.png' alt="图片 2">&lt;/p>
+&lt;p>充分利用 LLM 的全部潜力需要在检索增强生成 (RAG) 和微调之间选择正确的技术。&lt;/p>
+&lt;p>让我们研究一下何时对 LLM、较小模型和预训练模型使用 RAG 与微调。我们将涵盖：&lt;/p>
+&lt;ul>
+&lt;li>LLM 和 RAG 的简要背景&lt;/li>
+&lt;li>RAG 相对于微调 LLM 的优势&lt;/li>
+&lt;li>何时针对不同模型大小进行微调与 RAG&lt;/li>
+&lt;li>对预训练模型使用 RAG 和微调&lt;/li>
+&lt;li>RAG 和微调的金融服务示例&lt;/li>
+&lt;li>实际考虑和建议&lt;/li>
+&lt;/ul>
+&lt;h2 class="heading-element" id="llm-和-rag-的背景">&lt;span>LLM 和 RAG 的背景&lt;/span>
+ &lt;a href="#llm-%e5%92%8c-rag-%e7%9a%84%e8%83%8c%e6%99%af" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>大型语言模型利用一种称为预训练的技术，在互联网、代码、社交媒体和书籍等海量文本数据集上进行训练。这使它们能够生成文本、回答问题、翻译语言等，而无需任何特定于任务的数据。然而，它们的知识仍然有限。&lt;/p>
+&lt;p>检索增强生成通过在生成文本之前从数据库中检索相关知识作为上下文来增强 LLM。例如，财务顾问 LLM 可以在建议财务建议之前检索客户的投资历史和个人资料。&lt;/p>
+&lt;p>检索增强结合了 LLM 理解语言的能力和领域特定数据库中的相关知识的优点。这使得 RAG 系统比普通的 LLM 更具知识性、一致性和安全性。&lt;/p>
+&lt;h2 class="heading-element" id="rag-相对于微调-llm-的优势">&lt;span>RAG 相对于微调 LLM 的优势&lt;/span>
+ &lt;a href="#rag-%e7%9b%b8%e5%af%b9%e4%ba%8e%e5%be%ae%e8%b0%83-llm-%e7%9a%84%e4%bc%98%e5%8a%bf" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>微调通过在特定领域的数据上训练预训练的 LLM，使其适应特定任务。例如，可以在金融文档上对预训练的 LLM 进行微调，以提高其金融知识。&lt;/p>
+&lt;p>然而，与检索增强相比，微调有几个缺点：&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>遗忘：&lt;/strong> 微调模型通常会忘记或失去预训练中的能力。例如，经过金融微调的 LLM 可能不再能很好地处理一般的会话任务。&lt;/li>
+&lt;li>&lt;strong>训练数据依赖性：&lt;/strong> 性能完全依赖于可用训练数据的数量和质量。收集高质量的数据是昂贵的。&lt;/li>
+&lt;li>&lt;strong>缺乏外部知识：&lt;/strong> 模型只知道其训练数据中的内容，缺乏现实世界的知识。&lt;/li>
+&lt;li>&lt;strong>不可定制：&lt;/strong> 对微调模型的更改需要重新训练，这很昂贵。&lt;/li>
+&lt;/ul>
+&lt;p>相比之下，RAG 系统：&lt;/p>
+&lt;ul>
+&lt;li>保留预训练中的能力，因为 LLM 本身没有被修改。&lt;/li>
+&lt;li>使用可定制的外部知识源（如数据库）来增强 LLM。&lt;/li>
+&lt;li>允许在不重新训练 LLM 的情况下更改知识源。&lt;/li>
+&lt;li>由于 LLM 未重新训练，因此数据要求较低。&lt;/li>
+&lt;/ul>
+&lt;p>因此，RAG 系统通常比微调获得更好的性能，同时保留了原始 LLM 的更多功能。&lt;/p>
+&lt;h2 class="heading-element" id="何时针对不同模型大小进行微调与-rag">&lt;span>何时针对不同模型大小进行微调与 RAG&lt;/span>
+ &lt;a href="#%e4%bd%95%e6%97%b6%e9%92%88%e5%af%b9%e4%b8%8d%e5%90%8c%e6%a8%a1%e5%9e%8b%e5%a4%a7%e5%b0%8f%e8%bf%9b%e8%a1%8c%e5%be%ae%e8%b0%83%e4%b8%8e-rag" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>微调和 RAG 之间的选择取决于模型大小：&lt;/p>
+&lt;h2 class="heading-element" id="大型语言模型">&lt;span>大型语言模型&lt;/span>
+ &lt;a href="#%e5%a4%a7%e5%9e%8b%e8%af%ad%e8%a8%80%e6%a8%a1%e5%9e%8b" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>对于像 GPT-4 这样具有数万亿参数的大型模型，RAG 通常比微调更可取：&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>保留预训练能力：&lt;/strong> 微调有忘记像对话、翻译、分析等需要 GPT-4 规模模型的能力的风险。&lt;/li>
+&lt;li>&lt;strong>利用外部知识：&lt;/strong> GPT-4/Llama-2 缺乏世界知识，而 RAG 用外部数据库对其进行增强。&lt;/li>
+&lt;li>&lt;strong>避免灾难性遗忘：&lt;/strong> 微调可能会损害 LLM 的多功能能力。&lt;/li>
+&lt;li>&lt;strong>灵活的知识源：&lt;/strong> RAG 知识源可以在无需昂贵的重新训练的情况下进行更改。&lt;/li>
+&lt;/ul>
+&lt;p>除非微调任务与预训练非常相似或需要记忆，否则 RAG 更适合 LLM。&lt;/p>
+&lt;h2 class="heading-element" id="中型语言模型">&lt;span>中型语言模型&lt;/span>
+ &lt;a href="#%e4%b8%ad%e5%9e%8b%e8%af%ad%e8%a8%80%e6%a8%a1%e5%9e%8b" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>对于像 Llama 2 7B、Falcon 7B、Alpaca 7B 这样具有数亿参数的中型模型，RAG 和微调都是可行的选择：&lt;/p>
+&lt;ul>
+&lt;li>对于严重依赖记忆的目标，如文档问答，微调可能更可取。&lt;/li>
+&lt;li>RAG 可以通过检索相关知识，在特定领域的生成或分类任务中发挥优势。&lt;/li>
+&lt;/ul>
+&lt;p>在选择时，评估保留中型 LLM 的全部通用知识对您的用例是否重要。&lt;/p>
+&lt;h2 class="heading-element" id="小型语言模型">&lt;span>小型语言模型&lt;/span>
+ &lt;a href="#%e5%b0%8f%e5%9e%8b%e8%af%ad%e8%a8%80%e6%a8%a1%e5%9e%8b" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>对于像 Zephyr、Phi2 和 Orca 这样具有数千到数百万参数的较小自定义模型，微调通常比 RAG 更合适：&lt;/p>
+&lt;ul>
+&lt;li>小型模型已经缺乏较大型模型的通用能力。&lt;/li>
+&lt;li>通过微调在特定领域的数据上训练它们，直接灌输知识。&lt;/li>
+&lt;li>灾难性遗忘的风险很小，因为它们的预训练很少。&lt;/li>
+&lt;li>需要时，用新数据重新训练小型模型很容易。&lt;/li>
+&lt;/ul>
+&lt;p>除非您特别需要保留知识的广度，否则微调小型模型比 RAG 更可取。&lt;/p>
+&lt;h2 class="heading-element" id="对预训练模型使用-rag-和微调">&lt;span>对预训练模型使用 RAG 和微调&lt;/span>
+ &lt;a href="#%e5%af%b9%e9%a2%84%e8%ae%ad%e7%bb%83%e6%a8%a1%e5%9e%8b%e4%bd%bf%e7%94%a8-rag-%e5%92%8c%e5%be%ae%e8%b0%83" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>RAG 和微调都是适用于调整预训练模型的策略——无论是像 BERT、ELMo、RoBERTa 这样的 LLM 还是较小的自定义模型。&lt;/p>
+&lt;h2 class="heading-element" id="对预训练模型使用-rag">&lt;span>对预训练模型使用 RAG&lt;/span>
+ &lt;a href="#%e5%af%b9%e9%a2%84%e8%ae%ad%e7%bb%83%e6%a8%a1%e5%9e%8b%e4%bd%bf%e7%94%a8-rag" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>在以下情况下，将 RAG 应用于预训练模型是有效的：&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>利用通用知识&lt;/strong> — 模型具有您希望保留的强大基础能力，如对话、分析等。&lt;/li>
+&lt;li>&lt;strong>最小化遗忘&lt;/strong> — 进一步的训练有损害多功能通用能力的风险。&lt;/li>
+&lt;li>&lt;strong>利用外部知识&lt;/strong> — 用检索到的特定领域知识进行增强是有价值的。&lt;/li>
+&lt;li>&lt;strong>灵活的知识&lt;/strong> — 知识需求经常变化，因此可交换的数据库比重新训练更可取。&lt;/li>
+&lt;/ul>
+&lt;p>例如，RAG 适合大型会话模型，以避免在用领域知识增强它们的同时忘记一般的聊天能力。&lt;/p>
+&lt;h2 class="heading-element" id="微调预训练模型">&lt;span>微调预训练模型&lt;/span>
+ &lt;a href="#%e5%be%ae%e8%b0%83%e9%a2%84%e8%ae%ad%e7%bb%83%e6%a8%a1%e5%9e%8b" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>在以下情况下，微调对预训练模型是有利的：&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>专业化重点&lt;/strong> — 最终任务严重依赖专业知识而不是通用能力。&lt;/li>
+&lt;li>&lt;strong>记忆&lt;/strong> — 记忆特定领域的数据，如客户资料，至关重要。&lt;/li>
+&lt;li>&lt;strong>静态知识&lt;/strong> — 知识要求相对固定，减少了对可交换数据库的需求。&lt;/li>
+&lt;li>&lt;strong>模型尺寸小&lt;/strong> — 对于较小的模型，微调可以直接注入知识，而不会有太大的灾难性遗忘风险。&lt;/li>
+&lt;/ul>
+&lt;p>例如，微调对于训练具有静态公司政策和响应的客户服务聊天机器人是有效的。&lt;/p>
+&lt;h2 class="heading-element" id="应用-rag-和微调的示例">&lt;span>应用 RAG 和微调的示例&lt;/span>
+ &lt;a href="#%e5%ba%94%e7%94%a8-rag-%e5%92%8c%e5%be%ae%e8%b0%83%e7%9a%84%e7%a4%ba%e4%be%8b" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>让我们考虑金融服务用例，它们在通用知识与特定领域知识需求方面有所不同——这影响了 RAG 与微调的选择。&lt;/p>
+&lt;h2 class="heading-element" id="投资管理与建议">&lt;span>投资管理与建议&lt;/span>
+ &lt;a href="#%e6%8a%95%e8%b5%84%e7%ae%a1%e7%90%86%e4%b8%8e%e5%bb%ba%e8%ae%ae" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>提供定制的投资管理和财务建议需要强大的通用会话能力和特定领域的知识。&lt;/p>
+&lt;p>RAG 非常适合这些应用，通过：&lt;/p>
+&lt;ul>
+&lt;li>用客户资料和投资数据增强像 GPT-4 这样的会话模型，以提供个性化建议。&lt;/li>
+&lt;li>检索市场数据、过去表现和研究，以生成明智的投资策略。&lt;/li>
+&lt;li>在不重新训练基础模型的情况下，频繁地用新的市场信息更新数据库。&lt;/li>
+&lt;/ul>
+&lt;p>微调有损害与客户有效沟通至关重要的通用会话能力的风险。&lt;/p>
+&lt;h2 class="heading-element" id="保险索赔处理">&lt;span>保险索赔处理&lt;/span>
+ &lt;a href="#%e4%bf%9d%e9%99%a9%e7%b4%a2%e8%b5%94%e5%a4%84%e7%90%86" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>处理保险索赔主要涉及分析文档、提取关键信息、根据保单验证索赔以及生成索赔报告。&lt;/p>
+&lt;p>在这种用例中，对像 Llama 2 7B、Falcon 7B 这样的中型模型进行微调是合适的：&lt;/p>
+&lt;ul>
+&lt;li>记忆保险单至关重要——通过微调比外部数据库处理得更好。&lt;/li>
+&lt;li>静态的保单和索赔数据体，而不是快速变化的知识。&lt;/li>
+&lt;li>专注于表单分析的特定领域任务，而不是通用的会话能力。&lt;/li>
+&lt;/ul>
+&lt;h2 class="heading-element" id="客户服务聊天机器人">&lt;span>客户服务聊天机器人&lt;/span>
+ &lt;a href="#%e5%ae%a2%e6%88%b7%e6%9c%8d%e5%8a%a1%e8%81%8a%e5%a4%a9%e6%9c%ba%e5%99%a8%e4%ba%ba" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>处理金融服务客户服务的聊天机器人通常需要广泛的会话能力和公司特定的常见问题解答、政策和脚本的知识：&lt;/p>
+&lt;ul>
+&lt;li>使用 RAG 进行一般闲聊和微调公司知识的组合方法效果很好。&lt;/li>
+&lt;li>在内部数据集上微调小型聊天机器人模型，以直接嵌入公司知识。&lt;/li>
+&lt;li>需要时，通过 RAG 检索适当的常见问题解答、帐户详细信息和脚本来增强。&lt;/li>
+&lt;/ul>
+&lt;p>这平衡了广泛的会话能力和深入的公司特定知识。&lt;/p>
+&lt;h2 class="heading-element" id="反洗钱文本分析">&lt;span>反洗钱文本分析&lt;/span>
+ &lt;a href="#%e5%8f%8d%e6%b4%97%e9%92%b1%e6%96%87%e6%9c%ac%e5%88%86%e6%9e%90" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>分析金融文档和客户数据以检测洗钱和金融犯罪，在很大程度上依赖于学习到的模式和领域术语：&lt;/p>
+&lt;ul>
+&lt;li>鉴于专业化的重点，在 AML 数据上微调文本分类模型是有意义的。&lt;/li>
+&lt;li>关于法律、法规、可疑活动模式的静态知识。&lt;/li>
+&lt;li>通用的会话技能不太重要。&lt;/li>
+&lt;/ul>
+&lt;p>通过微调直接训练模型比 RAG 更适合这种专门的文本分析任务。&lt;/p>
+&lt;h2 class="heading-element" id="客户资料关键词提取">&lt;span>客户资料关键词提取&lt;/span>
+ &lt;a href="#%e5%ae%a2%e6%88%b7%e8%b5%84%e6%96%99%e5%85%b3%e9%94%ae%e8%af%8d%e6%8f%90%e5%8f%96" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>从客户文档和信函中提取相关关键词，如资产、财务目标、风险承受能力，需要基本的语言理解，而无需太多领域知识：&lt;/p>
+&lt;ul>
+&lt;li>现成的 LLM 在这里表现良好，无需太多调整。&lt;/li>
+&lt;li>无需记忆领域术语或模式。&lt;/li>
+&lt;li>通用的语言能力提供了足够的信号。&lt;/li>
+&lt;li>对于这种通用任务，RAG 的优势微乎其微。&lt;/li>
+&lt;/ul>
+&lt;p>按原样使用现成的模型通常比广泛的微调或 RAG 效果更好。&lt;/p>
+&lt;h2 class="heading-element" id="rag-和微调的关键实践考虑">&lt;span>RAG 和微调的关键实践考虑&lt;/span>
+ &lt;a href="#rag-%e5%92%8c%e5%be%ae%e8%b0%83%e7%9a%84%e5%85%b3%e9%94%ae%e5%ae%9e%e8%b7%b5%e8%80%83%e8%99%91" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;ul>
+&lt;li>&lt;strong>访问 LLM&lt;/strong> — RAG 需要访问大型预训练模型。内部开发较小的自定义模型更容易实现。&lt;/li>
+&lt;li>&lt;strong>数据可用性&lt;/strong> — 微调需要大量的特定领域数据集。RAG 更依赖于外部知识源。&lt;/li>
+&lt;li>&lt;strong>知识灵活性&lt;/strong> — RAG 支持在不重新训练的情况下频繁更新知识。微调需要定期重新训练。&lt;/li>
+&lt;li>&lt;strong>训练基础设施&lt;/strong> — RAG 主要意味着选择和更新数据源。微调需要 GPU 进行高效训练。&lt;/li>
+&lt;li>&lt;strong>推理速度&lt;/strong> — RAG 检索步骤增加了推理延迟。微调模型是自包含的，因此可以更快。&lt;/li>
+&lt;li>&lt;strong>通用能力&lt;/strong> — RAG 保留了大型 LLM 的多功能性。微调以专业化换取通用性。&lt;/li>
+&lt;li>&lt;strong>混合&lt;/strong> — 许多应用程序对某些功能使用 RAG，对其他功能使用微调。为每个任务选择最佳方法。&lt;/li>
+&lt;/ul>
+&lt;p>比较 RAG 和微调的先进观点：&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>混合 RAG-微调方法&lt;/strong> — 与其说是二元选择，不如说混合技术旨在结合两种方法的优点。例如，T0 部分微调 LLM 的某些层，同时保持其他层冻结以保留能力。&lt;/li>
+&lt;li>&lt;strong>多阶段建模&lt;/strong> — 一种有前途的方法是首先使用 RAG 进行检索，然后使用检索到的上下文来调节微调模型。这允许在专门化模型部分的同时灵活地结合外部知识。&lt;/li>
+&lt;li>&lt;strong>动态 RAG 与静态微调&lt;/strong> — RAG 允许在不重新训练的情况下动态更新知识源，而微调产生静态的专门模型。然而，像动态评估和持续学习这样的技术也旨在在线演进微调模型。&lt;/li>
+&lt;li>&lt;strong>扩展定律&lt;/strong> — 微调通常在模型大小的性能上达到递减的回报，而扩展 RAG 模型可能随着外部知识的结合而实现更一致的改进。这可能使 RAG 在开发大型模型方面更有效。&lt;/li>
+&lt;li>&lt;strong>超个性化&lt;/strong> — RAG 通过每个用户的不同知识促进个性化，而无需重新训练模型。微调需要从头开始训练每个用户的模型，限制了个性化。然而，像用于微调的模型无关元学习这样的方法可能会缓解这个问题。&lt;/li>
+&lt;li>&lt;strong>灾难性遗忘缓解&lt;/strong> — RAG 内在地避免了忘记预训练的能力。但是新的微调&lt;strong>技术，如弹性权重&lt;/strong>固化、突触智能和 dropout 调度，也旨在减轻灾难性遗忘。&lt;/li>
+&lt;li>&lt;strong>设备上部署&lt;/strong> — 微调模型是完全自包含的，允许低延迟的设备上部署。结合知识检索使得在设备上完全部署 RAG 更具挑战性。然而，像将检索到的知识蒸馏到模型参数中的近似方法可能使得在设备上部署 RAG 系统成为可能。&lt;/li>
+&lt;li>&lt;strong>理论与经验&lt;/strong> — 理论上，RAG 应该通过结合人类知识来提高样本效率，优于微调。但经验结果好坏参半，通常显示出可比的性能。需要进一步的研究来实现 RAG 的理论收益。&lt;/li>
+&lt;/ul>
+&lt;p>探索它们的结合是最大化每种方法优势的有前途的途径。&lt;/p>
+&lt;h2 class="heading-element" id="关键建议">&lt;span>关键建议&lt;/span>
+ &lt;a href="#%e5%85%b3%e9%94%ae%e5%bb%ba%e8%ae%ae" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>根据我们的分析，以下是一些最佳实践：&lt;/p>
+&lt;ul>
+&lt;li>对于面向客户的应用程序，如顾问和聊天机器人，优先考虑使用 RAG 保留会话能力，而不是微调。谨慎地对必要的公司特定知识使用微调。&lt;/li>
+&lt;li>对于文档和文本分析任务，专门的微调模型通常优于 RAG。但对于像投资这样快速演变的分析，可以考虑 RAG。&lt;/li>
+&lt;li>即使在构建自定义模型时，也要保持对大型通用 LLM 的访问——RAG 使其能够从其通用能力中受益。&lt;/li>
+&lt;li>定期审计微调模型，以检查与初始训练数据相比的行为偏差。&lt;/li>
+&lt;li>评估结合专门微调模型和通用会话 RAG 模型的集成方法。&lt;/li>
+&lt;li>仔细选择 RAG 的外部知识源——相关性、准确性和道德规范决定了整个系统的性能。&lt;/li>
+&lt;li>对于客户数据和文档，仅检索必要部分而不是全文，以平衡相关性和隐私。&lt;/li>
+&lt;/ul>
+&lt;h2 class="heading-element" id="结论">&lt;span>结论&lt;/span>
+ &lt;a href="#%e7%bb%93%e8%ae%ba" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>选择像 RAG 或微调这样的正确技术对于最大化 LLM、较小模型和预训练系统在金融服务中的性能至关重要。考虑因素是复杂的——取决于模型大小、用例重点、基础设施限制、不断变化的知识需求等因素。混合 RAG 和微调通常是实现会话能力和领域专业知识的最佳选择。随着 LLM 和增强 AI 的发展，RAG 将变得更加突出——尽管在最适合的地方仍然会得到微调的补充。理解这些技术之间细微差别的公司将获得根据其独特需求定制的 AI 优势。&lt;/p>
+&lt;h1 class="heading-element" id="reference">&lt;span>reference&lt;/span>
+ &lt;a href="#reference" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h1>&lt;p>&lt;a href="https://medium.com/@bijit211987/when-to-apply-rag-vs-fine-tuning-90a34e7d6d25"target="_blank" rel="external nofollow noopener noreferrer">阅读原文&lt;/a>&lt;/p></description></item><item><title>Grafana SQLite 到 PostgreSQL 迁移 Job</title><link>https://www.kbsonlong.com/posts/grafana-sqlite-to-postgres-migration-job/</link><pubDate>Fri, 17 Oct 2025 10:51:25 +0800</pubDate><guid>https://www.kbsonlong.com/posts/grafana-sqlite-to-postgres-migration-job/</guid><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><category domain="https://www.kbsonlong.com/categories/%E7%9B%91%E6%8E%A7/">监控</category><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><description>&lt;h1 class="heading-element" id="grafana-sqlite-到-postgresql-迁移-job">&lt;span>Grafana SQLite 到 PostgreSQL 迁移 Job&lt;/span>
  &lt;a href="#grafana-sqlite-%e5%88%b0-postgresql-%e8%bf%81%e7%a7%bb-job" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -9296,118 +9512,4 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
 &lt;li>&lt;strong>进程频繁重启&lt;/strong>：建议结合 start_time_seconds 和告警系统联动。&lt;/li>
 &lt;/ul>
 &lt;hr>
-&lt;p>如需更多指标解析或实际运维案例，欢迎补充交流！&lt;/p></description></item><item><title>利用lima替换MacOS Docker Desktop</title><link>https://www.kbsonlong.com/posts/replacing-macos-docker-desktop-with-lima/</link><pubDate>Fri, 27 Jun 2025 14:45:16 +0800</pubDate><guid>https://www.kbsonlong.com/posts/replacing-macos-docker-desktop-with-lima/</guid><category domain="https://www.kbsonlong.com/categories/%E5%B7%A5%E5%85%B7%E7%AE%B1/">工具箱</category><category domain="https://www.kbsonlong.com/categories/macos/">Macos</category><description>&lt;h2 class="heading-element" id="背景">&lt;span>背景&lt;/span>
- &lt;a href="#%e8%83%8c%e6%99%af" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;p>Mac 本地空间有限，Docker Desktop 在运行时会预分配大量空间，导致 Mac 本地空间被占用。经常出现Mac 本地空间不足，需要清理 Mac 本地空间。
-Lima 是一个轻量级的虚拟机管理工具，可以在 Mac 上运行 Linux 虚拟机，并且可以运行 Docker 容器并将Docker socket映射到 Mac 本地直接用Docker访问。&lt;/p>
-&lt;h2 class="heading-element" id="安装-colimalimadocker">&lt;span>安装 colima、Lima、docker&lt;/span>
- &lt;a href="#%e5%ae%89%e8%a3%85-colimalimadocker" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">brew install lima docker colima docker-credential-helper docker-buildx docker-compose&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;h2 class="heading-element" id="创建-lima-虚拟机">&lt;span>创建 Lima 虚拟机&lt;/span>
- &lt;a href="#%e5%88%9b%e5%bb%ba-lima-%e8%99%9a%e6%8b%9f%e6%9c%ba" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">colima start&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;h2 class="heading-element" id="启动容器">&lt;span>启动容器&lt;/span>
- &lt;a href="#%e5%90%af%e5%8a%a8%e5%ae%b9%e5%99%a8" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">docker run -d --name my-container -p 8080:80 nginx&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;h2 class="heading-element" id="查看容器">&lt;span>查看容器&lt;/span>
- &lt;a href="#%e6%9f%a5%e7%9c%8b%e5%ae%b9%e5%99%a8" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">docker ps&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;h2 class="heading-element" id="停止容器">&lt;span>停止容器&lt;/span>
- &lt;a href="#%e5%81%9c%e6%ad%a2%e5%ae%b9%e5%99%a8" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">docker stop my-container&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;h2 class="heading-element" id="删除容器">&lt;span>删除容器&lt;/span>
- &lt;a href="#%e5%88%a0%e9%99%a4%e5%ae%b9%e5%99%a8" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">docker rm my-container&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;h2 class="heading-element" id="配置docker">&lt;span>配置docker&lt;/span>
- &lt;a href="#%e9%85%8d%e7%bd%aedocker" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;json-viewer value="&amp;#34;# vim ~/.docker/config.json\n{\n ...\n \&amp;#34;cliPluginsExtraDirs\&amp;#34;: [\n\t\t\&amp;#34;/opt/homebrew/lib/docker/cli-plugins\&amp;#34;,\n\t\t\&amp;#34;/opt/homebrew/lib/docker/cli-plugins\&amp;#34;\n\t],\n ...\n}&amp;#34;" expand-depth="1" boxed copyable="{&amp;#34;copiedText&amp;#34;:&amp;#34;已复制&amp;#34;,&amp;#34;copyText&amp;#34;:&amp;#34;复制&amp;#34;}">&lt;/json-viewer>&lt;h2 class="heading-element" id="配置-colima">&lt;span>配置 colima&lt;/span>
- &lt;a href="#%e9%85%8d%e7%bd%ae-colima" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;span class="lnt">4
-&lt;/span>&lt;span class="lnt">5
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-yaml" data-lang="yaml">&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Colima default behaviour: buildkit enabled&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="c"># Default: {}&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nt">docker&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">features&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">containerd-snapshotter&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kc">true&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;h2 class="heading-element" id="配置-docker-buildx">&lt;span>配置 docker-buildx&lt;/span>
- &lt;a href="#%e9%85%8d%e7%bd%ae-docker-buildx" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;span class="lnt">4
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">docker buildx create &lt;span class="se">\
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> --name colima_builder &lt;span class="se">\
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> --driver-opt &lt;span class="s1">&amp;#39;image=moby/buildkit:v0.17.3-rootless&amp;#39;&lt;/span> &lt;span class="se">\
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> --bootstrap --use&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;p>&lt;img loading="lazy" src='https://raw.githubusercontent.com/kbsonlong/notes_statics/master/images/202506271500599.png' alt="202506271500599">&lt;/p>
-&lt;p>&lt;a href="https://asciinema.org/a/1gef9DeQ10t2CxJacC0OhokmL"target="_blank" rel="external nofollow noopener noreferrer">&lt;img loading="lazy" src='https://asciinema.org/a/1gef9DeQ10t2CxJacC0OhokmL.svg' alt="asciicast">&lt;/a>&lt;/p>
-&lt;p>&lt;a href="https://code.saghul.net/2023/09/migrating-from-docker-desktop-to-colima/"target="_blank" rel="external nofollow noopener noreferrer">Migrating from Docker Desktop to colima&lt;/a>&lt;/p></description></item></channel></rss>
+&lt;p>如需更多指标解析或实际运维案例，欢迎补充交流！&lt;/p></description></item></channel></rss>
