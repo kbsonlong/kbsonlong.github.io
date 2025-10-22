@@ -1,0 +1,725 @@
+<!doctype html><html itemscope itemtype=http://schema.org/WebPage lang=zh-CN><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=2"><meta name=robots content="noodp"><title>06-Kubelet 核心功能与启动流程解析 - 蜷缩的蜗牛</title><meta name=author content="kbsonlong"><meta name=description content="本文基于1.29.0版本
+Kubelet 核心功能与启动流程解析 简介 Kubelet 是 Kubernetes 集群中每个 Node 节点上运行的核心组件，扮演着“节点管家”的角色。它负责接收并执行 Master 节点（具体来说是 kube-apiserver）下发的指令，管理 Pod 的生命周期，确保节点上的容器按照预期状态运行。
+"><meta name=keywords content='kubelet,kubernetes'><meta itemprop=name content="06-Kubelet 核心功能与启动流程解析"><meta itemprop=description content="本文基于1.29.0版本
+Kubelet 核心功能与启动流程解析 简介 Kubelet 是 Kubernetes 集群中每个 Node 节点上运行的核心组件，扮演着“节点管家”的角色。它负责接收并执行 Master 节点（具体来说是 kube-apiserver）下发的指令，管理 Pod 的生命周期，确保节点上的容器按照预期状态运行。"><meta itemprop=datePublished content="2025-10-22T18:31:54+08:00"><meta itemprop=dateModified content="2025-10-22T18:31:54+08:00"><meta itemprop=wordCount content="9277"><meta itemprop=image content="https://www.kbsonlong.com/logo_transparent.png"><meta itemprop=keywords content="Kubelet,Kubernetes"><meta property="og:url" content="https://www.kbsonlong.com/posts/06-kubelet-%E6%A0%B8%E5%BF%83%E5%8A%9F%E8%83%BD%E4%B8%8E%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E8%A7%A3%E6%9E%90/"><meta property="og:site_name" content="蜷缩的蜗牛"><meta property="og:title" content="06-Kubelet 核心功能与启动流程解析"><meta property="og:description" content="本文基于1.29.0版本
+Kubelet 核心功能与启动流程解析 简介 Kubelet 是 Kubernetes 集群中每个 Node 节点上运行的核心组件，扮演着“节点管家”的角色。它负责接收并执行 Master 节点（具体来说是 kube-apiserver）下发的指令，管理 Pod 的生命周期，确保节点上的容器按照预期状态运行。"><meta property="og:locale" content="zh_CN"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-10-22T18:31:54+08:00"><meta property="article:modified_time" content="2025-10-22T18:31:54+08:00"><meta property="article:tag" content="Kubelet"><meta property="article:tag" content="Kubernetes"><meta property="og:image" content="https://www.kbsonlong.com/logo_transparent.png"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://www.kbsonlong.com/logo_transparent.png"><meta name=twitter:title content="06-Kubelet 核心功能与启动流程解析"><meta name=twitter:description content="本文基于1.29.0版本
+Kubelet 核心功能与启动流程解析 简介 Kubelet 是 Kubernetes 集群中每个 Node 节点上运行的核心组件，扮演着“节点管家”的角色。它负责接收并执行 Master 节点（具体来说是 kube-apiserver）下发的指令，管理 Pod 的生命周期，确保节点上的容器按照预期状态运行。"><meta name=application-name content="FixIt"><meta name=apple-mobile-web-app-title content="FixIt"><meta name=theme-color data-light=#ffffff data-dark=#252627 content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical type=text/html href=https://www.kbsonlong.com/posts/06-kubelet-%E6%A0%B8%E5%BF%83%E5%8A%9F%E8%83%BD%E4%B8%8E%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E8%A7%A3%E6%9E%90/ title="06-Kubelet 核心功能与启动流程解析 - 蜷缩的蜗牛"><link rel=prev type=text/html href=https://www.kbsonlong.com/posts/05-kube-controller-manager%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90hpa%E6%8E%A7%E5%88%B6%E5%99%A8/ title=05-kube-controller-manager源码分析(HPA控制器)><link rel=alternate type=text/markdown href=https://www.kbsonlong.com/posts/06-kubelet-%E6%A0%B8%E5%BF%83%E5%8A%9F%E8%83%BD%E4%B8%8E%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E8%A7%A3%E6%9E%90/index.md title="06-Kubelet 核心功能与启动流程解析 - 蜷缩的蜗牛"><link rel=stylesheet href=/css/config.min.css><link rel=stylesheet href=/css/style.min.css><link rel=preload href=/lib/fontawesome-free/all.min.css as=style onload='this.removeAttribute("onload"),this.rel="stylesheet"'><noscript><link rel=stylesheet href=/lib/fontawesome-free/all.min.css></noscript><link rel=preload href=/lib/animate/animate.min.css as=style onload='this.removeAttribute("onload"),this.rel="stylesheet"'><noscript><link rel=stylesheet href=/lib/animate/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"06-Kubelet 核心功能与启动流程解析","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/www.kbsonlong.com\/posts\/06-kubelet-%E6%A0%B8%E5%BF%83%E5%8A%9F%E8%83%BD%E4%B8%8E%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E8%A7%A3%E6%9E%90\/"},"genre":"posts","keywords":"kubelet, kubernetes","wordcount":9277,"url":"https:\/\/www.kbsonlong.com\/posts\/06-kubelet-%E6%A0%B8%E5%BF%83%E5%8A%9F%E8%83%BD%E4%B8%8E%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E8%A7%A3%E6%9E%90\/","datePublished":"2025-10-22T18:31:54+08:00","dateModified":"2025-10-22T18:31:54+08:00","license":"This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"kbsonlong"},"description":""}</script><script src=/js/head/color-scheme.min.js></script></head><body data-header-desktop=sticky data-header-mobile=auto><div class=wrapper data-page-style=normal><header class="desktop animate__faster" id=header-desktop><div class=header-wrapper data-github-corner=right><div class=header-title><a href=/ title=蜷缩的蜗牛><img class=logo src=/logo_transparent.png alt=蜷缩的蜗牛 height=32 width=32><span class=header-title-text>蜷缩的蜗牛</span></a><span class=header-subtitle></span></div><nav><ul class=menu><li class=menu-item><a class=menu-link href=/posts/><i class='fa-solid fa-archive fa-fw fa-sm'></i> 文章</a></li><li class=menu-item><a class=menu-link href=/categories/><i class='fa-solid fa-th fa-fw fa-sm'></i> 分类</a></li><li class=menu-item><a class=menu-link href=/tags/><i class='fa-solid fa-tags fa-fw fa-sm'></i> 标签</a></li><li class=menu-item><a class=menu-link href=/friends/ title=友情链接><i class='fa-solid fa-users fa-fw fa-sm'></i> 友链</a></li><li class=menu-item><a class=menu-link href=/about/><i class='fa-solid fa-info-circle fa-fw fa-sm'></i> 关于</a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=https://github.com/kbsonlong/ title=GitHub rel="noopener noreferrer" target=_blank><i class='fa-brands fa-github fa-fw'></i></a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=/messages/><i class='fa-solid fa-messages'></i> 留言板</a></li><li class=menu-item><a class=menu-link href=/messages/ title=留言板>留言板</a></li><li class="menu-item delimiter"></li><li class="menu-item search" id=search-desktop><input type=text placeholder=搜索文章标题或内容…… id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fa-solid fa-search fa-fw" aria-hidden=true></i>
+</a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fa-solid fa-times-circle fa-fw" aria-hidden=true></i>
+</a><span class="search-button search-loading" id=search-loading-desktop><i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></li><li class="menu-item theme-switch" title=切换主题><i class="fa-solid fa-adjust fa-fw" aria-hidden=true></i></li><li class="menu-item language-switch"><span role=button aria-label=选择语言 title=选择语言><i class="fa-solid fa-language fa-fw" aria-hidden=true></i></span><ul class=sub-menu><li class=menu-item>没有更多翻译</li></ul></li></ul></nav></div></header><header class="mobile animate__faster" id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title=蜷缩的蜗牛><img class=logo src=/logo_transparent.png alt=蜷缩的蜗牛 height=26 width=26><span class=header-title-text>蜷缩的蜗牛</span></a><span class=header-subtitle></span></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><nav><ul class=menu id=menu-mobile><li class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容…… id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fa-solid fa-search fa-fw" aria-hidden=true></i>
+</a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fa-solid fa-times-circle fa-fw" aria-hidden=true></i>
+</a><span class="search-button search-loading" id=search-loading-mobile><i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></li><li class=menu-item><a class=menu-link href=/posts/><i class='fa-solid fa-archive fa-fw fa-sm'></i> 文章</a></li><li class=menu-item><a class=menu-link href=/categories/><i class='fa-solid fa-th fa-fw fa-sm'></i> 分类</a></li><li class=menu-item><a class=menu-link href=/tags/><i class='fa-solid fa-tags fa-fw fa-sm'></i> 标签</a></li><li class=menu-item><a class=menu-link href=/friends/ title=友情链接><i class='fa-solid fa-users fa-fw fa-sm'></i> 友链</a></li><li class=menu-item><a class=menu-link href=/about/><i class='fa-solid fa-info-circle fa-fw fa-sm'></i> 关于</a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=https://github.com/kbsonlong/ title=GitHub rel="noopener noreferrer" target=_blank><i class='fa-brands fa-github fa-fw'></i></a></li><li class="menu-item d-none-desktop text-center"><a class=menu-link href=/messages/><i class='fa-solid fa-messages'></i> 留言板</a></li><li class=menu-item><a class=menu-link href=/messages/ title=留言板>留言板</a></li><li class="menu-item menu-system"><span class="menu-system-item theme-switch" title=切换主题><i class="fa-solid fa-adjust fa-fw" aria-hidden=true></i></span><span class="menu-system-item language-switch">
+<span role=button aria-label=选择语言 title=选择语言>简体中文<i class="dropdown-icon fa-solid fa-chevron-down" aria-hidden=true></i></span>
+<select class=language-select onchange="location=this.value"><option disabled>没有更多翻译</option></select></span></li></ul></nav></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=fi-container><aside class="aside-collection animate__animated animate__fadeIn animate__faster" aria-label=合集></aside><article class="page single"><div class=header><h1 class="single-title animate__animated animate__flipInX"><span>06-Kubelet 核心功能与启动流程解析</span></h1></div><div class=post-meta><div class=post-meta-line><span class=post-author><span class=author><i class="fa-solid fa-user-circle" aria-hidden=true></i>
+kbsonlong</span></span><span class=post-included-in>&nbsp;收录于 <a href=/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/ class=post-category title="分类 - 源码分析"><i class="fa-regular fa-folder fa-fw" aria-hidden=true></i> 源码分析</a>&ensp;<a href=/categories/kubernetes/ class=post-category title="分类 - Kubernetes"><i class="fa-regular fa-folder fa-fw" aria-hidden=true></i> Kubernetes</a></span></div><div class=post-meta-line><span title="发布于 2025-10-22 18:31:54"><i class="fa-solid fa-calendar-days fa-fw me-1" aria-hidden=true></i><time datetime=2025-10-22>2025-10-22</time></span>&nbsp;<span title="9277 字"><i class="fa-solid fa-pencil-alt fa-fw me-1" aria-hidden=true></i>约 9300 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw me-1" aria-hidden=true></i>预计阅读 19 分钟</span>&nbsp;<span id=busuanzi_container_page_pv class="busuanzi_visitors comment-visitors" data-flag-title="06-Kubelet 核心功能与启动流程解析"><i class="fa-regular fa-eye fa-fw me-1" aria-hidden=true></i><span id=busuanzi_value_page_pv>-</span>&nbsp;次阅读
+</span>&nbsp;</div></div><div class="details toc" id=toc-static data-kept=false><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fa-solid fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#简介>简介</a></li><li><a href=#入口点与初始化>入口点与初始化</a></li><li><a href=#核心工作循环-syncloop>核心工作循环 (syncLoop)</a><ul><li><a href=#事件驱动的同步-syncloopiteration>事件驱动的同步 (<code>syncLoopIteration</code>)</a></li><li><a href=#核心流程图>核心流程图</a></li></ul></li><li><a href=#pod-的生命周期管理-syncpod>Pod 的生命周期管理 (syncPod)</a><ul><li><a href=#syncpod-的核心步骤><code>syncPod</code> 的核心步骤</a></li><li><a href=#pod-的创建更新和删除流程>Pod 的创建、更新和删除流程</a></li><li><a href=#pod-生命周期流程图>Pod 生命周期流程图</a></li></ul></li><li><a href=#指标计算流程-cadvisor>指标计算流程 (cAdvisor)</a><ul><li><a href=#cadvisor-的初始化与启动>cAdvisor 的初始化与启动</a></li><li><a href=#指标的收集与暴露>指标的收集与暴露</a></li><li><a href=#指标计算流程图>指标计算流程图</a></li><li><a href=#指标收集的周期控制>指标收集的周期控制</a></li><li><a href=#指标的存储-inmemorycache>指标的存储 (InMemoryCache)</a></li></ul></li><li><a href=#总结>总结</a></li></ul></nav></div></div><div class=content id=content><p>本文基于<a href=https://github.com/kubernetes/kubernetes/tree/v1.29.0 target=_blank rel="external nofollow noopener noreferrer">1.29.0</a>版本</p><h1 class=heading-element id=kubelet-核心功能与启动流程解析><span>Kubelet 核心功能与启动流程解析</span>
+<a href=#kubelet-%e6%a0%b8%e5%bf%83%e5%8a%9f%e8%83%bd%e4%b8%8e%e5%90%af%e5%8a%a8%e6%b5%81%e7%a8%8b%e8%a7%a3%e6%9e%90 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h1><h2 class=heading-element id=简介><span>简介</span>
+<a href=#%e7%ae%80%e4%bb%8b class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p>Kubelet 是 Kubernetes 集群中每个 Node 节点上运行的核心组件，扮演着“节点管家”的角色。它负责接收并执行 Master 节点（具体来说是 <code>kube-apiserver</code>）下发的指令，管理 Pod 的生命周期，确保节点上的容器按照预期状态运行。</p><p>Kubelet 的核心职责包括：</p><ul><li><strong>Pod 管理</strong>：根据 <code>kube-apiserver</code> 或静态 Pod 定义，创建、销毁和管理 Pod 的生命周期。</li><li><strong>容器健康检查</strong>：通过 Liveness Probe 和 Readiness Probe 监控容器的健康状况，并根据结果进行相应的处理（如重启容器）。</li><li><strong>容器资源监控</strong>：通过内嵌的 cAdvisor 收集容器和节点的资源使用情况（如 CPU、内存、磁盘、网络），并上报给 <code>metrics-server</code>，为 HPA 等组件提供数据支持。</li><li><strong>存储卷管理</strong>：负责为 Pod 挂载和卸载存储卷（Volume）。</li><li><strong>节点状态上报</strong>：定期向 <code>kube-apiserver</code> 汇报本节点的状态，包括资源使用情况、运行中的 Pod 列表等。</li></ul><p>本文将深入分析 Kubelet 的源码，详细探究其从启动到创建第一个容器的完整流程，并解析其核心工作循环和指标计算机制。</p><h2 class=heading-element id=入口点与初始化><span>入口点与初始化</span>
+<a href=#%e5%85%a5%e5%8f%a3%e7%82%b9%e4%b8%8e%e5%88%9d%e5%a7%8b%e5%8c%96 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p>Kubelet 进程的起点位于 <code>cmd/kubelet/kubelet.go</code> 文件中，其 <code>main</code> 函数非常简洁：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=c1>// cmd/kubelet/kubelet.go</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>command</span> <span class=o>:=</span> <span class=nx>app</span><span class=p>.</span><span class=nf>NewKubeletCommand</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>	<span class=nx>code</span> <span class=o>:=</span> <span class=nx>cli</span><span class=p>.</span><span class=nf>Run</span><span class=p>(</span><span class=nx>command</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=nx>os</span><span class=p>.</span><span class=nf>Exit</span><span class=p>(</span><span class=nx>code</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><p><code>main</code> 函数的核心是调用 <code>app.NewKubeletCommand()</code> 来创建一个 <a href=https://cobra.dev/ target=_blank rel="external nofollow noopener noreferrer">Cobra</a> 命令行应用。Cobra 是一个流行的 Go 语言库，用于构建现代化的命令行界面。这个 <code>command</code> 对象封装了 Kubelet 的所有启动逻辑，包括参数解析、配置加载和服务的最终运行。</p><p><code>cli.Run(command)</code> 负责执行这个 Cobra 命令，启动 Kubelet 的核心服务。让我们深入到 <code>app.NewKubeletCommand()</code> 内部，看看 Kubelet 是如何被构建和启动的。该函数位于 <code>cmd/kubelet/app/server.go</code>。</p><p><code>NewKubeletCommand</code> 的核心逻辑可以概括为以下几个步骤：</p><ol><li><p><strong>创建 Kubelet 标志和配置</strong>：</p><ul><li><code>options.NewKubeletFlags()</code>: 创建用于存储命令行标志的结构体。</li><li><code>options.NewKubeletConfiguration()</code>: 创建 Kubelet 的配置对象，其中包含了大部分可配置的参数，并设置了默认值。</li></ul></li><li><p><strong>定义 Cobra 命令</strong>：</p><ul><li>创建一个 <code>cobra.Command</code> 实例。</li><li>其核心是 <code>Run</code> 函数，当执行 <code>kubelet</code> 命令时，这个函数内的逻辑将被触发。</li></ul></li><li><p><strong>执行 <code>Run</code> 函数</strong>：</p><ul><li><code>Run</code> 函数是 Kubelet 启动的真正入口。它负责协调整个初始化过程。</li><li>它调用 <code>Run(ctx, kubeletServer, kubeletDeps, ...)</code> 来启动 Kubelet 服务。</li></ul></li><li><p><strong>构建依赖 (<code>KubeletDeps</code>)</strong>：</p><ul><li>在调用 <code>Run</code> 之前，它会构建一个 <code>kubeletServer</code> 对象，该对象封装了 Kubelet 的标志和配置。</li><li>然后调用 <code>UnsecuredDependencies(&amp;kubeletServer, ...)</code> 来创建 Kubelet 运行所需的核心依赖项 (<code>kubeletDeps</code>)。这些依赖包括：<ul><li><code>CloudProvider</code>: 云厂商接口。</li><li><code>Mounter</code>: 存储卷挂载器。</li><li><code>Subpather</code>: SubPath 功能的实现。</li><li><code>OOMAdjuster</code>: OOM 分数调整器。</li><li><code>OSInterface</code>: 操作系统接口。</li><li><code>ContainerManager</code>: 容器管理器。</li><li><code>CAdvisorInterface</code>: cAdvisor 接口，用于获取指标。</li><li><code>StatsProvider</code>: 容器和 Pod 的统计信息提供者。</li></ul></li></ul></li><li><p><strong>启动 Kubelet</strong>：</p><ul><li>最终，<code>Run</code> 函数会调用 <code>RunKubelet(kubeletServer, kubeletDeps, ...)</code>。</li><li><code>RunKubelet</code> 进一步调用 <code>createAndInitKubelet</code>。</li><li>在 <code>createAndInitKubelet</code> 内部，<code>kubelet.NewMainKubelet(...)</code> 被调用，这会创建并初始化一个 <code>Kubelet</code> 对象。这个对象是 Kubelet 的核心，包含了所有管理 Pod 和容器所需的状态和方法。</li></ul></li></ol><p>下面，我们将通过流程图来更直观地展示这个初始化过程：</p><div class=diagram-container><pre class=mermaid>graph TD
+    A[main] --> B[app.NewKubeletCommand];
+    B --> C{创建 Flags 和 Config};
+    B --> D[创建 cobra.Command];
+    D -- 执行 --> E[RunE 函数];
+    E --> F[构建 KubeletServer];
+    F --> G[UnsecuredDependencies -> 创建 KubeletDeps];
+    G --> H[RunKubelet];
+    H --> I[createAndInitKubelet];
+    I --> J[kubelet.NewMainKubelet];
+    J --> K[返回初始化的 Kubelet 实例];
+    K --> L[启动 syncLoop];</pre><pre class=mermaid-dark>graph TD
+    A[main] --> B[app.NewKubeletCommand];
+    B --> C{创建 Flags 和 Config};
+    B --> D[创建 cobra.Command];
+    D -- 执行 --> E[RunE 函数];
+    E --> F[构建 KubeletServer];
+    F --> G[UnsecuredDependencies -> 创建 KubeletDeps];
+    G --> H[RunKubelet];
+    H --> I[createAndInitKubelet];
+    I --> J[kubelet.NewMainKubelet];
+    J --> K[返回初始化的 Kubelet 实例];
+    K --> L[启动 syncLoop];</pre><pre class=mermaid-neutral>graph TD
+    A[main] --> B[app.NewKubeletCommand];
+    B --> C{创建 Flags 和 Config};
+    B --> D[创建 cobra.Command];
+    D -- 执行 --> E[RunE 函数];
+    E --> F[构建 KubeletServer];
+    F --> G[UnsecuredDependencies -> 创建 KubeletDeps];
+    G --> H[RunKubelet];
+    H --> I[createAndInitKubelet];
+    I --> J[kubelet.NewMainKubelet];
+    J --> K[返回初始化的 Kubelet 实例];
+    K --> L[启动 syncLoop];</pre><div class=diagram-copy-btn aria-label="Copy Mermaid code" role=button><i class="fa-regular fa-clone" aria-hidden=true></i><i class="fa-solid fa-check text-success" aria-hidden=true></i></div><template><pre>graph TD
+    A[main] --> B[app.NewKubeletCommand];
+    B --> C{创建 Flags 和 Config};
+    B --> D[创建 cobra.Command];
+    D -- 执行 --> E[RunE 函数];
+    E --> F[构建 KubeletServer];
+    F --> G[UnsecuredDependencies -> 创建 KubeletDeps];
+    G --> H[RunKubelet];
+    H --> I[createAndInitKubelet];
+    I --> J[kubelet.NewMainKubelet];
+    J --> K[返回初始化的 Kubelet 实例];
+    K --> L[启动 syncLoop];</pre></template></div><h2 class=heading-element id=核心工作循环-syncloop><span>核心工作循环 (syncLoop)</span>
+<a href=#%e6%a0%b8%e5%bf%83%e5%b7%a5%e4%bd%9c%e5%be%aa%e7%8e%af-syncloop class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p>Kubelet 的初始化完成后，便会进入其核心的无限循环 <code>syncLoop</code>。这个循环是 Kubelet 的“心脏”，负责监听各种事件源，并将 Pod 的“期望状态”与节点上的“实际状态”进行同步。<code>syncLoop</code> 的实现位于 <code>pkg/kubelet/kubelet.go</code>。</p><p><code>syncLoop</code> 本身是一个外层循环，它主要负责处理运行时错误和维持循环的持续运行。真正的事件处理逻辑位于 <code>syncLoopIteration</code> 函数中，该函数通过一个 <code>select</code> 语句来监听和处理来自多个 Channel 的事件。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=c1>// pkg/kubelet/kubelet.go</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>kl</span> <span class=o>*</span><span class=nx>Kubelet</span><span class=p>)</span> <span class=nf>syncLoop</span><span class=p>(</span><span class=nx>updates</span> <span class=o>&lt;-</span><span class=kd>chan</span> <span class=nx>kubetypes</span><span class=p>.</span><span class=nx>PodUpdate</span><span class=p>,</span> <span class=nx>handler</span> <span class=nx>SyncHandler</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=c1>// ...</span>
+</span></span><span class=line><span class=cl>	<span class=k>for</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=c1>// ...</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=p>!</span><span class=nx>kl</span><span class=p>.</span><span class=nf>syncLoopIteration</span><span class=p>(</span><span class=nx>updates</span><span class=p>,</span> <span class=nx>handler</span><span class=p>,</span> <span class=nx>syncTicker</span><span class=p>.</span><span class=nx>C</span><span class=p>,</span> <span class=nx>housekeepingTicker</span><span class=p>.</span><span class=nx>C</span><span class=p>,</span> <span class=nx>plegCh</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=k>break</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=c1>// ...</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><h3 class=heading-element id=事件驱动的同步-syncloopiteration><span>事件驱动的同步 (<code>syncLoopIteration</code>)</span>
+<a href=#%e4%ba%8b%e4%bb%b6%e9%a9%b1%e5%8a%a8%e7%9a%84%e5%90%8c%e6%ad%a5-syncloopiteration class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><p><code>syncLoopIteration</code> 函数是 Kubelet 事件驱动模型的核心。它通过一个 <code>select</code> 语句同时监听来自多个源的事件，并根据事件类型进行相应的处理。这种设计使得 Kubelet 能够高效地响应集群状态的变化。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=c1>// pkg/kubelet/kubelet.go</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>kl</span> <span class=o>*</span><span class=nx>Kubelet</span><span class=p>)</span> <span class=nf>syncLoopIteration</span><span class=p>(</span><span class=nx>configCh</span> <span class=o>&lt;-</span><span class=kd>chan</span> <span class=nx>kubetypes</span><span class=p>.</span><span class=nx>PodUpdate</span><span class=p>,</span> <span class=nx>handler</span> <span class=nx>SyncHandler</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>	<span class=nx>syncCh</span> <span class=o>&lt;-</span><span class=kd>chan</span> <span class=nx>time</span><span class=p>.</span><span class=nx>Time</span><span class=p>,</span> <span class=nx>housekeepingCh</span> <span class=o>&lt;-</span><span class=kd>chan</span> <span class=nx>time</span><span class=p>.</span><span class=nx>Time</span><span class=p>,</span> <span class=nx>plegCh</span> <span class=o>&lt;-</span><span class=kd>chan</span> <span class=o>*</span><span class=nx>pleg</span><span class=p>.</span><span class=nx>PodLifecycleEvent</span><span class=p>)</span> <span class=kt>bool</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=k>select</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=k>case</span> <span class=nx>u</span><span class=p>,</span> <span class=nx>open</span> <span class=o>:=</span> <span class=o>&lt;-</span><span class=nx>configCh</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>		<span class=c1>// 来自 kube-apiserver、静态 Pod 文件或 HTTP 的配置变更</span>
+</span></span><span class=line><span class=cl>		<span class=c1>// ...</span>
+</span></span><span class=line><span class=cl>	<span class=k>case</span> <span class=nx>e</span> <span class=o>:=</span> <span class=o>&lt;-</span><span class=nx>plegCh</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>		<span class=c1>// 来自 PLEG (Pod Lifecycle Event Generator) 的事件</span>
+</span></span><span class=line><span class=cl>		<span class=c1>// ...</span>
+</span></span><span class=line><span class=cl>	<span class=k>case</span> <span class=o>&lt;-</span><span class=nx>syncCh</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>		<span class=c1>// 定期同步所有 Pod</span>
+</span></span><span class=line><span class=cl>		<span class=c1>// ...</span>
+</span></span><span class=line><span class=cl>	<span class=k>case</span> <span class=o>&lt;-</span><span class=nx>housekeepingCh</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>		<span class=c1>// 定期清理工作</span>
+</span></span><span class=line><span class=cl>		<span class=c1>// ...</span>
+</span></span><span class=line><span class=cl>	<span class=k>case</span> <span class=nx>update</span> <span class=o>:=</span> <span class=o>&lt;-</span><span class=nx>kl</span><span class=p>.</span><span class=nx>livenessManager</span><span class=p>.</span><span class=nf>Updates</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>		<span class=c1>// 来自存活探针 (Liveness Probe) 的结果</span>
+</span></span><span class=line><span class=cl>		<span class=c1>// ...</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=kc>true</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><p>下面我们来详细解析 <code>syncLoopIteration</code> 监听的几个关键事件源：</p><ol><li><p><strong><code>configCh</code> (配置变更)</strong></p><ul><li><strong>来源</strong>：这个 Channel 接收来自 <code>kube-apiserver</code>、静态 Pod 文件目录或 HTTP 端点的 Pod 配置更新。</li><li><strong>操作</strong>：当收到更新时，Kubelet 会根据事件的类型（<code>ADD</code>、<code>UPDATE</code>、<code>REMOVE</code> 等）调用相应的 <code>SyncHandler</code> 方法（如 <code>HandlePodAdditions</code>、<code>HandlePodUpdates</code>）。这些方法会将 Pod 的变更信息更新到 Kubelet 的内部缓存 <code>podManager</code> 中，并触发一次异步的 Pod 同步（<code>dispatchWork</code>）。</li></ul></li><li><p><strong><code>plegCh</code> (Pod 生命周期事件)</strong></p><ul><li><strong>来源</strong>：PLEG (Pod Lifecycle Event Generator) 是 Kubelet 的一个重要组件，它负责监控节点上容器的运行时状态，并生成 Pod 生命周期事件。例如，当一个容器启动或死亡时，PLEG 就会向 <code>plegCh</code> 发送一个事件。</li><li><strong>操作</strong>：收到 PLEG 事件后，Kubelet 会更新其内部的运行时缓存，并触发对相关 Pod 的同步（<code>HandlePodSyncs</code>），以确保 Pod 的状态与容器的实际状态保持一致。</li></ul></li><li><p><strong><code>syncCh</code> (定期同步)</strong></p><ul><li><strong>来源</strong>：这是一个定时触发的 Channel，默认每秒触发一次。</li><li><strong>操作</strong>：当收到 <code>syncCh</code> 事件时，Kubelet 会检查所有需要同步的 Pod（<code>getPodsToSync</code>），并将它们分派给 <code>SyncHandler</code> 进行处理（<code>HandlePodSyncs</code>）。这确保了即使没有外部事件，Kubelet 也会定期检查和同步所有 Pod 的状态。</li></ul></li><li><p><strong><code>housekeepingCh</code> (定期清理)</strong></p><ul><li><strong>来源</strong>：这是一个定时触发的 Channel，用于执行定期的清理任务。</li><li><strong>操作</strong>：Kubelet 会执行一些清理工作，例如清理不再需要的 Pod 目录、删除孤儿 Pod 等。</li></ul></li><li><p><strong><code>livenessManager.Updates()</code> (存活探针)</strong></p><ul><li><strong>来源</strong>：存活探针（Liveness Probe）的结果会通过这个 Channel 发送给 <code>syncLoop</code>。</li><li><strong>操作</strong>：如果一个容器的存活探针失败，<code>livenessManager</code> 会发送一个更新，<code>syncLoop</code> 在收到后会触发对该 Pod 的同步，这通常会导致 Kubelet 杀死并重启该容器。</li></ul></li></ol><h3 class=heading-element id=核心流程图><span>核心流程图</span>
+<a href=#%e6%a0%b8%e5%bf%83%e6%b5%81%e7%a8%8b%e5%9b%be class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><p>为了更清晰地展示 <code>syncLoop</code> 的工作流程，我们可以使用下面的流程图：</p><div class=diagram-container><pre class=mermaid>graph TD
+    A[syncLoop] --> B{select};
+    B --> C[configCh: 配置变更];
+    B --> D[plegCh: 容器状态变更];
+    B --> E[syncCh: 定期同步];
+    B --> F[housekeepingCh: 定期清理];
+    B --> G[livenessManager: 探针结果];
+
+    C --> H[HandlePodAdditions/Updates/Removes];
+    D --> I[HandlePodSyncs];
+    E --> I;
+    G --> I;
+
+    H --> J[podManager: 更新 Pod 缓存];
+    J --> K[dispatchWork: 异步同步 Pod];
+    I --> K;
+
+    K --> L[syncPod: 同步单个 Pod];</pre><pre class=mermaid-dark>graph TD
+    A[syncLoop] --> B{select};
+    B --> C[configCh: 配置变更];
+    B --> D[plegCh: 容器状态变更];
+    B --> E[syncCh: 定期同步];
+    B --> F[housekeepingCh: 定期清理];
+    B --> G[livenessManager: 探针结果];
+
+    C --> H[HandlePodAdditions/Updates/Removes];
+    D --> I[HandlePodSyncs];
+    E --> I;
+    G --> I;
+
+    H --> J[podManager: 更新 Pod 缓存];
+    J --> K[dispatchWork: 异步同步 Pod];
+    I --> K;
+
+    K --> L[syncPod: 同步单个 Pod];</pre><pre class=mermaid-neutral>graph TD
+    A[syncLoop] --> B{select};
+    B --> C[configCh: 配置变更];
+    B --> D[plegCh: 容器状态变更];
+    B --> E[syncCh: 定期同步];
+    B --> F[housekeepingCh: 定期清理];
+    B --> G[livenessManager: 探针结果];
+
+    C --> H[HandlePodAdditions/Updates/Removes];
+    D --> I[HandlePodSyncs];
+    E --> I;
+    G --> I;
+
+    H --> J[podManager: 更新 Pod 缓存];
+    J --> K[dispatchWork: 异步同步 Pod];
+    I --> K;
+
+    K --> L[syncPod: 同步单个 Pod];</pre><div class=diagram-copy-btn aria-label="Copy Mermaid code" role=button><i class="fa-regular fa-clone" aria-hidden=true></i><i class="fa-solid fa-check text-success" aria-hidden=true></i></div><template><pre>graph TD
+    A[syncLoop] --> B{select};
+    B --> C[configCh: 配置变更];
+    B --> D[plegCh: 容器状态变更];
+    B --> E[syncCh: 定期同步];
+    B --> F[housekeepingCh: 定期清理];
+    B --> G[livenessManager: 探针结果];
+
+    C --> H[HandlePodAdditions/Updates/Removes];
+    D --> I[HandlePodSyncs];
+    E --> I;
+    G --> I;
+
+    H --> J[podManager: 更新 Pod 缓存];
+    J --> K[dispatchWork: 异步同步 Pod];
+    I --> K;
+
+    K --> L[syncPod: 同步单个 Pod];</pre></template></div><h2 class=heading-element id=pod-的生命周期管理-syncpod><span>Pod 的生命周期管理 (syncPod)</span>
+<a href=#pod-%e7%9a%84%e7%94%9f%e5%91%bd%e5%91%a8%e6%9c%9f%e7%ae%a1%e7%90%86-syncpod class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p><code>syncPod</code> 函数是 Kubelet 中负责同步单个 Pod 状态的核心。每当 <code>syncLoop</code> 检测到需要对一个 Pod 进行同步时，无论是通过配置变更、PLEG 事件还是定期检查，最终都会调用 <code>syncPod</code> 来执行实际的同步操作。这个函数位于 <code>pkg/kubelet/kubelet.go</code>，它是一个庞大而复杂的函数，包含了 Pod 生命周期的所有管理逻辑。</p><p><code>syncPod</code> 的主要职责是确保 Pod 的“实际状态”与 <code>pod.Spec</code> 中定义的“期望状态”保持一致。它通过一系列步骤来完成这个任务，包括创建和销毁容器、挂载和卸载卷、更新 Pod 状态等。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=c1>// pkg/kubelet/kubelet.go</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>kl</span> <span class=o>*</span><span class=nx>Kubelet</span><span class=p>)</span> <span class=nf>syncPod</span><span class=p>(</span><span class=nx>o</span> <span class=nx>syncPodOptions</span><span class=p>)</span> <span class=kt>error</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=c1>// ...</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=c1>// 第一步：如果 Pod 需要被杀死，立即执行</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>updateType</span> <span class=o>==</span> <span class=nx>kubetypes</span><span class=p>.</span><span class=nx>SyncPodKill</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=c1>// ... 执行杀死 Pod 的逻辑 ...</span>
+</span></span><span class=line><span class=cl>		<span class=k>return</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=c1>// 第二步：计算 Pod 的状态</span>
+</span></span><span class=line><span class=cl>	<span class=nx>apiPodStatus</span> <span class=o>:=</span> <span class=nx>kl</span><span class=p>.</span><span class=nf>generateAPIPodStatus</span><span class=p>(</span><span class=nx>pod</span><span class=p>,</span> <span class=nx>podStatus</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=c1>// 第三步：更新 Pod 状态到 statusManager</span>
+</span></span><span class=line><span class=cl>	<span class=nx>kl</span><span class=p>.</span><span class=nx>statusManager</span><span class=p>.</span><span class=nf>SetPodStatus</span><span class=p>(</span><span class=nx>pod</span><span class=p>,</span> <span class=nx>apiPodStatus</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=c1>// 第四步：如果 Pod 不应该运行，则杀死它</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nf>podShouldnotBeRunning</span><span class=p>(</span><span class=nx>pod</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=c1>// ...</span>
+</span></span><span class=line><span class=cl>		<span class=k>return</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=c1>// 第五步：为静态 Pod 创建 Mirror Pod</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>kubetypes</span><span class=p>.</span><span class=nf>IsStaticPod</span><span class=p>(</span><span class=nx>pod</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=c1>// ...</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=c1>// 第六步：创建 Pod 的数据目录</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>kl</span><span class=p>.</span><span class=nf>makePodDataDirs</span><span class=p>(</span><span class=nx>pod</span><span class=p>);</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=c1>// ...</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=c1>// 第七步：等待 Volume 挂载</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=p>!</span><span class=nx>kl</span><span class=p>.</span><span class=nf>podVolumesExist</span><span class=p>(</span><span class=nx>pod</span><span class=p>.</span><span class=nx>UID</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=c1>// ...</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=c1>// 第八步：获取镜像拉取密钥</span>
+</span></span><span class=line><span class=cl>	<span class=nx>pullSecrets</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>kl</span><span class=p>.</span><span class=nf>getPullSecretsForPod</span><span class=p>(</span><span class=nx>pod</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=c1>// 第九步：调用容器运行时 (CRI) 的 SyncPod</span>
+</span></span><span class=line><span class=cl>	<span class=nx>result</span> <span class=o>:=</span> <span class=nx>kl</span><span class=p>.</span><span class=nx>containerRuntime</span><span class=p>.</span><span class=nf>SyncPod</span><span class=p>(</span><span class=nx>pod</span><span class=p>,</span> <span class=nx>podStatus</span><span class=p>,</span> <span class=nx>pullSecrets</span><span class=p>,</span> <span class=nx>kl</span><span class=p>.</span><span class=nx>backOff</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=c1>// ...</span>
+</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><h3 class=heading-element id=syncpod-的核心步骤><span><code>syncPod</code> 的核心步骤</span>
+<a href=#syncpod-%e7%9a%84%e6%a0%b8%e5%bf%83%e6%ad%a5%e9%aa%a4 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><ol><li><p><strong>处理 Pod 终止 (<code>SyncPodKill</code>)</strong></p><ul><li>如果 <code>syncPod</code> 被调用时，<code>updateType</code> 为 <code>SyncPodKill</code>，说明这个 Pod 需要被立即终止。Kubelet 会调用 <code>killPod</code> 方法来停止 Pod 中的所有容器。</li></ul></li><li><p><strong>生成并更新 Pod 状态</strong></p><ul><li>Kubelet 会调用 <code>generateAPIPodStatus</code> 来根据容器的当前状态生成一个新的 <code>v1.PodStatus</code>。</li><li>然后，它会将这个新的状态通过 <code>statusManager</code> 异步地更新到 <code>kube-apiserver</code>。</li></ul></li><li><p><strong>判断 Pod 是否应该运行</strong></p><ul><li><code>podShouldnotBeRunning</code> 函数会检查 Pod 是否处于 <code>Succeeded</code> 或 <code>Failed</code> 状态，或者是否已经被删除。如果 Pod 不应该再运行，Kubelet 会调用 <code>killPod</code> 来清理它。</li></ul></li><li><p><strong>创建数据目录和挂载卷</strong></p><ul><li>Kubelet 会为 Pod 创建所需的数据目录（如 <code>pods/&lt;podUID>/volumes</code> 和 <code>pods/&lt;podUID>/plugins</code>）。</li><li>它还会确保 Pod 所需的存储卷（Volume）已经被挂载和准备就绪。</li></ul></li><li><p><strong>调用容器运行时 (CRI)</strong></p><ul><li>这是 <code>syncPod</code> 中最核心的一步。Kubelet 会调用容器运行时的 <code>SyncPod</code> 方法。这个调用会将 Pod 的期望状态（<code>pod.Spec</code>）传递给容器运行时（如 containerd 或 CRI-O）。</li><li>容器运行时会负责：<ul><li>拉取 Pod 所需的镜像。</li><li>创建和启动新的容器。</li><li>停止和删除不再需要的容器。</li><li>根据 Pod 的 <code>restartPolicy</code> 重启失败的容器。</li></ul></li></ul></li></ol><h3 class=heading-element id=pod-的创建更新和删除流程><span>Pod 的创建、更新和删除流程</span>
+<a href=#pod-%e7%9a%84%e5%88%9b%e5%bb%ba%e6%9b%b4%e6%96%b0%e5%92%8c%e5%88%a0%e9%99%a4%e6%b5%81%e7%a8%8b class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><ul><li><p><strong>创建 Pod</strong></p><ol><li>用户通过 <code>kubectl</code> 或其他客户端创建一个新的 Pod 对象。</li><li><code>kube-apiserver</code> 将 Pod 信息存入 etcd，并通知 Kubelet。</li><li>Kubelet 的 <code>syncLoop</code> 通过 <code>configCh</code> 收到 <code>ADD</code> 事件。</li><li><code>HandlePodAdditions</code> 将 Pod 添加到 <code>podManager</code> 并调用 <code>dispatchWork</code>。</li><li><code>podWorkers</code> 最终调用 <code>syncPod</code>。</li><li><code>syncPod</code> 调用容器运行时的 <code>SyncPod</code>，创建沙箱和容器。</li></ol></li><li><p><strong>更新 Pod</strong></p><ul><li>Pod 的大部分字段是不可变的，但像 <code>pod.Spec.containers[*].image</code> 这样的字段可以被更新。</li><li>当 Pod 被更新时，Kubelet 会收到一个 <code>UPDATE</code> 事件，并再次调用 <code>syncPod</code>。</li><li><code>syncPod</code> 会再次调用容器运行时的 <code>SyncPod</code>，容器运行时会比较当前状态和新状态，并执行相应的操作（例如，停止旧的容器并启动新的容器）。</li></ul></li><li><p><strong>删除 Pod</strong></p><ol><li>用户删除一个 Pod。</li><li><code>kube-apiserver</code> 会在 Pod 对象上设置一个 <code>deletionTimestamp</code>，并通知 Kubelet。</li><li>Kubelet 收到 <code>UPDATE</code> 事件（因为 <code>deletionTimestamp</code> 被设置了）。</li><li><code>syncPod</code> 会检测到 <code>deletionTimestamp</code>，并开始优雅地终止 Pod。</li><li>Kubelet 会调用容器运行时的 <code>SyncPod</code> 来停止容器，并执行清理工作（如卸载卷）。</li><li>一旦所有清理工作完成，Kubelet 会从其内部状态中移除该 Pod，并最终从 <code>kube-apiserver</code> 中删除该 Pod 对象。</li></ol></li></ul><h3 class=heading-element id=pod-生命周期流程图><span>Pod 生命周期流程图</span>
+<a href=#pod-%e7%94%9f%e5%91%bd%e5%91%a8%e6%9c%9f%e6%b5%81%e7%a8%8b%e5%9b%be class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class=diagram-container><pre class=mermaid>graph TD
+    subgraph "事件分发"
+        A[dispatchWork] --> B{根据事件类型};
+        B -- ADD/UPDATE/SYNC --> C[podWorkers.UpdatePod];
+        B -- REMOVE --> C;
+    end
+
+    subgraph "Pod 同步执行"
+        C --> D["工作协程 (Worker Goroutine)"];
+        D --> E(syncPod);
+    end
+
+    subgraph "syncPod 内部逻辑"
+        E --> F{"检查 Pod 是否需要终止 (deletionTimestamp?)"};
+        F -- 是 (来自 REMOVE 事件) --> G[执行 killPod 流程];
+        subgraph "终止流程"
+            G --> H[CRI: StopPodSandbox/RemovePodSandbox];
+            H --> I[清理 Pod 目录和卷];
+            I --> J[更新 Pod 状态为 Failed/Succeeded];
+            J --> K[从 apiserver 删除 Pod];
+        end
+
+        F -- 否 (来自 ADD/UPDATE 事件) --> L{"Pod 是否应该运行?"};
+        L -- 否 (Phase: Succeeded/Failed) --> M["执行 killPod (如果容器仍在运行)"];
+        M --> N[清理容器, 但保留 Pod 对象];
+
+        L -- 是 --> O["准备 Pod 状态更新 (generateAPIPodStatus)"];
+        O --> P["创建数据目录 (makePodDataDirs)"];
+        P --> Q["等待卷挂载 (waitForVolumes)"];
+        Q --> R["获取镜像拉取 Secret (getImagePullSecrets)"];
+        R --> S[调用 CRI: SyncPod];
+        subgraph "CRI: SyncPod 内部"
+            S --> T{"容器运行时"};
+            T -- 容器不存在 --> U[创建沙箱和容器];
+            T -- 容器状态与期望不符 --> V[停止并重建容器];
+            T -- 容器状态一致 --> W[不执行操作];
+        end
+    end</pre><pre class=mermaid-dark>graph TD
+    subgraph "事件分发"
+        A[dispatchWork] --> B{根据事件类型};
+        B -- ADD/UPDATE/SYNC --> C[podWorkers.UpdatePod];
+        B -- REMOVE --> C;
+    end
+
+    subgraph "Pod 同步执行"
+        C --> D["工作协程 (Worker Goroutine)"];
+        D --> E(syncPod);
+    end
+
+    subgraph "syncPod 内部逻辑"
+        E --> F{"检查 Pod 是否需要终止 (deletionTimestamp?)"};
+        F -- 是 (来自 REMOVE 事件) --> G[执行 killPod 流程];
+        subgraph "终止流程"
+            G --> H[CRI: StopPodSandbox/RemovePodSandbox];
+            H --> I[清理 Pod 目录和卷];
+            I --> J[更新 Pod 状态为 Failed/Succeeded];
+            J --> K[从 apiserver 删除 Pod];
+        end
+
+        F -- 否 (来自 ADD/UPDATE 事件) --> L{"Pod 是否应该运行?"};
+        L -- 否 (Phase: Succeeded/Failed) --> M["执行 killPod (如果容器仍在运行)"];
+        M --> N[清理容器, 但保留 Pod 对象];
+
+        L -- 是 --> O["准备 Pod 状态更新 (generateAPIPodStatus)"];
+        O --> P["创建数据目录 (makePodDataDirs)"];
+        P --> Q["等待卷挂载 (waitForVolumes)"];
+        Q --> R["获取镜像拉取 Secret (getImagePullSecrets)"];
+        R --> S[调用 CRI: SyncPod];
+        subgraph "CRI: SyncPod 内部"
+            S --> T{"容器运行时"};
+            T -- 容器不存在 --> U[创建沙箱和容器];
+            T -- 容器状态与期望不符 --> V[停止并重建容器];
+            T -- 容器状态一致 --> W[不执行操作];
+        end
+    end</pre><pre class=mermaid-neutral>graph TD
+    subgraph "事件分发"
+        A[dispatchWork] --> B{根据事件类型};
+        B -- ADD/UPDATE/SYNC --> C[podWorkers.UpdatePod];
+        B -- REMOVE --> C;
+    end
+
+    subgraph "Pod 同步执行"
+        C --> D["工作协程 (Worker Goroutine)"];
+        D --> E(syncPod);
+    end
+
+    subgraph "syncPod 内部逻辑"
+        E --> F{"检查 Pod 是否需要终止 (deletionTimestamp?)"};
+        F -- 是 (来自 REMOVE 事件) --> G[执行 killPod 流程];
+        subgraph "终止流程"
+            G --> H[CRI: StopPodSandbox/RemovePodSandbox];
+            H --> I[清理 Pod 目录和卷];
+            I --> J[更新 Pod 状态为 Failed/Succeeded];
+            J --> K[从 apiserver 删除 Pod];
+        end
+
+        F -- 否 (来自 ADD/UPDATE 事件) --> L{"Pod 是否应该运行?"};
+        L -- 否 (Phase: Succeeded/Failed) --> M["执行 killPod (如果容器仍在运行)"];
+        M --> N[清理容器, 但保留 Pod 对象];
+
+        L -- 是 --> O["准备 Pod 状态更新 (generateAPIPodStatus)"];
+        O --> P["创建数据目录 (makePodDataDirs)"];
+        P --> Q["等待卷挂载 (waitForVolumes)"];
+        Q --> R["获取镜像拉取 Secret (getImagePullSecrets)"];
+        R --> S[调用 CRI: SyncPod];
+        subgraph "CRI: SyncPod 内部"
+            S --> T{"容器运行时"};
+            T -- 容器不存在 --> U[创建沙箱和容器];
+            T -- 容器状态与期望不符 --> V[停止并重建容器];
+            T -- 容器状态一致 --> W[不执行操作];
+        end
+    end</pre><div class=diagram-copy-btn aria-label="Copy Mermaid code" role=button><i class="fa-regular fa-clone" aria-hidden=true></i><i class="fa-solid fa-check text-success" aria-hidden=true></i></div><template><pre>graph TD
+    subgraph "事件分发"
+        A[dispatchWork] --> B{根据事件类型};
+        B -- ADD/UPDATE/SYNC --> C[podWorkers.UpdatePod];
+        B -- REMOVE --> C;
+    end
+
+    subgraph "Pod 同步执行"
+        C --> D["工作协程 (Worker Goroutine)"];
+        D --> E(syncPod);
+    end
+
+    subgraph "syncPod 内部逻辑"
+        E --> F{"检查 Pod 是否需要终止 (deletionTimestamp?)"};
+        F -- 是 (来自 REMOVE 事件) --> G[执行 killPod 流程];
+        subgraph "终止流程"
+            G --> H[CRI: StopPodSandbox/RemovePodSandbox];
+            H --> I[清理 Pod 目录和卷];
+            I --> J[更新 Pod 状态为 Failed/Succeeded];
+            J --> K[从 apiserver 删除 Pod];
+        end
+
+        F -- 否 (来自 ADD/UPDATE 事件) --> L{"Pod 是否应该运行?"};
+        L -- 否 (Phase: Succeeded/Failed) --> M["执行 killPod (如果容器仍在运行)"];
+        M --> N[清理容器, 但保留 Pod 对象];
+
+        L -- 是 --> O["准备 Pod 状态更新 (generateAPIPodStatus)"];
+        O --> P["创建数据目录 (makePodDataDirs)"];
+        P --> Q["等待卷挂载 (waitForVolumes)"];
+        Q --> R["获取镜像拉取 Secret (getImagePullSecrets)"];
+        R --> S[调用 CRI: SyncPod];
+        subgraph "CRI: SyncPod 内部"
+            S --> T{"容器运行时"};
+            T -- 容器不存在 --> U[创建沙箱和容器];
+            T -- 容器状态与期望不符 --> V[停止并重建容器];
+            T -- 容器状态一致 --> W[不执行操作];
+        end
+    end</pre></template></div><h2 class=heading-element id=指标计算流程-cadvisor><span>指标计算流程 (cAdvisor)</span>
+<a href=#%e6%8c%87%e6%a0%87%e8%ae%a1%e7%ae%97%e6%b5%81%e7%a8%8b-cadvisor class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p>Kubelet 的一个核心职责是监控节点上容器的资源使用情况，并将这些指标信息上报给 Kubernetes 的监控系统。这个功能主要由 <strong>cAdvisor</strong> 来实现，它是一个开源的容器监控工具，被直接集成到了 Kubelet 的二进制文件中。</p><h3 class=heading-element id=cadvisor-的初始化与启动><span>cAdvisor 的初始化与启动</span>
+<a href=#cadvisor-%e7%9a%84%e5%88%9d%e5%a7%8b%e5%8c%96%e4%b8%8e%e5%90%af%e5%8a%a8 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><p>cAdvisor 的初始化发生在 Kubelet 的启动过程中，具体是在 <code>cmd/kubelet/app/server.go</code> 的 <code>buildKubeletDeps</code> 函数中。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=c1>// cmd/kubelet/app/server.go</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>buildKubeletDeps</span><span class=p>(</span><span class=o>...</span><span class=p>)</span> <span class=p>(</span><span class=o>*</span><span class=nx>kubelet</span><span class=p>.</span><span class=nx>Dependencies</span><span class=p>,</span> <span class=kt>error</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// ...</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>kubeDeps</span><span class=p>.</span><span class=nx>CAdvisorInterface</span> <span class=o>==</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>imageFsInfoProvider</span> <span class=o>:=</span> <span class=nx>cadvisor</span><span class=p>.</span><span class=nf>NewImageFsInfoProvider</span><span class=p>(</span><span class=nx>s</span><span class=p>.</span><span class=nx>ContainerRuntime</span><span class=p>,</span> <span class=nx>s</span><span class=p>.</span><span class=nx>RemoteRuntimeEndpoint</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=nx>kubeDeps</span><span class=p>.</span><span class=nx>CAdvisorInterface</span><span class=p>,</span> <span class=nx>err</span> <span class=p>=</span> <span class=nx>cadvisor</span><span class=p>.</span><span class=nf>New</span><span class=p>(</span><span class=nx>imageFsInfoProvider</span><span class=p>,</span> <span class=nx>s</span><span class=p>.</span><span class=nx>RootDirectory</span><span class=p>,</span> <span class=nx>cgroupRoots</span><span class=p>,</span> <span class=nx>cadvisor</span><span class=p>.</span><span class=nf>UsingLegacyCadvisorStats</span><span class=p>(</span><span class=nx>s</span><span class=p>.</span><span class=nx>ContainerRuntime</span><span class=p>,</span> <span class=nx>s</span><span class=p>.</span><span class=nx>RemoteRuntimeEndpoint</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=k>return</span> <span class=kc>nil</span><span class=p>,</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// ...</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><p>在这里，如果 <code>CAdvisorInterface</code> 尚未被创建，Kubelet 会调用 <code>cadvisor.New</code> 来创建一个新的 cAdvisor 实例。这个实例会被封装在 <code>KubeletDeps</code> 中，并作为依赖注入到 <code>Kubelet</code> 对象中。</p><p>随后，在 <code>pkg/kubelet/kubelet.go</code> 的 <code>initializeRuntimeDependentModules</code> 函数中，cAdvisor 会被正式启动。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=c1>// pkg/kubelet/kubelet.go</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>kl</span> <span class=o>*</span><span class=nx>Kubelet</span><span class=p>)</span> <span class=nf>initializeRuntimeDependentModules</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>kl</span><span class=p>.</span><span class=nx>cadvisor</span><span class=p>.</span><span class=nf>Start</span><span class=p>();</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>klog</span><span class=p>.</span><span class=nf>Fatalf</span><span class=p>(</span><span class=s>&#34;Failed to start cAdvisor %v&#34;</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// ...</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><p><code>kl.cadvisor.Start()</code> 会启动 cAdvisor 的后台任务，开始定期地从系统的 cgroup 文件系统、内核接口等处收集容器的 CPU、内存、磁盘和网络等资源使用数据。</p><h3 class=heading-element id=指标的收集与暴露><span>指标的收集与暴露</span>
+<a href=#%e6%8c%87%e6%a0%87%e7%9a%84%e6%94%b6%e9%9b%86%e4%b8%8e%e6%9a%b4%e9%9c%b2 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><p>Kubelet 内部有一个 <code>StatsProvider</code> 接口，它为 Kubelet 的其他组件提供了一个统一的获取指标的入口。<code>StatsProvider</code> 的实现依赖于 cAdvisor。</p><p>当外部组件（如 <code>metrics-server</code>）需要获取节点的指标时，它会访问 Kubelet 的 API 端点。Kubelet 提供了多个用于暴露指标的端点：</p><ul><li><strong>/stats/summary</strong>：这是最重要的一个端点。它提供了一个聚合的、详细的节点、Pod 和容器级别的资源使用摘要。<code>metrics-server</code> 就是通过这个端点来获取数据，并将其转换为 <code>custom.metrics.k8s.io</code> 和 <code>external.metrics.k8s.io</code> API，以供 HPA 控制器使用。</li><li><strong>/metrics/cadvisor</strong>：这个端点以 Prometheus 的格式暴露了由 cAdvisor 收集的原始指标。这对于使用 Prometheus 进行监控和告警非常有用。</li><li><strong>/metrics/resource</strong>：这个端点提供了用于调度的资源指标，例如节点上可分配的资源。</li></ul><h3 class=heading-element id=指标计算流程图><span>指标计算流程图</span>
+<a href=#%e6%8c%87%e6%a0%87%e8%ae%a1%e7%ae%97%e6%b5%81%e7%a8%8b%e5%9b%be class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><p>下面是 Kubelet 指标计算和暴露的流程图：</p><div class=diagram-container><pre class=mermaid>graph TD
+    A[cAdvisor 启动] --> B[后台持续收集指标];
+    B --> C[cgroup 文件系统];
+    B --> D[内核接口];
+
+    E[Kubelet StatsProvider] --> F[cAdvisor Interface];
+    F --> B;
+
+    G[API 请求 /stats/summary] --> H[Kubelet HTTP Server];
+    H --> E;
+    E --> I[返回聚合的指标];
+
+    J[API 请求 /metrics/cadvisor] --> H;
+    H --> F;
+    F --> K[返回 Prometheus 格式的原始指标];</pre><pre class=mermaid-dark>graph TD
+    A[cAdvisor 启动] --> B[后台持续收集指标];
+    B --> C[cgroup 文件系统];
+    B --> D[内核接口];
+
+    E[Kubelet StatsProvider] --> F[cAdvisor Interface];
+    F --> B;
+
+    G[API 请求 /stats/summary] --> H[Kubelet HTTP Server];
+    H --> E;
+    E --> I[返回聚合的指标];
+
+    J[API 请求 /metrics/cadvisor] --> H;
+    H --> F;
+    F --> K[返回 Prometheus 格式的原始指标];</pre><pre class=mermaid-neutral>graph TD
+    A[cAdvisor 启动] --> B[后台持续收集指标];
+    B --> C[cgroup 文件系统];
+    B --> D[内核接口];
+
+    E[Kubelet StatsProvider] --> F[cAdvisor Interface];
+    F --> B;
+
+    G[API 请求 /stats/summary] --> H[Kubelet HTTP Server];
+    H --> E;
+    E --> I[返回聚合的指标];
+
+    J[API 请求 /metrics/cadvisor] --> H;
+    H --> F;
+    F --> K[返回 Prometheus 格式的原始指标];</pre><div class=diagram-copy-btn aria-label="Copy Mermaid code" role=button><i class="fa-regular fa-clone" aria-hidden=true></i><i class="fa-solid fa-check text-success" aria-hidden=true></i></div><template><pre>graph TD
+    A[cAdvisor 启动] --> B[后台持续收集指标];
+    B --> C[cgroup 文件系统];
+    B --> D[内核接口];
+
+    E[Kubelet StatsProvider] --> F[cAdvisor Interface];
+    F --> B;
+
+    G[API 请求 /stats/summary] --> H[Kubelet HTTP Server];
+    H --> E;
+    E --> I[返回聚合的指标];
+
+    J[API 请求 /metrics/cadvisor] --> H;
+    H --> F;
+    F --> K[返回 Prometheus 格式的原始指标];</pre></template></div><h3 class=heading-element id=指标收集的周期控制><span>指标收集的周期控制</span>
+<a href=#%e6%8c%87%e6%a0%87%e6%94%b6%e9%9b%86%e7%9a%84%e5%91%a8%e6%9c%9f%e6%8e%a7%e5%88%b6 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><p>cAdvisor 的数据收集周期是由 Kubelet 的一个配置参数控制的，这个机制保证了 Kubelet 能够以可预测的频率获取到最新的容器指标。</p><p><strong>核心控制参数：<code>--housekeeping-interval</code></strong></p><p>cAdvisor 的数据收集间隔由 Kubelet 的启动参数 <code>--housekeeping-interval</code> 控制。</p><ul><li><strong>默认值</strong>：Kubelet 中该参数的默认值为 <strong>10 秒</strong>。</li><li><strong>作用</strong>：它决定了 cAdvisor 为每个容器独立执行指标收集的频率。值得注意的是，cAdvisor 内部有两种 <code>housekeeping</code>：一种是用于发现新容器的全局任务（周期较长，如1分钟），另一种是为每个容器收集指标的独立任务，后者由该参数控制。</li></ul><p><strong>代码实现追溯</strong></p><p>要理解这个间隔是如何生效的，我们需要追溯代码的调用链。旧版本的 Kubelet/cAdvisor 可能采用一个全局 Ticker，但新版本的实现更为精细，它为每个容器启动一个独立的收集 goroutine。</p><ol><li><p><strong>Kubelet 设置 cAdvisor 参数 (the &ldquo;hack&rdquo;)</strong></p><ul><li>在 Kubelet 的入口 <code>cmd/kubelet/app/server.go</code> 的 <code>NewKubeletCommand</code> 函数中，有一段被标记为“临时 hack”的代码：<div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=c1>// cmd/kubelet/app/server.go</span>
+</span></span><span class=line><span class=cl><span class=nx>flag</span><span class=p>.</span><span class=nf>Set</span><span class=p>(</span><span class=s>&#34;housekeeping_interval&#34;</span><span class=p>,</span> <span class=nx>kubeletFlags</span><span class=p>.</span><span class=nx>HousekeepingInterval</span><span class=p>.</span><span class=nx>Duration</span><span class=p>.</span><span class=nf>String</span><span class=p>())</span></span></span></code></pre></td></tr></table></div></div></li><li>这行代码的作用是，将 Kubelet 自己的 <code>--housekeeping-interval</code> 参数值，强制设置给 cAdvisor 库内部定义的一个同名全局标志 (<code>flag</code>)。这是 Kubelet 向其内嵌的 cAdvisor 传递配置的一种方式。</li></ul></li><li><p><strong>cAdvisor 容器级指标收集</strong>
+cAdvisor 的指标收集由 <code>manager.go</code> 和 <code>container.go</code> 协同完成。<code>manager.go</code> 负责全局容器发现和管理，而 <code>container.go</code> 负责单个容器的指标收集。</p><ul><li><p><strong>全局 Housekeeping (<code>manager.go</code>)</strong>：<code>manager.go</code> 中的 <code>Start</code> 方法会启动一个 <code>globalHousekeeping</code> goroutine，它以一个独立的周期（<code>globalHousekeepingInterval</code>，默认 1 分钟）运行，主要用于检测新容器的出现，而不是高频次地收集现有容器的指标。</p></li><li><p><strong>容器级 Housekeeping (<code>container.go</code>)</strong>：真正的指标收集由 <code>containerData</code> 结构体中的 <code>housekeeping</code> 方法驱动，每个容器实例都会有一个独立的 <code>housekeeping</code> goroutine。</p><ul><li><strong>初始化</strong>：<code>newContainerData</code> 函数在创建 <code>containerData</code> 时，会使用上一步设置的全局 <code>HousekeepingInterval</code> 标志来初始化每个容器自己的 <code>housekeepingInterval</code> 字段。</li><li><strong>启动</strong>：<code>containerData.Start()</code> 方法会为每个容器启动一个 <code>housekeeping</code> goroutine。</li><li><strong>执行循环</strong>：<code>housekeeping</code> 方法内部使用 <code>time.Timer</code> 来周期性地触发指标收集。<code>nextHousekeepingInterval()</code> 方法决定了下一次执行的间隔，其基准值就是 <code>HousekeepingInterval</code>。</li><li><strong>数据采集</strong>：<code>housekeepingTick</code> 函数最终会调用 <code>updateStats</code>，后者通过 <code>cd.handler.GetStats()</code> 从容器运行时接口（CRI）或 cgroup 文件系统获取原始数据。</li></ul></li></ul><p>下面是 <code>container.go</code> 中的核心代码逻辑：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=c1>// vendor/github.com/google/cadvisor/manager/container.go</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// Housekeeping interval.</span>
+</span></span><span class=line><span class=cl><span class=kd>var</span> <span class=nx>HousekeepingInterval</span> <span class=p>=</span> <span class=nx>flag</span><span class=p>.</span><span class=nf>Duration</span><span class=p>(</span><span class=s>&#34;housekeeping_interval&#34;</span><span class=p>,</span> <span class=mi>1</span><span class=o>*</span><span class=nx>time</span><span class=p>.</span><span class=nx>Second</span><span class=p>,</span> <span class=s>&#34;Interval between container housekeepings&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// newContainerData 创建并初始化一个 containerData 实例</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>newContainerData</span><span class=p>(</span><span class=o>...</span><span class=p>)</span> <span class=p>(</span><span class=o>*</span><span class=nx>containerData</span><span class=p>,</span> <span class=kt>error</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// ...</span>
+</span></span><span class=line><span class=cl>    <span class=nx>cont</span> <span class=o>:=</span> <span class=o>&amp;</span><span class=nx>containerData</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// ...</span>
+</span></span><span class=line><span class=cl>        <span class=nx>housekeepingInterval</span><span class=p>:</span>     <span class=o>*</span><span class=nx>HousekeepingInterval</span><span class=p>,</span> <span class=c1>// 使用全局标志初始化</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// ...</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// ...</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nx>cont</span><span class=p>,</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// Start 启动容器的 housekeeping goroutine</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>cd</span> <span class=o>*</span><span class=nx>containerData</span><span class=p>)</span> <span class=nf>Start</span><span class=p>()</span> <span class=kt>error</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>go</span> <span class=nx>cd</span><span class=p>.</span><span class=nf>housekeeping</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// housekeeping 是每个容器指标收集的主循环</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>cd</span> <span class=o>*</span><span class=nx>containerData</span><span class=p>)</span> <span class=nf>housekeeping</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// ...</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 使用 Timer 而非 Ticker，因为间隔可能是动态的</span>
+</span></span><span class=line><span class=cl>    <span class=nx>houseKeepingTimer</span> <span class=o>:=</span> <span class=nx>cd</span><span class=p>.</span><span class=nx>clock</span><span class=p>.</span><span class=nf>NewTimer</span><span class=p>(</span><span class=mi>0</span> <span class=o>*</span> <span class=nx>time</span><span class=p>.</span><span class=nx>Second</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>defer</span> <span class=nx>houseKeepingTimer</span><span class=p>.</span><span class=nf>Stop</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// housekeepingTick 会阻塞直到 Timer 触发</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>!</span><span class=nx>cd</span><span class=p>.</span><span class=nf>housekeepingTick</span><span class=p>(</span><span class=nx>houseKeepingTimer</span><span class=p>.</span><span class=nf>C</span><span class=p>(),</span> <span class=nx>longHousekeeping</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// ...</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 重置下一次执行的 Timer</span>
+</span></span><span class=line><span class=cl>        <span class=nx>houseKeepingTimer</span><span class=p>.</span><span class=nf>Reset</span><span class=p>(</span><span class=nx>cd</span><span class=p>.</span><span class=nf>nextHousekeepingInterval</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// housekeepingTick 执行单次指标收集</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>cd</span> <span class=o>*</span><span class=nx>containerData</span><span class=p>)</span> <span class=nf>housekeepingTick</span><span class=p>(</span><span class=nx>timer</span> <span class=o>&lt;-</span><span class=kd>chan</span> <span class=nx>time</span><span class=p>.</span><span class=nx>Time</span><span class=p>,</span> <span class=nx>longHousekeeping</span> <span class=nx>time</span><span class=p>.</span><span class=nx>Duration</span><span class=p>)</span> <span class=kt>bool</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>select</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>case</span> <span class=o>&lt;-</span><span class=nx>cd</span><span class=p>.</span><span class=nx>stop</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=kc>false</span>
+</span></span><span class=line><span class=cl>    <span class=k>case</span> <span class=o>&lt;-</span><span class=nx>timer</span><span class=p>:</span> <span class=c1>// 等待定时器触发</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=nx>err</span> <span class=o>:=</span> <span class=nx>cd</span><span class=p>.</span><span class=nf>updateStats</span><span class=p>()</span> <span class=c1>// &lt;-- 核心：更新统计数据</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// ...</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=kc>true</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// updateStats 调用 handler 获取并存储指标</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>cd</span> <span class=o>*</span><span class=nx>containerData</span><span class=p>)</span> <span class=nf>updateStats</span><span class=p>()</span> <span class=kt>error</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>stats</span><span class=p>,</span> <span class=nx>statsErr</span> <span class=o>:=</span> <span class=nx>cd</span><span class=p>.</span><span class=nx>handler</span><span class=p>.</span><span class=nf>GetStats</span><span class=p>()</span> <span class=c1>// &lt;-- 从 cgroup 或 CRI 获取数据</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// ...</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 将统计数据添加到内存缓存</span>
+</span></span><span class=line><span class=cl>    <span class=nx>err</span> <span class=p>=</span> <span class=nx>cd</span><span class=p>.</span><span class=nx>memoryCache</span><span class=p>.</span><span class=nf>AddStats</span><span class=p>(</span><span class=o>&amp;</span><span class=nx>cInfo</span><span class=p>,</span> <span class=nx>stats</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// ...</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div></li></ol><h3 class=heading-element id=指标的存储-inmemorycache><span>指标的存储 (InMemoryCache)</span>
+<a href=#%e6%8c%87%e6%a0%87%e7%9a%84%e5%ad%98%e5%82%a8-inmemorycache class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><p>cAdvisor 采集到的指标并不会被持久化到磁盘，而是存储在一个高效的<strong>内存缓存</strong>中。这个组件名为 <code>InMemoryCache</code>，其实现位于 <code>vendor/github.com/google/cadvisor/cache/memory/memory.go</code>。</p><p><strong>核心机制</strong>：</p><ol><li><p><strong>缓存结构</strong>：<code>InMemoryCache</code> 为每个容器（包括根容器，即节点本身）维护一个独立的、固定大小的环形缓冲区（Ring Buffer）。这个缓冲区用于存储最近一段时间内的 <code>info.ContainerStats</code> 时间序列数据。</p></li><li><p><strong>数据写入</strong>：在 <code>container.go</code> 的 <code>updateStats</code> 函数成功获取到指标后，会调用 <code>cd.memoryCache.AddStats()</code> 方法。这个方法将最新的指标样本和时间戳添加到对应容器的环形缓冲区中。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=c1>// vendor/github.com/google/cadvisor/manager/container.go</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>cd</span> <span class=o>*</span><span class=nx>containerData</span><span class=p>)</span> <span class=nf>updateStats</span><span class=p>()</span> <span class=kt>error</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>stats</span><span class=p>,</span> <span class=nx>statsErr</span> <span class=o>:=</span> <span class=nx>cd</span><span class=p>.</span><span class=nx>handler</span><span class=p>.</span><span class=nf>GetStats</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// ...</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 将统计数据添加到内存缓存</span>
+</span></span><span class=line><span class=cl>    <span class=nx>err</span> <span class=p>=</span> <span class=nx>cd</span><span class=p>.</span><span class=nx>memoryCache</span><span class=p>.</span><span class=nf>AddStats</span><span class=p>(</span><span class=o>&amp;</span><span class=nx>cInfo</span><span class=p>,</span> <span class=nx>stats</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// ...</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div></li><li><p><strong>存储策略</strong>：缓存默认会存储过去 60 秒的指标数据（这个值是硬编码在 <code>memory.New</code> 函数中的）。当新的指标数据被写入时，如果缓冲区已满，最旧的数据点将被覆盖。这种策略确保了内存占用的可预测性和稳定性。</p></li><li><p><strong>数据读取</strong>：当外部请求（如 <code>metrics-server</code> 访问 <code>/stats/summary</code> 端点）需要指标数据时，Kubelet 的 <code>StatsProvider</code> 会调用 <code>InMemoryCache</code> 的 <code>RecentStats</code> 方法。该方法从环形缓冲区中提取指定时间范围内的指标数据，用于后续的聚合和计算。</p></li></ol><p>通过这种内存缓存机制，cAdvisor 能够在不引入磁盘 I/O 开销的情况下，高效地为 Kubelet 提供短期、高分辨率的容器性能指标。</p><h2 class=heading-element id=总结><span>总结</span>
+<a href=#%e6%80%bb%e7%bb%93 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p>本文深入剖析了 Kubelet 作为 Kubernetes 节点代理的核心功能和内部机制。我们从 Kubelet 的入口点 <code>main</code> 函数开始，逐步跟踪了其复杂的初始化过程，了解了 <code>app.NewKubeletCommand</code> 如何构建 Kubelet 的配置和依赖，并最终通过 <code>RunKubelet</code> 和 <code>createAndInitKubelet</code> 创建出核心的 <code>Kubelet</code> 实例。</p><p>随后，我们详细探讨了 Kubelet 的“心脏”——<code>syncLoop</code> 核心工作循环。这个事件驱动的循环通过 <code>syncLoopIteration</code> 监听来自 <code>kube-apiserver</code> 的配置变更、PLEG 的容器生命周期事件、定时同步以及 Liveness Probe 结果等多种事件源，确保节点上的 Pod 状态与期望状态保持一致。</p><p>在 Pod 生命周期管理方面，我们聚焦于 <code>syncPod</code> 函数。该函数是 Kubelet 同步单个 Pod 状态的关键，负责处理 Pod 的创建、更新和删除。<code>syncPod</code> 通过调用容器运行时的 <code>SyncPod</code> 方法，将 Kubelet 的指令转化为实际的容器操作，从而实现对 Pod 容器的精细化管理。</p><p>最后，我们分析了 Kubelet 的指标计算流程，重点介绍了内嵌的 cAdvisor。cAdvisor 负责从 cgroup 文件系统和内核接口收集容器和节点的资源使用数据，并在 Kubelet 启动时进行初始化和启动。Kubelet 通过 <code>StatsProvider</code> 接口将这些指标暴露给外部组件，例如 <code>metrics-server</code> 通过 <code>/stats/summary</code> 端点获取聚合指标，为 HPA 等控制器提供数据支持。</p><p>通过对 Kubelet 源码的深入分析，我们不仅理解了其各个组件的职责，更重要的是，掌握了 Kubelet 如何协同工作，确保 Kubernetes 集群中 Pod 的稳定运行和高效管理。Kubelet 的设计体现了 Kubernetes 强大的自愈能力和可扩展性，是构建弹性云原生应用的关键基石。</p></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span title="更新于 2025-10-22 18:31:54">更新于 2025-10-22&nbsp;</span></div><div class=post-info-license><span><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span></div></div><div class=post-info-line><div class=post-info-md><span><a href=/posts/06-kubelet-%E6%A0%B8%E5%BF%83%E5%8A%9F%E8%83%BD%E4%B8%8E%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E8%A7%A3%E6%9E%90/index.md title=阅读原始文档 class=link-to-markdown>阅读原始文档</a></span></div><div class=post-info-share><span><a href=javascript:void(0); title="分享到 X" data-sharer=twitter data-url=https://www.kbsonlong.com/posts/06-kubelet-%E6%A0%B8%E5%BF%83%E5%8A%9F%E8%83%BD%E4%B8%8E%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E8%A7%A3%E6%9E%90/ data-title="06-Kubelet 核心功能与启动流程解析" data-hashtags=kubelet,kubernetes><i class="fa-brands fa-x-twitter fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="分享到 Facebook" data-sharer=facebook data-url=https://www.kbsonlong.com/posts/06-kubelet-%E6%A0%B8%E5%BF%83%E5%8A%9F%E8%83%BD%E4%B8%8E%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E8%A7%A3%E6%9E%90/ data-hashtag=kubelet><i class="fa-brands fa-facebook-square fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="分享到 WhatsApp" data-sharer=whatsapp data-url=https://www.kbsonlong.com/posts/06-kubelet-%E6%A0%B8%E5%BF%83%E5%8A%9F%E8%83%BD%E4%B8%8E%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E8%A7%A3%E6%9E%90/ data-title="06-Kubelet 核心功能与启动流程解析" data-web><i class="fa-brands fa-whatsapp fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="分享到 Line" data-sharer=line data-url=https://www.kbsonlong.com/posts/06-kubelet-%E6%A0%B8%E5%BF%83%E5%8A%9F%E8%83%BD%E4%B8%8E%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E8%A7%A3%E6%9E%90/ data-title="06-Kubelet 核心功能与启动流程解析"><svg class="icon" role="img" viewBox="0 0 24 24"><title>LINE</title><path d="M19.365 9.863c.349.0.63.285.63.631.0.345-.281.63-.63.63H17.61v1.125h1.755c.349.0.63.283.63.63.0.344-.281.629-.63.629h-2.386c-.345.0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346.0.627.285.627.63.0.349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211.0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346.0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195.0.375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345.0.63.285.63.63v4.771zm-5.741.0c0 .344-.282.629-.631.629-.345.0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346.0.628.285.628.63v4.771zm-2.466.629H4.917c-.345.0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348.0.63.285.63.63v4.141h1.756c.348.0.629.283.629.63.0.344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943.0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg></a>
+<a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://www.kbsonlong.com/posts/06-kubelet-%E6%A0%B8%E5%BF%83%E5%8A%9F%E8%83%BD%E4%B8%8E%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E8%A7%A3%E6%9E%90/ data-title="06-Kubelet 核心功能与启动流程解析"><i class="fa-brands fa-weibo fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="分享到 Myspace" data-sharer=myspace data-url=https://www.kbsonlong.com/posts/06-kubelet-%E6%A0%B8%E5%BF%83%E5%8A%9F%E8%83%BD%E4%B8%8E%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E8%A7%A3%E6%9E%90/ data-title="06-Kubelet 核心功能与启动流程解析" data-description><svg class="icon" role="img" viewBox="0 0 24 24"><title>Myspace</title><path d="M19.802 12.274A3.811 3.811.0 0023.62 8.47c0-2.101-1.71-3.795-3.818-3.795a3.816 3.816.0 00-3.818 3.81 3.817 3.817.0 003.818 3.811zm-8.602.705a3.43 3.43.0 003.435-3.424A3.43 3.43.0 0011.2 6.13 3.44 3.44.0 007.764 9.566 3.436 3.436.0 0011.2 13zm-7.8.635c1.71.0 3.093-1.38 3.093-3.081.0-1.704-1.395-3.084-3.105-3.084A3.086 3.086.0 00.3 10.539c0 1.7 1.387 3.078 3.095 3.078zm0 .705c-1.96.0-3.4 1.717-3.4 3.495v1.196c0 .17.138.31.31.31h6.18a.31.31.0 00.309-.31v-1.196c0-1.779-1.437-3.5-3.398-3.5zm7.8-.56c-2.18.0-3.78 1.915-3.78 3.891v1.331c0 .188.156.344.345.344h6.87a.344.344.0 00.342-.344V17.65c0-1.976-1.598-3.891-3.777-3.891zm8.602-.617c-2.422.0-4.197 2.126-4.197 4.323v1.477c0 .21.172.381.382.381h7.63c.21.0.383-.171.383-.381v-1.477c-.001-2.197-1.776-4.323-4.198-4.323z"/></svg></a>
+<a href=javascript:void(0); title="分享到 Blogger" data-sharer=blogger data-url=https://www.kbsonlong.com/posts/06-kubelet-%E6%A0%B8%E5%BF%83%E5%8A%9F%E8%83%BD%E4%B8%8E%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E8%A7%A3%E6%9E%90/ data-title="06-Kubelet 核心功能与启动流程解析" data-description><i class="fa-brands fa-blogger fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="分享到 Evernote" data-sharer=evernote data-url=https://www.kbsonlong.com/posts/06-kubelet-%E6%A0%B8%E5%BF%83%E5%8A%9F%E8%83%BD%E4%B8%8E%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E8%A7%A3%E6%9E%90/ data-title="06-Kubelet 核心功能与启动流程解析"><i class="fa-brands fa-evernote fa-fw" aria-hidden=true></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fa-solid fa-tags fa-fw me-1" aria-hidden=true></i><a href=/tags/kubelet/ class=post-tag title="标签 - Kubelet">Kubelet</a><a href=/tags/kubernetes/ class=post-tag title="标签 - Kubernetes">Kubernetes</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span></section></div><div class=post-nav><a href=/posts/05-kube-controller-manager%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90hpa%E6%8E%A7%E5%88%B6%E5%99%A8/ class=post-nav-item rel=prev title=05-Kube-Controller-Manager源码分析(HPA控制器)><i class="fa-solid fa-angle-left fa-fw" aria-hidden=true></i>05-Kube-Controller-Manager源码分析(HPA控制器)</a></div></div><div id=comments><div id=giscus class=comment><script src=https://giscus.app/client.js data-repo=kbsonlong/sre data-repo-id=R_kgDOMFzwNA data-category=Announcements data-category-id=DIC_kwDOMFzwNM4Cn0gn data-mapping=title data-strict=0 data-theme=preferred_color_scheme data-reactions-enabled=1 data-emit-metadata=0 data-input-position=bottom data-lang=zh-CN data-loading=lazy crossorigin=anonymous async defer></script></div><noscript>Please enable JavaScript to view the comments powered by <a href=https://giscus.app/ rel="external nofollow noopener noreferrer">giscus</a>.</noscript></div></article><aside class=toc id=toc-auto aria-label=目录><h2 class=toc-title>目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden=true></i></h2><div class=toc-content id=toc-content-auto></div></aside></main><footer class=footer><div class=footer-container><div class="footer-line copyright" itemscope itemtype=http://schema.org/CreativeWork><i class="fa-regular fa-copyright fa-fw" aria-hidden=true></i>
+<span itemprop=copyrightYear>2018 - 2025</span><span class=author itemprop=copyrightHolder>
+<a href=/></a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span></div><div class="footer-line statistics"><span class=site-time title=网站运行中……><i class="fa-solid fa-heartbeat fa-fw animate-icon" aria-hidden=true></i><span class="run-times ms-1">网站运行中……</span></span></div><div class="footer-line visitor"><span id=busuanzi_container_site_uv title=总访客数><i class="fa-regular fa-user fa-fw me-1" aria-hidden=true></i><span id=busuanzi_value_site_uv><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden=true></i></span></span><span id=busuanzi_container_site_pv class=footer-divider title=总访问量><i class="fa-regular fa-eye fa-fw me-1" aria-hidden=true></i><span id=busuanzi_value_site_pv><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden=true></i></span></span></div><div class="footer-line beian"><span class="icp footer-divider"><a target=_blank href=https://beian.miit.gov.cn/>粤ICP备18122209号</a></span></div></div></footer></div><div class=widgets><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role=button aria-label=回到顶部><i class="fa-solid fa-arrow-up fa-fw" aria-hidden=true></i><span class=variant-numeric>0%</span></div><div class="fixed-button view-comments d-none" role=button aria-label=查看评论><i class="fa-solid fa-comment fa-fw" aria-hidden=true></i></div></div><a href=https://github.com/kbsonlong title="在 GitHub 上查看源代码" target=_blank rel="external nofollow" class="github-corner right d-none-mobile"><svg viewBox="0 0 250 250" aria-hidden="true" width="56" height="56"><path d="M0 0 115 115h15l12 27L250 250V0z"/><path d="M128.3 109C113.8 99.7 119 89.6 119 89.6 122 82.7 120.5 78.6 120.5 78.6 119.2 72 123.4 76.3 123.4 76.3 127.3 80.9 125.5 87.3 125.5 87.3 122.9 97.6 130.6 101.9 134.4 103.2" fill="currentColor" style="transform-origin:130px 106px" class="octo-arm"/><path d="M115 115C114.9 115.1 118.7 116.5 119.8 115.4l13.9-13.8C136.9 99.2 139.9 98.4 142.2 98.6 133.8 88 127.5 74.4 143.8 58 148.5 53.4 154 51.2 159.7 51 160.3 49.4 163.2 43.6 171.4 40.1 171.4 40.1 176.1 42.5 178.8 56.2 183.1 58.6 187.2 61.8 190.9 65.4 194.5 69 197.7 73.2 200.1 77.6 213.8 80.2 216.3 84.9 216.3 84.9 212.7 93.1 206.9 96 205.4 96.6 205.1 102.4 203 107.8 198.3 112.5 181.9 128.9 168.3 122.5 157.7 114.1 157.9 116.9 156.7 120.9 152.7 124.9L141 136.5C139.8 137.7 141.6 141.9 141.8 141.8z" fill="currentColor" class="octo-body"/></svg></a><div id=mask></div><div class=reading-progress-bar style=left:0;top:0></div><noscript><div class=noscript-warning>该网站在启用 JavaScript 的情况下效果最佳。</div></noscript></div><link rel=stylesheet href=/lib/cookieconsent/cookieconsent.min.css><script src=/lib/autocomplete/autocomplete.min.js defer></script><script src=/lib/algoliasearch/algoliasearch-lite.umd.min.js defer></script><script src=/lib/sharer/sharer.min.js async defer></script><script src=/lib/cookieconsent/cookieconsent.min.js defer></script><script src=/lib/pangu/pangu.min.js defer></script><script src=/lib/cell-watermark/watermark.min.js defer></script><script src=https://vercount.one/js async defer></script><script src=/posts/06-kubelet-%E6%A0%B8%E5%BF%83%E5%8A%9F%E8%83%BD%E4%B8%8E%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E8%A7%A3%E6%9E%90/config/page.js defer></script><script src=/js/lib/mermaid.min.js type=module></script><script src=/js/theme.min.js defer></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","6272760969",{anonymize_ip:!0})</script><script src="https://www.googletagmanager.com/gtag/js?id=6272760969" async></script></body></html>
