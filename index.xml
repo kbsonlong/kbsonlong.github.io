@@ -520,15 +520,30 @@
 &lt;li>
 &lt;p>&lt;strong>限制变更速率 (&lt;code>convertDesiredReplicasWithBehaviorRate&lt;/code>)&lt;/strong>&lt;/p>
 &lt;ul>
-&lt;li>此函数负责处理 &lt;code>behavior&lt;/code> 中定义的 &lt;code>policies&lt;/code>，以限制单位时间内的副本数变更速率。&lt;/li>
-&lt;li>&lt;strong>核心思想&lt;/strong>：计算出基于速率策略的扩容上限和缩容下限，然后将稳定化后的期望副本数限制在此范围内。
+&lt;li>
+&lt;p>此函数负责处理 &lt;code>behavior&lt;/code> 中定义的 &lt;code>policies&lt;/code>，以限制单位时间内的副本数变更速率。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>核心思想&lt;/strong>：计算出基于速率策略的扩容上限和缩容下限，然后将稳定化后的期望副本数限制在此范围内。&lt;/p>
 &lt;ul>
 &lt;li>&lt;code>最终副本数 = min(期望副本数, 扩容上限)&lt;/code> (扩容时)&lt;/li>
 &lt;li>&lt;code>最终副本数 = max(期望副本数, 缩容下限)&lt;/code> (缩容时)&lt;/li>
 &lt;/ul>
 &lt;/li>
-&lt;li>&lt;strong>扩容上限计算&lt;/strong>：它会遍历所有 &lt;code>scaleUp&lt;/code> 策略（&lt;code>policies&lt;/code>），并为每个策略计算出允许增加的最大副本数。在所有策略计算出的允许值中，它会选择&lt;strong>最激进&lt;/strong>（允许增加最多副本数）的一个作为最终的扩容上限。&lt;/li>
-&lt;li>&lt;strong>缩容下限计算&lt;/strong>：它会遍历所有 &lt;code>scaleDown&lt;/code> 策略，并为每个策略计算出允许减少的最大副本数。在所有策略计算出的允许值中，它会选择&lt;strong>最保守&lt;/strong>（允许减少最少副本数）的一个作为最终的缩容下限。&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>&amp;ldquo;期望副本数&amp;rdquo; vs &amp;ldquo;提议副本数&amp;rdquo;&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>期望副本数 (Desired Replicas)&lt;/strong>：这是 HPA 根据&lt;strong>当前指标利用率&lt;/strong>计算出的&amp;quot;理想&amp;quot;副本数，旨在使资源利用率趋近目标值。它是扩缩容的&lt;strong>最终目标&lt;/strong>。&lt;/li>
+&lt;li>&lt;strong>提议副本数 (Proposed Replicas)&lt;/strong>：这是在速率限制环节中，根据 &lt;code>behavior&lt;/code> 的&lt;strong>每一条策略&lt;/strong>单独计算出的&amp;quot;建议副本数&amp;quot;。它是用于计算最终速率限制的&lt;strong>中间值&lt;/strong>。&lt;/li>
+&lt;li>&lt;strong>关系&lt;/strong>：HPA 首先计算出 &amp;ldquo;期望副本数&amp;rdquo;。然后，通过计算多个 &amp;ldquo;提议副本数&amp;rdquo; 并根据 &lt;code>selectPolicy&lt;/code> 从中选择，得出最终的 &amp;ldquo;扩容上限&amp;rdquo; 或 &amp;ldquo;缩容下限&amp;rdquo;。最后，用这个限制去约束&amp;quot;期望副本数&amp;quot;，从而得到最终要执行的副本数量。简单来说，&amp;ldquo;期望副本数&amp;quot;是目标，而&amp;quot;提议副本数&amp;quot;是计算速率限制的工具。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>扩容上限计算&lt;/strong>：它会遍历所有 &lt;code>scaleUp&lt;/code> 策略（&lt;code>policies&lt;/code>），并为每个策略计算出允许增加的最大副本数。在所有策略计算出的允许值中，它会选择&lt;strong>最激进&lt;/strong>（允许增加最多副本数）的一个作为最终的扩容上限。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>缩容下限计算&lt;/strong>：它会遍历所有 &lt;code>scaleDown&lt;/code> 策略，并为每个策略计算出允许减少的最大副本数。在所有策略计算出的允许值中，它会选择&lt;strong>最保守&lt;/strong>（允许减少最少副本数）的一个作为最终的缩容下限。&lt;/p>
+&lt;/li>
 &lt;/ul>
 &lt;p>&lt;strong>计算公式:&lt;/strong>&lt;/p>
 &lt;p>为了更清晰地理解速率限制，我们可以将其计算逻辑简化为以下公式：&lt;/p>
@@ -922,24 +937,27 @@
 &lt;/h3>&lt;ul>
 &lt;li>最后，控制器会调用 &lt;code>setStatus&lt;/code> 函数来更新 HPA 对象的 &lt;code>.status&lt;/code> 字段，包括 &lt;code>currentReplicas&lt;/code>、&lt;code>desiredReplicas&lt;/code>、&lt;code>lastScaleTime&lt;/code> 以及每个指标的当前状态。&lt;/li>
 &lt;/ul>
+&lt;h3 class="heading-element" id="6-周期性同步与扩缩容延迟">&lt;span>6. 周期性同步与扩缩容延迟&lt;/span>
+ &lt;a href="#6-%e5%91%a8%e6%9c%9f%e6%80%a7%e5%90%8c%e6%ad%a5%e4%b8%8e%e6%89%a9%e7%bc%a9%e5%ae%b9%e5%bb%b6%e8%bf%9f" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;p>HPA 控制器的扩缩容决策并非实时触发，而是依赖于周期性的协调循环。这个循环的频率由 &lt;code>kube-controller-manager&lt;/code> 的启动参数 &lt;code>--horizontal-pod-autoscaler-sync-period&lt;/code> 控制，默认值为 &lt;strong>15 秒&lt;/strong>。&lt;/p>
+&lt;p>这意味着，HPA 控制器每 15 秒才会执行一次完整的 &lt;code>reconcile&lt;/code> 流程，包括从 &lt;code>metrics-server&lt;/code> 获取指标、计算期望副本数、应用稳定化策略等。&lt;/p>
+&lt;p>&lt;strong>延迟的来源：&lt;/strong>&lt;/p>
+&lt;p>扩缩容的端到端延迟主要来自两个方面：&lt;/p>
+&lt;ol>
+&lt;li>&lt;strong>HPA 同步周期&lt;/strong>：由 &lt;code>--horizontal-pod-autoscaler-sync-period&lt;/code> 参数决定，默认为 15 秒。&lt;/li>
+&lt;li>&lt;strong>指标采集延迟&lt;/strong>：&lt;code>metrics-server&lt;/code> 本身也是周期性地从每个节点的 Kubelet 上抓取指标的，由 &lt;code>--metric-resolution&lt;/code> 参数决定，这个周期默认为 15 秒。Kubelet 是从 cAdvisor 获取的容器指标。&lt;/li>
+&lt;/ol>
+&lt;p>&lt;strong>极端情况下的延迟分析：&lt;/strong>&lt;/p>
+&lt;p>在最坏的情况下，当流量高峰到来时，一个完整的扩容决策可能面临的延迟是 &lt;code>HPA 同步周期 + metrics-server 采集周期&lt;/code> 的总和。例如，如果一次流量高峰恰好发生在 &lt;code>metrics-server&lt;/code> 采集之后、HPA 同步之前，那么 HPA 需要等待下一个同步周期才能看到上一个采集周期的“旧”数据，然后做出决策。&lt;/p>
+&lt;p>这种固有的延迟意味着 HPA 更适合应对&lt;strong>可预测的、缓慢变化的负载&lt;/strong>。对于需要秒级响应的突发流量，单纯依赖 HPA 可能无法满足需求，此时可以考虑结合使用其他技术，例如基于请求的预测性扩缩容工具（如 KEDA）或预先保留足够的缓冲资源。&lt;/p>
 &lt;h2 class="heading-element" id="总结">&lt;span>总结&lt;/span>
  &lt;a href="#%e6%80%bb%e7%bb%93" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
-&lt;/h2>&lt;p>HPA 控制器通过一个持续的协调循环，实现了对工作负载的自动水平扩缩容。它通过以下步骤完成其核心功能：&lt;/p>
-&lt;ol>
-&lt;li>&lt;strong>监听 HPA 对象变化&lt;/strong>：通过 Informer 机制，实时感知 HPA 对象的创建、更新和删除。&lt;/li>
-&lt;li>&lt;strong>获取指标&lt;/strong>：使用 &lt;code>metrics-server&lt;/code> 或自定义指标 API 来收集目标资源的指标数据。&lt;/li>
-&lt;li>&lt;strong>计算期望副本数&lt;/strong>：根据指标数据和 HPA 规范，计算出期望的副本数。&lt;/li>
-&lt;li>&lt;strong>稳定化处理&lt;/strong>：通过稳定窗口和行为策略，平滑副本数的变化，避免抖动。&lt;/li>
-&lt;li>&lt;strong>执行扩缩容&lt;/strong>：通过更新目标资源的 &lt;code>scale&lt;/code> 子资源，触发实际的扩缩容操作。&lt;/li>
-&lt;li>&lt;strong>更新状态&lt;/strong>：将扩缩容的结果和当前状态回写到 HPA 对象的 &lt;code>.status&lt;/code> 字段。&lt;/li>
-&lt;/ol>
-&lt;h2 class="heading-element" id="参考资料">&lt;span>参考资料&lt;/span>
- &lt;a href="#%e5%8f%82%e8%80%83%e8%b5%84%e6%96%99" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2></description></item><item><title>何时使用 RAG vs 微调</title><link>https://www.kbsonlong.com/posts/when-to-use-rag-vs-fine-tuning/</link><pubDate>Mon, 20 Oct 2025 11:43:57 +0800</pubDate><guid>https://www.kbsonlong.com/posts/when-to-use-rag-vs-fine-tuning/</guid><category domain="https://www.kbsonlong.com/categories/aiml/">AIML</category><description>&lt;p>&lt;img loading="lazy" src='https://miro.medium.com/v2/resize:fit:700/1*_YcEeuvDIfqh7nl1sDc3ww.png' alt="图片 2">&lt;/p>
+&lt;/h2>&lt;p>HPA 控制器通过一个持续的协调循环，周期性地监控指标、计算期望副本数，并通过一个精密的稳定化机制来避免过于频繁的扩缩容。它提供了丰富的配置选项（特别是 &lt;code>behavior&lt;/code> 字段），允许用户根据应用特性和稳定性要求，精细地调整扩缩容的行为。&lt;/p>
+&lt;p>理解 HPA 的工作原理、计算公式和稳定化策略，对于在生产环境中有效利用 Kubernetes 的自动扩缩容能力至关重要。&lt;/p></description></item><item><title>何时使用 RAG vs 微调</title><link>https://www.kbsonlong.com/posts/when-to-use-rag-vs-fine-tuning/</link><pubDate>Mon, 20 Oct 2025 11:43:57 +0800</pubDate><guid>https://www.kbsonlong.com/posts/when-to-use-rag-vs-fine-tuning/</guid><category domain="https://www.kbsonlong.com/categories/aiml/">AIML</category><description>&lt;p>&lt;img loading="lazy" src='https://miro.medium.com/v2/resize:fit:700/1*_YcEeuvDIfqh7nl1sDc3ww.png' alt="图片 2">&lt;/p>
 &lt;p>充分利用 LLM 的全部潜力需要在检索增强生成 (RAG) 和微调之间选择正确的技术。&lt;/p>
 &lt;p>让我们研究一下何时对 LLM、较小模型和预训练模型使用 RAG 与微调。我们将涵盖：&lt;/p>
 &lt;ul>
