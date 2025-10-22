@@ -314,7 +314,7 @@
  F -- Object --> G3[GetObjectMetricReplicas];
  F -- External --> G4[GetExternalMetricReplicas];
  F -- ContainerResource --> G5[GetContainerResourceReplicas];
- G1 --> H["计算期望副本数&lt;br>desired = ceil(current * (currentMetric / desiredMetric))"];
+ G1 --> H["计算期望副本数 = ceil(当前副本数 * (当前指标值 / 目标指标值))"];
  G2 --> H;
  G3 --> H;
  G4 --> H;
@@ -324,7 +324,9 @@
 
  J -- 是 --> K_subgraph;
  subgraph K_subgraph [normalizeDesiredReplicasWithBehaviors]
- K1[stabilizeRecommendationWithBehaviors&lt;br>稳定化推荐值] --> K2["convertDesiredReplicasWithBehaviorRate&lt;br>限制变更速率&lt;br>scaleUp: min(desired, scaleUpLimit)&lt;br>scaleDown: max(desired, scaleDownLimit)"];
+ K1[stabilizeRecommendationWithBehaviors&lt;br>稳定化推荐值] 
+ K2["convertDesiredReplicasWithBehaviorRate&lt;br>限制变更速率"];
+ K1 --> K2
  end
 
  J -- 否 --> L_subgraph;
@@ -351,7 +353,7 @@
  F -- Object --> G3[GetObjectMetricReplicas];
  F -- External --> G4[GetExternalMetricReplicas];
  F -- ContainerResource --> G5[GetContainerResourceReplicas];
- G1 --> H["计算期望副本数&lt;br>desired = ceil(current * (currentMetric / desiredMetric))"];
+ G1 --> H["计算期望副本数 = ceil(当前副本数 * (当前指标值 / 目标指标值))"];
  G2 --> H;
  G3 --> H;
  G4 --> H;
@@ -361,7 +363,9 @@
 
  J -- 是 --> K_subgraph;
  subgraph K_subgraph [normalizeDesiredReplicasWithBehaviors]
- K1[stabilizeRecommendationWithBehaviors&lt;br>稳定化推荐值] --> K2["convertDesiredReplicasWithBehaviorRate&lt;br>限制变更速率&lt;br>scaleUp: min(desired, scaleUpLimit)&lt;br>scaleDown: max(desired, scaleDownLimit)"];
+ K1[stabilizeRecommendationWithBehaviors&lt;br>稳定化推荐值] 
+ K2["convertDesiredReplicasWithBehaviorRate&lt;br>限制变更速率"];
+ K1 --> K2
  end
 
  J -- 否 --> L_subgraph;
@@ -388,7 +392,7 @@
  F -- Object --> G3[GetObjectMetricReplicas];
  F -- External --> G4[GetExternalMetricReplicas];
  F -- ContainerResource --> G5[GetContainerResourceReplicas];
- G1 --> H["计算期望副本数&lt;br>desired = ceil(current * (currentMetric / desiredMetric))"];
+ G1 --> H["计算期望副本数 = ceil(当前副本数 * (当前指标值 / 目标指标值))"];
  G2 --> H;
  G3 --> H;
  G4 --> H;
@@ -398,7 +402,9 @@
 
  J -- 是 --> K_subgraph;
  subgraph K_subgraph [normalizeDesiredReplicasWithBehaviors]
- K1[stabilizeRecommendationWithBehaviors&lt;br>稳定化推荐值] --> K2["convertDesiredReplicasWithBehaviorRate&lt;br>限制变更速率&lt;br>scaleUp: min(desired, scaleUpLimit)&lt;br>scaleDown: max(desired, scaleDownLimit)"];
+ K1[stabilizeRecommendationWithBehaviors&lt;br>稳定化推荐值] 
+ K2["convertDesiredReplicasWithBehaviorRate&lt;br>限制变更速率"];
+ K1 --> K2
  end
 
  J -- 否 --> L_subgraph;
@@ -425,7 +431,7 @@
  F -- Object --> G3[GetObjectMetricReplicas];
  F -- External --> G4[GetExternalMetricReplicas];
  F -- ContainerResource --> G5[GetContainerResourceReplicas];
- G1 --> H["计算期望副本数&lt;br>desired = ceil(current * (currentMetric / desiredMetric))"];
+ G1 --> H["计算期望副本数 = ceil(当前副本数 * (当前指标值 / 目标指标值))"];
  G2 --> H;
  G3 --> H;
  G4 --> H;
@@ -435,7 +441,9 @@
 
  J -- 是 --> K_subgraph;
  subgraph K_subgraph [normalizeDesiredReplicasWithBehaviors]
- K1[stabilizeRecommendationWithBehaviors&lt;br>稳定化推荐值] --> K2["convertDesiredReplicasWithBehaviorRate&lt;br>限制变更速率&lt;br>scaleUp: min(desired, scaleUpLimit)&lt;br>scaleDown: max(desired, scaleDownLimit)"];
+ K1[stabilizeRecommendationWithBehaviors&lt;br>稳定化推荐值] 
+ K2["convertDesiredReplicasWithBehaviorRate&lt;br>限制变更速率"];
+ K1 --> K2
  end
 
  J -- 否 --> L_subgraph;
