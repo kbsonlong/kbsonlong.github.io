@@ -7,16 +7,14 @@
  &lt;a href="#%e7%ae%80%e4%bb%8b" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
-&lt;/h2>&lt;p>Kubelet 是 Kubernetes 集群中每个 Node 节点上运行的核心组件，扮演着“节点管家”的角色。它负责接收并执行 Master 节点（具体来说是 &lt;code>kube-apiserver&lt;/code>）下发的指令，管理 Pod 的生命周期，确保节点上的容器按照预期状态运行。&lt;/p>
-&lt;p>Kubelet 的核心职责包括：&lt;/p>
+&lt;/h2>&lt;p>Kubelet 是 Kubernetes 集群中每个 Node 节点上运行的核心组件。它负责接收并执行 Master 节点（具体来说是 &lt;code>kube-apiserver&lt;/code>）下发的指令，管理 Pod 的生命周期，确保节点上的容器按照预期状态运行。&lt;/p>
+&lt;p>本文将从 Kubelet 的以下核心功能：&lt;/p>
 &lt;ul>
 &lt;li>&lt;strong>Pod 管理&lt;/strong>：根据 &lt;code>kube-apiserver&lt;/code> 或静态 Pod 定义，创建、销毁和管理 Pod 的生命周期。&lt;/li>
 &lt;li>&lt;strong>容器健康检查&lt;/strong>：通过 Liveness Probe 和 Readiness Probe 监控容器的健康状况，并根据结果进行相应的处理（如重启容器）。&lt;/li>
-&lt;li>&lt;strong>容器资源监控&lt;/strong>：通过内嵌的 cAdvisor 收集容器和节点的资源使用情况（如 CPU、内存、磁盘、网络），并上报给 &lt;code>metrics-server&lt;/code>，为 HPA 等组件提供数据支持。&lt;/li>
-&lt;li>&lt;strong>存储卷管理&lt;/strong>：负责为 Pod 挂载和卸载存储卷（Volume）。&lt;/li>
-&lt;li>&lt;strong>节点状态上报&lt;/strong>：定期向 &lt;code>kube-apiserver&lt;/code> 汇报本节点的状态，包括资源使用情况、运行中的 Pod 列表等。&lt;/li>
+&lt;li>&lt;strong>容器资源监控&lt;/strong>：通过内嵌的 cAdvisor 收集容器和节点的资源使用情况（如 CPU、内存、磁盘、网络）。&lt;/li>
 &lt;/ul>
-&lt;p>本文将深入分析 Kubelet 的源码，详细探究其从启动到创建第一个容器的完整流程，并解析其核心工作循环和指标计算机制。&lt;/p>
+&lt;p>详细探究其从启动到创建第一个容器的完整流程，并解析其核心工作循环和指标计算机制。&lt;/p>
 &lt;h2 class="heading-element" id="入口点与初始化">&lt;span>入口点与初始化&lt;/span>
  &lt;a href="#%e5%85%a5%e5%8f%a3%e7%82%b9%e4%b8%8e%e5%88%9d%e5%a7%8b%e5%8c%96" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
