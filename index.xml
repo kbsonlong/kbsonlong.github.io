@@ -947,10 +947,11 @@
 &lt;p>扩缩容的端到端延迟主要来自两个方面：&lt;/p>
 &lt;ol>
 &lt;li>&lt;strong>HPA 同步周期&lt;/strong>：由 &lt;code>--horizontal-pod-autoscaler-sync-period&lt;/code> 参数决定，默认为 15 秒。&lt;/li>
-&lt;li>&lt;strong>指标采集延迟&lt;/strong>：&lt;code>metrics-server&lt;/code> 本身也是周期性地从每个节点的 Kubelet 上抓取指标的，由 &lt;code>--metric-resolution&lt;/code> 参数决定，这个周期默认为 15 秒。Kubelet 是从 cAdvisor 获取的容器指标。&lt;/li>
+&lt;li>&lt;strong>指标采集延迟&lt;/strong>：&lt;code>metrics-server&lt;/code> 本身也是周期性地从每个节点的 Kubelet 上抓取指标的，由 &lt;code>--metric-resolution&lt;/code> 参数决定，这个周期默认为 15 秒。&lt;/li>
+&lt;li>Kubelet 通过其内嵌的 cAdvisor 来获取容器指标的，这个获取周期由 Kubelet 的 &lt;code>--housekeeping-interval&lt;/code> 参数控制，默认为 &lt;strong>10 秒&lt;/strong>。因此，指标从容器产生到被 HPA 控制器获取，中间经过了多层缓存和周期性采集。&lt;/li>
 &lt;/ol>
 &lt;p>&lt;strong>极端情况下的延迟分析：&lt;/strong>&lt;/p>
-&lt;p>在最坏的情况下，当流量高峰到来时，一个完整的扩容决策可能面临的延迟是 &lt;code>HPA 同步周期 + metrics-server 采集周期&lt;/code> 的总和。例如，如果一次流量高峰恰好发生在 &lt;code>metrics-server&lt;/code> 采集之后、HPA 同步之前，那么 HPA 需要等待下一个同步周期才能看到上一个采集周期的“旧”数据，然后做出决策。&lt;/p>
+&lt;p>在最坏的情况下，当流量高峰到来时，一个完整的扩容决策可能面临的延迟是 &lt;code>HPA 同步周期 + metrics-server 采集周期 + kubelet 采集周期&lt;/code> 的总和。例如，如果一次流量高峰恰好发生在 &lt;code>metrics-server&lt;/code> 采集之后、HPA 同步之前，那么 HPA 需要等待下一个同步周期才能看到上一个采集周期的&amp;quot;旧&amp;quot;数据，然后做出决策。&lt;/p>
 &lt;p>这种固有的延迟意味着 HPA 更适合应对&lt;strong>可预测的、缓慢变化的负载&lt;/strong>。对于需要秒级响应的突发流量，单纯依赖 HPA 可能无法满足需求，此时可以考虑结合使用其他技术，例如基于请求的预测性扩缩容工具（如 KEDA）或预先保留足够的缓冲资源。&lt;/p>
 &lt;h2 class="heading-element" id="总结">&lt;span>总结&lt;/span>
  &lt;a href="#%e6%80%bb%e7%bb%93" class="heading-mark">
