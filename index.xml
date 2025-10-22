@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>蜷缩的蜗牛</title><link>https://www.kbsonlong.com/</link><description>云原生时代运维</description><generator>Hugo 0.147.7 &amp; FixIt v0.4.0-alpha.2-20251014082535-5c74d431</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Wed, 22 Oct 2025 10:09:54 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/index.xml" rel="self" type="application/rss+xml"/><item><title>05-kube-controller-manager源码分析(HPA控制器)</title><link>https://www.kbsonlong.com/posts/05-kube-controller-manager%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90hpa%E6%8E%A7%E5%88%B6%E5%99%A8/</link><pubDate>Wed, 22 Oct 2025 10:09:54 +0800</pubDate><guid>https://www.kbsonlong.com/posts/05-kube-controller-manager%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90hpa%E6%8E%A7%E5%88%B6%E5%99%A8/</guid><category domain="https://www.kbsonlong.com/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">源码分析</category><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><description>&lt;p>本文基于&lt;a href="https://github.com/kubernetes/kubernetes/tree/v1.29.0"target="_blank" rel="external nofollow noopener noreferrer">1.29.0&lt;/a>版本&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>蜷缩的蜗牛</title><link>https://www.kbsonlong.com/</link><description>云原生时代运维</description><generator>Hugo 0.147.7 &amp; FixIt v0.4.0-alpha.2-20251022034748-fe129dd2</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Wed, 22 Oct 2025 10:09:54 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/index.xml" rel="self" type="application/rss+xml"/><item><title>05-kube-controller-manager源码分析(HPA控制器)</title><link>https://www.kbsonlong.com/posts/05-kube-controller-manager%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90hpa%E6%8E%A7%E5%88%B6%E5%99%A8/</link><pubDate>Wed, 22 Oct 2025 10:09:54 +0800</pubDate><guid>https://www.kbsonlong.com/posts/05-kube-controller-manager%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90hpa%E6%8E%A7%E5%88%B6%E5%99%A8/</guid><category domain="https://www.kbsonlong.com/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">源码分析</category><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><description>&lt;p>本文基于&lt;a href="https://github.com/kubernetes/kubernetes/tree/v1.29.0"target="_blank" rel="external nofollow noopener noreferrer">1.29.0&lt;/a>版本&lt;/p>
 &lt;h1 class="heading-element" id="hpa-控制器源码分析">&lt;span>HPA 控制器源码分析&lt;/span>
  &lt;a href="#hpa-%e6%8e%a7%e5%88%b6%e5%99%a8%e6%ba%90%e7%a0%81%e5%88%86%e6%9e%90" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
@@ -15,7 +15,7 @@
  &lt;/a>
 &lt;/h2>&lt;p>与许多其他控制器一样，HPA 控制器在 &lt;code>kube-controller-manager&lt;/code> 进程中运行。其初始化入口位于 &lt;code>cmd/kube-controller-manager/app/autoscaling.go&lt;/code> 文件中。&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
@@ -42,7 +42,7 @@
  &lt;/a>
 &lt;/h2>&lt;p>&lt;code>startHorizontalPodAutoscalerControllerWithRESTClient&lt;/code> 函数是 HPA 控制器初始化的起点。&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -87,7 +87,7 @@
 &lt;/div>&lt;p>此函数主要负责准备 HPA 控制器所需的依赖，例如 &lt;code>RESTMapper&lt;/code>、&lt;code>DiscoveryClient&lt;/code> 和 &lt;code>ScaleClient&lt;/code>，然后调用 &lt;code>startHPAControllerWithMetricsClient&lt;/code>。&lt;/p>
 &lt;p>&lt;code>startHPAControllerWithMetricsClient&lt;/code> 函数进一步构建了用于获取指标的客户端，并最终创建和启动了 &lt;code>HorizontalController&lt;/code>。&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -138,7 +138,7 @@
 &lt;/div>&lt;p>在这里，&lt;code>NewHorizontalController&lt;/code> 函数（位于 &lt;code>pkg/controller/podautoscaler/horizontal.go&lt;/code>）被调用以创建 &lt;code>HorizontalController&lt;/code> 的实例。然后，&lt;code>Run&lt;/code> 方法在一个新的 Goroutine 中被调用，启动了控制器的核心循环。&lt;/p>
 &lt;p>&lt;code>NewHorizontalController&lt;/code> 函数初始化了 &lt;code>HorizontalController&lt;/code> 结构体，其中包含了 HPA 控制器运行所需的所有组件：&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -202,7 +202,7 @@
  &lt;/a>
 &lt;/h2>&lt;p>HPA 控制器的核心协调循环由 &lt;code>Run&lt;/code> 方法和 &lt;code>worker&lt;/code> 函数驱动。&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -237,7 +237,7 @@
 &lt;/div>&lt;p>&lt;code>Run&lt;/code> 方法启动了多个 &lt;code>worker&lt;/code> Goroutine。每个 &lt;code>worker&lt;/code> 都在一个无限循环中调用 &lt;code>processNextWorkItem&lt;/code> 函数。&lt;/p>
 &lt;p>&lt;code>processNextWorkItem&lt;/code> 函数从工作队列中取出一个 HPA 对象的 &lt;code>key&lt;/code>（格式为 &lt;code>namespace/name&lt;/code>），然后调用 &lt;code>reconcileKey&lt;/code> 函数来处理它。&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
@@ -261,7 +261,7 @@
 &lt;/div>
 &lt;/div>&lt;p>&lt;code>reconcileKey&lt;/code> 函数是协调过程的入口。它首先从 &lt;code>hpaLister&lt;/code> 中获取 HPA 对象。如果对象不存在（可能已被删除），它会清理与该 HPA 相关的数据。如果对象存在，它会调用 &lt;code>reconcileAutoscaler&lt;/code> 函数来执行主要的扩缩容逻辑。&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
@@ -287,7 +287,7 @@
  &lt;/a>
 &lt;/h2>&lt;p>&lt;code>reconcileAutoscaler&lt;/code> 函数是 HPA 控制器的心脏，它实现了完整的扩缩容逻辑。&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
@@ -570,7 +570,7 @@
 &lt;p>&lt;strong>代码实现:&lt;/strong>&lt;/p>
 &lt;p>&lt;code>convertDesiredReplicasWithBehaviorRate&lt;/code> 函数是速率限制的入口，它根据扩容或缩容场景，分别调用 &lt;code>calculateScaleUpLimitWithScalingRules&lt;/code> 和 &lt;code>calculateScaleDownLimitWithBehaviors&lt;/code>。&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -630,7 +630,7 @@
 &lt;/div>
 &lt;/div>&lt;p>&lt;code>calculateScaleUpLimitWithScalingRules&lt;/code> 函数负责计算扩容上限。它会遍历所有 &lt;code>scaleUp&lt;/code> 策略，并根据 &lt;code>SelectPolicy&lt;/code>（默认为 &lt;code>Max&lt;/code>）选择最激进的结果。&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -682,7 +682,7 @@
 &lt;/div>
 &lt;/div>&lt;p>&lt;code>calculateScaleDownLimitWithBehaviors&lt;/code> 函数负责计算缩容下限。它会遍历所有 &lt;code>scaleDown&lt;/code> 策略，并根据 &lt;code>SelectPolicy&lt;/code>（默认为 &lt;code>Max&lt;/code>，但对于缩容场景，&lt;code>Max&lt;/code> 意味着选择变化最小的策略）选择最保守的结果。&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -742,7 +742,7 @@
  &lt;/a>
 &lt;/h4>&lt;p>为了更具体地理解 &lt;code>behavior&lt;/code> 配置如何工作，我们可以参考一个实际的 &lt;code>hpa.yaml&lt;/code> 文件示例。&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -872,7 +872,7 @@
  &lt;/a>
 &lt;/h3>&lt;p>在计算并稳定期望副本数之后，控制器就进入了最终的执行阶段。&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -1198,7 +1198,7 @@
  &lt;/a>
 &lt;/h3>&lt;p>确保有一个包含 Grafana SQLite 数据库文件的 PVC，并在 Job YAML 中更新 &lt;code>claimName&lt;/code> 字段：&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
@@ -1216,7 +1216,7 @@
  &lt;/a>
 &lt;/h3>&lt;p>在 ConfigMap 中更新 PostgreSQL 的连接信息：&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;/code>&lt;/pre>&lt;/td>
 &lt;td class="lntd">
@@ -1231,7 +1231,7 @@
 &lt;li>应用 YAML 文件创建 Job：&lt;/li>
 &lt;/ol>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;/code>&lt;/pre>&lt;/td>
 &lt;td class="lntd">
@@ -1241,7 +1241,7 @@
 &lt;li>监控 Job 状态：&lt;/li>
 &lt;/ol>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;/code>&lt;/pre>&lt;/td>
@@ -1253,7 +1253,7 @@
 &lt;li>检查 Job 是否成功完成：&lt;/li>
 &lt;/ol>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;/code>&lt;/pre>&lt;/td>
 &lt;td class="lntd">
@@ -1406,7 +1406,7 @@
 &lt;p>&lt;strong>生成 RSA 密钥对&lt;/strong>&lt;/p>
 &lt;p>这对密钥将用于签署 Kubernetes Service Account Token。&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
@@ -1421,7 +1421,7 @@
 &lt;p>&lt;strong>生成 &lt;code>keys.json&lt;/code> (JWKS)&lt;/strong>&lt;/p>
 &lt;p>&lt;code>keys.json&lt;/code> 包含用于验证签名的公钥。您需要一个辅助工具来从公钥生成 JWKS 文件。&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
@@ -1452,7 +1452,7 @@
 &lt;li>
 &lt;p>&lt;strong>设置环境变量&lt;/strong>&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
@@ -1476,7 +1476,7 @@
 &lt;li>
 &lt;p>&lt;strong>创建 S3 存储桶并设置为公开只读&lt;/strong>&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -1542,7 +1542,7 @@
 &lt;li>
 &lt;p>&lt;strong>生成并上传 OIDC Discovery 文档&lt;/strong>&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -1590,7 +1590,7 @@
 &lt;li>
 &lt;p>&lt;strong>设置环境变量&lt;/strong>&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -1623,7 +1623,7 @@
 &lt;p>&lt;strong>创建私有 S3 存储桶&lt;/strong>&lt;/p>
 &lt;p>注意：这次我们不设置任何公开访问策略。&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
@@ -1639,7 +1639,7 @@
 &lt;li>
 &lt;p>&lt;strong>生成并上传 OIDC Discovery 文档&lt;/strong>&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -1705,7 +1705,7 @@ d. &lt;strong>Permissions&lt;/strong>: 在 S3 存储桶策略中，授权 Cloudf
 &lt;li>
 &lt;p>&lt;strong>对于方案 A (S3):&lt;/strong>&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;/code>&lt;/pre>&lt;/td>
 &lt;td class="lntd">
@@ -1715,7 +1715,7 @@ d. &lt;strong>Permissions&lt;/strong>: 在 S3 存储桶策略中，授权 Cloudf
 &lt;li>
 &lt;p>&lt;strong>对于方案 B (Cloudflare):&lt;/strong>&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;/code>&lt;/pre>&lt;/td>
 &lt;td class="lntd">
@@ -1728,7 +1728,7 @@ d. &lt;strong>Permissions&lt;/strong>: 在 S3 存储桶策略中，授权 Cloudf
 &lt;p>&lt;strong>创建 OIDC Identity Provider&lt;/strong>&lt;/p>
 &lt;p>确保您已根据所选方案正确设置了 &lt;code>ISSUER_URL&lt;/code> 环境变量。&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
@@ -1749,7 +1749,7 @@ d. &lt;strong>Permissions&lt;/strong>: 在 S3 存储桶策略中，授权 Cloudf
 &lt;/h3>&lt;p>&lt;strong>警告&lt;/strong>: 修改 API Server 参数可能会使集群中现有的 Service Account Token 失效。请在维护窗口操作，并做好备份。&lt;/p>
 &lt;p>您需要修改 &lt;code>kube-apiserver&lt;/code> 的启动参数，添加以下标志：&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
@@ -1775,7 +1775,7 @@ d. &lt;strong>Permissions&lt;/strong>: 在 S3 存储桶策略中，授权 Cloudf
 &lt;p>&lt;strong>安装 cert-manager&lt;/strong> (如果您的集群中还没有)&lt;/p>
 &lt;p>&lt;code>cert-manager&lt;/code> 用于为 webhook 自动签发和管理 TLS 证书。&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;/code>&lt;/pre>&lt;/td>
 &lt;td class="lntd">
@@ -1787,7 +1787,7 @@ d. &lt;strong>Permissions&lt;/strong>: 在 S3 存储桶策略中，授权 Cloudf
 &lt;p>&lt;strong>部署 Webhook&lt;/strong>&lt;/p>
 &lt;p>您可以从 AWS 官方仓库获取部署文件：&lt;code>https://github.com/aws/amazon-eks-pod-identity-webhook&lt;/code>。&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
@@ -1816,7 +1816,7 @@ d. &lt;strong>Permissions&lt;/strong>: 在 S3 存储桶策略中，授权 Cloudf
 &lt;p>&lt;strong>创建 IAM 角色和信任策略&lt;/strong>&lt;/p>
 &lt;p>此角色将被我们的示例 Pod 所扮演。&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -1911,7 +1911,7 @@ d. &lt;strong>Permissions&lt;/strong>: 在 S3 存储桶策略中，授权 Cloudf
 &lt;li>创建一个 Job，该 Job 使用此 Service Account 访问 S3。&lt;/li>
 &lt;/ul>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -1999,7 +1999,7 @@ d. &lt;strong>Permissions&lt;/strong>: 在 S3 存储桶策略中，授权 Cloudf
 &lt;li>在 AWS S3 控制台或使用 AWS CLI 检查目标存储桶中是否存在新文件。&lt;/li>
 &lt;/ul>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
@@ -2077,7 +2077,7 @@ d. &lt;strong>Permissions&lt;/strong>: 在 S3 存储桶策略中，授权 Cloudf
 &lt;p>这是最强有力的防护措施。我们可以通过 &lt;code>iptables&lt;/code> 规则，在每个 Worker Node 上，禁止来自 Pod 的流量访问元数据接口。&lt;/p>
 &lt;p>一个常见的做法是在节点启动脚本中加入如下规则：&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
@@ -2187,7 +2187,7 @@ d. &lt;strong>Permissions&lt;/strong>: 在 S3 存储桶策略中，授权 Cloudf
 &lt;p>&lt;strong>方法一：直接检查进程参数 (最通用)&lt;/strong>&lt;/p>
 &lt;p>这是最可靠的方法，因为它直接反映了正在运行的配置。&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;/code>&lt;/pre>&lt;/td>
@@ -2223,7 +2223,7 @@ d. &lt;strong>Permissions&lt;/strong>: 在 S3 存储桶策略中，授权 Cloudf
 &lt;p>&lt;strong>方法二：检查静态 Pod 定义 (如果使用 kubeadm)&lt;/strong>&lt;/p>
 &lt;p>如果您的集群是使用 &lt;code>kubeadm&lt;/code> 安装的，&lt;code>kube-apiserver&lt;/code> 通常作为静态 Pod 运行。&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;/code>&lt;/pre>&lt;/td>
@@ -2235,7 +2235,7 @@ d. &lt;strong>Permissions&lt;/strong>: 在 S3 存储桶策略中，授权 Cloudf
 &lt;p>&lt;strong>方法三：检查 systemd 服务单元&lt;/strong>&lt;/p>
 &lt;p>如果您的 &lt;code>kube-apiserver&lt;/code> 是作为 systemd 服务运行的，您可以检查其服务定义。&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
@@ -2293,7 +2293,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
 &lt;li>&lt;code>kube-apiserver&lt;/code> 更新后，现存 Pod 中的旧令牌不会自动刷新。您必须强制它们获取包含新 &lt;code>issuer&lt;/code> 的令牌。&lt;/li>
 &lt;li>最稳妥的方式是&lt;strong>滚动重启您的所有工作负载&lt;/strong>（Deployments, StatefulSets, etc.）。
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;/code>&lt;/pre>&lt;/td>
@@ -2318,7 +2318,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
 &lt;li>
 &lt;p>&lt;strong>获取 Pod 的实时 YAML&lt;/strong>&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;/code>&lt;/pre>&lt;/td>
 &lt;td class="lntd">
@@ -2330,7 +2330,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
 &lt;p>&lt;strong>证据一：检查容器的环境变量 (&lt;code>spec.containers.env&lt;/code>)&lt;/strong>&lt;/p>
 &lt;p>Webhook 会自动注入两个环境变量：&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
@@ -2351,7 +2351,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
 &lt;/div>&lt;p>&lt;strong>证据二：检查容器的卷挂载 (&lt;code>spec.containers.volumeMounts&lt;/code>)&lt;/strong>&lt;/p>
 &lt;p>您会看到一个与 &lt;code>AWS_WEB_IDENTITY_TOKEN_FILE&lt;/code> 路径匹配的挂载点：&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
@@ -2366,7 +2366,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
 &lt;/div>&lt;p>&lt;strong>证据三：检查 Pod 的卷定义 (&lt;code>spec.volumes&lt;/code>) - 最核心的证据&lt;/strong>&lt;/p>
 &lt;p>根据上一步的卷 &lt;code>name&lt;/code> (&lt;code>aws-iam-token&lt;/code>)，在 Pod 的卷列表中找到它的定义。您会发现它是一个 &lt;code>projected&lt;/code> (投射) 类型的卷，这正是 IRSA 的魔法所在：&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
@@ -2408,7 +2408,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
 &lt;/ol>
 &lt;p>数据流向：&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;/code>&lt;/pre>&lt;/td>
 &lt;td class="lntd">
@@ -2420,7 +2420,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;/a>
 &lt;/h2>&lt;p>首先需要在 Grafana 中启用 auth.proxy 认证：&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -2488,7 +2488,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -2565,7 +2565,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -2723,7 +2723,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;/a>
 &lt;/h2>&lt;p>认证服务使用 Go 语言实现，支持 JWT token 验证和前端登录页面：&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -3957,7 +3957,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;/a>
 &lt;/h3>&lt;p>为了构建认证服务的 Docker 镜像，我们需要创建一个 Dockerfile：&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -3990,7 +3990,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -4091,7 +4091,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
 &lt;/h2>&lt;p>如果您使用 APISIX 作为网关，可以使用以下配置来优化认证流程，将认证信息传递给所有页面：&lt;/p>
 &lt;p>根据您提供的 Grafana 配置和架构说明（仅包含 APISIX、Grafana 和认证服务），我为您创建了以下 APISIX 配置，该配置可以实现将认证信息传递给所有页面：&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -4182,7 +4182,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;/a>
 &lt;/h3>&lt;p>使用 APISIX 的 JWT 插件直接验证 JWT Token，避免每次都调用认证服务：&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -4308,7 +4308,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;/a>
 &lt;/h3>&lt;p>使用 APISIX 的缓存机制来减少对认证服务的调用：&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -4432,7 +4432,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;/a>
 &lt;/h3>&lt;p>采用混合策略，只对特定路径使用认证服务，其他路径使用 JWT 验证：&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -4636,7 +4636,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
 &lt;li>创建项目目录结构：&lt;/li>
 &lt;/ol>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
@@ -4663,7 +4663,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
 &lt;/li>
 &lt;/ol>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;/code>&lt;/pre>&lt;/td>
 &lt;td class="lntd">
@@ -4688,7 +4688,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
@@ -4705,7 +4705,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
@@ -4735,7 +4735,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
@@ -4781,7 +4781,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;/a>
 &lt;/h3>&lt;p>&lt;strong>文件位置&lt;/strong>: &lt;code>pkg/kubelet/kubelet.go#L1388-1389&lt;/code>&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;/code>&lt;/pre>&lt;/td>
@@ -4795,7 +4795,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;/a>
 &lt;/h3>&lt;p>在&lt;code>NewMainKubelet&lt;/code>函数中，evictionManager通过以下方式创建：&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -4841,7 +4841,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;/a>
 &lt;/h3>&lt;p>&lt;strong>文件位置&lt;/strong>: &lt;code>pkg/kubelet/eviction/eviction_manager.go#L177-206&lt;/code>&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -4933,7 +4933,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;/a>
 &lt;/h3>&lt;p>&lt;strong>文件位置&lt;/strong>: &lt;code>pkg/kubelet/eviction/memory_threshold_notifier.go#L44-65&lt;/code>&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -4995,7 +4995,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;/a>
 &lt;/h3>&lt;p>&lt;strong>文件位置&lt;/strong>: &lt;code>pkg/kubelet/eviction/memory_threshold_notifier.go#L75-105&lt;/code>&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -5079,7 +5079,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;/a>
 &lt;/h3>&lt;p>&lt;strong>文件位置&lt;/strong>: &lt;code>pkg/kubelet/eviction/threshold_notifier_linux.go#L48-99&lt;/code>&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -5175,7 +5175,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;/a>
 &lt;/h3>&lt;p>&lt;strong>文件位置&lt;/strong>: &lt;code>pkg/kubelet/eviction/threshold_notifier_linux.go#L101-133&lt;/code>&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -5269,7 +5269,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;/a>
 &lt;/h3>&lt;p>&lt;strong>文件位置&lt;/strong>: &lt;code>pkg/kubelet/eviction/eviction_manager.go#L231-393&lt;/code>&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -5543,7 +5543,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;/a>
 &lt;/h3>&lt;p>&lt;strong>文件位置&lt;/strong>: &lt;code>pkg/kubelet/eviction/eviction_manager.go#L555-578&lt;/code>&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -5624,7 +5624,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;/a>
 &lt;/h4>&lt;p>&lt;strong>内核源码路径&lt;/strong>: &lt;code>mm/page_alloc.c&lt;/code>&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -5714,7 +5714,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
 &lt;/div>
 &lt;/div>&lt;p>&lt;strong>调用流程图&lt;/strong>:&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
@@ -5736,7 +5736,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;/a>
 &lt;/h4>&lt;p>&lt;strong>内核源码路径&lt;/strong>: &lt;code>mm/vmscan.c&lt;/code>&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -5846,7 +5846,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
 &lt;/div>
 &lt;/div>&lt;p>&lt;strong>回收机制调用流程&lt;/strong>:&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -5880,7 +5880,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;/a>
 &lt;/h4>&lt;p>&lt;strong>内核源码路径&lt;/strong>: &lt;code>mm/memcontrol.c&lt;/code>&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -6040,7 +6040,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
 &lt;/div>
 &lt;/div>&lt;p>&lt;strong>cgroup内存回收调用流程&lt;/strong>:&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
@@ -6064,7 +6064,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;/a>
 &lt;/h3>&lt;p>&lt;strong>内核源码路径&lt;/strong>: &lt;code>mm/memcontrol.c&lt;/code>&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -6216,7 +6216,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
 &lt;/div>
 &lt;/div>&lt;p>&lt;strong>eventfd通知调用流程&lt;/strong>:&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
@@ -6240,7 +6240,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;/a>
 &lt;/h4>&lt;p>&lt;strong>内核源码路径&lt;/strong>: &lt;code>mm/memcontrol.c&lt;/code>&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -6322,7 +6322,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;/a>
 &lt;/h4>&lt;p>&lt;strong>内核源码路径&lt;/strong>: &lt;code>mm/memcontrol.c&lt;/code>&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -6423,7 +6423,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;/a>
 &lt;/h4>&lt;p>&lt;strong>内核源码路径&lt;/strong>: &lt;code>mm/vmscan.c&lt;/code>&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -6643,7 +6643,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;/a>
 &lt;/h4>&lt;p>&lt;strong>内核源码路径&lt;/strong>: &lt;code>mm/page_alloc.c&lt;/code>&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -6767,7 +6767,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;/a>
 &lt;/h4>&lt;p>&lt;strong>内核源码路径&lt;/strong>: &lt;code>mm/memcontrol.c&lt;/code>&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -6889,7 +6889,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;/a>
 &lt;/h4>&lt;p>&lt;strong>内核源码路径&lt;/strong>: &lt;code>mm/memcontrol.c&lt;/code>&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -7069,7 +7069,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;/a>
 &lt;/h4>&lt;p>&lt;strong>内核源码路径&lt;/strong>: &lt;code>mm/oom_kill.c&lt;/code>&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -7339,7 +7339,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;/a>
 &lt;/h4>&lt;p>&lt;strong>内核源码路径&lt;/strong>: &lt;code>mm/oom_kill.c&lt;/code>&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -7611,7 +7611,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;/a>
 &lt;/h4>&lt;p>&lt;strong>内核源码路径&lt;/strong>: &lt;code>include/linux/gfp.h&lt;/code>&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -7709,7 +7709,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;/a>
 &lt;/h4>&lt;p>&lt;strong>内核源码路径&lt;/strong>: &lt;code>mm/page_alloc.c&lt;/code>&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -7892,7 +7892,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -7967,7 +7967,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -8000,7 +8000,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -8035,7 +8035,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
@@ -8062,7 +8062,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -8094,7 +8094,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
 &lt;li>
 &lt;p>&lt;strong>检查节点内存使用情况&lt;/strong>&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;/code>&lt;/pre>&lt;/td>
@@ -8106,7 +8106,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
 &lt;li>
 &lt;p>&lt;strong>检查kubelet配置&lt;/strong>&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;/code>&lt;/pre>&lt;/td>
 &lt;td class="lntd">
@@ -8116,7 +8116,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
 &lt;li>
 &lt;p>&lt;strong>检查Pod内存使用&lt;/strong>&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;/code>&lt;/pre>&lt;/td>
@@ -8128,7 +8128,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
 &lt;li>
 &lt;p>&lt;strong>检查驱逐事件&lt;/strong>&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;/code>&lt;/pre>&lt;/td>
 &lt;td class="lntd">
@@ -8138,7 +8138,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
 &lt;li>
 &lt;p>&lt;strong>检查cgroup设置&lt;/strong>&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;/code>&lt;/pre>&lt;/td>
 &lt;td class="lntd">
@@ -8233,7 +8233,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;/a>
 &lt;/h3>&lt;p>&lt;code>--etcd-servers-overrides&lt;/code> 参数的格式为：&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;/code>&lt;/pre>&lt;/td>
 &lt;td class="lntd">
@@ -8241,7 +8241,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
 &lt;/div>
 &lt;/div>&lt;p>例如，将 &lt;code>/registry/events&lt;/code> 路径下的数据重定向到独立的 events ETCD 集群：&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;/code>&lt;/pre>&lt;/td>
 &lt;td class="lntd">
@@ -8311,7 +8311,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
 &lt;/h3>&lt;p>假设所有 ETCD 集群（包括主 ETCD 和 Events ETCD）的证书都由同一个 CA 签发，并且 &lt;code>kube-apiserver&lt;/code> 使用一个客户端证书连接所有 ETCD。&lt;/p>
 &lt;p>&lt;strong>&lt;code>kube-apiserver&lt;/code> 启动参数示例&lt;/strong>：&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
@@ -8338,7 +8338,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;/a>
 &lt;/h3>&lt;p>以下是一个简化的证书生成脚本示例，用于生成统一 CA 签发的主 ETCD、Events ETCD 和 &lt;code>kube-apiserver&lt;/code> 客户端证书：&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -8409,7 +8409,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;/a>
 &lt;/h4>&lt;p>将所有 ETCD 集群的 CA 证书合并到一个文件中：&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
@@ -8430,7 +8430,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
 &lt;/h4>&lt;p>在 &lt;code>kube-apiserver&lt;/code> 和 ETCD 集群之间部署 HAProxy 或 Nginx 代理：&lt;/p>
 &lt;p>&lt;strong>HAProxy 配置示例&lt;/strong>：&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -8494,7 +8494,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
 &lt;/div>
 &lt;/div>&lt;p>&lt;strong>对应的 &lt;code>kube-apiserver&lt;/code> 配置&lt;/strong>：&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
@@ -8526,7 +8526,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;/a>
 &lt;/h3>&lt;p>创建一个证书管理脚本来自动化证书的生成、分发和轮换：&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -8843,7 +8843,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h4>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -8911,7 +8911,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -8967,7 +8967,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
 &lt;/ul>
 &lt;p>&lt;strong>示例配置&lt;/strong>：&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
@@ -9011,7 +9011,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;/a>
 &lt;/h3>&lt;p>利用 Grafana 官方提供的工具 database-migrator 转换成 MySQL 数据：&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;/code>&lt;/pre>&lt;/td>
 &lt;td class="lntd">
@@ -9029,7 +9029,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h4>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -9126,7 +9126,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h4>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -9247,7 +9247,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h4>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
@@ -9271,7 +9271,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;/a>
 &lt;/h3>&lt;p>修改 dashboard_snapshot 表中 dashboard_encrypted 字段类型，以适应大容量数据：&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;/code>&lt;/pre>&lt;/td>
 &lt;td class="lntd">
@@ -9282,7 +9282,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;/code>&lt;/pre>&lt;/td>
 &lt;td class="lntd">
@@ -9293,7 +9293,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -9349,7 +9349,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -9412,7 +9412,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">driver&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">local&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -9565,7 +9565,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;/code>&lt;/pre>&lt;/td>
@@ -9579,7 +9579,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;/a>
 &lt;/h3>&lt;p>停止 &lt;code>postgres&lt;/code> 和 &lt;code>grafana&lt;/code>,并删除 &lt;code>postgres&lt;/code> 数据库&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;/code>&lt;/pre>&lt;/td>
@@ -9596,7 +9596,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -9633,7 +9633,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">driver&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">local&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;/code>&lt;/pre>&lt;/td>
 &lt;td class="lntd">
@@ -9648,7 +9648,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
@@ -9675,7 +9675,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;/code>&lt;/pre>&lt;/td>
 &lt;td class="lntd">
@@ -9687,7 +9687,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;/a>
 &lt;/h2>&lt;p>在使用pgloader工具将SQLite数据迁移到PostgreSQL时，遇到以下错误：&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
@@ -9732,7 +9732,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
@@ -9754,7 +9754,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;/a>
 &lt;/h3>&lt;p>修改 &lt;code>main.load&lt;/code> 文件，添加内存优化参数：&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
@@ -9785,7 +9785,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;/code>&lt;/pre>&lt;/td>
@@ -9798,7 +9798,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
@@ -9813,7 +9813,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
@@ -9878,7 +9878,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;/a>
 &lt;/h2>&lt;p>以 chaos-mesh 的 PodChaos CRD 为例，ResourceInterpreterCustomization 资源结构如下：&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -9934,7 +9934,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -9963,7 +9963,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -10146,7 +10146,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
 &lt;/span>&lt;span class="lnt"> 3
@@ -10188,7 +10188,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
 &lt;/h2>&lt;ul>
 &lt;li>目标 CRD 必须声明 &lt;code>subresources.status&lt;/code>，否则无法写回 status 字段：
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
@@ -10207,7 +10207,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
 &lt;/div>&lt;/li>
 &lt;li>Karmada 控制面 ServiceAccount 需有目标资源 &lt;code>/status&lt;/code> 的 patch/update 权限：
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
@@ -10258,7 +10258,7 @@ b. 滚动重启 &lt;code>kube-apiserver&lt;/code> 实例，使配置生效。&lt
 &lt;/ul>
 &lt;p>&lt;strong>示例：&lt;/strong>&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
 &lt;/span>&lt;span class="lnt">3
