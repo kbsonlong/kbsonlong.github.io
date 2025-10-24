@@ -52,6 +52,10 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: spec.nodeName
+        - name: NODE_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
         resources:
           limits:
             cpu: "1"
@@ -87,22 +91,19 @@ data:
   alloy.yaml: |
     discovery.kubelet "pods" {
       targets = [{
-        __address__ = "localhost:10250",
+        __address__ = "sys.env('NODE_IP'):10250",
       }]
-      
       bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
       tls_config {
         ca_file = "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
         insecure_skip_verify = false
       }
     }
-
     discovery.relabel "pod_logs" {
       targets = discovery.kubelet.pods.targets
-
       rule {
         source_labels = ["__meta_kubernetes_node_name"]
-        regex = "${NODE_NAME}"
+        regex = sys.env("NODE_NAME")
         action = "keep"
       }
 
