@@ -90,9 +90,6 @@ metadata:
 data:
   alloy.yaml: |
     discovery.kubelet "pods" {
-      targets = [{
-        __address__ = "sys.env('NODE_IP'):10250",
-      }]
       bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
       tls_config {
         ca_file = "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
