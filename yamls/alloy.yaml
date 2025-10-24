@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: alloy
-  namespace: alloy
+  namespace: {{.namespace}}
 spec:
   selector:
     matchLabels:
@@ -12,7 +12,6 @@ spec:
       annotations:
         prometheus.vm/port: "12345"
         prometheus.vm/scrape: "true"
-      creationTimestamp: null
       labels:
         app: alloy
     spec:
@@ -30,14 +29,11 @@ spec:
         - --watched-dir=/etc/alloy
         - --reload-url=http://localhost:12345/-/reload
         image: registry.cn-hangzhou.aliyuncs.com/seam/config-reloader:v0.81.0
-        imagePullPolicy: IfNotPresent
         name: config-reloader
         resources:
           requests:
             cpu: 10m
             memory: 50Mi
-        terminationMessagePath: /dev/termination-log
-        terminationMessagePolicy: File
         volumeMounts:
         - mountPath: /etc/alloy
           name: config
@@ -50,8 +46,12 @@ spec:
         - --cluster.join-addresses=alloy.monitoring.svc.kubeyy.com.
         - /etc/alloy/alloy.yaml
         image: registry.cn-hangzhou.aliyuncs.com/seam/alloy:v1.9.2
-        imagePullPolicy: IfNotPresent
         name: alloy
+        env:
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
         resources:
           limits:
             cpu: "1"
@@ -59,89 +59,81 @@ spec:
           requests:
             cpu: 50m
             memory: 100Mi
-        terminationMessagePath: /dev/termination-log
-        terminationMessagePolicy: File
         volumeMounts:
         - mountPath: /etc/alloy
           name: config
-      dnsPolicy: ClusterFirst
-      restartPolicy: Always
-      schedulerName: default-scheduler
-      securityContext: {}
-      serviceAccount: alloy
-      serviceAccountName: alloy
-      terminationGracePeriodSeconds: 30
+        - mountPath: /var/log
+          name: varlog
+        - mountPath: /var/lib/docker/containers
+          name: varlibdockercontainers
+          readOnly: true
       volumes:
-      - configMap:
-          defaultMode: 420
+      - name: config
+        configMap:
           name: alloy-config
-        name: config
-  updateStrategy:
-    rollingUpdate:
-      maxUnavailable: 1
-    type: RollingUpdate
-
+      - name: varlog
+        hostPath:
+          path: /var/log
+      - name: varlibdockercontainers
+        hostPath:
+          path: /var/lib/docker/containers
 ---
 apiVersion: v1
-kind: Service
+kind: ConfigMap
 metadata:
-  labels:
-    app.kubernetes.io/component: alloy
-    app.kubernetes.io/name: alloy
-  name: alloy
-  namespace: alloy
-spec:
-  clusterIP: None
-  clusterIPs:
-  - None
-  ports:
-  - name: http
-    port: 12345
-    protocol: TCP
-    targetPort: 12345
-  selector:
-    app: alloy
-  sessionAffinity: None
-  type: ClusterIP
----
-apiVersion: v1
+  name: alloy-config
+  namespace: {{.namespace}}
 data:
   alloy.yaml: |
-    discovery.kubernetes "pods" {
-      role = "pod"
-
-      selectors {
-        role  = "pod"
-        label = "project-name"
+    discovery.kubelet "pods" {
+      targets = [{
+        __address__ = "localhost:10250",
+      }]
+      
+      bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+      tls_config {
+        ca_file = "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+        insecure_skip_verify = false
       }
     }
 
     discovery.relabel "pod_logs" {
-      targets = discovery.kubernetes.pods.targets
-      rule  {
+      targets = discovery.kubelet.pods.targets
+
+      rule {
+        source_labels = ["__meta_kubernetes_node_name"]
+        regex = "${NODE_NAME}"
+        action = "keep"
+      }
+
+      rule {
         source_labels = ["__meta_kubernetes_pod_label_project_name"]
-        target_label  = "project_name"
+        target_label = "project_name"
       }
-      rule  {
+      rule {
         source_labels = ["__meta_kubernetes_pod_label_deploy_type"]
-        target_label  = "deploy_type"
+        target_label = "deploy_type"
       }
-      rule  {
+      rule {
         source_labels = ["__meta_kubernetes_pod_name"]
-        target_label  = "pod"
+        target_label = "pod"
       }
-      rule  {
+      rule {
         source_labels = ["__meta_kubernetes_namespace"]
-        target_label  = "namespace"
+        target_label = "namespace"
       }
-      rule  {
+      rule {
         source_labels = ["__meta_kubernetes_pod_label_app"]
-        target_label  = "app"
+        target_label = "app"
+      }
+      rule {
+        source_labels = ["__meta_kubernetes_pod_container_name"]
+        target_label = "container"
       }
     }
 
     loki.source.kubernetes "pods" {
-      targets    = discovery.relabel.pod_logs.output
+      targets = discovery.relabel.pod_logs.output
       forward_to = [otelcol.receiver.loki.default.receiver]
       clustering {
         enabled = true
@@ -177,139 +169,31 @@ data:
         }
       }
     }
-kind: ConfigMap
-metadata:
-  labels:
-    app: alloy
-  name: alloy-config
-  namespace: alloy
 ---
-
 apiVersion: v1
-automountServiceAccountToken: true
 kind: ServiceAccount
 metadata:
-  labels:
-    app.kubernetes.io/component: rbac
-    app.kubernetes.io/instance: alloy
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: alloy
-    helm.sh/chart: alloy
   name: alloy
-  namespace: alloy
+  namespace: {{.namespace}}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  labels:
-    app.kubernetes.io/component: rbac
-    app.kubernetes.io/instance: alloy
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: alloy
-    helm.sh/chart: alloy
   name: alloy
 rules:
-- apiGroups:
-  - ""
-  - discovery.k8s.io
-  - networking.k8s.io
-  resources:
-  - endpoints
-  - endpointslices
-  - ingresses
+- apiGroups: [""]
+  resources: 
   - nodes
   - nodes/proxy
   - nodes/metrics
-  - pods
-  - services
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - ""
-  resources:
-  - pods
-  - pods/log
-  - namespaces
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - monitoring.grafana.com
-  resources:
-  - podlogs
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - monitoring.coreos.com
-  resources:
-  - prometheusrules
-  verbs:
-  - get
-  - list
-  - watch
-- nonResourceURLs:
+  verbs: ["get"]
+- nonResourceURLs: 
   - /metrics
-  verbs:
-  - get
-- apiGroups:
-  - monitoring.coreos.com
-  resources:
-  - podmonitors
-  - servicemonitors
-  - probes
-  - scrapeconfigs
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - ""
-  resources:
-  - events
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - ""
-  resources:
-  - configmaps
-  - secrets
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - apps
-  resources:
-  - replicasets
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - extensions
-  resources:
-  - replicasets
-  verbs:
-  - get
-  - list
-  - watch
+  verbs: ["get"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  labels:
-    app.kubernetes.io/component: rbac
-    app.kubernetes.io/instance: alloy
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: alloy
-    helm.sh/chart: alloy
   name: alloy
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -318,7 +202,4 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: alloy
-  namespace: shopline
-- kind: ServiceAccount
-  name: alloy
-  namespace: alloy
+  namespace: {{.namespace}}
