@@ -90,6 +90,7 @@ metadata:
 data:
   alloy.yaml: |
     discovery.kubelet "pods" {
+      url = "https://localhost:10250"
       bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
       tls_config {
         ca_file = "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
