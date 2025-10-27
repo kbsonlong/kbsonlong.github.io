@@ -10,6 +10,7 @@ users:
   max_concurrent_requests: 20
   name: sharding-server
   url_prefix: http://victoria-metrics-cluster-system-base-vmselect.monitoring-sys.svc.kubeyy.com.:8481/
+  
 
 - bearer_token: 5fu4AnpXggqDYDZ7
   name: categraf
@@ -82,24 +83,23 @@ users:
     drop_src_path_prefix_parts: 1
 
 - bearer_token: s6VwvHf2DETsc3zK
-  name: vm-sg-kf
+  name: open-platform
   discover_backend_ips: true
   retry_status_codes:
   - 500
   - 502
   headers:
-  - 'X-Scope-OrgID: vm-sg-kf'
+  - 'X-Scope-OrgID: open-platform'
   max_concurrent_requests: 20
   url_map:
-  - src_paths: ["/sg-kf/insert/.*"]
+  - src_paths: ["/open-platform/insert/.*"]
     url_prefix: 
     - http://victoria-metrics-cluster-sg-vminsert.monitoring-sg.svc.kubeyy.com.:8480/
     drop_src_path_prefix_parts: 1
-  - src_paths: ["/sg-kf/select/.*"]
+  - src_paths: ["/open-platform/select/.*"]
     url_prefix: 
     - http://victoria-metrics-cluster-sg-vmselect.monitoring-sg.svc.kubeyy.com.:8481/
     drop_src_path_prefix_parts: 1
-  default_url: http://localhost:8427/404.html
   
 
 # VictoriaLogs

@@ -1,0 +1,56 @@
+unauthorized_user:
+  url_map:
+  - src_paths:
+    - "/container/.*"
+    drop_src_path_prefix_parts: 1
+    url_prefix: "http://victoria-metrics-cluster-container-vmselect.monitor.svc.kubeyy.com.:8481/"
+  - src_paths:
+    - "/host/.*"
+    drop_src_path_prefix_parts: 1
+    url_prefix: "http://victoria-metrics-cluster-host-vmselect.monitor.svc.kubeyy.com.:8481/"
+  discover_backend_ips: true
+  load_balancing_policy: least_loaded
+  retry_status_codes:
+  - 500
+  - 502
+users:
+- name: vmagent
+  bearer_token: HgLy2n2M8hLhMdTw
+  discover_backend_ips: true
+  retry_status_codes:
+  - 500
+  - 502
+  headers:
+  - 'X-Scope-OrgID: vmagent'
+  url_map:
+  - src_paths: ["/container/insert/.*"]
+    url_prefix: http://victoria-metrics-cluster-container-vminsert.monitor.svc.kubeyy.com.:8480/
+    drop_src_path_prefix_parts: 1
+  - src_paths: ["/container/select/.*"]
+    url_prefix: http://victoria-metrics-cluster-container-vmselect.monitor.svc.kubeyy.com.:8480/
+    drop_src_path_prefix_parts: 1
+  - src_paths: ["/host/insert/.*"]
+    url_prefix: http://victoria-metrics-cluster-host-vminsert.monitor.svc.kubeyy.com.:8480/
+    drop_src_path_prefix_parts: 1
+  - src_paths: ["/host/select/.*"]
+    url_prefix: http://victoria-metrics-cluster-host-vmselect.monitor.svc.kubeyy.com.:8480/
+    drop_src_path_prefix_parts: 1
+
+- bearer_token: s6VwvHf2DETsc3zK
+  name: open-platform
+  discover_backend_ips: true
+  retry_status_codes:
+  - 500
+  - 502
+  headers:
+  - 'X-Scope-OrgID: open-platform'
+  max_concurrent_requests: 20
+  url_map:
+  - src_paths: ["/open-platform/insert/.*"]
+    url_prefix: 
+    - http://victoria-metrics-cluster-sg-vminsert.monitoring-sg.svc.kubeyy.com.:8480/
+    drop_src_path_prefix_parts: 1
+  - src_paths: ["/open-platform/select/.*"]
+    url_prefix: 
+    - http://victoria-metrics-cluster-sg-vmselect.monitoring-sg.svc.kubeyy.com.:8481/
+    drop_src_path_prefix_parts: 1
