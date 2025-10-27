@@ -1,0 +1,158 @@
+users:
+# VictoriaMetrics
+- bearer_token: qcGvxfxXd4RHchJpTvry2RG2QxLj4N35
+  discover_backend_ips: true
+  retry_status_codes:
+  - 500
+  - 502
+  headers:
+  - 'X-Scope-OrgID: sharding-server'
+  max_concurrent_requests: 20
+  name: sharding-server
+  url_prefix: http://victoria-metrics-cluster-system-base-vmselect.monitoring-sys.svc.kubeyy.com.:8481/
+
+- bearer_token: 5fu4AnpXggqDYDZ7
+  name: categraf
+  discover_backend_ips: true
+  retry_status_codes:
+  - 500
+  - 502
+  headers:
+  - 'X-Scope-OrgID: categraf'
+  max_concurrent_requests: 20
+  url_map:
+  - src_paths: ["/metrics/insert/.*"]
+    url_prefix: 
+    - http://victoria-metrics-cluster-system-base-vminsert.monitoring-sys.svc.kubeyy.com.:8480/
+    headers:
+    - "AccountID: 0"
+    - "ProjectID: 0"
+
+- bearer_token: TjZ5TeyHXDRQ6y2P
+  name: vmagent
+  discover_backend_ips: true
+  retry_status_codes:
+  - 500
+  - 502
+  headers:
+  - 'X-Scope-OrgID: vmagent'
+  max_concurrent_requests: 20
+  url_map:
+  - src_paths: ["/metrics/insert/.*"]
+    url_prefix: 
+    - http://victoria-metrics-cluster-system-vminsert.monitoring.svc.kubeyy.com.:8480/
+    headers:
+    - "AccountID: 0"
+    - "ProjectID: 0"
+
+- bearer_token: s6VwvHf2DETsc3zK
+  name: vm-sg-kf
+  discover_backend_ips: true
+  retry_status_codes:
+  - 500
+  - 502
+  headers:
+  - 'X-Scope-OrgID: vm-sg-kf'
+  max_concurrent_requests: 20
+  url_map:
+  - src_paths: ["/metrics/insert/.*"]
+    url_prefix: 
+    - http://victoria-metrics-cluster-sg-vminsert.monitoring-sg.svc.kubeyy.com.:8480/
+  default_url: http://victoria-metrics-cluster-sg-vminsert.monitoring-sg.svc.kubeyy.com.:8480/
+
+# VictoriaLogs
+- username: kubernetes
+  password: XptKBZ5Wk4S2D4hz
+  url_map:
+  - src_paths: ["/kubernetes-logs/insert/.*"]
+    url_prefix:
+    - "http://10.90.216.129:9491"
+    headers:
+    - "AccountID: 0"
+    - "ProjectID: 0"
+    drop_src_path_prefix_parts: 1
+  - src_paths: ["/kubernetes-logs/select/.*"]
+    url_prefix:
+    - "http://10.90.216.129:9491"
+    headers:
+    - "AccountID: 0"
+    - "ProjectID: 0"
+    drop_src_path_prefix_parts: 1
+  - src_paths: ["/kubernetes-logs/health"]
+    url_prefix:
+    - "http://10.90.216.129:9491"
+    drop_src_path_prefix_parts: 1
+- username: cloudflare
+  password: Eo66Jq4VoBLBn9er
+  url_map:
+  - src_paths: ["/cloudflare-logs/insert/.*"]
+    url_prefix:
+    - "http://10.90.216.129:9491"
+    headers:
+    - "AccountID: 1"
+    - "ProjectID: 1"
+    drop_src_path_prefix_parts: 1
+  - src_paths: ["/cloudflare-logs/select/.*"]
+    url_prefix:
+    - "http://10.90.216.129:9491"
+    headers:
+    - "AccountID: 1"
+    - "ProjectID: 1"
+    drop_src_path_prefix_parts: 1
+  - src_paths: ["/cloudflare-logs/health"]
+    url_prefix:
+    - "http://10.90.216.129:9491"
+    drop_src_path_prefix_parts: 1
+- username: devops
+  password: Eo66Jq4VoBLBn9er
+  url_map:
+  - src_paths: ["/cloudflare-logs/select/.*"]
+    url_prefix:
+    - "http://10.90.216.129:9491"
+    headers:
+    - "AccountID: 1"
+    - "ProjectID: 1"
+    drop_src_path_prefix_parts: 1
+  max_concurrent_requests: 20
+- username: dbms
+  password: T42uoTRitJ6epa8c
+  url_map:
+  - src_paths: ["/dbms-logs/insert/.*"]
+    url_prefix:
+    - "http://10.90.216.129:9491"
+    headers:
+    - "AccountID: 2"
+    - "ProjectID: 2"
+    drop_src_path_prefix_parts: 1
+  - src_paths: ["/dbms-logs/select/.*"]
+    url_prefix:
+    - "http://10.90.216.129:9491"
+    headers:
+    - "AccountID: 2"
+    - "ProjectID: 2"
+    drop_src_path_prefix_parts: 1
+  - src_paths: ["/dbms-logs/health"]
+    url_prefix:
+    - "http://10.90.216.129:9491"
+    drop_src_path_prefix_parts: 1
+- username: host
+  password: XbK8odbr7x9JP8ax
+  url_map:
+  - src_paths: ["/host-logs/insert/.*"]
+    url_prefix:
+    - "http://10.90.216.129:9491"
+    headers:
+    - "AccountID: 3"
+    - "ProjectID: 3"
+    drop_src_path_prefix_parts: 1
+  - src_paths: ["/host-logs/select/.*"]
+    url_prefix:
+    - "http://10.90.216.129:9491"
+    headers:
+    - "AccountID: 3"
+    - "ProjectID: 3"
+    drop_src_path_prefix_parts: 1
+  - src_paths: ["/host-logs/health"]
+    url_prefix:
+    - "http://10.90.216.129:9491"
+    drop_src_path_prefix_parts: 1
