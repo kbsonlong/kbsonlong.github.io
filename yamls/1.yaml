@@ -14,43 +14,122 @@ unauthorized_user:
   - 500
   - 502
 users:
-- name: vmagent
-  bearer_token: HgLy2n2M8hLhMdTw
+# --------------------------------------Victoria Metrics--------------------------------------
+- bearer_token: qcGvxfxXd4RHchJpTvry2RG2QxLj4N35
   discover_backend_ips: true
   retry_status_codes:
   - 500
   - 502
   headers:
-  - 'X-Scope-OrgID: vmagent'
-  url_map:
-  - src_paths: ["/container/insert/.*"]
-    url_prefix: http://victoria-metrics-cluster-container-vminsert.monitor.svc.kubeyy.com.:8480/
-    drop_src_path_prefix_parts: 1
-  - src_paths: ["/container/select/.*"]
-    url_prefix: http://victoria-metrics-cluster-container-vmselect.monitor.svc.kubeyy.com.:8480/
-    drop_src_path_prefix_parts: 1
-  - src_paths: ["/host/insert/.*"]
-    url_prefix: http://victoria-metrics-cluster-host-vminsert.monitor.svc.kubeyy.com.:8480/
-    drop_src_path_prefix_parts: 1
-  - src_paths: ["/host/select/.*"]
-    url_prefix: http://victoria-metrics-cluster-host-vmselect.monitor.svc.kubeyy.com.:8480/
-    drop_src_path_prefix_parts: 1
-
-- bearer_token: s6VwvHf2DETsc3zK
-  name: open-platform
-  discover_backend_ips: true
-  retry_status_codes:
-  - 500
-  - 502
-  headers:
-  - 'X-Scope-OrgID: open-platform'
+  - 'X-Scope-OrgID: sharding-server'
   max_concurrent_requests: 20
+  name: sharding-server
+  url_prefix: http://victoria-metrics-cluster-system-base-vmselect.monitoring-sys.svc.kubeyy.com.:8481/
+
+# --------------------------------------Victoria Logs--------------------------------------
+- username: kubernetes
+  password: XptKBZ5Wk4S2D4hz
   url_map:
-  - src_paths: ["/open-platform/insert/.*"]
-    url_prefix: 
-    - http://victoria-metrics-cluster-sg-vminsert.monitoring-sg.svc.kubeyy.com.:8480/
+  - src_paths: ["/kubernetes-logs/insert/.*"]
+    url_prefix:
+    - "http://10.90.216.129:9491"
+    headers:
+    - "AccountID: 0"
+    - "ProjectID: 0"
     drop_src_path_prefix_parts: 1
-  - src_paths: ["/open-platform/select/.*"]
-    url_prefix: 
-    - http://victoria-metrics-cluster-sg-vmselect.monitoring-sg.svc.kubeyy.com.:8481/
+  - src_paths: ["/kubernetes-logs/select/.*"]
+    url_prefix:
+    - "http://10.90.216.129:9491"
+    headers:
+    - "AccountID: 0"
+    - "ProjectID: 0"
+    drop_src_path_prefix_parts: 1
+  - src_paths: ["/kubernetes-logs/health"]
+    url_prefix:
+    - "http://10.90.216.129:9491"
+    drop_src_path_prefix_parts: 1
+- username: cloudflare
+  password: Eo66Jq4VoBLBn9er
+  url_map:
+  - src_paths: ["/cloudflare-logs/insert/.*"]
+    url_prefix:
+    - "http://10.90.216.129:9491"
+    headers:
+    - "AccountID: 1"
+    - "ProjectID: 1"
+    drop_src_path_prefix_parts: 1
+  - src_paths: ["/cloudflare-logs/select/.*"]
+    url_prefix:
+    - "http://10.90.216.129:9491"
+    headers:
+    - "AccountID: 1"
+    - "ProjectID: 1"
+    drop_src_path_prefix_parts: 1
+  - src_paths: ["/cloudflare-logs/health"]
+    url_prefix:
+    - "http://10.90.216.129:9491"
+    drop_src_path_prefix_parts: 1
+- username: devops
+  password: Eo66Jq4VoBLBn9er
+  url_map:
+  - src_paths: ["/cloudflare-logs/select/.*"]
+    url_prefix:
+    - "http://10.90.216.129:9491"
+    headers:
+    - "AccountID: 1"
+    - "ProjectID: 1"
+    drop_src_path_prefix_parts: 1
+  max_concurrent_requests: 20
+- username: risk
+  password: AWomSidb7VcQXpA5
+  url_map:
+  - src_paths: ["/cloudflare-logs/select/.*"]
+    url_prefix:
+    - "http://10.90.216.129:9491"
+    headers:
+    - "AccountID: 1"
+    - "ProjectID: 1"
+    drop_src_path_prefix_parts: 1
+  max_concurrent_requests: 20
+- username: dbms
+  password: T42uoTRitJ6epa8c
+  url_map:
+  - src_paths: ["/dbms-logs/insert/.*"]
+    url_prefix:
+    - "http://10.90.216.129:9491"
+    headers:
+    - "AccountID: 2"
+    - "ProjectID: 2"
+    drop_src_path_prefix_parts: 1
+  - src_paths: ["/dbms-logs/select/.*"]
+    url_prefix:
+    - "http://10.90.216.129:9491"
+    headers:
+    - "AccountID: 2"
+    - "ProjectID: 2"
+    drop_src_path_prefix_parts: 1
+  - src_paths: ["/dbms-logs/health"]
+    url_prefix:
+    - "http://10.90.216.129:9491"
+    drop_src_path_prefix_parts: 1
+- username: host
+  password: XbK8odbr7x9JP8ax
+  url_map:
+  - src_paths: ["/host-logs/insert/.*"]
+    url_prefix:
+    - "http://10.90.216.129:9491"
+    headers:
+    - "AccountID: 3"
+    - "ProjectID: 3"
+    drop_src_path_prefix_parts: 1
+  - src_paths: ["/host-logs/select/.*"]
+    url_prefix:
+    - "http://10.90.216.129:9491"
+    headers:
+    - "AccountID: 3"
+    - "ProjectID: 3"
+    drop_src_path_prefix_parts: 1
+  - src_paths: ["/host-logs/health"]
+    url_prefix:
+    - "http://10.90.216.129:9491"
     drop_src_path_prefix_parts: 1
