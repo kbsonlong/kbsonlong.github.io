@@ -24,9 +24,7 @@ users:
   - src_paths: ["/metrics/insert/.*"]
     url_prefix: 
     - http://victoria-metrics-cluster-system-base-vminsert.monitoring-sys.svc.kubeyy.com.:8480/
-    headers:
-    - "AccountID: 0"
-    - "ProjectID: 0"
+    drop_src_path_prefix_parts: 1
 
 - bearer_token: TjZ5TeyHXDRQ6y2P
   name: vmagent
@@ -41,9 +39,47 @@ users:
   - src_paths: ["/metrics/insert/.*"]
     url_prefix: 
     - http://victoria-metrics-cluster-system-vminsert.monitoring.svc.kubeyy.com.:8480/
+    drop_src_path_prefix_parts: 1
+
+- bearer_token: VR3P4mGM2tfHoSdd
+  name: grafana
+  discover_backend_ips: true
+  retry_status_codes:
+  - 500
+  - 502
+  headers:
+  - 'X-Scope-OrgID: grafana'
+  max_concurrent_requests: 20
+  url_map:
+  - src_paths: ["/metrics/select/.*"]
+    url_prefix: 
+    - http://victoria-metrics-cluster-system-vmselect.monitoring.svc.kubeyy.com.:8481/
+    drop_src_path_prefix_parts: 1
+
+- bearer_token: Gwpxi2TTSNiqEsTk
+  name: ipcenter
+  discover_backend_ips: true
+  retry_status_codes:
+  - 500
+  - 502
+  headers:
+  - 'X-Scope-OrgID: ipcenter'
+  max_concurrent_requests: 20
+  url_map:
+  - src_paths: ["/metrics/insert/.*"]
+    url_prefix: 
+    - http://victoria-metrics-cluster-system-vminsert.monitoring.svc.kubeyy.com.:8480/
     headers:
-    - "AccountID: 0"
-    - "ProjectID: 0"
+    - "AccountID: 1"
+    - "ProjectID: 1"
+    drop_src_path_prefix_parts: 1
+  - src_paths: ["/metrics/select/.*"]
+    url_prefix: 
+    - http://victoria-metrics-cluster-system-vmselect.monitoring.svc.kubeyy.com.:8480/
+    headers:
+    - "AccountID: 1"
+    - "ProjectID: 1"
+    drop_src_path_prefix_parts: 1
 
 - bearer_token: s6VwvHf2DETsc3zK
   name: vm-sg-kf
@@ -55,10 +91,16 @@ users:
   - 'X-Scope-OrgID: vm-sg-kf'
   max_concurrent_requests: 20
   url_map:
-  - src_paths: ["/metrics/insert/.*"]
+  - src_paths: ["/sg-kf/insert/.*"]
     url_prefix: 
     - http://victoria-metrics-cluster-sg-vminsert.monitoring-sg.svc.kubeyy.com.:8480/
-  default_url: http://victoria-metrics-cluster-sg-vminsert.monitoring-sg.svc.kubeyy.com.:8480/
+    drop_src_path_prefix_parts: 1
+  - src_paths: ["/sg-kf/select/.*"]
+    url_prefix: 
+    - http://victoria-metrics-cluster-sg-vmselect.monitoring-sg.svc.kubeyy.com.:8481/
+    drop_src_path_prefix_parts: 1
+  default_url: http://localhost:8427/404.html
+  
 
 # VictoriaLogs
 - username: kubernetes
