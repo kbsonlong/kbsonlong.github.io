@@ -36,7 +36,428 @@
  &lt;a href="#kubernetes-slo-%e7%9b%91%e6%8e%a7%e9%83%a8%e7%bd%b2%e6%8c%87%e5%8d%97" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
-&lt;/h1>&lt;p>本文档说明如何基于Sloth SLO规范部署Kubernetes集群的SLO监控系统。&lt;/p></description></item><item><title>自建Kubernetes与AWS IAM授权认证.md</title><link>https://www.kbsonlong.com/posts/self-built-kubernetes-and-aws-iam-authorization.md/</link><pubDate>Fri, 17 Oct 2025 10:51:25 +0800</pubDate><guid>https://www.kbsonlong.com/posts/self-built-kubernetes-and-aws-iam-authorization.md/</guid><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><category domain="https://www.kbsonlong.com/categories/%E5%AE%89%E5%85%A8/">安全</category><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><category domain="https://www.kbsonlong.com/categories/aws/">AWS</category><description>&lt;h2 class="heading-element" id="为什么需要-irsa">&lt;span>为什么需要 IRSA？&lt;/span>
+&lt;/h1>&lt;p>本文档说明如何基于Sloth SLO规范部署Kubernetes集群的SLO监控系统。&lt;/p></description></item><item><title>ModSecurity部署与配置指南</title><link>https://www.kbsonlong.com/posts/modsecurity-deployment-and-configuration/</link><pubDate>Fri, 17 Oct 2025 10:51:25 +0800</pubDate><guid>https://www.kbsonlong.com/posts/modsecurity-deployment-and-configuration/</guid><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><category domain="https://www.kbsonlong.com/categories/%E5%AE%89%E5%85%A8/">安全</category><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><description>&lt;h1 class="heading-element" id="ubuntudebian">&lt;span>Ubuntu/Debian&lt;/span>
+ &lt;a href="#ubuntudebian" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h1>&lt;p>sudo apt-get update
+sudo apt-get install -y libmodsecurity3 modsecurity-crs apache2 libapache2-mod-security2&lt;/p></description></item><item><title>ModSecurity规则管理与维护指南.md</title><link>https://www.kbsonlong.com/posts/modsecurity-rules-management-and-maintenance/</link><pubDate>Fri, 17 Oct 2025 10:51:25 +0800</pubDate><guid>https://www.kbsonlong.com/posts/modsecurity-rules-management-and-maintenance/</guid><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><category domain="https://www.kbsonlong.com/categories/%E5%AE%89%E5%85%A8/">安全</category><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><description>&lt;h1 class="heading-element" id="modsecurity规则管理与维护指南">&lt;span>ModSecurity规则管理与维护指南&lt;/span>
+ &lt;a href="#modsecurity%e8%a7%84%e5%88%99%e7%ae%a1%e7%90%86%e4%b8%8e%e7%bb%b4%e6%8a%a4%e6%8c%87%e5%8d%97" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h1>&lt;h2 class="heading-element" id="1-规则分类与管理">&lt;span>1. 规则分类与管理&lt;/span>
+ &lt;a href="#1-%e8%a7%84%e5%88%99%e5%88%86%e7%b1%bb%e4%b8%8e%e7%ae%a1%e7%90%86" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;h3 class="heading-element" id="11-规则分类标准">&lt;span>1.1 规则分类标准&lt;/span>
+ &lt;a href="#11-%e8%a7%84%e5%88%99%e5%88%86%e7%b1%bb%e6%a0%87%e5%87%86" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>规则类型&lt;/th>
+ &lt;th>规则ID范围&lt;/th>
+ &lt;th>主要防护目标&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>基础防护&lt;/td>
+ &lt;td>1000-1999&lt;/td>
+ &lt;td>基本请求验证、协议合规性检查&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>SQL注入&lt;/td>
+ &lt;td>2000-2999&lt;/td>
+ &lt;td>SQL命令特征检测与阻断&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>XSS攻击&lt;/td>
+ &lt;td>3000-3999&lt;/td>
+ &lt;td>跨站脚本攻击特征检测&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>文件包含&lt;/td>
+ &lt;td>4000-4999&lt;/td>
+ &lt;td>本地/远程文件包含攻击检测&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>命令执行&lt;/td>
+ &lt;td>5000-5999&lt;/td>
+ &lt;td>系统命令执行攻击检测&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>会话安全&lt;/td>
+ &lt;td>6000-6999&lt;/td>
+ &lt;td>会话固定、CSRF等攻击检测&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>性能优化&lt;/td>
+ &lt;td>7000-7999&lt;/td>
+ &lt;td>规则执行性能优化配置&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>自定义规则&lt;/td>
+ &lt;td>8000-8999&lt;/td>
+ &lt;td>业务特定安全规则&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>异常处理&lt;/td>
+ &lt;td>9000-9999&lt;/td>
+ &lt;td>全局异常评分与处理&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;h2 class="heading-element" id="2-规则更新流程">&lt;span>2. 规则更新流程&lt;/span>
+ &lt;a href="#2-%e8%a7%84%e5%88%99%e6%9b%b4%e6%96%b0%e6%b5%81%e7%a8%8b" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;h3 class="heading-element" id="21-owasp-crs更新步骤">&lt;span>2.1 OWASP CRS更新步骤&lt;/span>
+ &lt;a href="#21-owasp-crs%e6%9b%b4%e6%96%b0%e6%ad%a5%e9%aa%a4" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 进入规则目录&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> /usr/share/modsecurity-crs
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 拉取最新规则集更新&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git pull origin main
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 查看变更日志&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">cat CHANGELOG.md
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 重启Web服务器应用新规则&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo systemctl restart apache2&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 class="heading-element" id="22-规则回滚操作">&lt;span>2.2 规则回滚操作&lt;/span>
+ &lt;a href="#22-%e8%a7%84%e5%88%99%e5%9b%9e%e6%bb%9a%e6%93%8d%e4%bd%9c" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 查看Git提交历史记录&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git log
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 回滚到指定版本&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git reset --hard &amp;lt;commit-hash&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 重启Web服务器应用旧规则&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo systemctl restart apache2&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 class="heading-element" id="3-误报处理流程">&lt;span>3. 误报处理流程&lt;/span>
+ &lt;a href="#3-%e8%af%af%e6%8a%a5%e5%a4%84%e7%90%86%e6%b5%81%e7%a8%8b" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;h3 class="heading-element" id="31-误报分析步骤">&lt;span>3.1 误报分析步骤&lt;/span>
+ &lt;a href="#31-%e8%af%af%e6%8a%a5%e5%88%86%e6%9e%90%e6%ad%a5%e9%aa%a4" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;ol>
+&lt;li>收集审计日志中的完整事件记录&lt;/li>
+&lt;li>分析触发的规则ID和匹配内容&lt;/li>
+&lt;li>在测试环境中复现问题请求&lt;/li>
+&lt;li>评估排除规则的影响范围&lt;/li>
+&lt;li>创建适当的排除规则&lt;/li>
+&lt;li>在生产环境中应用排除规则&lt;/li>
+&lt;li>监控被排除规则的安全影响&lt;/li>
+&lt;/ol>
+&lt;h3 class="heading-element" id="32-排除规则示例">&lt;span>3.2 排除规则示例&lt;/span>
+ &lt;a href="#32-%e6%8e%92%e9%99%a4%e8%a7%84%e5%88%99%e7%a4%ba%e4%be%8b" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-apache" data-lang="apache">&lt;span class="line">&lt;span class="cl">&lt;span class="err">//&lt;/span> &lt;span class="err">完全移除特定规则&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">SecRuleRemoveById&lt;/span> &lt;span class="m">942100&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">//&lt;/span> &lt;span class="err">对特定参数排除&lt;/span>&lt;span class="nb">SQL注入检测&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">SecRuleUpdateTargetById &lt;span class="m">942100&lt;/span> !ARGS:search
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">//&lt;/span> &lt;span class="err">对特定路径禁用&lt;/span>&lt;span class="nb">JSON解析&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">SecRule REQUEST_URI &lt;span class="s2">&amp;#34;^/api/v1/safe-endpoint&amp;#34;&lt;/span> &lt;span class="s2">&amp;#34;id:100,phase:1,t:none,pass,nolog,setenv:NO_JSON_PROCESSING=1&amp;#34;&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 class="heading-element" id="4-规则性能调优">&lt;span>4. 规则性能调优&lt;/span>
+ &lt;a href="#4-%e8%a7%84%e5%88%99%e6%80%a7%e8%83%bd%e8%b0%83%e4%bc%98" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;h3 class="heading-element" id="41-规则复杂度评估">&lt;span>4.1 规则复杂度评估&lt;/span>
+ &lt;a href="#41-%e8%a7%84%e5%88%99%e5%a4%8d%e6%9d%82%e5%ba%a6%e8%af%84%e4%bc%b0" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">// 统计各阶段规则数量
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">grep -r &lt;span class="s2">&amp;#34;phase:&amp;#34;&lt;/span> /etc/modsecurity/rules/ &lt;span class="p">|&lt;/span> awk &lt;span class="s1">&amp;#39;{print $2}&amp;#39;&lt;/span> &lt;span class="p">|&lt;/span> sort &lt;span class="p">|&lt;/span> uniq -c
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">// 分析规则匹配耗时
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">awk &lt;span class="s1">&amp;#39;/^--/ {if ($5 &amp;gt; 100) print}&amp;#39;&lt;/span> /var/log/modsec_debug.log
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">// 查看高频触发规则
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">awk &lt;span class="s1">&amp;#39;{if ($1 == &amp;#34;Matched&amp;#34;) print $3}&amp;#39;&lt;/span> /var/log/modsec_audit.log &lt;span class="p">|&lt;/span> sort &lt;span class="p">|&lt;/span> uniq -c &lt;span class="p">|&lt;/span> sort -nr &lt;span class="p">|&lt;/span> head -n &lt;span class="m">20&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 class="heading-element" id="42-正则表达式优化技巧">&lt;span>4.2 正则表达式优化技巧&lt;/span>
+ &lt;a href="#42-%e6%ad%a3%e5%88%99%e8%a1%a8%e8%be%be%e5%bc%8f%e4%bc%98%e5%8c%96%e6%8a%80%e5%b7%a7" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;ol>
+&lt;li>尽量使用锚点(^, $)限制匹配范围&lt;/li>
+&lt;li>避免使用贪婪匹配(*, +)&lt;/li>
+&lt;li>使用字符类代替多个选项([0-9]代替(0|1|2|&amp;hellip;))&lt;/li>
+&lt;li>减少嵌套分组&lt;/li>
+&lt;li>对长字符串使用前缀匹配&lt;/li>
+&lt;li>合理使用短路逻辑组合规则&lt;/li>
+&lt;/ol>
+&lt;h2 class="heading-element" id="5-规则生命周期管理">&lt;span>5. 规则生命周期管理&lt;/span>
+ &lt;a href="#5-%e8%a7%84%e5%88%99%e7%94%9f%e5%91%bd%e5%91%a8%e6%9c%9f%e7%ae%a1%e7%90%86" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;h3 class="heading-element" id="51-规则状态标记">&lt;span>5.1 规则状态标记&lt;/span>
+ &lt;a href="#51-%e8%a7%84%e5%88%99%e7%8a%b6%e6%80%81%e6%a0%87%e8%ae%b0" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>状态标签&lt;/th>
+ &lt;th>描述&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>[ACTIVE]&lt;/td>
+ &lt;td>当前生效的规则&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>[DISABLED]&lt;/td>
+ &lt;td>临时禁用的规则&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>[OBSOLETE]&lt;/td>
+ &lt;td>已过时不再使用的规则&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>[TESTING]&lt;/td>
+ &lt;td>测试阶段的规则&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>[REVIEW]&lt;/td>
+ &lt;td>需要审查的规则&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;h3 class="heading-element" id="52-规则退役标准">&lt;span>5.2 规则退役标准&lt;/span>
+ &lt;a href="#52-%e8%a7%84%e5%88%99%e9%80%80%e5%bd%b9%e6%a0%87%e5%87%86" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;ol>
+&lt;li>规则已不再适用当前技术栈&lt;/li>
+&lt;li>规则存在高误报率且无法优化&lt;/li>
+&lt;li>规则被更高效的替代方案取代&lt;/li>
+&lt;li>规则针对的漏洞已被官方修复&lt;/li>
+&lt;li>规则不符合最新的安全标准&lt;/li>
+&lt;/ol>
+&lt;h2 class="heading-element" id="6-版本控制规范">&lt;span>6. 版本控制规范&lt;/span>
+ &lt;a href="#6-%e7%89%88%e6%9c%ac%e6%8e%a7%e5%88%b6%e8%a7%84%e8%8c%83" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;h3 class="heading-element" id="61-git提交规范">&lt;span>6.1 Git提交规范&lt;/span>
+ &lt;a href="#61-git%e6%8f%90%e4%ba%a4%e8%a7%84%e8%8c%83" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>类型&lt;/th>
+ &lt;th>描述&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>feat&lt;/td>
+ &lt;td>新增安全规则&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>fix&lt;/td>
+ &lt;td>修复规则缺陷&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>perf&lt;/td>
+ &lt;td>规则性能优化&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>docs&lt;/td>
+ &lt;td>文档更新&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>test&lt;/td>
+ &lt;td>测试用例更新&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>chore&lt;/td>
+ &lt;td>日常维护任务&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;h3 class="heading-element" id="62-示例提交信息">&lt;span>6.2 示例提交信息&lt;/span>
+ &lt;a href="#62-%e7%a4%ba%e4%be%8b%e6%8f%90%e4%ba%a4%e4%bf%a1%e6%81%af" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">feat(rules): add API rate limiting rule
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Add new rule to prevent API abuse by limiting request rate to 100 requests per minute.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Related to #1234 security enhancement task.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">perf(rules): optimize SQL injection detection regex
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Improve performance of SQL injection rules by adding prefix matching and reducing backtracking.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Reduce CPU usage by 40% in benchmark tests.&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 class="heading-element" id="7-规则测试规范">&lt;span>7. 规则测试规范&lt;/span>
+ &lt;a href="#7-%e8%a7%84%e5%88%99%e6%b5%8b%e8%af%95%e8%a7%84%e8%8c%83" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;h3 class="heading-element" id="71-测试覆盖率要求">&lt;span>7.1 测试覆盖率要求&lt;/span>
+ &lt;a href="#71-%e6%b5%8b%e8%af%95%e8%a6%86%e7%9b%96%e7%8e%87%e8%a6%81%e6%b1%82" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>规则类型&lt;/th>
+ &lt;th>最低测试覆盖率&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>核心防护&lt;/td>
+ &lt;td>100%&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>注入攻击&lt;/td>
+ &lt;td>95%+&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>XSS攻击&lt;/td>
+ &lt;td>95%+&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>文件操作&lt;/td>
+ &lt;td>90%+&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>会话安全&lt;/td>
+ &lt;td>90%+&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>自定义规则&lt;/td>
+ &lt;td>85%+&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;h3 class="heading-element" id="72-测试报告示例">&lt;span>7.2 测试报告示例&lt;/span>
+ &lt;a href="#72-%e6%b5%8b%e8%af%95%e6%8a%a5%e5%91%8a%e7%a4%ba%e4%be%8b" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">=== ModSecurity Rule Test ===
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Testing SQL Injection Rules...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Test Cases: 20
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Success Rate: 100%
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">False Positives: 0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">False Negatives: 0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Testing XSS Rules...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Test Cases: 25
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Success Rate: 98%
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">False Positives: 1 (update rule 3004)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">False Negatives: 0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Testing File Inclusion Rules...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Test Cases: 15
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Success Rate: 93%
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">False Positives: 0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">False Negatives: 1 (add pattern to rule 4002)&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item><item><title>自建Kubernetes与AWS IAM授权认证.md</title><link>https://www.kbsonlong.com/posts/self-built-kubernetes-and-aws-iam-authorization.md/</link><pubDate>Fri, 17 Oct 2025 10:51:25 +0800</pubDate><guid>https://www.kbsonlong.com/posts/self-built-kubernetes-and-aws-iam-authorization.md/</guid><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><category domain="https://www.kbsonlong.com/categories/%E5%AE%89%E5%85%A8/">安全</category><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><category domain="https://www.kbsonlong.com/categories/aws/">AWS</category><description>&lt;h2 class="heading-element" id="为什么需要-irsa">&lt;span>为什么需要 IRSA？&lt;/span>
  &lt;a href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e9%9c%80%e8%a6%81-irsa" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
