@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>性能测试 - 标签 - 蜷缩的蜗牛</title><link>https://www.kbsonlong.com/tags/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/</link><description>云原生时代运维</description><generator>Hugo 0.147.7 &amp; FixIt v0.4.0-alpha.2-20251022034748-fe129dd2</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 28 Nov 2025 08:00:00 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/tags/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/index.xml" rel="self" type="application/rss+xml"/><item><title>Envoy与Nginx正向代理压测方案</title><link>https://www.kbsonlong.com/posts/envoy-vs-nginx-forward-proxy-benchmark/</link><pubDate>Fri, 28 Nov 2025 08:00:00 +0800</pubDate><guid>https://www.kbsonlong.com/posts/envoy-vs-nginx-forward-proxy-benchmark/</guid><description>&lt;h2 class="heading-element" id="目标">&lt;span>目标&lt;/span>
+ &lt;a href="#%e7%9b%ae%e6%a0%87" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;ul>
+&lt;li>对比 Envoy 与 Nginx 在正向代理场景下的吞吐、延迟、失败率与连接行为（TIME_WAIT）。&lt;/li>
+&lt;/ul>
+&lt;h2 class="heading-element" id="环境">&lt;span>环境&lt;/span>
+ &lt;a href="#%e7%8e%af%e5%a2%83" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;ul>
+&lt;li>Envoy：监听 &lt;code>9094&lt;/code>，管理口 &lt;code>9902&lt;/code>，启用来源/目标 RBAC、动态前向代理（c-ares DNS）、访问日志与本地限流。&lt;/li>
+&lt;li>Nginx：监听 &lt;code>8080&lt;/code>，启用 HTTP/1.1 长连接与 &lt;code>reuseport&lt;/code>、CONNECT 支持，变量上游转发。&lt;/li>
+&lt;li>系统（Linux 参考）：&lt;code>ip_local_port_range=20000–65535&lt;/code>、&lt;code>tcp_tw_reuse=1&lt;/code>、&lt;code>tcp_timestamps=1&lt;/code>、&lt;code>tcp_max_tw_buckets=200000&lt;/code>。&lt;/li>
+&lt;/ul>
+&lt;h2 class="heading-element" id="指标采集">&lt;span>指标采集&lt;/span>
+ &lt;a href="#%e6%8c%87%e6%a0%87%e9%87%87%e9%9b%86" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;ul>
+&lt;li>吞吐与延迟：QPS、平均耗时、P50/P90/P99。&lt;/li>
+&lt;li>失败率：HTTP 4xx/5xx 比例、连接错误（如 &lt;code>connect() failed&lt;/code>）。&lt;/li>
+&lt;li>连接行为：&lt;code>TIME_WAIT&lt;/code> 总量与趋势。&lt;/li>
+&lt;li>代理内部指标：
+&lt;ul>
+&lt;li>Envoy：&lt;code>curl http://localhost:9902/stats | head -n 200&lt;/code>，关注 &lt;code>cluster.dynamic_forward_proxy_cluster.*&lt;/code>、&lt;code>dns_cache.*&lt;/code>、&lt;code>local_ratelimit.*&lt;/code>、&lt;code>http.*&lt;/code>。&lt;/li>
+&lt;li>Nginx：访问日志与错误日志，统计 5xx 与连接失败。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 class="heading-element" id="压测命令">&lt;span>压测命令&lt;/span>
+ &lt;a href="#%e5%8e%8b%e6%b5%8b%e5%91%bd%e4%bb%a4" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;ul>
+&lt;li>HTTP（Envoy）：
+&lt;ul>
+&lt;li>&lt;code>docker run --rm rakyll/hey -z 60s -c 200 -x http://host.docker.internal:9094 http://example.org/&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>HTTP（Nginx）：
+&lt;ul>
+&lt;li>&lt;code>docker run --rm rakyll/hey -z 60s -c 200 -x http://host.docker.internal:8080 http://example.org/&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>HTTPS（CONNECT）功能验证（并发 curl）：
+&lt;ul>
+&lt;li>&lt;code>docker run --rm curlimages/curl:8.5.0 -sS --proxy http://host.docker.internal:9094 https://ifconfig.io&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 class="heading-element" id="time_wait-采样">&lt;span>TIME_WAIT 采样&lt;/span>
+ &lt;a href="#time_wait-%e9%87%87%e6%a0%b7" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;ul>
+&lt;li>macOS：&lt;code>watch -n 5 'netstat -an | grep TIME_WAIT | wc -l'&lt;/code>&lt;/li>
+&lt;li>Linux：&lt;code>watch -n 5 'ss -tan state time-wait | wc -l'&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;h2 class="heading-element" id="输出记录模板">&lt;span>输出记录模板&lt;/span>
+ &lt;a href="#%e8%be%93%e5%87%ba%e8%ae%b0%e5%bd%95%e6%a8%a1%e6%9d%bf" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;ul>
+&lt;li>工具命令、QPS、平均耗时、P95/P99、失败率、&lt;code>TIME_WAIT&lt;/code> 初值/峰值/稳态值、Envoy/Nginx关键指标快照。&lt;/li>
+&lt;/ul>
+&lt;h2 class="heading-element" id="一键脚本">&lt;span>一键脚本&lt;/span>
+ &lt;a href="#%e4%b8%80%e9%94%ae%e8%84%9a%e6%9c%ac" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;ul>
+&lt;li>路径：&lt;code>scripts/run_benchmark.sh&lt;/code>&lt;/li>
+&lt;li>使用：&lt;code>bash scripts/run_benchmark.sh&lt;/code>&lt;/li>
+&lt;li>可选参数（环境变量）：
+&lt;ul>
+&lt;li>&lt;code>DURATION&lt;/code> 压测时长秒（默认 &lt;code>60&lt;/code>）&lt;/li>
+&lt;li>&lt;code>CONCURRENCY&lt;/code> 并发数（默认 &lt;code>200&lt;/code>）&lt;/li>
+&lt;li>&lt;code>TARGET&lt;/code> HTTP目标（默认 &lt;code>http://example.org/&lt;/code>）&lt;/li>
+&lt;li>&lt;code>ENVOY_PROXY&lt;/code>（默认 &lt;code>http://host.docker.internal:9094&lt;/code>）&lt;/li>
+&lt;li>&lt;code>NGINX_PROXY&lt;/code>（默认 &lt;code>http://host.docker.internal:8080&lt;/code>）&lt;/li>
+&lt;li>&lt;code>CONNECT_TARGET&lt;/code>（默认 &lt;code>https://ifconfig.io&lt;/code>）&lt;/li>
+&lt;li>&lt;code>CONNECT_COUNT&lt;/code>（默认 &lt;code>50&lt;/code>）&lt;/li>
+&lt;li>&lt;code>CONNECT_PARALLEL&lt;/code>（默认 &lt;code>10&lt;/code>）&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>输出目录：&lt;code>docs/results/&amp;lt;timestamp&amp;gt;/&lt;/code>，包含 hey 输出、TIME_WAIT 采样、Envoy stats 快照与 CONNECT 结果。&lt;/li>
+&lt;/ul>
+&lt;h2 class="heading-element" id="结论预期">&lt;span>结论预期&lt;/span>
+ &lt;a href="#%e7%bb%93%e8%ae%ba%e9%a2%84%e6%9c%9f" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;ul>
+&lt;li>Envoy：动态前向代理与连接合并带来更高复用率；在大量不同上游域名场景下，&lt;code>TIME_WAIT&lt;/code> 峰值与稳态值更低，失败率更低，P99更稳。&lt;/li>
+&lt;li>Nginx：变量上游难以池化复用，可能导致频繁建连与大量 &lt;code>TIME_WAIT&lt;/code>，高并发下更易受端口耗尽影响。&lt;/li>
+&lt;/ul>
+&lt;h2 class="heading-element" id="风险与注意">&lt;span>风险与注意&lt;/span>
+ &lt;a href="#%e9%a3%8e%e9%99%a9%e4%b8%8e%e6%b3%a8%e6%84%8f" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;ul>
+&lt;li>白名单：测试目标域必须在 Envoy 白名单内，否则会被 RBAC 返回 403。&lt;/li>
+&lt;li>CONNECT：压测工具有限，建议以功能验证与失败率统计为主，配合 HTTP 压测综合判断。&lt;/li>
+&lt;li>正则复杂度：避免单条 RE2 规则过大；当前已拆分并使用低复杂度通配（&lt;code>*.{region}.log.aliyuncs.com&lt;/code>）。&lt;/li>
+&lt;/ul>
+&lt;h2 class="heading-element" id="可执行指引一步步">&lt;span>可执行指引（一步步）&lt;/span>
+ &lt;a href="#%e5%8f%af%e6%89%a7%e8%a1%8c%e6%8c%87%e5%bc%95%e4%b8%80%e6%ad%a5%e6%ad%a5" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;ul>
+&lt;li>
+&lt;p>前置条件&lt;/p></description></item></channel></rss>
