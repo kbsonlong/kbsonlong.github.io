@@ -1,4 +1,375 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>蜷缩的蜗牛</title><link>https://www.kbsonlong.com/</link><description>云原生时代运维</description><generator>Hugo 0.147.7 &amp; FixIt v0.4.0-alpha.2-20251022034748-fe129dd2</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 28 Nov 2025 11:30:00 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/index.xml" rel="self" type="application/rss+xml"/><item><title>Kind + Flannel 集成 Bandwidth CNI 并验证 Pod 间带宽限制</title><link>https://www.kbsonlong.com/posts/kind--flannel-%E9%9B%86%E6%88%90-bandwidth-cni-%E5%B9%B6%E9%AA%8C%E8%AF%81-pod-%E9%97%B4%E5%B8%A6%E5%AE%BD%E9%99%90%E5%88%B6/</link><pubDate>Fri, 28 Nov 2025 11:30:00 +0800</pubDate><guid>https://www.kbsonlong.com/posts/kind--flannel-%E9%9B%86%E6%88%90-bandwidth-cni-%E5%B9%B6%E9%AA%8C%E8%AF%81-pod-%E9%97%B4%E5%B8%A6%E5%AE%BD%E9%99%90%E5%88%B6/</guid><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><category domain="https://www.kbsonlong.com/categories/%E7%BD%91%E7%BB%9C/">网络</category><description>&lt;h2 class="heading-element" id="概述">&lt;span>概述&lt;/span>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>蜷缩的蜗牛</title><link>https://www.kbsonlong.com/</link><description>云原生时代运维</description><generator>Hugo 0.147.7 &amp; FixIt v0.4.0-alpha.2-20251022034748-fe129dd2</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 19 Dec 2025 16:51:25 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/index.xml" rel="self" type="application/rss+xml"/><item><title>Falco 与 Tetragon 最小化 POC 验证指南</title><link>https://www.kbsonlong.com/posts/falco-%E4%B8%8E-tetragon-%E6%9C%80%E5%B0%8F%E5%8C%96-poc-%E9%AA%8C%E8%AF%81%E6%8C%87%E5%8D%97/</link><pubDate>Fri, 19 Dec 2025 16:51:25 +0800</pubDate><guid>https://www.kbsonlong.com/posts/falco-%E4%B8%8E-tetragon-%E6%9C%80%E5%B0%8F%E5%8C%96-poc-%E9%AA%8C%E8%AF%81%E6%8C%87%E5%8D%97/</guid><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><category domain="https://www.kbsonlong.com/categories/%E5%AE%89%E5%85%A8/">安全</category><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><description>&lt;h1 class="heading-element" id="falco-与-tetragon-最小化-poc-验证指南">&lt;span>Falco 与 Tetragon 最小化 POC 验证指南&lt;/span>
+ &lt;a href="#falco-%e4%b8%8e-tetragon-%e6%9c%80%e5%b0%8f%e5%8c%96-poc-%e9%aa%8c%e8%af%81%e6%8c%87%e5%8d%97" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h1>&lt;p>本文档旨在提供一份手把手的操作指南，帮助你在本地环境快速构建一个包含 Falco 和 Tetragon 的 Kubernetes 集群，并验证它们的核心功能。&lt;/p>
+&lt;h2 class="heading-element" id="1-环境准备">&lt;span>1. 环境准备&lt;/span>
+ &lt;a href="#1-%e7%8e%af%e5%a2%83%e5%87%86%e5%a4%87" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>在开始之前，请确保你的本地环境（MacOS/Linux）已经安装了以下工具：&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Docker Desktop&lt;/strong> (或 OrbStack/Podman): 容器运行时。&lt;/li>
+&lt;li>&lt;strong>Kind&lt;/strong>: 用于在 Docker 中运行 Kubernetes 集群。&lt;/li>
+&lt;li>&lt;strong>Kubectl&lt;/strong>: Kubernetes 命令行工具。&lt;/li>
+&lt;li>&lt;strong>Helm&lt;/strong>: Kubernetes 包管理器。&lt;/li>
+&lt;/ul>
+&lt;h3 class="heading-element" id="11-检查版本">&lt;span>1.1 检查版本&lt;/span>
+ &lt;a href="#11-%e6%a3%80%e6%9f%a5%e7%89%88%e6%9c%ac" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;p>执行以下命令确认工具已就绪：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">docker version
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kind version
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kubectl version --client
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">helm version&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 class="heading-element" id="2-创建集群">&lt;span>2. 创建集群&lt;/span>
+ &lt;a href="#2-%e5%88%9b%e5%bb%ba%e9%9b%86%e7%be%a4" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>为了支持 eBPF，我们需要使用较新版本的 Kubernetes 节点镜像，并确保节点配置正确。&lt;/p>
+&lt;h3 class="heading-element" id="21-编写-kind-配置文件">&lt;span>2.1 编写 Kind 配置文件&lt;/span>
+ &lt;a href="#21-%e7%bc%96%e5%86%99-kind-%e9%85%8d%e7%bd%ae%e6%96%87%e4%bb%b6" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;p>创建文件 &lt;code>security-poc/kind-config.yaml&lt;/code>：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-yaml" data-lang="yaml">&lt;span class="line">&lt;span class="cl">&lt;span class="nt">kind&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">Cluster&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nt">apiVersion&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">kind.x-k8s.io/v1alpha4&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nt">nodes&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>- &lt;span class="nt">role&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">control-plane&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">image&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">kindest/node:v1.27.3&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c"># 推荐使用 v1.27+ 以获得更好的 eBPF 支持&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 class="heading-element" id="22-启动集群">&lt;span>2.2 启动集群&lt;/span>
+ &lt;a href="#22-%e5%90%af%e5%8a%a8%e9%9b%86%e7%be%a4" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">kind create cluster --config security-poc/kind-config.yaml --name security-poc&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;em>等待集群启动完毕（约 1-2 分钟）。&lt;/em>&lt;/p>
+&lt;h2 class="heading-element" id="3-部署-falco-威胁检测">&lt;span>3. 部署 Falco (威胁检测)&lt;/span>
+ &lt;a href="#3-%e9%83%a8%e7%bd%b2-falco-%e5%a8%81%e8%83%81%e6%a3%80%e6%b5%8b" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>Falco 是云原生运行时安全的事实标准，我们将使用 Helm 进行安装。&lt;/p>
+&lt;h3 class="heading-element" id="31-安装脚本">&lt;span>3.1 安装脚本&lt;/span>
+ &lt;a href="#31-%e5%ae%89%e8%a3%85%e8%84%9a%e6%9c%ac" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;p>创建并执行 &lt;code>security-poc/install-falco.sh&lt;/code>：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#!/bin/bash
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>&lt;span class="nb">set&lt;/span> -e
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;=== Installing Falco ===&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">helm repo add falcosecurity https://falcosecurity.github.io/charts
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">helm repo update falcosecurity
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">helm upgrade --install falco falcosecurity/falco &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> --namespace falco &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> --create-namespace &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> --set driver.kind&lt;span class="o">=&lt;/span>modern_ebpf &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> --set &lt;span class="nv">tty&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="nb">true&lt;/span> &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> --wait
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;=== Falco Installed ===&amp;#34;&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>执行安装：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">chmod +x security-poc/install-falco.sh
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">./security-poc/install-falco.sh&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 class="heading-element" id="32-验证-falco-状态">&lt;span>3.2 验证 Falco 状态&lt;/span>
+ &lt;a href="#32-%e9%aa%8c%e8%af%81-falco-%e7%8a%b6%e6%80%81" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">kubectl get pods -n falco&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;em>确保 Pod 状态为 &lt;code>Running&lt;/code>。&lt;/em>&lt;/p>
+&lt;h2 class="heading-element" id="4-部署-tetragon-内核观测与阻断">&lt;span>4. 部署 Tetragon (内核观测与阻断)&lt;/span>
+ &lt;a href="#4-%e9%83%a8%e7%bd%b2-tetragon-%e5%86%85%e6%a0%b8%e8%a7%82%e6%b5%8b%e4%b8%8e%e9%98%bb%e6%96%ad" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>Tetragon 是 Cilium 推出的基于 eBPF 的安全观测与执行平台。&lt;/p>
+&lt;h3 class="heading-element" id="41-安装脚本">&lt;span>4.1 安装脚本&lt;/span>
+ &lt;a href="#41-%e5%ae%89%e8%a3%85%e8%84%9a%e6%9c%ac" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;p>创建并执行 &lt;code>security-poc/install-tetragon.sh&lt;/code>：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#!/bin/bash
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>&lt;span class="nb">set&lt;/span> -e
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;=== Installing Tetragon ===&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">helm repo add cilium https://helm.cilium.io/
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">helm repo update cilium
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">helm upgrade --install tetragon cilium/tetragon &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> --namespace tetragon &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> --create-namespace &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> --wait
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;=== Tetragon Installed ===&amp;#34;&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>执行安装：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">chmod +x security-poc/install-tetragon.sh
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">./security-poc/install-tetragon.sh&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 class="heading-element" id="42-验证-tetragon-状态">&lt;span>4.2 验证 Tetragon 状态&lt;/span>
+ &lt;a href="#42-%e9%aa%8c%e8%af%81-tetragon-%e7%8a%b6%e6%80%81" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">kubectl get pods -n tetragon&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;em>确保 Agent Pods 状态为 &lt;code>Running&lt;/code>。&lt;/em>&lt;/p>
+&lt;h2 class="heading-element" id="5-poc-验证场景">&lt;span>5. POC 验证场景&lt;/span>
+ &lt;a href="#5-poc-%e9%aa%8c%e8%af%81%e5%9c%ba%e6%99%af" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>我们将通过模拟恶意行为来触发这两个工具的反应。&lt;/p>
+&lt;h3 class="heading-element" id="51-场景一触发-falco-告警-文件完整性监控">&lt;span>5.1 场景一：触发 Falco 告警 (文件完整性监控)&lt;/span>
+ &lt;a href="#51-%e5%9c%ba%e6%99%af%e4%b8%80%e8%a7%a6%e5%8f%91-falco-%e5%91%8a%e8%ad%a6-%e6%96%87%e4%bb%b6%e5%ae%8c%e6%95%b4%e6%80%a7%e7%9b%91%e6%8e%a7" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;p>&lt;strong>目标&lt;/strong>: 模拟攻击者修改 &lt;code>/etc&lt;/code> 目录下的文件。&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>&lt;strong>准备测试脚本&lt;/strong> &lt;code>security-poc/demo-falco.sh&lt;/code>:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#!/bin/bash
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>&lt;span class="c1"># 启动一个 Alpine 容器&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kubectl run alpine-test --image&lt;span class="o">=&lt;/span>alpine --restart&lt;span class="o">=&lt;/span>Never -- sh -c &lt;span class="s2">&amp;#34;sleep 3600&amp;#34;&lt;/span> &lt;span class="o">||&lt;/span> &lt;span class="nb">true&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kubectl &lt;span class="nb">wait&lt;/span> --for&lt;span class="o">=&lt;/span>&lt;span class="nv">condition&lt;/span>&lt;span class="o">=&lt;/span>Ready pod/alpine-test --timeout&lt;span class="o">=&lt;/span>60s
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 触发违规操作：在 /etc 下创建文件&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kubectl &lt;span class="nb">exec&lt;/span> alpine-test -- touch /etc/falco-test
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 查看 Falco 日志&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kubectl logs -n falco -l app.kubernetes.io/name&lt;span class="o">=&lt;/span>falco --tail&lt;span class="o">=&lt;/span>&lt;span class="m">100&lt;/span> &lt;span class="p">|&lt;/span> grep &lt;span class="s2">&amp;#34;File below /etc opened for writing&amp;#34;&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>执行验证&lt;/strong>:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">chmod +x security-poc/demo-falco.sh
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">./security-poc/demo-falco.sh&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>预期结果&lt;/strong>:
+你将在控制台看到类似如下的 Falco JSON 日志，表明它检测到了对 &lt;code>/etc&lt;/code> 的写入尝试：&lt;/p>
+&lt;json-viewer value="&amp;#34;{\&amp;#34;output\&amp;#34;:\&amp;#34;File below /etc opened for writing ...\&amp;#34;}&amp;#34;" expand-depth="1" boxed copyable="{&amp;#34;copiedText&amp;#34;:&amp;#34;已复制&amp;#34;,&amp;#34;copyText&amp;#34;:&amp;#34;复制&amp;#34;}">&lt;/json-viewer>&lt;/li>
+&lt;/ol>
+&lt;h3 class="heading-element" id="52-场景二触发-tetragon-观测-敏感文件读取">&lt;span>5.2 场景二：触发 Tetragon 观测 (敏感文件读取)&lt;/span>
+ &lt;a href="#52-%e5%9c%ba%e6%99%af%e4%ba%8c%e8%a7%a6%e5%8f%91-tetragon-%e8%a7%82%e6%b5%8b-%e6%95%8f%e6%84%9f%e6%96%87%e4%bb%b6%e8%af%bb%e5%8f%96" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;p>&lt;strong>目标&lt;/strong>: 监控所有对 &lt;code>/etc/passwd&lt;/code> 的读取行为。&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>&lt;strong>定义策略&lt;/strong> &lt;code>security-poc/tetragon-policy.yaml&lt;/code>:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-yaml" data-lang="yaml">&lt;span class="line">&lt;span class="cl">&lt;span class="nt">apiVersion&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">cilium.io/v1alpha1&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nt">kind&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">TracingPolicy&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nt">metadata&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">name&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">log-etc-access&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nt">spec&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">kprobes&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="nt">call&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s2">&amp;#34;sys_openat&amp;#34;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">syscall&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kc">true&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">args&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="nt">index&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="m">1&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">type&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s2">&amp;#34;string&amp;#34;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">selectors&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="nt">matchArgs&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="nt">index&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="m">1&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">operator&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s2">&amp;#34;Prefix&amp;#34;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">values&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="s2">&amp;#34;/etc/passwd&amp;#34;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">matchActions&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="nt">action&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">Post&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>准备测试脚本&lt;/strong> &lt;code>security-poc/demo-tetragon.sh&lt;/code>:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#!/bin/bash
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>&lt;span class="c1"># 应用策略&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kubectl apply -f security-poc/tetragon-policy.yaml
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sleep &lt;span class="m">5&lt;/span> &lt;span class="c1"># 等待策略生效&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 触发操作：读取 /etc/passwd&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kubectl &lt;span class="nb">exec&lt;/span> alpine-test -- cat /etc/passwd &amp;gt; /dev/null
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 查看 Tetragon 日志&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kubectl logs -n tetragon -l app.kubernetes.io/name&lt;span class="o">=&lt;/span>tetragon -c export-stdout --tail&lt;span class="o">=&lt;/span>&lt;span class="m">100&lt;/span> &lt;span class="p">|&lt;/span> grep &lt;span class="s2">&amp;#34;/etc/passwd&amp;#34;&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>执行验证&lt;/strong>:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">chmod +x security-poc/demo-tetragon.sh
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">./security-poc/demo-tetragon.sh&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>预期结果&lt;/strong>:
+你将看到 Tetragon 捕获的 &lt;code>process_exec&lt;/code> 或 &lt;code>sys_openat&lt;/code> 事件，详细记录了是哪个 Pod、哪个进程执行了该操作。&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;h2 class="heading-element" id="6-清理环境">&lt;span>6. 清理环境&lt;/span>
+ &lt;a href="#6-%e6%b8%85%e7%90%86%e7%8e%af%e5%a2%83" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>测试完成后，清理所有资源：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">kind delete cluster --name security-poc
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">rm -rf security-poc/&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 class="heading-element" id="7-常见问题排查">&lt;span>7. 常见问题排查&lt;/span>
+ &lt;a href="#7-%e5%b8%b8%e8%a7%81%e9%97%ae%e9%a2%98%e6%8e%92%e6%9f%a5" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;ul>
+&lt;li>&lt;strong>Falco Pod 启动失败&lt;/strong>: 检查节点内核版本是否支持 eBPF。&lt;/li>
+&lt;li>&lt;strong>Tetragon 没有日志&lt;/strong>: 确认 &lt;code>TracingPolicy&lt;/code> 是否正确应用，以及 Pod 所在的节点是否运行了 Tetragon Agent。&lt;/li>
+&lt;/ul></description></item><item><title>Kind + Flannel 集成 Bandwidth CNI 并验证 Pod 间带宽限制</title><link>https://www.kbsonlong.com/posts/kind--flannel-%E9%9B%86%E6%88%90-bandwidth-cni-%E5%B9%B6%E9%AA%8C%E8%AF%81-pod-%E9%97%B4%E5%B8%A6%E5%AE%BD%E9%99%90%E5%88%B6/</link><pubDate>Fri, 28 Nov 2025 11:30:00 +0800</pubDate><guid>https://www.kbsonlong.com/posts/kind--flannel-%E9%9B%86%E6%88%90-bandwidth-cni-%E5%B9%B6%E9%AA%8C%E8%AF%81-pod-%E9%97%B4%E5%B8%A6%E5%AE%BD%E9%99%90%E5%88%B6/</guid><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><category domain="https://www.kbsonlong.com/categories/%E7%BD%91%E7%BB%9C/">网络</category><description>&lt;h2 class="heading-element" id="概述">&lt;span>概述&lt;/span>
  &lt;a href="#%e6%a6%82%e8%bf%b0" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -5507,526 +5878,4 @@
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h2>&lt;p>通过VMAlert Recording Rules，我们可以将Kubernetes dashboard中的复杂查询转换为高效的预聚合指标，提供多维度的时间聚合和业务指标。这不仅提升了查询性能，还为业务监控和趋势分析提供了强有力的支持。&lt;/p>
-&lt;p>建议根据实际业务需求调整规则配置，并持续监控规则执行状态和指标生成情况。&lt;/p></description></item><item><title>Kubernetes Dashboard VMAlert Record 完整解决方案</title><link>https://www.kbsonlong.com/posts/kubernetes-dashboard-vmalert-record-complete-solution.md/</link><pubDate>Fri, 17 Oct 2025 10:51:25 +0800</pubDate><guid>https://www.kbsonlong.com/posts/kubernetes-dashboard-vmalert-record-complete-solution.md/</guid><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><category domain="https://www.kbsonlong.com/categories/%E7%9B%91%E6%8E%A7/">监控</category><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><description>&lt;h1 class="heading-element" id="kubernetes-dashboard-vmalert-record-完整解决方案">&lt;span>Kubernetes Dashboard VMAlert Record 完整解决方案&lt;/span>
- &lt;a href="#kubernetes-dashboard-vmalert-record-%e5%ae%8c%e6%95%b4%e8%a7%a3%e5%86%b3%e6%96%b9%e6%a1%88" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h1>&lt;h2 class="heading-element" id="概述">&lt;span>概述&lt;/span>
- &lt;a href="#%e6%a6%82%e8%bf%b0" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;p>本解决方案将Kubernetes dashboard中的所有查询语句通过VMAlert Recording Rules进行聚合，按天、周、月维度提供预聚合指标，显著提升查询性能和监控效率。&lt;/p>
-&lt;h2 class="heading-element" id="解决方案架构">&lt;span>解决方案架构&lt;/span>
- &lt;a href="#%e8%a7%a3%e5%86%b3%e6%96%b9%e6%a1%88%e6%9e%b6%e6%9e%84" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
-&lt;/span>&lt;span class="lnt"> 2
-&lt;/span>&lt;span class="lnt"> 3
-&lt;/span>&lt;span class="lnt"> 4
-&lt;/span>&lt;span class="lnt"> 5
-&lt;/span>&lt;span class="lnt"> 6
-&lt;/span>&lt;span class="lnt"> 7
-&lt;/span>&lt;span class="lnt"> 8
-&lt;/span>&lt;span class="lnt"> 9
-&lt;/span>&lt;span class="lnt">10
-&lt;/span>&lt;span class="lnt">11
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ Kubernetes │───▶│ VMAlert │───▶│ Recording │
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ Dashboard │ │ (规则引擎) │ │ Rules 指标 │
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ (原始查询) │ │ │ │ │
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">└─────────────────┘ └─────────────────┘ └─────────────────┘
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> │
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> ▼
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ Grafana │◀───│ VictoriaMetrics │───▶│ 聚合指标 │
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ (可视化) │ │ (时序数据库) │ │ (天/周/月) │
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">└─────────────────┘ └─────────────────┘ └─────────────────┘&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;h2 class="heading-element" id="核心优势">&lt;span>核心优势&lt;/span>
- &lt;a href="#%e6%a0%b8%e5%bf%83%e4%bc%98%e5%8a%bf" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;h3 class="heading-element" id="1-性能提升">&lt;span>1. 性能提升&lt;/span>
- &lt;a href="#1-%e6%80%a7%e8%83%bd%e6%8f%90%e5%8d%87" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;ul>
-&lt;li>&lt;strong>查询速度&lt;/strong>：预聚合指标查询速度提升3-10倍&lt;/li>
-&lt;li>&lt;strong>资源消耗&lt;/strong>：减少重复计算，降低CPU和内存使用&lt;/li>
-&lt;li>&lt;strong>响应时间&lt;/strong>：Dashboard加载时间显著缩短&lt;/li>
-&lt;/ul>
-&lt;h3 class="heading-element" id="2-多维度聚合">&lt;span>2. 多维度聚合&lt;/span>
- &lt;a href="#2-%e5%a4%9a%e7%bb%b4%e5%ba%a6%e8%81%9a%e5%90%88" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;ul>
-&lt;li>&lt;strong>时间维度&lt;/strong>：支持天(24h)、周(7d)、月(30d)聚合&lt;/li>
-&lt;li>&lt;strong>统计维度&lt;/strong>：提供平均值、最大值、最小值、P95等统计指标&lt;/li>
-&lt;li>&lt;strong>业务维度&lt;/strong>：增长率、趋势、环比等业务指标&lt;/li>
-&lt;/ul>
-&lt;h3 class="heading-element" id="3-存储优化">&lt;span>3. 存储优化&lt;/span>
- &lt;a href="#3-%e5%ad%98%e5%82%a8%e4%bc%98%e5%8c%96" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;ul>
-&lt;li>&lt;strong>数据压缩&lt;/strong>：利用VictoriaMetrics的压缩功能&lt;/li>
-&lt;li>&lt;strong>降采样&lt;/strong>：通过Recording Rules实现智能降采样&lt;/li>
-&lt;li>&lt;strong>保留策略&lt;/strong>：支持不同时间维度的数据保留策略&lt;/li>
-&lt;/ul>
-&lt;h2 class="heading-element" id="文件结构">&lt;span>文件结构&lt;/span>
- &lt;a href="#%e6%96%87%e4%bb%b6%e7%bb%93%e6%9e%84" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;span class="lnt">4
-&lt;/span>&lt;span class="lnt">5
-&lt;/span>&lt;span class="lnt">6
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">.
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── k8s-dashboard-vmalert-rules.yaml # VMAlert记录规则文件
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── deploy-k8s-dashboard-vmalert.sh # 一键部署脚本
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── test-k8s-metrics.sh # 指标测试脚本
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── README-K8S-Dashboard-VMAlert.md # 详细部署指南
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">└── README-Complete-Solution.md # 本文件&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;h2 class="heading-element" id="指标分类">&lt;span>指标分类&lt;/span>
- &lt;a href="#%e6%8c%87%e6%a0%87%e5%88%86%e7%b1%bb" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;h3 class="heading-element" id="1-基础资源指标">&lt;span>1. 基础资源指标&lt;/span>
- &lt;a href="#1-%e5%9f%ba%e7%a1%80%e8%b5%84%e6%ba%90%e6%8c%87%e6%a0%87" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;ul>
-&lt;li>&lt;strong>CPU使用率&lt;/strong>：实时、日、周、月聚合&lt;/li>
-&lt;li>&lt;strong>内存使用率&lt;/strong>：实时、日、周、月聚合&lt;/li>
-&lt;li>&lt;strong>网络使用率&lt;/strong>：接收/发送速率、丢包率&lt;/li>
-&lt;li>&lt;strong>存储使用率&lt;/strong>：磁盘I/O、容量使用&lt;/li>
-&lt;/ul>
-&lt;h3 class="heading-element" id="2-kubernetes资源指标">&lt;span>2. Kubernetes资源指标&lt;/span>
- &lt;a href="#2-kubernetes%e8%b5%84%e6%ba%90%e6%8c%87%e6%a0%87" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;ul>
-&lt;li>&lt;strong>Pod状态&lt;/strong>：运行中、已停止、错误等&lt;/li>
-&lt;li>&lt;strong>资源计数&lt;/strong>：命名空间、服务、部署等数量&lt;/li>
-&lt;li>&lt;strong>QoS分类&lt;/strong>：Guaranteed、Burstable、BestEffort&lt;/li>
-&lt;li>&lt;strong>事件统计&lt;/strong>：重启、OOM、驱逐等事件&lt;/li>
-&lt;/ul>
-&lt;h3 class="heading-element" id="3-业务指标">&lt;span>3. 业务指标&lt;/span>
- &lt;a href="#3-%e4%b8%9a%e5%8a%a1%e6%8c%87%e6%a0%87" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;ul>
-&lt;li>&lt;strong>增长率指标&lt;/strong>：日增长率、周环比、月环比&lt;/li>
-&lt;li>&lt;strong>趋势指标&lt;/strong>：资源使用趋势、业务增长趋势&lt;/li>
-&lt;li>&lt;strong>效率指标&lt;/strong>：资源利用率、性能效率&lt;/li>
-&lt;/ul>
-&lt;h3 class="heading-element" id="4-性能指标">&lt;span>4. 性能指标&lt;/span>
- &lt;a href="#4-%e6%80%a7%e8%83%bd%e6%8c%87%e6%a0%87" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;ul>
-&lt;li>&lt;strong>查询性能&lt;/strong>：原始指标vs聚合指标查询时间对比&lt;/li>
-&lt;li>&lt;strong>资源效率&lt;/strong>：CPU/内存资源利用效率&lt;/li>
-&lt;li>&lt;strong>网络性能&lt;/strong>：网络吞吐量、延迟、丢包率&lt;/li>
-&lt;/ul>
-&lt;h2 class="heading-element" id="部署步骤">&lt;span>部署步骤&lt;/span>
- &lt;a href="#%e9%83%a8%e7%bd%b2%e6%ad%a5%e9%aa%a4" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;h3 class="heading-element" id="快速部署">&lt;span>快速部署&lt;/span>
- &lt;a href="#%e5%bf%ab%e9%80%9f%e9%83%a8%e7%bd%b2" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;span class="lnt">4
-&lt;/span>&lt;span class="lnt">5
-&lt;/span>&lt;span class="lnt">6
-&lt;/span>&lt;span class="lnt">7
-&lt;/span>&lt;span class="lnt">8
-&lt;/span>&lt;span class="lnt">9
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 1. 克隆或下载文件&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git clone &amp;lt;repository-url&amp;gt;
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> &amp;lt;repository-directory&amp;gt;
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 2. 一键部署&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">./deploy-k8s-dashboard-vmalert.sh
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 3. 验证部署&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">./test-k8s-metrics.sh&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;h3 class="heading-element" id="手动部署">&lt;span>手动部署&lt;/span>
- &lt;a href="#%e6%89%8b%e5%8a%a8%e9%83%a8%e7%bd%b2" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
-&lt;/span>&lt;span class="lnt"> 2
-&lt;/span>&lt;span class="lnt"> 3
-&lt;/span>&lt;span class="lnt"> 4
-&lt;/span>&lt;span class="lnt"> 5
-&lt;/span>&lt;span class="lnt"> 6
-&lt;/span>&lt;span class="lnt"> 7
-&lt;/span>&lt;span class="lnt"> 8
-&lt;/span>&lt;span class="lnt"> 9
-&lt;/span>&lt;span class="lnt">10
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 1. 创建ConfigMap&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kubectl create configmap k8s-dashboard-vmalert-rules &lt;span class="se">\
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> --from-file&lt;span class="o">=&lt;/span>k8s-dashboard-vmalert-rules.yaml &lt;span class="se">\
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> --namespace&lt;span class="o">=&lt;/span>monitoring
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 2. 部署VMAlert&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kubectl apply -f vmalert-deployment.yaml
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 3. 验证状态&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kubectl get pods -n monitoring -l &lt;span class="nv">app&lt;/span>&lt;span class="o">=&lt;/span>vmalert&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;h2 class="heading-element" id="使用示例">&lt;span>使用示例&lt;/span>
- &lt;a href="#%e4%bd%bf%e7%94%a8%e7%a4%ba%e4%be%8b" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;h3 class="heading-element" id="1-grafana-dashboard配置">&lt;span>1. Grafana Dashboard配置&lt;/span>
- &lt;a href="#1-grafana-dashboard%e9%85%8d%e7%bd%ae" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;p>&lt;strong>CPU使用率趋势图&lt;/strong>：&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;span class="lnt">4
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-promql" data-lang="promql">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 使用预聚合指标，查询更快&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nv">k8s&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="nv">cpu&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="nv">usage&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="nv">daily_avg&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nv">k8s&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="nv">cpu&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="nv">usage&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="nv">weekly_avg&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nv">k8s&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="nv">cpu&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="nv">usage&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="nv">monthly_avg&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;p>&lt;strong>内存使用率对比图&lt;/strong>：&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;span class="lnt">4
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-promql" data-lang="promql">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 对比不同时间维度的使用率&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nv">k8s&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="nv">memory&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="nv">usage&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="nv">daily_max&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nv">k8s&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="nv">memory&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="nv">usage&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="nv">weekly_max&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nv">k8s&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="nv">memory&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="nv">usage&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="nv">monthly_max&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;p>&lt;strong>业务增长趋势图&lt;/strong>：&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;span class="lnt">4
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-promql" data-lang="promql">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 显示增长率趋势&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nv">k8s&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="nv">business&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="nv">cpu&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="nv">usage&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="nv">daily_growth_rate&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nv">k8s&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="nv">business&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="nv">memory&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="nv">usage&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="nv">daily_growth_rate&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nv">k8s&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="nv">business&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="nv">running_pods&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="nv">daily_growth_rate&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;h3 class="heading-element" id="2-告警规则配置">&lt;span>2. 告警规则配置&lt;/span>
- &lt;a href="#2-%e5%91%8a%e8%ad%a6%e8%a7%84%e5%88%99%e9%85%8d%e7%bd%ae" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
-&lt;/span>&lt;span class="lnt"> 2
-&lt;/span>&lt;span class="lnt"> 3
-&lt;/span>&lt;span class="lnt"> 4
-&lt;/span>&lt;span class="lnt"> 5
-&lt;/span>&lt;span class="lnt"> 6
-&lt;/span>&lt;span class="lnt"> 7
-&lt;/span>&lt;span class="lnt"> 8
-&lt;/span>&lt;span class="lnt"> 9
-&lt;/span>&lt;span class="lnt">10
-&lt;/span>&lt;span class="lnt">11
-&lt;/span>&lt;span class="lnt">12
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-yaml" data-lang="yaml">&lt;span class="line">&lt;span class="cl">&lt;span class="nt">groups&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>- &lt;span class="nt">name&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">k8s.business.alerts&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">rules&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="nt">alert&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">HighCPUUsageTrend&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">expr&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">k8s:business:cpu:usage:daily_growth_rate &amp;gt; 20&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">for&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">5m&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">labels&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">severity&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">warning&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">team&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">platform&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">annotations&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">summary&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s2">&amp;#34;CPU使用率增长趋势过高&amp;#34;&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">description&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s2">&amp;#34;CPU使用率日增长率达到 {{ $value }}%&amp;#34;&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;h3 class="heading-element" id="3-性能监控">&lt;span>3. 性能监控&lt;/span>
- &lt;a href="#3-%e6%80%a7%e8%83%bd%e7%9b%91%e6%8e%a7" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;span class="lnt">4
-&lt;/span>&lt;span class="lnt">5
-&lt;/span>&lt;span class="lnt">6
-&lt;/span>&lt;span class="lnt">7
-&lt;/span>&lt;span class="lnt">8
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 检查VMAlert状态&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kubectl logs -n monitoring deployment/vmalert
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 验证指标生成&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">curl -s &lt;span class="s2">&amp;#34;http://vmselect:8481/select/0/prometheus/api/v1/query?query=k8s:cpu:usage:daily_avg&amp;#34;&lt;/span> &lt;span class="p">|&lt;/span> jq
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 性能对比测试&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">./test-k8s-metrics.sh --metrics-only&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;h2 class="heading-element" id="监控和维护">&lt;span>监控和维护&lt;/span>
- &lt;a href="#%e7%9b%91%e6%8e%a7%e5%92%8c%e7%bb%b4%e6%8a%a4" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;h3 class="heading-element" id="1-日常监控">&lt;span>1. 日常监控&lt;/span>
- &lt;a href="#1-%e6%97%a5%e5%b8%b8%e7%9b%91%e6%8e%a7" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;ul>
-&lt;li>&lt;strong>VMAlert状态&lt;/strong>：Pod运行状态、规则执行状态&lt;/li>
-&lt;li>&lt;strong>指标生成&lt;/strong>：聚合指标是否正常生成&lt;/li>
-&lt;li>&lt;strong>性能指标&lt;/strong>：查询响应时间、资源使用情况&lt;/li>
-&lt;/ul>
-&lt;h3 class="heading-element" id="2-故障排除">&lt;span>2. 故障排除&lt;/span>
- &lt;a href="#2-%e6%95%85%e9%9a%9c%e6%8e%92%e9%99%a4" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;ul>
-&lt;li>&lt;strong>规则不执行&lt;/strong>：检查日志、验证语法、检查数据源&lt;/li>
-&lt;li>&lt;strong>指标不生成&lt;/strong>：验证原始指标、检查表达式、确认时间范围&lt;/li>
-&lt;li>&lt;strong>性能问题&lt;/strong>：调整评估间隔、优化表达式、增加资源限制&lt;/li>
-&lt;/ul>
-&lt;h3 class="heading-element" id="3-优化建议">&lt;span>3. 优化建议&lt;/span>
- &lt;a href="#3-%e4%bc%98%e5%8c%96%e5%bb%ba%e8%ae%ae" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;ul>
-&lt;li>&lt;strong>规则评估间隔&lt;/strong>：根据业务需求调整，实时指标30s，聚合指标可适当延长&lt;/li>
-&lt;li>&lt;strong>存储优化&lt;/strong>：使用压缩、设置合理保留期、考虑降采样策略&lt;/li>
-&lt;li>&lt;strong>查询优化&lt;/strong>：优先使用预聚合指标、避免复杂原始查询、利用标签分组&lt;/li>
-&lt;/ul>
-&lt;h2 class="heading-element" id="性能基准">&lt;span>性能基准&lt;/span>
- &lt;a href="#%e6%80%a7%e8%83%bd%e5%9f%ba%e5%87%86" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;h3 class="heading-element" id="查询性能对比">&lt;span>查询性能对比&lt;/span>
- &lt;a href="#%e6%9f%a5%e8%af%a2%e6%80%a7%e8%83%bd%e5%af%b9%e6%af%94" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;table>
- &lt;thead>
- &lt;tr>
- &lt;th>指标类型&lt;/th>
- &lt;th>原始查询时间&lt;/th>
- &lt;th>聚合指标时间&lt;/th>
- &lt;th>性能提升&lt;/th>
- &lt;/tr>
- &lt;/thead>
- &lt;tbody>
- &lt;tr>
- &lt;td>CPU使用率&lt;/td>
- &lt;td>150ms&lt;/td>
- &lt;td>25ms&lt;/td>
- &lt;td>83%&lt;/td>
- &lt;/tr>
- &lt;tr>
- &lt;td>内存使用率&lt;/td>
- &lt;td>120ms&lt;/td>
- &lt;td>20ms&lt;/td>
- &lt;td>83%&lt;/td>
- &lt;/tr>
- &lt;tr>
- &lt;td>网络使用率&lt;/td>
- &lt;td>200ms&lt;/td>
- &lt;td>30ms&lt;/td>
- &lt;td>85%&lt;/td>
- &lt;/tr>
- &lt;tr>
- &lt;td>资源计数&lt;/td>
- &lt;td>80ms&lt;/td>
- &lt;td>15ms&lt;/td>
- &lt;td>81%&lt;/td>
- &lt;/tr>
- &lt;/tbody>
-&lt;/table>
-&lt;h3 class="heading-element" id="资源使用对比">&lt;span>资源使用对比&lt;/span>
- &lt;a href="#%e8%b5%84%e6%ba%90%e4%bd%bf%e7%94%a8%e5%af%b9%e6%af%94" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;table>
- &lt;thead>
- &lt;tr>
- &lt;th>资源类型&lt;/th>
- &lt;th>原始查询&lt;/th>
- &lt;th>聚合指标&lt;/th>
- &lt;th>节省比例&lt;/th>
- &lt;/tr>
- &lt;/thead>
- &lt;tbody>
- &lt;tr>
- &lt;td>CPU使用&lt;/td>
- &lt;td>100%&lt;/td>
- &lt;td>30%&lt;/td>
- &lt;td>70%&lt;/td>
- &lt;/tr>
- &lt;tr>
- &lt;td>内存使用&lt;/td>
- &lt;td>100%&lt;/td>
- &lt;td>40%&lt;/td>
- &lt;td>60%&lt;/td>
- &lt;/tr>
- &lt;tr>
- &lt;td>网络I/O&lt;/td>
- &lt;td>100%&lt;/td>
- &lt;td>25%&lt;/td>
- &lt;td>75%&lt;/td>
- &lt;/tr>
- &lt;/tbody>
-&lt;/table>
-&lt;h2 class="heading-element" id="最佳实践">&lt;span>最佳实践&lt;/span>
- &lt;a href="#%e6%9c%80%e4%bd%b3%e5%ae%9e%e8%b7%b5" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;h3 class="heading-element" id="1-规则设计">&lt;span>1. 规则设计&lt;/span>
- &lt;a href="#1-%e8%a7%84%e5%88%99%e8%ae%be%e8%ae%a1" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;ul>
-&lt;li>&lt;strong>分层设计&lt;/strong>：L1基础聚合、L2业务指标、L3性能指标&lt;/li>
-&lt;li>&lt;strong>命名规范&lt;/strong>：使用清晰的命名约定，如&lt;code>k8s:category:metric:dimension&lt;/code>&lt;/li>
-&lt;li>&lt;strong>标签管理&lt;/strong>：合理使用标签，避免标签爆炸&lt;/li>
-&lt;/ul>
-&lt;h3 class="heading-element" id="2-性能优化">&lt;span>2. 性能优化&lt;/span>
- &lt;a href="#2-%e6%80%a7%e8%83%bd%e4%bc%98%e5%8c%96" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;ul>
-&lt;li>&lt;strong>评估间隔&lt;/strong>：根据指标重要性设置合适的评估间隔&lt;/li>
-&lt;li>&lt;strong>表达式优化&lt;/strong>：避免复杂的嵌套查询，使用预聚合指标&lt;/li>
-&lt;li>&lt;strong>资源限制&lt;/strong>：为VMAlert设置合理的CPU和内存限制&lt;/li>
-&lt;/ul>
-&lt;h3 class="heading-element" id="3-监控策略">&lt;span>3. 监控策略&lt;/span>
- &lt;a href="#3-%e7%9b%91%e6%8e%a7%e7%ad%96%e7%95%a5" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;ul>
-&lt;li>&lt;strong>多维度监控&lt;/strong>：结合实时、日、周、月多个维度&lt;/li>
-&lt;li>&lt;strong>趋势分析&lt;/strong>：利用增长率、趋势等业务指标进行趋势分析&lt;/li>
-&lt;li>&lt;strong>告警配置&lt;/strong>：基于聚合指标配置智能告警&lt;/li>
-&lt;/ul>
-&lt;h2 class="heading-element" id="扩展功能">&lt;span>扩展功能&lt;/span>
- &lt;a href="#%e6%89%a9%e5%b1%95%e5%8a%9f%e8%83%bd" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;h3 class="heading-element" id="1-自定义指标">&lt;span>1. 自定义指标&lt;/span>
- &lt;a href="#1-%e8%87%aa%e5%ae%9a%e4%b9%89%e6%8c%87%e6%a0%87" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;p>可以根据业务需求添加自定义的聚合指标：&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-yaml" data-lang="yaml">&lt;span class="line">&lt;span class="cl">- &lt;span class="nt">record&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">k8s:custom:business_metric:daily_avg&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">expr&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">|&lt;/span>&lt;span class="sd">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> avg_over_time(custom_business_metric[24h])&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;h3 class="heading-element" id="2-多集群支持">&lt;span>2. 多集群支持&lt;/span>
- &lt;a href="#2-%e5%a4%9a%e9%9b%86%e7%be%a4%e6%94%af%e6%8c%81" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;p>通过标签区分不同集群的指标：&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-yaml" data-lang="yaml">&lt;span class="line">&lt;span class="cl">- &lt;span class="nt">record&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">k8s:cluster:cpu:usage:daily_avg&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">expr&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">|&lt;/span>&lt;span class="sd">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> avg_over_time(k8s:cpu:usage:rate5m[24h]) by (cluster)&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;h3 class="heading-element" id="3-告警集成">&lt;span>3. 告警集成&lt;/span>
- &lt;a href="#3-%e5%91%8a%e8%ad%a6%e9%9b%86%e6%88%90" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;p>与现有的告警系统集成：&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;span class="lnt">4
-&lt;/span>&lt;span class="lnt">5
-&lt;/span>&lt;span class="lnt">6
-&lt;/span>&lt;span class="lnt">7
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-yaml" data-lang="yaml">&lt;span class="line">&lt;span class="cl">- &lt;span class="nt">alert&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">HighResourceUsage&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">expr&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">k8s:resources:usage:daily_avg &amp;gt; 0.8&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">for&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">5m&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">labels&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">severity&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">warning&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">annotations&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">summary&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s2">&amp;#34;资源使用率过高&amp;#34;&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;h2 class="heading-element" id="总结">&lt;span>总结&lt;/span>
- &lt;a href="#%e6%80%bb%e7%bb%93" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;p>本解决方案通过VMAlert Recording Rules将Kubernetes dashboard中的复杂查询转换为高效的预聚合指标，提供了：&lt;/p>
-&lt;ol>
-&lt;li>&lt;strong>显著的性能提升&lt;/strong>：查询速度提升3-10倍&lt;/li>
-&lt;li>&lt;strong>多维度聚合&lt;/strong>：支持天、周、月等不同时间维度&lt;/li>
-&lt;li>&lt;strong>丰富的业务指标&lt;/strong>：增长率、趋势、效率等业务相关指标&lt;/li>
-&lt;li>&lt;strong>完整的部署方案&lt;/strong>：一键部署脚本、测试脚本、详细文档&lt;/li>
-&lt;li>&lt;strong>生产就绪&lt;/strong>：包含监控、维护、故障排除等完整运维支持&lt;/li>
-&lt;/ol>
-&lt;p>通过这套解决方案，运维团队可以：&lt;/p>
-&lt;ul>
-&lt;li>快速构建高效的监控Dashboard&lt;/li>
-&lt;li>实现智能的资源使用趋势分析&lt;/li>
-&lt;li>基于业务指标配置智能告警&lt;/li>
-&lt;li>显著降低监控系统的资源消耗&lt;/li>
-&lt;li>提升整体运维效率和用户体验&lt;/li>
-&lt;/ul>
-&lt;p>建议在生产环境中逐步部署，先部署核心指标，再逐步扩展业务指标，确保系统的稳定性和可靠性。&lt;/p></description></item></channel></rss>
+&lt;p>建议根据实际业务需求调整规则配置，并持续监控规则执行状态和指标生成情况。&lt;/p></description></item></channel></rss>
