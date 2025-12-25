@@ -602,6 +602,9 @@ scrape_configs:
   scheme: http
   kubernetes_sd_configs:
   - role: pod
+    namespaces:
+      names:
+      - monitoring
     api_server: https://kubernetes.default
     tls_config:
       ca_file: /tmp/ca.pem
@@ -651,7 +654,7 @@ scrape_configs:
     regex: (machine_type|lifecycle_apps_kruise_io_state|publish_no|(.*_)id|(.*_)hash|deployment_aquaman(.*)|(.*_aquaman_io.*)|topology_ebs_csi_aws_com_zone|aws_InstanceType|CPU_TYPE|topology_kubernetes_io_region|node_kubernetes_io_WorkerNode|label_node_role_kubernetes_io_node_type|label_node_role_kubernetes_io_layout_engine|label_node_role_kubernetes_io_AutoScale|label_CPU_TYPE|label_node_role_kubernetes_io_node_type|label_node_role_kubernetes_io_layout_engine|label_node_role_kubernetes_io_AutoScale|TESTENV|PRODENV|CPU_CAP|MEM_CAP|NIC_CAP|PREENV|beta_kubernetes_io_arch|beta_kubernetes_io_os|kubernetes_io_arch|kubernetes_io_os|node_role_kubernetes_io_CPU_(.*)|node_role_kubernetes_io_DISK_(.*)|node_role_kubernetes_io_MEM_(.*)|node_role_kubernetes_io_NIC_(.*)|node_role_kubernetes_io_WorkerNode|retention_base_dir|type|ROOM_ID|SERVER_ID|kubernetes_io_hostname|hostname|hagonetes_ihago_net_NodeGroup_(.*)|id|yyms_aquaman_io(.*)|node_role_kubernetes_io_AutoCordon|node_role_kubernetes_io_NoSchedule)
     replacement: $1
     action: labeldrop
- - job_name: kubernetes-pods-alloy
+- job_name: kubernetes-pods-alloy
   honor_timestamps: true
   scrape_interval: 30s
   scrape_timeout: 30s
@@ -659,6 +662,9 @@ scrape_configs:
   scheme: http
   kubernetes_sd_configs:
   - role: pod
+    namespaces:
+      names:
+      - monitoring
     api_server: https://kubernetes.default
     tls_config:
       ca_file: /tmp/ca.pem
@@ -833,85 +839,6 @@ scrape_configs:
     action: drop
   - separator: ;
     regex: (machine_type|lifecycle_apps_kruise_io_state|publish_no|(.*_)id|(.*_)hash|deployment_aquaman(.*)|(.*_aquaman_io.*)|topology_ebs_csi_aws_com_zone|aws_InstanceType|CPU_TYPE|topology_kubernetes_io_region|node_kubernetes_io_WorkerNode|label_node_role_kubernetes_io_node_type|label_node_role_kubernetes_io_layout_engine|label_node_role_kubernetes_io_AutoScale|label_CPU_TYPE|label_node_role_kubernetes_io_node_type|label_node_role_kubernetes_io_layout_engine|label_node_role_kubernetes_io_AutoScale|TESTENV|PRODENV|CPU_CAP|MEM_CAP|NIC_CAP|PREENV|beta_kubernetes_io_arch|beta_kubernetes_io_os|kubernetes_io_arch|kubernetes_io_os|node_role_kubernetes_io_CPU_(.*)|node_role_kubernetes_io_DISK_(.*)|node_role_kubernetes_io_MEM_(.*)|node_role_kubernetes_io_NIC_(.*)|node_role_kubernetes_io_WorkerNode|retention_base_dir|type|ROOM_ID|SERVER_ID|kubernetes_io_hostname|hostname|hagonetes_ihago_net_NodeGroup_(.*)|id|yyms_aquaman_io(.*)|node_role_kubernetes_io_AutoCordon|node_role_kubernetes_io_NoSchedule)
-    replacement: $1
-    action: labeldrop
-- job_name: kubernetes-pods-alloy
-  honor_timestamps: true
-  scrape_interval: 30s
-  scrape_timeout: 30s
-  metrics_path: /metrics
-  scheme: http
-  kubernetes_sd_configs:
-  - role: pod
-    api_server: https://kubernetes.default
-    tls_config:
-      ca_file: /tmp/ca.pem
-      cert_file: /tmp/admin.pem
-      key_file: /tmp/admin-key.pem
-      insecure_skip_verify: true
-  relabel_configs:
-  - source_labels: [__meta_kubernetes_pod_annotation_prometheus_vm_scrape]
-    separator: ;
-    regex: "true"
-    replacement: $1
-    action: keep
-  - source_labels: [__meta_kubernetes_pod_annotation_prometheus_vm_metric_path]
-    separator: ;
-    regex: (.+)
-    target_label: __metrics_path__
-    replacement: $1
-    action: replace
-  - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_vm_port]
-    separator: ;
-    regex: ([^:]+)(?::\d+)?;(\d+)
-    target_label: __address__
-    replacement: $1:$2
-    action: replace
-  - separator: ;
-    regex: __meta_kubernetes_pod_label_(.+)
-    replacement: $1
-    action: labelmap
-  - source_labels: [__meta_kubernetes_namespace]
-    separator: ;
-    regex: (.*)
-    target_label: kubernetes_namespace
-    replacement: $1
-    action: replace
-  - source_labels: [__meta_kubernetes_pod_name]
-    separator: ;
-    regex: (.*)
-    target_label: kubernetes_pod_name
-    replacement: $1
-    action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    separator: ;
-    regex: alloy
-    replacement: $1
-    action: keep
-  - separator: ;
-    regex: (machine_type|lifecycle_apps_kruise_io_state|publish_no|(.*_)id|(.*_)hash|deployment_aquaman(.*)|(.*_aquaman_io.*)|topology_ebs_csi_aws_com_zone|aws_InstanceType|CPU_TYPE|topology_kubernetes_io_region|node_kubernetes_io_WorkerNode|label_node_role_kubernetes_io_node_type|label_node_role_kubernetes_io_layout_engine|label_node_role_kubernetes_io_AutoScale|label_CPU_TYPE|label_node_role_kubernetes_io_node_type|label_node_role_kubernetes_io_layout_engine|label_node_role_kubernetes_io_AutoScale|TESTENV|PRODENV|CPU_CAP|MEM_CAP|NIC_CAP|PREENV|beta_kubernetes_io_arch|beta_kubernetes_io_os|kubernetes_io_arch|kubernetes_io_os|node_role_kubernetes_io_CPU_(.*)|node_role_kubernetes_io_DISK_(.*)|node_role_kubernetes_io_MEM_(.*)|node_role_kubernetes_io_NIC_(.*)|node_role_kubernetes_io_WorkerNode|retention_base_dir|type|ROOM_ID|SERVER_ID|kubernetes_io_hostname|hostname|hagonetes_ihago_net_NodeGroup_(.*)|id|yyms_aquaman_io(.*)|node_role_kubernetes_io_AutoCordon|node_role_kubernetes_io_NoSchedule|app_kubernetes_io_instance)
-    replacement: $1
-    action: labeldrop
-  metric_relabel_configs:
-  - source_labels: [path]
-    separator: ;
-    regex: .*/([^/]+)$
-    target_label: log_file
-    replacement: $1
-    action: replace
-  - source_labels: [path]
-    separator: ;
-    regex: .*
-    replacement: $1
-    action: labeldrop
-  - source_labels: [pod_template_generation]
-    separator: ;
-    regex: .*
-    replacement: $1
-    action: labeldrop
-  - source_labels: [component_path]
-    separator: ;
-    regex: ^/$
     replacement: $1
     action: labeldrop
 - job_name: kubernetes-nodes
