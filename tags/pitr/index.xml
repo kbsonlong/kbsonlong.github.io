@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>PITR - 标签 - 蜷缩的蜗牛</title><link>https://www.kbsonlong.com/tags/pitr/</link><description>云原生时代运维</description><generator>Hugo 0.147.7 &amp; FixIt v0.4.0-alpha.2-20251022034748-fe129dd2</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 04 Jan 2026 10:00:00 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/tags/pitr/index.xml" rel="self" type="application/rss+xml"/><item><title>PostgreSQL + pgpool + Barman WAL Streaming 到 S3 SOP</title><link>https://www.kbsonlong.com/posts/postgresql-pgpool-barman-walstreaming-s3-sop/</link><pubDate>Sun, 04 Jan 2026 10:00:00 +0800</pubDate><guid>https://www.kbsonlong.com/posts/postgresql-pgpool-barman-walstreaming-s3-sop/</guid><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><category domain="https://www.kbsonlong.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</category><description>&lt;h2 class="heading-element" id="1-背景与目标">&lt;span>1. 背景与目标&lt;/span>
+ &lt;a href="#1-%e8%83%8c%e6%99%af%e4%b8%8e%e7%9b%ae%e6%a0%87" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;ul>
+&lt;li>现状：生产环境使用 pgpool 管理 PostgreSQL 高可用（主从切换由 pgpool 决策）。&lt;/li>
+&lt;li>目标：在不调整任何 PostgreSQL 或 pgpool 配置的前提下，新增 Barman，使用 WAL Streaming 持续备份到本地，并将备份仓库近实时同步到 S3；提供可操作的 SOP，支持点时间恢复（PITR）。&lt;/li>
+&lt;li>原理要点：
+&lt;ul>
+&lt;li>WAL Streaming 提供低延迟、持续复制能力，适合高可用场景。&lt;/li>
+&lt;li>将 Barman 仓库同步到 S3 提供异地冗余与时间点恢复能力。&lt;/li>
+&lt;li>不启用 archive_command；通过流式拉取实现冗余与补齐。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 class="heading-element" id="2-架构概览">&lt;span>2. 架构概览&lt;/span>
+ &lt;a href="#2-%e6%9e%b6%e6%9e%84%e6%a6%82%e8%a7%88" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;ul>
+&lt;li>组件：
+&lt;ul>
+&lt;li>barman：拉取 WAL、管理备份与保留策略、执行 cron。&lt;/li>
+&lt;li>s3sync：周期性使用 awscli 将 Barman 仓库同步到 S3。&lt;/li>
+&lt;li>primary-watcher：连接 pgpool，查询当前 primary 节点，动态更新 barman 的连接目标，自动感知主从切换。&lt;/li>
+&lt;li>scheduler（可选）：每日触发一次基线备份（base backup）。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>数据流：PostgreSQL 主库 → Barman（pg_receivewal 流式）→ 本地仓库 → S3 同步。&lt;/li>
+&lt;li>约束：不修改 postgresql.conf、pgpool 配置或启用 archive_command。&lt;/li>
+&lt;/ul>
+&lt;h2 class="heading-element" id="3-前提条件">&lt;span>3. 前提条件&lt;/span>
+ &lt;a href="#3-%e5%89%8d%e6%8f%90%e6%9d%a1%e4%bb%b6" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;ul>
+&lt;li>网络：barman 容器到各 PostgreSQL 节点 5432 可达；pgpool 5432/PCP 端口可达（用于“感知”主从，不用于复制）。&lt;/li>
+&lt;li>账号：
+&lt;ul>
+&lt;li>
+&lt;p>复制用户（主库执行）：&lt;/p></description></item></channel></rss>
