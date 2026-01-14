@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>蜷缩的蜗牛</title><link>https://www.kbsonlong.com/</link><description>云原生时代运维</description><generator>Hugo 0.147.7 &amp; FixIt v0.4.0-alpha.2-20251022034748-fe129dd2</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 04 Jan 2026 10:00:00 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/index.xml" rel="self" type="application/rss+xml"/><item><title>Falco 与 Tetragon 最小化 POC 验证指南</title><link>https://www.kbsonlong.com/posts/falco-%E4%B8%8E-tetragon-%E6%9C%80%E5%B0%8F%E5%8C%96-poc-%E9%AA%8C%E8%AF%81%E6%8C%87%E5%8D%97/</link><pubDate>Fri, 19 Dec 2025 16:51:25 +0800</pubDate><guid>https://www.kbsonlong.com/posts/falco-%E4%B8%8E-tetragon-%E6%9C%80%E5%B0%8F%E5%8C%96-poc-%E9%AA%8C%E8%AF%81%E6%8C%87%E5%8D%97/</guid><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><category domain="https://www.kbsonlong.com/categories/%E5%AE%89%E5%85%A8/">安全</category><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><description>&lt;h1 class="heading-element" id="falco-与-tetragon-最小化-poc-验证指南">&lt;span>Falco 与 Tetragon 最小化 POC 验证指南&lt;/span>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>蜷缩的蜗牛</title><link>https://www.kbsonlong.com/</link><description>云原生时代运维</description><generator>Hugo 0.147.7 &amp; FixIt v0.4.0-alpha.2-20251022034748-fe129dd2</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Wed, 14 Jan 2026 10:10:00 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/index.xml" rel="self" type="application/rss+xml"/><item><title>Falco 与 Tetragon 最小化 POC 验证指南</title><link>https://www.kbsonlong.com/posts/falco-%E4%B8%8E-tetragon-%E6%9C%80%E5%B0%8F%E5%8C%96-poc-%E9%AA%8C%E8%AF%81%E6%8C%87%E5%8D%97/</link><pubDate>Fri, 19 Dec 2025 16:51:25 +0800</pubDate><guid>https://www.kbsonlong.com/posts/falco-%E4%B8%8E-tetragon-%E6%9C%80%E5%B0%8F%E5%8C%96-poc-%E9%AA%8C%E8%AF%81%E6%8C%87%E5%8D%97/</guid><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><category domain="https://www.kbsonlong.com/categories/%E5%AE%89%E5%85%A8/">安全</category><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><description>&lt;h1 class="heading-element" id="falco-与-tetragon-最小化-poc-验证指南">&lt;span>Falco 与 Tetragon 最小化 POC 验证指南&lt;/span>
  &lt;a href="#falco-%e4%b8%8e-tetragon-%e6%9c%80%e5%b0%8f%e5%8c%96-poc-%e9%aa%8c%e8%af%81%e6%8c%87%e5%8d%97" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -369,7 +369,377 @@
 &lt;/h2>&lt;ul>
 &lt;li>&lt;strong>Falco Pod 启动失败&lt;/strong>: 检查节点内核版本是否支持 eBPF。&lt;/li>
 &lt;li>&lt;strong>Tetragon 没有日志&lt;/strong>: 确认 &lt;code>TracingPolicy&lt;/code> 是否正确应用，以及 Pod 所在的节点是否运行了 Tetragon Agent。&lt;/li>
-&lt;/ul></description></item><item><title>PostgreSQL + pgpool + Barman WAL Streaming 到 S3 SOP</title><link>https://www.kbsonlong.com/posts/postgresql-pgpool-barman-walstreaming-s3-sop/</link><pubDate>Sun, 04 Jan 2026 10:00:00 +0800</pubDate><guid>https://www.kbsonlong.com/posts/postgresql-pgpool-barman-walstreaming-s3-sop/</guid><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><category domain="https://www.kbsonlong.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</category><description>&lt;h2 class="heading-element" id="1-背景与目标">&lt;span>1. 背景与目标&lt;/span>
+&lt;/ul></description></item><item><title>Helm 依赖管理进阶：拥抱 OCI 仓库</title><link>https://www.kbsonlong.com/posts/helm-%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86%E8%BF%9B%E9%98%B6%E6%8B%A5%E6%8A%B1-oci-%E4%BB%93%E5%BA%93/</link><pubDate>Wed, 14 Jan 2026 10:10:00 +0800</pubDate><guid>https://www.kbsonlong.com/posts/helm-%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86%E8%BF%9B%E9%98%B6%E6%8B%A5%E6%8A%B1-oci-%E4%BB%93%E5%BA%93/</guid><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><category domain="https://www.kbsonlong.com/categories/helm/">Helm</category><description>&lt;h1 class="heading-element" id="helm-依赖管理进阶拥抱-oci-仓库">&lt;span>Helm 依赖管理进阶：拥抱 OCI 仓库&lt;/span>
+ &lt;a href="#helm-%e4%be%9d%e8%b5%96%e7%ae%a1%e7%90%86%e8%bf%9b%e9%98%b6%e6%8b%a5%e6%8a%b1-oci-%e4%bb%93%e5%ba%93" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h1>&lt;p>刚才我们聊到了将依赖包打包到本地（存冰箱）来保证稳定性。但是，如果你觉得把一堆 &lt;code>.tgz&lt;/code> 二进制文件塞进 Git 仓库太臃肿（Git 并不擅长管理二进制大文件），那么 &lt;strong>OCI (Open Container Initiative) 仓库&lt;/strong> 就是你的终极解决方案。&lt;/p>
+&lt;h2 class="heading-element" id="1-什么是-oci-模式">&lt;span>1. 什么是 OCI 模式？&lt;/span>
+ &lt;a href="#1-%e4%bb%80%e4%b9%88%e6%98%af-oci-%e6%a8%a1%e5%bc%8f" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>简单来说，就是&lt;strong>像管理 Docker 镜像一样管理 Helm Charts&lt;/strong>。&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>以前&lt;/strong>：Chart 必须放在 HTTP 服务器上，或者打包成文件。&lt;/li>
+&lt;li>&lt;strong>现在&lt;/strong>：Helm Chart 可以直接推送到支持 OCI 标准的镜像仓库（比如 &lt;strong>Harbor&lt;/strong>、AWS ECR、Google GAR）。&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>比喻升级&lt;/strong>：&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>本地打包&lt;/strong>：买菜存自家冰箱（占地方，Git 仓库变大）。&lt;/li>
+&lt;li>&lt;strong>OCI 仓库&lt;/strong>：把菜存到小区的&lt;strong>公共大冷库&lt;/strong>（内网 Harbor）。
+&lt;ul>
+&lt;li>&lt;strong>不占自家地&lt;/strong>：Git 仓库清爽，只存代码。&lt;/li>
+&lt;li>&lt;strong>内网高速&lt;/strong>：走内网拉取，速度极快，稳定性堪比本地。&lt;/li>
+&lt;li>&lt;strong>统一管理&lt;/strong>：所有人共用一套依赖，版本绝对一致。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 class="heading-element" id="2-前置条件">&lt;span>2. 前置条件&lt;/span>
+ &lt;a href="#2-%e5%89%8d%e7%bd%ae%e6%9d%a1%e4%bb%b6" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;ul>
+&lt;li>&lt;strong>Helm 版本&lt;/strong>：需要 Helm v3.8.0 或更高版本（目前已默认开启 OCI 支持）。&lt;/li>
+&lt;li>&lt;strong>仓库支持&lt;/strong>：需要一个支持 OCI 的仓库，推荐 &lt;strong>Harbor 2.0+&lt;/strong>。&lt;/li>
+&lt;/ul>
+&lt;h2 class="heading-element" id="3-实战操作指南">&lt;span>3. 实战操作指南&lt;/span>
+ &lt;a href="#3-%e5%ae%9e%e6%88%98%e6%93%8d%e4%bd%9c%e6%8c%87%e5%8d%97" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>假设我们要把一个基础组件 &lt;code>common-lib&lt;/code> 推送到内网 Harbor，并在业务 Chart 中引用它。&lt;/p>
+&lt;h3 class="heading-element" id="第一步登录-oci-仓库">&lt;span>第一步：登录 OCI 仓库&lt;/span>
+ &lt;a href="#%e7%ac%ac%e4%b8%80%e6%ad%a5%e7%99%bb%e5%bd%95-oci-%e4%bb%93%e5%ba%93" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;p>这和 &lt;code>docker login&lt;/code> 一模一样：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">helm registry login harbor.example.com &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> --username &amp;lt;用户名&amp;gt; &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> --password &amp;lt;密码&amp;gt;&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 class="heading-element" id="第二步推送-chart-到-oci-仓库">&lt;span>第二步：推送 Chart 到 OCI 仓库&lt;/span>
+ &lt;a href="#%e7%ac%ac%e4%ba%8c%e6%ad%a5%e6%8e%a8%e9%80%81-chart-%e5%88%b0-oci-%e4%bb%93%e5%ba%93" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;p>先打包，再推送：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 1. 打包 Chart&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">helm package charts/common-lib
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 2. 推送 (假设打包出了 common-lib-1.0.0.tgz)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">helm push common-lib-1.0.0.tgz oci://harbor.example.com/my-project/charts&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;em>注意：推上去后，它的地址就是 &lt;code>oci://harbor.example.com/my-project/charts/common-lib&lt;/code>&lt;/em>&lt;/p>
+&lt;h3 class="heading-element" id="第三步在业务-chart-中引用依赖">&lt;span>第三步：在业务 Chart 中引用依赖&lt;/span>
+ &lt;a href="#%e7%ac%ac%e4%b8%89%e6%ad%a5%e5%9c%a8%e4%b8%9a%e5%8a%a1-chart-%e4%b8%ad%e5%bc%95%e7%94%a8%e4%be%9d%e8%b5%96" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;p>编辑你的业务 Chart 的 &lt;code>Chart.yaml&lt;/code>，注意 &lt;code>repository&lt;/code> 字段的写法：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-yaml" data-lang="yaml">&lt;span class="line">&lt;span class="cl">&lt;span class="nt">dependencies&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="nt">name&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">common-lib&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">version&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="m">1.0.0&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="c"># 关键点：使用 oci:// 前缀，且不包含 chart 名字本身&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">repository&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">oci://harbor.example.com/my-project/charts&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>重点说明&lt;/strong>：对于 OCI 依赖，&lt;code>repository&lt;/code> URL &lt;strong>不应该&lt;/strong>包含 chart 的名字，只写到目录层级即可。Helm 会自动把 &lt;code>name&lt;/code> 拼接到 URL 后面去查找。&lt;/p>
+&lt;h3 class="heading-element" id="第四步更新依赖与-git-忽略">&lt;span>第四步：更新依赖与 Git 忽略&lt;/span>
+ &lt;a href="#%e7%ac%ac%e5%9b%9b%e6%ad%a5%e6%9b%b4%e6%96%b0%e4%be%9d%e8%b5%96%e4%b8%8e-git-%e5%bf%bd%e7%95%a5" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;p>运行以下命令时：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">helm dependency update .&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>你会发现 Helm &lt;strong>仍然会将 &lt;code>.tgz&lt;/code> 文件下载到本地的 &lt;code>charts/&lt;/code> 目录下&lt;/strong>。&lt;/p>
+&lt;p>&lt;strong>请不要惊慌，这是正常的！&lt;/strong>
+Helm 需要把这些文件下载下来，解压读取里面的模板，才能帮你生成最终的 Kubernetes YAML 文件。这就像你做饭必须先把菜从冰箱（OCI 仓库）拿出来放在案板上（本地目录）一样。&lt;/p>
+&lt;p>&lt;strong>关键在于：不要把这些下载下来的文件提交到 Git！&lt;/strong>&lt;/p>
+&lt;p>我们需要配置 &lt;code>.gitignore&lt;/code> 文件来忽略它们：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 在项目根目录的 .gitignore 文件中添加：&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">charts/*.tgz
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">charts/*.lock&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这样一来：&lt;/p>
+&lt;ol>
+&lt;li>&lt;strong>本地开发时&lt;/strong>：&lt;code>helm dependency update&lt;/code> 下载依赖，你能正常部署调试。&lt;/li>
+&lt;li>&lt;strong>提交代码时&lt;/strong>：Git 会自动无视这些 &lt;code>.tgz&lt;/code> 文件，你的代码库依然干净。&lt;/li>
+&lt;li>&lt;strong>CI/CD 部署时&lt;/strong>：流水线先运行 &lt;code>helm dependency update&lt;/code> 临时拉取依赖，然后立即部署，用完即焚。&lt;/li>
+&lt;/ol>
+&lt;h3 class="heading-element" id="懒人技巧自动更新依赖">&lt;span>懒人技巧：自动更新依赖&lt;/span>
+ &lt;a href="#%e6%87%92%e4%ba%ba%e6%8a%80%e5%b7%a7%e8%87%aa%e5%8a%a8%e6%9b%b4%e6%96%b0%e4%be%9d%e8%b5%96" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;p>如果你觉得每次都要手动敲 &lt;code>helm dependency update&lt;/code> 太麻烦，或者在 CI/CD 脚本里想少写一行命令，Helm 其实提供了一个&lt;strong>自动挡&lt;/strong>开关。&lt;/p>
+&lt;p>你可以在 &lt;code>install&lt;/code>、&lt;code>upgrade&lt;/code> 或 &lt;code>template&lt;/code> 命令中直接加上 &lt;code>--dependency-update&lt;/code> 参数（可以简写为 &lt;code>--dep-up&lt;/code>）。&lt;/p>
+&lt;p>&lt;strong>示例：&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 安装时自动拉取依赖&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">helm install my-release . --dependency-update
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 升级时自动拉取依赖&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">helm upgrade my-release . --dependency-update
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">```&lt;/span>bash
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 渲染模板时自动拉取依赖&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">helm template . --dependency-update&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这样，Helm 会在执行主任务之前，先自动帮你把 &lt;code>charts/&lt;/code> 目录下的依赖包更新好。&lt;/p>
+&lt;h3 class="heading-element" id="golang-sdk-支持">&lt;span>Golang SDK 支持&lt;/span>
+ &lt;a href="#golang-sdk-%e6%94%af%e6%8c%81" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;p>如果你是在开发自己的平台或工具，使用 Helm 的 Golang SDK (&lt;code>helm.sh/helm/v3/pkg/action&lt;/code>)，同样支持这个功能。&lt;/p>
+&lt;p>你只需要在初始化 Action 结构体后，将 &lt;code>DependencyUpdate&lt;/code> 字段设置为 &lt;code>true&lt;/code> 即可。&lt;/p>
+&lt;p>&lt;strong>代码示例：&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">package&lt;/span> &lt;span class="nx">main&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s">&amp;#34;log&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s">&amp;#34;os&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s">&amp;#34;helm.sh/helm/v3/pkg/action&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s">&amp;#34;helm.sh/helm/v3/pkg/cli&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">settings&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">cli&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">New&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">actionConfig&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nb">new&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">action&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Configuration&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 初始化 actionConfig ...&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 1. 安装场景&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">client&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">action&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">NewInstall&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">actionConfig&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">client&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ReleaseName&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s">&amp;#34;my-release&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">client&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Namespace&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s">&amp;#34;default&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 开启自动更新依赖&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">client&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">DependencyUpdate&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="kc">true&lt;/span> 
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 执行安装&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">_&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">client&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Run&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kc">nil&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;./my-chart&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kc">nil&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">log&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Fatal&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 2. 升级场景&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">upgradeClient&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">action&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">NewUpgrade&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">actionConfig&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">upgradeClient&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">DependencyUpdate&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="kc">true&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 class="heading-element" id="4-总结">&lt;span>4. 总结&lt;/span>
+ &lt;a href="#4-%e6%80%bb%e7%bb%93" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th style="text-align: left">方案&lt;/th>
+ &lt;th style="text-align: left">稳定性&lt;/th>
+ &lt;th style="text-align: left">Git 仓库体积&lt;/th>
+ &lt;th style="text-align: left">复杂度&lt;/th>
+ &lt;th style="text-align: left">推荐场景&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td style="text-align: left">&lt;strong>远程 HTTP Pull&lt;/strong>&lt;/td>
+ &lt;td style="text-align: left">低&lt;/td>
+ &lt;td style="text-align: left">小&lt;/td>
+ &lt;td style="text-align: left">低&lt;/td>
+ &lt;td style="text-align: left">仅限个人测试&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td style="text-align: left">&lt;strong>本地打包 (tgz)&lt;/strong>&lt;/td>
+ &lt;td style="text-align: left">高&lt;/td>
+ &lt;td style="text-align: left">大 (存二进制)&lt;/td>
+ &lt;td style="text-align: left">中&lt;/td>
+ &lt;td style="text-align: left">简单项目，无 OCI 设施&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td style="text-align: left">&lt;strong>内网 OCI 仓库&lt;/strong>&lt;/td>
+ &lt;td style="text-align: left">&lt;strong>高&lt;/strong>&lt;/td>
+ &lt;td style="text-align: left">&lt;strong>小&lt;/strong>&lt;/td>
+ &lt;td style="text-align: left">&lt;strong>中&lt;/strong>&lt;/td>
+ &lt;td style="text-align: left">&lt;strong>企业级生产环境 (强烈推荐)&lt;/strong>&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;p>&lt;strong>结论&lt;/strong>：如果你有内网 Harbor，&lt;strong>OCI 模式是最佳实践&lt;/strong>。它完美解决了“不依赖公网”和“Git 仓库不膨胀”这两个看似矛盾的需求。&lt;/p></description></item><item><title>Helm Charts 依赖管理：本地打包 vs 远程拉取</title><link>https://www.kbsonlong.com/posts/helm-charts-%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86%E6%9C%AC%E5%9C%B0%E6%89%93%E5%8C%85-vs-%E8%BF%9C%E7%A8%8B%E6%8B%89%E5%8F%96/</link><pubDate>Wed, 14 Jan 2026 10:00:00 +0800</pubDate><guid>https://www.kbsonlong.com/posts/helm-charts-%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86%E6%9C%AC%E5%9C%B0%E6%89%93%E5%8C%85-vs-%E8%BF%9C%E7%A8%8B%E6%8B%89%E5%8F%96/</guid><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><category domain="https://www.kbsonlong.com/categories/helm/">Helm</category><description>&lt;h1 class="heading-element" id="helm-charts-依赖管理">&lt;span>Helm Charts 依赖管理&lt;/span>
+ &lt;a href="#helm-charts-%e4%be%9d%e8%b5%96%e7%ae%a1%e7%90%86" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h1>&lt;p>在 Helm Chart 的开发和维护过程中，我们经常会遇到一个问题：&lt;strong>依赖包（Dependencies）是应该打包到本地，还是在部署时远程拉取？&lt;/strong>&lt;/p>
+&lt;p>作为一名资深 SRE，我的建议是：&lt;strong>生产环境务必打包到本地&lt;/strong>。&lt;/p>
+&lt;h2 class="heading-element" id="1-两种模式对比">&lt;span>1. 两种模式对比&lt;/span>
+ &lt;a href="#1-%e4%b8%a4%e7%a7%8d%e6%a8%a1%e5%bc%8f%e5%af%b9%e6%af%94" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>我们可以用“做饭”来打个比方：&lt;/p>
+&lt;h3 class="heading-element" id="11-远程-pull-现用现买">&lt;span>1.1 远程 Pull (现用现买)&lt;/span>
+ &lt;a href="#11-%e8%bf%9c%e7%a8%8b-pull-%e7%8e%b0%e7%94%a8%e7%8e%b0%e4%b9%b0" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;ul>
+&lt;li>&lt;strong>原理&lt;/strong>：在 &lt;code>Chart.yaml&lt;/code> 中声明依赖，部署时通过网络下载。&lt;/li>
+&lt;li>&lt;strong>比喻&lt;/strong>：想做饭了才去菜市场买菜。&lt;/li>
+&lt;li>&lt;strong>风险&lt;/strong>：
+&lt;ul>
+&lt;li>如果菜市场关门了（远程仓库宕机），你这顿饭就做不成了。&lt;/li>
+&lt;li>如果去菜市场的路堵了（网络不通），你也做不成。&lt;/li>
+&lt;li>哪怕只是想做个测试，也得跑一趟菜市场。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 class="heading-element" id="12-打包到本地-买好存冰箱-推荐">&lt;span>1.2 打包到本地 (买好存冰箱) 【推荐】&lt;/span>
+ &lt;a href="#12-%e6%89%93%e5%8c%85%e5%88%b0%e6%9c%ac%e5%9c%b0-%e4%b9%b0%e5%a5%bd%e5%ad%98%e5%86%b0%e7%ae%b1-%e6%8e%a8%e8%8d%90" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;ul>
+&lt;li>&lt;strong>原理&lt;/strong>：使用 &lt;code>helm dependency update&lt;/code> 将依赖包下载到 Chart 目录下的 &lt;code>charts/&lt;/code> 文件夹中，并提交到 Git 仓库。&lt;/li>
+&lt;li>&lt;strong>比喻&lt;/strong>：提前买好菜存在冰箱里。&lt;/li>
+&lt;li>&lt;strong>优势&lt;/strong>：
+&lt;ul>
+&lt;li>&lt;strong>稳定性高&lt;/strong>：不管外面刮风下雨（断网、仓库故障），你都能随时做饭。&lt;/li>
+&lt;li>&lt;strong>版本可控&lt;/strong>：你存的是什么版本，用的就是什么版本，不会因为远程仓库悄悄更新而导致兼容性问题。&lt;/li>
+&lt;li>&lt;strong>离线部署&lt;/strong>：在完全隔离的内网环境也能轻松部署。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 class="heading-element" id="2-实战操作指南">&lt;span>2. 实战操作指南&lt;/span>
+ &lt;a href="#2-%e5%ae%9e%e6%88%98%e6%93%8d%e4%bd%9c%e6%8c%87%e5%8d%97" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>假设你的 Chart 需要依赖 Redis。&lt;/p>
+&lt;h3 class="heading-element" id="第一步声明依赖">&lt;span>第一步：声明依赖&lt;/span>
+ &lt;a href="#%e7%ac%ac%e4%b8%80%e6%ad%a5%e5%a3%b0%e6%98%8e%e4%be%9d%e8%b5%96" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;p>编辑 &lt;code>Chart.yaml&lt;/code>：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-yaml" data-lang="yaml">&lt;span class="line">&lt;span class="cl">&lt;span class="nt">dependencies&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="nt">name&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">redis&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">version&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="m">17.3.14&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">repository&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">https://charts.bitnami.com/bitnami&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 class="heading-element" id="第二步下载依赖进货">&lt;span>第二步：下载依赖（进货）&lt;/span>
+ &lt;a href="#%e7%ac%ac%e4%ba%8c%e6%ad%a5%e4%b8%8b%e8%bd%bd%e4%be%9d%e8%b5%96%e8%bf%9b%e8%b4%a7" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;p>在你的 Chart 根目录下运行：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">helm dependency update .&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>运行后，你会发现多了一个 &lt;code>charts/&lt;/code> 目录，里面有一个 &lt;code>redis-17.3.14.tgz&lt;/code> 文件。&lt;/p>
+&lt;h3 class="heading-element" id="第三步提交代码">&lt;span>第三步：提交代码&lt;/span>
+ &lt;a href="#%e7%ac%ac%e4%b8%89%e6%ad%a5%e6%8f%90%e4%ba%a4%e4%bb%a3%e7%a0%81" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;p>将 &lt;code>charts/*.tgz&lt;/code> 文件连同你的代码一起提交到 Git 仓库。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">git add charts/
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git commit -m &lt;span class="s2">&amp;#34;chore: update helm dependencies&amp;#34;&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 class="heading-element" id="3-总结">&lt;span>3. 总结&lt;/span>
+ &lt;a href="#3-%e6%80%bb%e7%bb%93" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>为了保证生产环境的&lt;strong>绝对稳定&lt;/strong>和&lt;strong>可复现性&lt;/strong>，请务必养成&lt;strong>将 Helm 依赖打包到本地&lt;/strong>的好习惯。这能帮你规避 90% 因网络或上游仓库问题导致的部署失败。&lt;/p></description></item><item><title>PostgreSQL + pgpool + Barman WAL Streaming 到 S3 SOP</title><link>https://www.kbsonlong.com/posts/postgresql-pgpool-barman-walstreaming-s3-sop/</link><pubDate>Sun, 04 Jan 2026 10:00:00 +0800</pubDate><guid>https://www.kbsonlong.com/posts/postgresql-pgpool-barman-walstreaming-s3-sop/</guid><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><category domain="https://www.kbsonlong.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</category><description>&lt;h2 class="heading-element" id="1-背景与目标">&lt;span>1. 背景与目标&lt;/span>
  &lt;a href="#1-%e8%83%8c%e6%99%af%e4%b8%8e%e7%9b%ae%e6%a0%87" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -5679,1432 +6049,4 @@
 &lt;li>&lt;code>pilot/pkg/xds/filters/filters.go&lt;/code>：常用过滤器静态定义；&lt;/li>
 &lt;li>&lt;code>serviceregistry/kube/...&lt;/code>：Kubernetes 源与端点构建逻辑；&lt;/li>
 &lt;li>&lt;code>pilot/pkg/xds/debug.go&lt;/code>：调试与状态接口。&lt;/li>
-&lt;/ul></description></item><item><title>06-Kubelet 源码解析：从启动到 Pod 管理与指标监控</title><link>https://www.kbsonlong.com/posts/06-kubelet-%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E4%BB%8E%E5%90%AF%E5%8A%A8%E5%88%B0-pod-%E7%AE%A1%E7%90%86%E4%B8%8E%E6%8C%87%E6%A0%87%E7%9B%91%E6%8E%A7/</link><pubDate>Wed, 22 Oct 2025 18:31:54 +0800</pubDate><guid>https://www.kbsonlong.com/posts/06-kubelet-%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E4%BB%8E%E5%90%AF%E5%8A%A8%E5%88%B0-pod-%E7%AE%A1%E7%90%86%E4%B8%8E%E6%8C%87%E6%A0%87%E7%9B%91%E6%8E%A7/</guid><category domain="https://www.kbsonlong.com/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">源码分析</category><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><description>&lt;p>本文基于&lt;a href="https://github.com/kubernetes/kubernetes/tree/v1.29.0"target="_blank" rel="external nofollow noopener noreferrer">1.29.0&lt;/a>版本&lt;/p>
-&lt;h1 class="heading-element" id="kubelet-源码解析从启动到-pod-管理与指标监控">&lt;span>Kubelet 源码解析：从启动到 Pod 管理与指标监控&lt;/span>
- &lt;a href="#kubelet-%e6%ba%90%e7%a0%81%e8%a7%a3%e6%9e%90%e4%bb%8e%e5%90%af%e5%8a%a8%e5%88%b0-pod-%e7%ae%a1%e7%90%86%e4%b8%8e%e6%8c%87%e6%a0%87%e7%9b%91%e6%8e%a7" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h1>&lt;h2 class="heading-element" id="摘要">&lt;span>摘要&lt;/span>
- &lt;a href="#%e6%91%98%e8%a6%81" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;p>Kubelet 是 Kubernetes 集群中不可或缺的节点代理，负责管理 Pod 的生命周期、监控资源并确保节点上的容器按照预期状态运行。本文旨在通过对 Kubelet 源码的深度剖析，揭示其核心工作机制，内容涵盖从启动初始化、核心工作循环、Pod 生命周期管理到基于 cAdvisor 的指标监控全流程。通过对这些关键模块的分析，我们将构建一个关于 Kubelet 如何作为节点&amp;quot;管家&amp;quot;维持集群稳定性的完整视图。&lt;/p>
-&lt;h2 class="heading-element" id="1-kubelet-的职责与定位">&lt;span>1. Kubelet 的职责与定位&lt;/span>
- &lt;a href="#1-kubelet-%e7%9a%84%e8%81%8c%e8%b4%a3%e4%b8%8e%e5%ae%9a%e4%bd%8d" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;p>在 Kubernetes 的宏伟蓝图中，Kubelet 扮演着连接&amp;quot;大脑&amp;quot;（Master 节点）与&amp;quot;四肢&amp;quot;（工作节点）的关键角色。它的核心职责可以概括为：&lt;/p>
-&lt;ul>
-&lt;li>&lt;strong>Pod 管理&lt;/strong>：作为 Pod 生命周期的直接执行者，负责根据 &lt;code>kube-apiserver&lt;/code> 的指令或静态配置文件创建、销毁和管理 Pod。&lt;/li>
-&lt;li>&lt;strong>健康检查&lt;/strong>：通过 Liveness 和 Readiness 探针持续监控容器的健康状况，并执行重启等恢复策略。&lt;/li>
-&lt;li>&lt;strong>资源监控&lt;/strong>：利用内嵌的 cAdvisor 收集节点和容器的资源使用情况（CPU、内存、磁盘、网络），为 &lt;code>metrics-server&lt;/code> 和 HPA 提供数据基础。&lt;/li>
-&lt;li>&lt;strong>存储卷管理&lt;/strong>：为 Pod 动态挂载和卸载所需的存储卷。&lt;/li>
-&lt;li>&lt;strong>状态上报&lt;/strong>：定期向 &lt;code>kube-apiserver&lt;/code> 汇报节点状态、资源容量和运行中的 Pod 列表。&lt;/li>
-&lt;/ul>
-&lt;h2 class="heading-element" id="2-启动流程从-main-函数到-syncloop">&lt;span>2. 启动流程：从 &lt;code>main&lt;/code> 函数到 &lt;code>syncLoop&lt;/code>&lt;/span>
- &lt;a href="#2-%e5%90%af%e5%8a%a8%e6%b5%81%e7%a8%8b%e4%bb%8e-main-%e5%87%bd%e6%95%b0%e5%88%b0-syncloop" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;p>Kubelet 的启动过程是一个精心设计的初始化序列，它通过命令行解析、配置加载和依赖注入，最终构建出一个功能完备的 Kubelet 实例。&lt;/p>
-&lt;h3 class="heading-element" id="21-入口与命令构建">&lt;span>2.1. 入口与命令构建&lt;/span>
- &lt;a href="#21-%e5%85%a5%e5%8f%a3%e4%b8%8e%e5%91%bd%e4%bb%a4%e6%9e%84%e5%bb%ba" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;p>Kubelet 的生命始于 &lt;code>cmd/kubelet/kubelet.go&lt;/code> 的 &lt;code>main&lt;/code> 函数，它通过调用 &lt;code>app.NewKubeletCommand()&lt;/code> 创建一个 Cobra 命令行应用。这个过程封装了所有启动逻辑，包括参数解析和服务的最终运行。&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;span class="lnt">4
-&lt;/span>&lt;span class="lnt">5
-&lt;/span>&lt;span class="lnt">6
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// cmd/kubelet/kubelet.go&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">command&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">app&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">NewKubeletCommand&lt;/span>&lt;span class="p">()&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">code&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">cli&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Run&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">command&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">os&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Exit&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">code&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;h3 class="heading-element" id="22-依赖注入与初始化">&lt;span>2.2. 依赖注入与初始化&lt;/span>
- &lt;a href="#22-%e4%be%9d%e8%b5%96%e6%b3%a8%e5%85%a5%e4%b8%8e%e5%88%9d%e5%a7%8b%e5%8c%96" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;p>&lt;code>NewKubeletCommand&lt;/code> 的核心在于其 &lt;code>Run&lt;/code> 函数，它负责协调整个初始化过程。关键步骤如下：&lt;/p>
-&lt;ol>
-&lt;li>&lt;strong>构建依赖 (&lt;code>KubeletDeps&lt;/code>)&lt;/strong>：通过 &lt;code>UnsecuredDependencies&lt;/code> 创建 Kubelet 运行所需的核心依赖项，如 &lt;code>CAdvisorInterface&lt;/code>、&lt;code>ContainerManager&lt;/code> 和 &lt;code>StatsProvider&lt;/code> 等。&lt;/li>
-&lt;li>&lt;strong>创建 Kubelet 实例&lt;/strong>：&lt;code>RunKubelet&lt;/code> -&amp;gt; &lt;code>createAndInitKubelet&lt;/code> -&amp;gt; &lt;code>kubelet.NewMainKubelet&lt;/code>，这一系列调用最终创建并初始化了 &lt;code>Kubelet&lt;/code> 核心对象。&lt;/li>
-&lt;li>&lt;strong>启动核心循环&lt;/strong>：初始化完成后，Kubelet 启动其&amp;quot;心脏&amp;quot;——&lt;code>syncLoop&lt;/code>。&lt;/li>
-&lt;/ol>
-&lt;div class="diagram-container">
- &lt;pre class="mermaid">graph TD
- A[main] --> B[app.NewKubeletCommand];
- B --> C{创建 Flags 和 Config};
- B --> D[创建 cobra.Command];
- D -- 执行 --> E[RunE 函数];
- E --> F[构建 KubeletServer];
- F --> G[UnsecuredDependencies -> 创建 KubeletDeps];
- G --> H[RunKubelet];
- H --> I[createAndInitKubelet];
- I --> J[kubelet.NewMainKubelet];
- J --> K[返回初始化的 Kubelet 实例];
- K --> L[启动 syncLoop];&lt;/pre>
- &lt;pre class="mermaid-dark">graph TD
- A[main] --> B[app.NewKubeletCommand];
- B --> C{创建 Flags 和 Config};
- B --> D[创建 cobra.Command];
- D -- 执行 --> E[RunE 函数];
- E --> F[构建 KubeletServer];
- F --> G[UnsecuredDependencies -> 创建 KubeletDeps];
- G --> H[RunKubelet];
- H --> I[createAndInitKubelet];
- I --> J[kubelet.NewMainKubelet];
- J --> K[返回初始化的 Kubelet 实例];
- K --> L[启动 syncLoop];&lt;/pre>
- &lt;pre class="mermaid-neutral">graph TD
- A[main] --> B[app.NewKubeletCommand];
- B --> C{创建 Flags 和 Config};
- B --> D[创建 cobra.Command];
- D -- 执行 --> E[RunE 函数];
- E --> F[构建 KubeletServer];
- F --> G[UnsecuredDependencies -> 创建 KubeletDeps];
- G --> H[RunKubelet];
- H --> I[createAndInitKubelet];
- I --> J[kubelet.NewMainKubelet];
- J --> K[返回初始化的 Kubelet 实例];
- K --> L[启动 syncLoop];&lt;/pre>&lt;div class="diagram-copy-btn" aria-label="Copy Mermaid code" role="button">&lt;i class="fa-regular fa-clone" aria-hidden="true">&lt;/i>&lt;i class="fa-solid fa-check text-success" aria-hidden="true">&lt;/i>&lt;/div>
-&lt;template>&lt;pre>graph TD
- A[main] --> B[app.NewKubeletCommand];
- B --> C{创建 Flags 和 Config};
- B --> D[创建 cobra.Command];
- D -- 执行 --> E[RunE 函数];
- E --> F[构建 KubeletServer];
- F --> G[UnsecuredDependencies -> 创建 KubeletDeps];
- G --> H[RunKubelet];
- H --> I[createAndInitKubelet];
- I --> J[kubelet.NewMainKubelet];
- J --> K[返回初始化的 Kubelet 实例];
- K --> L[启动 syncLoop];&lt;/pre>&lt;/template>
-&lt;/div>&lt;h2 class="heading-element" id="3-核心工作循环syncloop-的事件驱动模型">&lt;span>3. 核心工作循环：&lt;code>syncLoop&lt;/code> 的事件驱动模型&lt;/span>
- &lt;a href="#3-%e6%a0%b8%e5%bf%83%e5%b7%a5%e4%bd%9c%e5%be%aa%e7%8e%afsyncloop-%e7%9a%84%e4%ba%8b%e4%bb%b6%e9%a9%b1%e5%8a%a8%e6%a8%a1%e5%9e%8b" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;p>&lt;code>syncLoop&lt;/code> 是 Kubelet 的主控制循环，它通过 &lt;code>syncLoopIteration&lt;/code> 函数以事件驱动的方式工作，确保 Pod 的&amp;quot;期望状态&amp;quot;与节点的&amp;quot;实际状态&amp;quot;保持同步。&lt;/p>
-&lt;h3 class="heading-element" id="31-多路事件监听">&lt;span>3.1. 多路事件监听&lt;/span>
- &lt;a href="#31-%e5%a4%9a%e8%b7%af%e4%ba%8b%e4%bb%b6%e7%9b%91%e5%90%ac" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;p>&lt;code>syncLoopIteration&lt;/code> 使用 &lt;code>select&lt;/code> 语句同时监听来自多个 Channel 的事件，实现了高效的并发处理：&lt;/p>
-&lt;ul>
-&lt;li>&lt;strong>&lt;code>configCh&lt;/code> (配置变更)&lt;/strong>：接收来自 &lt;code>kube-apiserver&lt;/code>、静态 Pod 文件或 HTTP 端点的 Pod 配置更新，触发 &lt;code>HandlePodAdditions&lt;/code>、&lt;code>HandlePodUpdates&lt;/code> 等操作。&lt;/li>
-&lt;li>&lt;strong>&lt;code>plegCh&lt;/code> (Pod 生命周期事件)&lt;/strong>：PLEG (Pod Lifecycle Event Generator) 监控容器运行时的底层变化（如容器启动、停止），生成事件以驱动 Kubelet 快速响应。&lt;/li>
-&lt;li>&lt;strong>&lt;code>syncCh&lt;/code> (定期同步)&lt;/strong>：默认每秒触发一次，确保即使没有外部事件，Kubelet 也会定期检查所有 Pod 的状态。&lt;/li>
-&lt;li>&lt;strong>&lt;code>housekeepingCh&lt;/code> (定期清理)&lt;/strong>：执行周期性任务，如清理孤儿 Pod 和无效的目录。&lt;/li>
-&lt;li>&lt;strong>&lt;code>livenessManager.Updates()&lt;/code> (存活探针)&lt;/strong>：处理 Liveness Probe 的失败结果，通常会导致容器重启。&lt;/li>
-&lt;/ul>
-&lt;div class="diagram-container">
- &lt;pre class="mermaid">graph TD
- A[syncLoop] --> B{select};
- B --> C[configCh: 配置变更];
- B --> D[plegCh: 容器状态变更];
- B --> E[syncCh: 定期同步];
- B --> F[housekeepingCh: 定期清理];
- B --> G[livenessManager: 探针结果];
-
- C --> H[HandlePodAdditions/Updates/Removes];
- D --> I[HandlePodSyncs];
- E --> I;
- G --> I;
-
- H --> J[podManager: 更新 Pod 缓存];
- J --> K[dispatchWork: 异步同步 Pod];
- I --> K;
-
- K --> L[syncPod: 同步单个 Pod];&lt;/pre>
- &lt;pre class="mermaid-dark">graph TD
- A[syncLoop] --> B{select};
- B --> C[configCh: 配置变更];
- B --> D[plegCh: 容器状态变更];
- B --> E[syncCh: 定期同步];
- B --> F[housekeepingCh: 定期清理];
- B --> G[livenessManager: 探针结果];
-
- C --> H[HandlePodAdditions/Updates/Removes];
- D --> I[HandlePodSyncs];
- E --> I;
- G --> I;
-
- H --> J[podManager: 更新 Pod 缓存];
- J --> K[dispatchWork: 异步同步 Pod];
- I --> K;
-
- K --> L[syncPod: 同步单个 Pod];&lt;/pre>
- &lt;pre class="mermaid-neutral">graph TD
- A[syncLoop] --> B{select};
- B --> C[configCh: 配置变更];
- B --> D[plegCh: 容器状态变更];
- B --> E[syncCh: 定期同步];
- B --> F[housekeepingCh: 定期清理];
- B --> G[livenessManager: 探针结果];
-
- C --> H[HandlePodAdditions/Updates/Removes];
- D --> I[HandlePodSyncs];
- E --> I;
- G --> I;
-
- H --> J[podManager: 更新 Pod 缓存];
- J --> K[dispatchWork: 异步同步 Pod];
- I --> K;
-
- K --> L[syncPod: 同步单个 Pod];&lt;/pre>&lt;div class="diagram-copy-btn" aria-label="Copy Mermaid code" role="button">&lt;i class="fa-regular fa-clone" aria-hidden="true">&lt;/i>&lt;i class="fa-solid fa-check text-success" aria-hidden="true">&lt;/i>&lt;/div>
-&lt;template>&lt;pre>graph TD
- A[syncLoop] --> B{select};
- B --> C[configCh: 配置变更];
- B --> D[plegCh: 容器状态变更];
- B --> E[syncCh: 定期同步];
- B --> F[housekeepingCh: 定期清理];
- B --> G[livenessManager: 探针结果];
-
- C --> H[HandlePodAdditions/Updates/Removes];
- D --> I[HandlePodSyncs];
- E --> I;
- G --> I;
-
- H --> J[podManager: 更新 Pod 缓存];
- J --> K[dispatchWork: 异步同步 Pod];
- I --> K;
-
- K --> L[syncPod: 同步单个 Pod];&lt;/pre>&lt;/template>
-&lt;/div>&lt;h2 class="heading-element" id="4-pod-生命周期管理syncpod-的同步逻辑">&lt;span>4. Pod 生命周期管理：&lt;code>syncPod&lt;/code> 的同步逻辑&lt;/span>
- &lt;a href="#4-pod-%e7%94%9f%e5%91%bd%e5%91%a8%e6%9c%9f%e7%ae%a1%e7%90%86syncpod-%e7%9a%84%e5%90%8c%e6%ad%a5%e9%80%bb%e8%be%91" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;p>&lt;code>syncPod&lt;/code> 是 Kubelet 中负责同步单个 Pod 状态的核心函数。它是一个庞大而复杂的函数，包含了 Pod 从创建到销毁的全套管理逻辑。&lt;/p>
-&lt;h3 class="heading-element" id="41-syncpod-的核心步骤">&lt;span>4.1. &lt;code>syncPod&lt;/code> 的核心步骤&lt;/span>
- &lt;a href="#41-syncpod-%e7%9a%84%e6%a0%b8%e5%bf%83%e6%ad%a5%e9%aa%a4" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;ol>
-&lt;li>&lt;strong>终止处理&lt;/strong>：如果 Pod 被标记为删除 (&lt;code>SyncPodKill&lt;/code>)，则立即调用 &lt;code>killPod&lt;/code> 流程。&lt;/li>
-&lt;li>&lt;strong>状态计算与更新&lt;/strong>：调用 &lt;code>generateAPIPodStatus&lt;/code> 计算 Pod 的最新状态，并通过 &lt;code>statusManager&lt;/code> 异步上报给 &lt;code>kube-apiserver&lt;/code>。&lt;/li>
-&lt;li>&lt;strong>运行状态检查&lt;/strong>：通过 &lt;code>podShouldnotBeRunning&lt;/code> 判断 Pod 是否已完成或失败，如果是，则执行清理。&lt;/li>
-&lt;li>&lt;strong>环境准备&lt;/strong>：创建 Pod 所需的数据目录 (&lt;code>makePodDataDirs&lt;/code>) 并等待存储卷挂载就绪 (&lt;code>waitForVolumes&lt;/code>)。&lt;/li>
-&lt;li>&lt;strong>调用容器运行时 (CRI)&lt;/strong>：这是最关键的一步。Kubelet 调用 &lt;code>containerRuntime.SyncPod&lt;/code>，将 Pod 的期望状态传递给容器运行时（如 containerd），由其完成具体的容器操作（拉取镜像、创建/销毁容器等）。&lt;/li>
-&lt;/ol>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;span class="lnt">4
-&lt;/span>&lt;span class="lnt">5
-&lt;/span>&lt;span class="lnt">6
-&lt;/span>&lt;span class="lnt">7
-&lt;/span>&lt;span class="lnt">8
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// pkg/kubelet/kubelet.go&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">kl&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">Kubelet&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">syncPod&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">o&lt;/span> &lt;span class="nx">syncPodOptions&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 核心逻辑：调用容器运行时 (CRI) 的 SyncPod&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">result&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">kl&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">containerRuntime&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">SyncPod&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">pod&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">podStatus&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">pullSecrets&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">kl&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">backOff&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="kc">nil&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;h3 class="heading-element" id="42-pod-创建更新与删除流程图">&lt;span>4.2. Pod 创建、更新与删除流程图&lt;/span>
- &lt;a href="#42-pod-%e5%88%9b%e5%bb%ba%e6%9b%b4%e6%96%b0%e4%b8%8e%e5%88%a0%e9%99%a4%e6%b5%81%e7%a8%8b%e5%9b%be" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;div class="diagram-container">
- &lt;pre class="mermaid">graph TD
- subgraph "事件分发"
- A[dispatchWork] --> B{根据事件类型};
- B -- ADD/UPDATE/SYNC --> C[podWorkers.UpdatePod];
- B -- REMOVE --> C;
- end
-
- subgraph "Pod 同步执行"
- C --> D["工作协程 (Worker Goroutine)"];
- D --> E(syncPod);
- end
-
- subgraph "syncPod 内部逻辑"
- E --> F{"检查 Pod 是否需要终止 (deletionTimestamp?)"};
- F -- 是 --> G[执行 killPod 流程];
- F -- 否 --> L{"Pod 是否应该运行?"};
- 
- subgraph "终止流程"
- G --> H[CRI: StopPodSandbox/RemovePodSandbox];
- H --> I[清理 Pod 目录和卷];
- end
-
- L -- 否 --> M["执行 killPod (如果容器仍在运行)"];
- L -- 是 --> O["调用 CRI: SyncPod"];
- 
- subgraph "CRI: SyncPod 内部"
- O --> T{"容器运行时"};
- T -- 容器不存在 --> U[创建沙箱和容器];
- T -- 容器状态与期望不符 --> V[停止并重建容器];
- T -- 容器状态一致 --> W[不执行操作];
- end
- end&lt;/pre>
- &lt;pre class="mermaid-dark">graph TD
- subgraph "事件分发"
- A[dispatchWork] --> B{根据事件类型};
- B -- ADD/UPDATE/SYNC --> C[podWorkers.UpdatePod];
- B -- REMOVE --> C;
- end
-
- subgraph "Pod 同步执行"
- C --> D["工作协程 (Worker Goroutine)"];
- D --> E(syncPod);
- end
-
- subgraph "syncPod 内部逻辑"
- E --> F{"检查 Pod 是否需要终止 (deletionTimestamp?)"};
- F -- 是 --> G[执行 killPod 流程];
- F -- 否 --> L{"Pod 是否应该运行?"};
- 
- subgraph "终止流程"
- G --> H[CRI: StopPodSandbox/RemovePodSandbox];
- H --> I[清理 Pod 目录和卷];
- end
-
- L -- 否 --> M["执行 killPod (如果容器仍在运行)"];
- L -- 是 --> O["调用 CRI: SyncPod"];
- 
- subgraph "CRI: SyncPod 内部"
- O --> T{"容器运行时"};
- T -- 容器不存在 --> U[创建沙箱和容器];
- T -- 容器状态与期望不符 --> V[停止并重建容器];
- T -- 容器状态一致 --> W[不执行操作];
- end
- end&lt;/pre>
- &lt;pre class="mermaid-neutral">graph TD
- subgraph "事件分发"
- A[dispatchWork] --> B{根据事件类型};
- B -- ADD/UPDATE/SYNC --> C[podWorkers.UpdatePod];
- B -- REMOVE --> C;
- end
-
- subgraph "Pod 同步执行"
- C --> D["工作协程 (Worker Goroutine)"];
- D --> E(syncPod);
- end
-
- subgraph "syncPod 内部逻辑"
- E --> F{"检查 Pod 是否需要终止 (deletionTimestamp?)"};
- F -- 是 --> G[执行 killPod 流程];
- F -- 否 --> L{"Pod 是否应该运行?"};
- 
- subgraph "终止流程"
- G --> H[CRI: StopPodSandbox/RemovePodSandbox];
- H --> I[清理 Pod 目录和卷];
- end
-
- L -- 否 --> M["执行 killPod (如果容器仍在运行)"];
- L -- 是 --> O["调用 CRI: SyncPod"];
- 
- subgraph "CRI: SyncPod 内部"
- O --> T{"容器运行时"};
- T -- 容器不存在 --> U[创建沙箱和容器];
- T -- 容器状态与期望不符 --> V[停止并重建容器];
- T -- 容器状态一致 --> W[不执行操作];
- end
- end&lt;/pre>&lt;div class="diagram-copy-btn" aria-label="Copy Mermaid code" role="button">&lt;i class="fa-regular fa-clone" aria-hidden="true">&lt;/i>&lt;i class="fa-solid fa-check text-success" aria-hidden="true">&lt;/i>&lt;/div>
-&lt;template>&lt;pre>graph TD
- subgraph "事件分发"
- A[dispatchWork] --> B{根据事件类型};
- B -- ADD/UPDATE/SYNC --> C[podWorkers.UpdatePod];
- B -- REMOVE --> C;
- end
-
- subgraph "Pod 同步执行"
- C --> D["工作协程 (Worker Goroutine)"];
- D --> E(syncPod);
- end
-
- subgraph "syncPod 内部逻辑"
- E --> F{"检查 Pod 是否需要终止 (deletionTimestamp?)"};
- F -- 是 --> G[执行 killPod 流程];
- F -- 否 --> L{"Pod 是否应该运行?"};
- 
- subgraph "终止流程"
- G --> H[CRI: StopPodSandbox/RemovePodSandbox];
- H --> I[清理 Pod 目录和卷];
- end
-
- L -- 否 --> M["执行 killPod (如果容器仍在运行)"];
- L -- 是 --> O["调用 CRI: SyncPod"];
- 
- subgraph "CRI: SyncPod 内部"
- O --> T{"容器运行时"};
- T -- 容器不存在 --> U[创建沙箱和容器];
- T -- 容器状态与期望不符 --> V[停止并重建容器];
- T -- 容器状态一致 --> W[不执行操作];
- end
- end&lt;/pre>&lt;/template>
-&lt;/div>&lt;h2 class="heading-element" id="5-指标监控cadvisor-的集成与工作机制">&lt;span>5. 指标监控：cAdvisor 的集成与工作机制&lt;/span>
- &lt;a href="#5-%e6%8c%87%e6%a0%87%e7%9b%91%e6%8e%a7cadvisor-%e7%9a%84%e9%9b%86%e6%88%90%e4%b8%8e%e5%b7%a5%e4%bd%9c%e6%9c%ba%e5%88%b6" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;p>Kubelet 的资源监控能力由内嵌的 &lt;strong>cAdvisor&lt;/strong> 提供。cAdvisor 负责收集、处理和暴露容器与节点的性能指标。&lt;/p>
-&lt;h3 class="heading-element" id="51-初始化与启动">&lt;span>5.1. 初始化与启动&lt;/span>
- &lt;a href="#51-%e5%88%9d%e5%a7%8b%e5%8c%96%e4%b8%8e%e5%90%af%e5%8a%a8" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;p>cAdvisor 在 Kubelet 启动时被初始化和启动。&lt;code>buildKubeletDeps&lt;/code> 函数创建 cAdvisor 实例，随后 &lt;code>initializeRuntimeDependentModules&lt;/code> 调用 &lt;code>kl.cadvisor.Start()&lt;/code> 启动其后台收集任务。&lt;/p>
-&lt;h3 class="heading-element" id="52-指标收集周期与实现">&lt;span>5.2. 指标收集周期与实现&lt;/span>
- &lt;a href="#52-%e6%8c%87%e6%a0%87%e6%94%b6%e9%9b%86%e5%91%a8%e6%9c%9f%e4%b8%8e%e5%ae%9e%e7%8e%b0" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;p>cAdvisor 的指标收集频率由 Kubelet 的 &lt;code>--housekeeping-interval&lt;/code> 参数（默认 10 秒）控制。其实现机制如下：&lt;/p>
-&lt;ol>
-&lt;li>&lt;strong>参数传递&lt;/strong>：Kubelet 通过一个&amp;quot;hack&amp;quot;方式，在启动时将自己的 &lt;code>--housekeeping-interval&lt;/code> 值设置给 cAdvisor 库的全局标志 &lt;code>housekeeping_interval&lt;/code>。&lt;/li>
-&lt;li>&lt;strong>容器级 &lt;code>housekeeping&lt;/code>&lt;/strong>：cAdvisor 为每个容器启动一个独立的 &lt;code>housekeeping&lt;/code> goroutine。这个 goroutine 使用 &lt;code>time.Timer&lt;/code> 来周期性地触发指标收集。&lt;/li>
-&lt;li>&lt;strong>数据采集&lt;/strong>：&lt;code>housekeeping&lt;/code> 循环最终调用 &lt;code>updateStats&lt;/code>，该函数通过容器处理器 (&lt;code>containerHandler&lt;/code>) 从 cgroup 文件系统或 CRI 获取原始的 CPU、内存等数据。&lt;/li>
-&lt;/ol>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
-&lt;/span>&lt;span class="lnt"> 2
-&lt;/span>&lt;span class="lnt"> 3
-&lt;/span>&lt;span class="lnt"> 4
-&lt;/span>&lt;span class="lnt"> 5
-&lt;/span>&lt;span class="lnt"> 6
-&lt;/span>&lt;span class="lnt"> 7
-&lt;/span>&lt;span class="lnt"> 8
-&lt;/span>&lt;span class="lnt"> 9
-&lt;/span>&lt;span class="lnt">10
-&lt;/span>&lt;span class="lnt">11
-&lt;/span>&lt;span class="lnt">12
-&lt;/span>&lt;span class="lnt">13
-&lt;/span>&lt;span class="lnt">14
-&lt;/span>&lt;span class="lnt">15
-&lt;/span>&lt;span class="lnt">16
-&lt;/span>&lt;span class="lnt">17
-&lt;/span>&lt;span class="lnt">18
-&lt;/span>&lt;span class="lnt">19
-&lt;/span>&lt;span class="lnt">20
-&lt;/span>&lt;span class="lnt">21
-&lt;/span>&lt;span class="lnt">22
-&lt;/span>&lt;span class="lnt">23
-&lt;/span>&lt;span class="lnt">24
-&lt;/span>&lt;span class="lnt">25
-&lt;/span>&lt;span class="lnt">26
-&lt;/span>&lt;span class="lnt">27
-&lt;/span>&lt;span class="lnt">28
-&lt;/span>&lt;span class="lnt">29
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// vendor/github.com/google/cadvisor/manager/container.go&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// housekeeping 是每个容器指标收集的主循环&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">cd&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">containerData&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">housekeeping&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">houseKeepingTimer&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">cd&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">clock&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">NewTimer&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">cd&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">housekeepingInterval&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">defer&lt;/span> &lt;span class="nx">houseKeepingTimer&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Stop&lt;/span>&lt;span class="p">()&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">select&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span>&lt;span class="nx">cd&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">stop&lt;/span>&lt;span class="p">:&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span>&lt;span class="nx">houseKeepingTimer&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">C&lt;/span>&lt;span class="p">():&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 定时器触发，执行单次指标收集&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">cd&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">updateStats&lt;/span>&lt;span class="p">();&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">klog&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Errorf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Failed to update stats for container %q: %v&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">cd&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">info&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Name&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">houseKeepingTimer&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Reset&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">cd&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">nextHousekeepingInterval&lt;/span>&lt;span class="p">())&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// updateStats 调用 handler 获取并存储指标&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">cd&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">containerData&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">updateStats&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">stats&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">statsErr&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">cd&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">handler&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">GetStats&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="c1">// &amp;lt;-- 从 cgroup 或 CRI 获取数据&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">statsErr&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">statsErr&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 将统计数据添加到内存缓存&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">cd&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">memoryCache&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">AddStats&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">cd&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">info&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">stats&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;h3 class="heading-element" id="53-指标存储inmemorycache">&lt;span>5.3. 指标存储：&lt;code>InMemoryCache&lt;/code>&lt;/span>
- &lt;a href="#53-%e6%8c%87%e6%a0%87%e5%ad%98%e5%82%a8inmemorycache" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;p>cAdvisor 采集的指标存储在名为 &lt;code>InMemoryCache&lt;/code> 的内存缓存中，其核心特点是：&lt;/p>
-&lt;ul>
-&lt;li>&lt;strong>环形缓冲区 (Ring Buffer)&lt;/strong>：为每个容器维护一个固定大小的环形缓冲区，用于存储最近一段时间（默认 60 秒）的时间序列数据。&lt;/li>
-&lt;li>&lt;strong>数据写入&lt;/strong>：&lt;code>updateStats&lt;/code> 函数调用 &lt;code>memoryCache.AddStats()&lt;/code> 将新采集的指标存入缓冲区，旧数据会被自动覆盖。&lt;/li>
-&lt;li>&lt;strong>数据读取&lt;/strong>：当外部请求（如 &lt;code>metrics-server&lt;/code>）访问 Kubelet 的 &lt;code>/stats/summary&lt;/code> 端点时，&lt;code>StatsProvider&lt;/code> 会调用 &lt;code>RecentStats&lt;/code> 从缓存中提取数据用于聚合。&lt;/li>
-&lt;/ul>
-&lt;p>这种设计使得 cAdvisor 能够在不引入磁盘 I/O 的情况下，高效地提供短期、高分辨率的性能指标。&lt;/p>
-&lt;h2 class="heading-element" id="6-总结">&lt;span>6. 总结&lt;/span>
- &lt;a href="#6-%e6%80%bb%e7%bb%93" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;p>通过对 Kubelet 源码的深入探索，我们揭示了其作为 Kubernetes 节点核心代理的复杂而精妙的工作机制。从命令行的解析启动，到依赖注入的构建，再到事件驱动的 &lt;code>syncLoop&lt;/code> 核心循环，Kubelet 的设计处处体现着健壮性与可扩展性。&lt;/p>
-&lt;p>&lt;code>syncPod&lt;/code> 作为 Pod 生命周期管理的最终执行者，通过与容器运行时的紧密协作，精确地将声明式 API 转化为实际的容器操作。而内嵌的 cAdvisor 则为 Kubelet 提供了强大的监控能力，通过高效的周期性采集和内存缓存机制，为整个集群的调度和自动扩缩容提供了关键的数据支持。&lt;/p>
-&lt;p>理解 Kubelet 的内部工作原理，不仅有助于我们更好地排查节点问题，也让我们对 Kubernetes 的分布式系统设计哲学有了更深刻的认识。Kubelet 正是这一哲学在节点侧的完美体现，是确保云原生应用稳定、高效运行的基石。&lt;/p></description></item><item><title>05-kube-controller-manager源码分析(HPA控制器)</title><link>https://www.kbsonlong.com/posts/05-kube-controller-manager%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90hpa%E6%8E%A7%E5%88%B6%E5%99%A8/</link><pubDate>Wed, 22 Oct 2025 10:09:54 +0800</pubDate><guid>https://www.kbsonlong.com/posts/05-kube-controller-manager%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90hpa%E6%8E%A7%E5%88%B6%E5%99%A8/</guid><category domain="https://www.kbsonlong.com/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">源码分析</category><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><description>&lt;p>本文基于&lt;a href="https://github.com/kubernetes/kubernetes/tree/v1.29.0"target="_blank" rel="external nofollow noopener noreferrer">1.29.0&lt;/a>版本&lt;/p>
-&lt;h1 class="heading-element" id="hpa-控制器源码分析">&lt;span>HPA 控制器源码分析&lt;/span>
- &lt;a href="#hpa-%e6%8e%a7%e5%88%b6%e5%99%a8%e6%ba%90%e7%a0%81%e5%88%86%e6%9e%90" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h1>&lt;h2 class="heading-element" id="简介">&lt;span>简介&lt;/span>
- &lt;a href="#%e7%ae%80%e4%bb%8b" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;p>Horizontal Pod Autoscaler (HPA) 是 Kubernetes 中实现应用水平自动扩缩容的核心控制器。它通过监控指定的指标（如 CPU 利用率、内存使用量或自定义指标），自动调整 Deployment、ReplicaSet 或 StatefulSet 等工作负载的副本数，以应对流量波动和资源需求变化。&lt;/p>
-&lt;p>本文将深入分析 HPA 控制器的源码，探究其工作原理和实现细节。&lt;/p>
-&lt;h2 class="heading-element" id="入口点">&lt;span>入口点&lt;/span>
- &lt;a href="#%e5%85%a5%e5%8f%a3%e7%82%b9" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;p>与许多其他控制器一样，HPA 控制器在 &lt;code>kube-controller-manager&lt;/code> 进程中运行。其初始化入口位于 &lt;code>cmd/kube-controller-manager/app/autoscaling.go&lt;/code> 文件中。&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;span class="lnt">4
-&lt;/span>&lt;span class="lnt">5
-&lt;/span>&lt;span class="lnt">6
-&lt;/span>&lt;span class="lnt">7
-&lt;/span>&lt;span class="lnt">8
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// cmd/kube-controller-manager/app/autoscaling.go&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">newHorizontalPodAutoscalerControllerDescriptor&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">controllerDescriptor&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="k">return&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="nx">controllerDescriptor&lt;/span>&lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">		&lt;span class="nx">name&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s">&amp;#34;horizontal-pod-autoscaler&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">		&lt;span class="nx">init&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="nx">startHorizontalPodAutoscalerControllerWithRESTClient&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;p>&lt;code>newHorizontalPodAutoscalerControllerDescriptor&lt;/code> 函数定义了 HPA 控制器的描述符，其中 &lt;code>name&lt;/code> 字段指定了控制器名称，&lt;code>init&lt;/code> 字段指向了初始化函数 &lt;code>startHorizontalPodAutoscalerControllerWithRESTClient&lt;/code>。&lt;/p>
-&lt;h2 class="heading-element" id="控制器初始化">&lt;span>控制器初始化&lt;/span>
- &lt;a href="#%e6%8e%a7%e5%88%b6%e5%99%a8%e5%88%9d%e5%a7%8b%e5%8c%96" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;p>&lt;code>startHorizontalPodAutoscalerControllerWithRESTClient&lt;/code> 函数是 HPA 控制器初始化的起点。&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
-&lt;/span>&lt;span class="lnt"> 2
-&lt;/span>&lt;span class="lnt"> 3
-&lt;/span>&lt;span class="lnt"> 4
-&lt;/span>&lt;span class="lnt"> 5
-&lt;/span>&lt;span class="lnt"> 6
-&lt;/span>&lt;span class="lnt"> 7
-&lt;/span>&lt;span class="lnt"> 8
-&lt;/span>&lt;span class="lnt"> 9
-&lt;/span>&lt;span class="lnt">10
-&lt;/span>&lt;span class="lnt">11
-&lt;/span>&lt;span class="lnt">12
-&lt;/span>&lt;span class="lnt">13
-&lt;/span>&lt;span class="lnt">14
-&lt;/span>&lt;span class="lnt">15
-&lt;/span>&lt;span class="lnt">16
-&lt;/span>&lt;span class="lnt">17
-&lt;/span>&lt;span class="lnt">18
-&lt;/span>&lt;span class="lnt">19
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// cmd/kube-controller-manager/app/autoscaling.go&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">startHorizontalPodAutoscalerControllerWithRESTClient&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">ctx&lt;/span> &lt;span class="nx">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Context&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">controllerContext&lt;/span> &lt;span class="nx">ControllerContext&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">controller&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Interface&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">bool&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">error&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="c1">// ...&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="k">return&lt;/span> &lt;span class="nf">startHPAControllerWithMetricsClient&lt;/span>&lt;span class="p">(&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">		&lt;span class="nx">ctx&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">		&lt;span class="nx">controllerContext&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">		&lt;span class="nx">controllerContext&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">RESTMapper&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">		&lt;span class="nx">controllerContext&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ClientBuilder&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">ClientOrDie&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;horizontal-pod-autoscaler&amp;#34;&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="nf">Discovery&lt;/span>&lt;span class="p">(),&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">		&lt;span class="nx">scale&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">New&lt;/span>&lt;span class="p">(&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">			&lt;span class="nx">controllerContext&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ClientBuilder&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">ClientOrDie&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;horizontal-pod-autoscaler&amp;#34;&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="nf">Discovery&lt;/span>&lt;span class="p">(),&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">			&lt;span class="nx">controllerContext&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">RESTMapper&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">			&lt;span class="nx">dynamic&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">LegacyAPIPathResolverFunc&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">			&lt;span class="nx">scale&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">NewDiscoveryScaleKindResolver&lt;/span>&lt;span class="p">(&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">				&lt;span class="nx">controllerContext&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ClientBuilder&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">ClientOrDie&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;horizontal-pod-autoscaler&amp;#34;&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="nf">Discovery&lt;/span>&lt;span class="p">(),&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">			&lt;span class="p">),&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">		&lt;span class="p">),&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;p>此函数主要负责准备 HPA 控制器所需的依赖，例如 &lt;code>RESTMapper&lt;/code>、&lt;code>DiscoveryClient&lt;/code> 和 &lt;code>ScaleClient&lt;/code>，然后调用 &lt;code>startHPAControllerWithMetricsClient&lt;/code>。&lt;/p>
-&lt;p>&lt;code>startHPAControllerWithMetricsClient&lt;/code> 函数进一步构建了用于获取指标的客户端，并最终创建和启动了 &lt;code>HorizontalController&lt;/code>。&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
-&lt;/span>&lt;span class="lnt"> 2
-&lt;/span>&lt;span class="lnt"> 3
-&lt;/span>&lt;span class="lnt"> 4
-&lt;/span>&lt;span class="lnt"> 5
-&lt;/span>&lt;span class="lnt"> 6
-&lt;/span>&lt;span class="lnt"> 7
-&lt;/span>&lt;span class="lnt"> 8
-&lt;/span>&lt;span class="lnt"> 9
-&lt;/span>&lt;span class="lnt">10
-&lt;/span>&lt;span class="lnt">11
-&lt;/span>&lt;span class="lnt">12
-&lt;/span>&lt;span class="lnt">13
-&lt;/span>&lt;span class="lnt">14
-&lt;/span>&lt;span class="lnt">15
-&lt;/span>&lt;span class="lnt">16
-&lt;/span>&lt;span class="lnt">17
-&lt;/span>&lt;span class="lnt">18
-&lt;/span>&lt;span class="lnt">19
-&lt;/span>&lt;span class="lnt">20
-&lt;/span>&lt;span class="lnt">21
-&lt;/span>&lt;span class="lnt">22
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// cmd/kube-controller-manager/app/autoscaling.go&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">startHPAControllerWithMetricsClient&lt;/span>&lt;span class="p">(&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="nx">ctx&lt;/span> &lt;span class="nx">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Context&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="nx">controllerContext&lt;/span> &lt;span class="nx">ControllerContext&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="nx">restMapper&lt;/span> &lt;span class="nx">meta&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">RESTMapper&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="nx">discoveryClient&lt;/span> &lt;span class="nx">discovery&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">DiscoveryInterface&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="nx">scaleClient&lt;/span> &lt;span class="nx">scale&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ScalesGetter&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">)&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">controller&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Interface&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">bool&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">error&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="c1">// ...&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="nx">metricsClient&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">metrics&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">NewRESTMetricsClient&lt;/span>&lt;span class="p">(&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">		&lt;span class="nx">resourceclient&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">NewForConfigOrDie&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">controllerContext&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ClientBuilder&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">ConfigOrDie&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;resource-metrics-client&amp;#34;&lt;/span>&lt;span class="p">)),&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">		&lt;span class="nx">customclient&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">NewForConfig&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">controllerContext&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ClientBuilder&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">ConfigOrDie&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;custom-metrics-client&amp;#34;&lt;/span>&lt;span class="p">)),&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">		&lt;span class="nx">externalclient&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">NewForConfigOrDie&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">controllerContext&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ClientBuilder&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">ConfigOrDie&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;external-metrics-client&amp;#34;&lt;/span>&lt;span class="p">)),&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="k">go&lt;/span> &lt;span class="nx">podautoscaler&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">NewHorizontalController&lt;/span>&lt;span class="p">(&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">		&lt;span class="c1">// ...&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="p">).&lt;/span>&lt;span class="nf">Run&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">ctx&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">controllerContext&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ComponentConfig&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">HPA&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ConcurrentHorizontalPodAutoscalerSyncs&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="k">return&lt;/span> &lt;span class="kc">nil&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kc">true&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kc">nil&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;p>在这里，&lt;code>NewHorizontalController&lt;/code> 函数（位于 &lt;code>pkg/controller/podautoscaler/horizontal.go&lt;/code>）被调用以创建 &lt;code>HorizontalController&lt;/code> 的实例。然后，&lt;code>Run&lt;/code> 方法在一个新的 Goroutine 中被调用，启动了控制器的核心循环。&lt;/p>
-&lt;p>&lt;code>NewHorizontalController&lt;/code> 函数初始化了 &lt;code>HorizontalController&lt;/code> 结构体，其中包含了 HPA 控制器运行所需的所有组件：&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
-&lt;/span>&lt;span class="lnt"> 2
-&lt;/span>&lt;span class="lnt"> 3
-&lt;/span>&lt;span class="lnt"> 4
-&lt;/span>&lt;span class="lnt"> 5
-&lt;/span>&lt;span class="lnt"> 6
-&lt;/span>&lt;span class="lnt"> 7
-&lt;/span>&lt;span class="lnt"> 8
-&lt;/span>&lt;span class="lnt"> 9
-&lt;/span>&lt;span class="lnt">10
-&lt;/span>&lt;span class="lnt">11
-&lt;/span>&lt;span class="lnt">12
-&lt;/span>&lt;span class="lnt">13
-&lt;/span>&lt;span class="lnt">14
-&lt;/span>&lt;span class="lnt">15
-&lt;/span>&lt;span class="lnt">16
-&lt;/span>&lt;span class="lnt">17
-&lt;/span>&lt;span class="lnt">18
-&lt;/span>&lt;span class="lnt">19
-&lt;/span>&lt;span class="lnt">20
-&lt;/span>&lt;span class="lnt">21
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// pkg/controller/podautoscaler/horizontal.go&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">type&lt;/span> &lt;span class="nx">HorizontalController&lt;/span> &lt;span class="kd">struct&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="nx">scaleNamespacer&lt;/span> &lt;span class="nx">scale&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ScalesGetter&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="nx">hpaNamespacer&lt;/span> &lt;span class="nx">autoscalingv1&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">HorizontalPodAutoscalersGetter&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="nx">mapper&lt;/span> &lt;span class="nx">meta&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">RESTMapper&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="nx">replicaCalc&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">ReplicaCalculator&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="nx">eventRecorder&lt;/span> &lt;span class="nx">record&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">EventRecorder&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="c1">// ...&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="nx">downscaleStabilisationWindow&lt;/span> &lt;span class="nx">time&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Duration&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="c1">// ...&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="nx">hpaLister&lt;/span> &lt;span class="nx">autoscalinglisters&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">HorizontalPodAutoscalerLister&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="nx">podLister&lt;/span> &lt;span class="nx">corelisters&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">PodLister&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="c1">// ...&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="nx">queue&lt;/span> &lt;span class="nx">workqueue&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">RateLimitingInterface&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="c1">// ...&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="nx">recommendations&lt;/span> &lt;span class="kd">map&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="kt">string&lt;/span>&lt;span class="p">][]&lt;/span>&lt;span class="nx">timestampedRecommendation&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="nx">scaleEvents&lt;/span> &lt;span class="kd">map&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="kt">string&lt;/span>&lt;span class="p">][]&lt;/span>&lt;span class="nx">timestampedScaleEvent&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;ul>
-&lt;li>&lt;code>scaleNamespacer&lt;/code>: 用于与 &lt;code>scale&lt;/code> 子资源交互的客户端。&lt;/li>
-&lt;li>&lt;code>hpaNamespacer&lt;/code>: 用于与 HPA 对象交互的客户端。&lt;/li>
-&lt;li>&lt;code>mapper&lt;/code>: 用于在不同 API 版本和资源类型之间进行映射。&lt;/li>
-&lt;li>&lt;code>replicaCalc&lt;/code>: 用于计算期望副本数。&lt;/li>
-&lt;li>&lt;code>eventRecorder&lt;/code>: 用于记录事件。&lt;/li>
-&lt;li>&lt;code>downscaleStabilisationWindow&lt;/code>: 缩容稳定窗口，用于防止频繁缩容。&lt;/li>
-&lt;li>&lt;code>hpaLister&lt;/code>, &lt;code>podLister&lt;/code>: 用于从本地缓存中获取 HPA 和 Pod 对象。&lt;/li>
-&lt;li>&lt;code>queue&lt;/code>: 工作队列，用于存放需要处理的 HPA 对象。&lt;/li>
-&lt;li>&lt;code>recommendations&lt;/code>, &lt;code>scaleEvents&lt;/code>: 用于存储扩缩容建议和事件，以实现稳定化。&lt;/li>
-&lt;/ul>
-&lt;p>&lt;code>NewHorizontalController&lt;/code> 还设置了事件处理器，用于监听 HPA 对象的创建、更新和删除事件，并将相关的 HPA 对象加入到工作队列中。&lt;/p>
-&lt;h2 class="heading-element" id="核心协调循环">&lt;span>核心协调循环&lt;/span>
- &lt;a href="#%e6%a0%b8%e5%bf%83%e5%8d%8f%e8%b0%83%e5%be%aa%e7%8e%af" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;p>HPA 控制器的核心协调循环由 &lt;code>Run&lt;/code> 方法和 &lt;code>worker&lt;/code> 函数驱动。&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
-&lt;/span>&lt;span class="lnt"> 2
-&lt;/span>&lt;span class="lnt"> 3
-&lt;/span>&lt;span class="lnt"> 4
-&lt;/span>&lt;span class="lnt"> 5
-&lt;/span>&lt;span class="lnt"> 6
-&lt;/span>&lt;span class="lnt"> 7
-&lt;/span>&lt;span class="lnt"> 8
-&lt;/span>&lt;span class="lnt"> 9
-&lt;/span>&lt;span class="lnt">10
-&lt;/span>&lt;span class="lnt">11
-&lt;/span>&lt;span class="lnt">12
-&lt;/span>&lt;span class="lnt">13
-&lt;/span>&lt;span class="lnt">14
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// pkg/controller/podautoscaler/horizontal.go&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">a&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">HorizontalController&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">Run&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">ctx&lt;/span> &lt;span class="nx">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Context&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">workers&lt;/span> &lt;span class="kt">int&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="c1">// ...&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="k">for&lt;/span> &lt;span class="nx">i&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="nx">i&lt;/span> &lt;span class="p">&amp;lt;&lt;/span> &lt;span class="nx">workers&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="nx">i&lt;/span>&lt;span class="o">++&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">		&lt;span class="k">go&lt;/span> &lt;span class="nx">wait&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">UntilWithContext&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">ctx&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">a&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">worker&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">time&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Second&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="c1">// ...&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">a&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">HorizontalController&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">worker&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">ctx&lt;/span> &lt;span class="nx">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Context&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="k">for&lt;/span> &lt;span class="nx">a&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">processNextWorkItem&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">ctx&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;p>&lt;code>Run&lt;/code> 方法启动了多个 &lt;code>worker&lt;/code> Goroutine。每个 &lt;code>worker&lt;/code> 都在一个无限循环中调用 &lt;code>processNextWorkItem&lt;/code> 函数。&lt;/p>
-&lt;p>&lt;code>processNextWorkItem&lt;/code> 函数从工作队列中取出一个 HPA 对象的 &lt;code>key&lt;/code>（格式为 &lt;code>namespace/name&lt;/code>），然后调用 &lt;code>reconcileKey&lt;/code> 函数来处理它。&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;span class="lnt">4
-&lt;/span>&lt;span class="lnt">5
-&lt;/span>&lt;span class="lnt">6
-&lt;/span>&lt;span class="lnt">7
-&lt;/span>&lt;span class="lnt">8
-&lt;/span>&lt;span class="lnt">9
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// pkg/controller/podautoscaler/horizontal.go&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">a&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">HorizontalController&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">processNextWorkItem&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">ctx&lt;/span> &lt;span class="nx">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Context&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kt">bool&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="nx">key&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">quit&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">a&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">queue&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Get&lt;/span>&lt;span class="p">()&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="c1">// ...&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">a&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">reconcileKey&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">ctx&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">key&lt;/span>&lt;span class="p">.(&lt;/span>&lt;span class="kt">string&lt;/span>&lt;span class="p">))&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="c1">// ...&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="k">return&lt;/span> &lt;span class="kc">true&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;p>&lt;code>reconcileKey&lt;/code> 函数是协调过程的入口。它首先从 &lt;code>hpaLister&lt;/code> 中获取 HPA 对象。如果对象不存在（可能已被删除），它会清理与该 HPA 相关的数据。如果对象存在，它会调用 &lt;code>reconcileAutoscaler&lt;/code> 函数来执行主要的扩缩容逻辑。&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;span class="lnt">4
-&lt;/span>&lt;span class="lnt">5
-&lt;/span>&lt;span class="lnt">6
-&lt;/span>&lt;span class="lnt">7
-&lt;/span>&lt;span class="lnt">8
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// pkg/controller/podautoscaler/horizontal.go&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">a&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">HorizontalController&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">reconcileKey&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">ctx&lt;/span> &lt;span class="nx">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Context&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">key&lt;/span> &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="c1">// ...&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="nx">hpa&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">a&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">hpaLister&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">HorizontalPodAutoscalers&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">namespace&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="nf">Get&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">name&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="c1">// ...&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="k">return&lt;/span> &lt;span class="nx">a&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">reconcileAutoscaler&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">ctx&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">hpa&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">key&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;h2 class="heading-element" id="核心扩缩容逻辑">&lt;span>核心扩缩容逻辑&lt;/span>
- &lt;a href="#%e6%a0%b8%e5%bf%83%e6%89%a9%e7%bc%a9%e5%ae%b9%e9%80%bb%e8%be%91" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;p>&lt;code>reconcileAutoscaler&lt;/code> 函数是 HPA 控制器的心脏，它实现了完整的扩缩容逻辑。&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;span class="lnt">4
-&lt;/span>&lt;span class="lnt">5
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// pkg/controller/podautoscaler/horizontal.go&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">a&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">HorizontalController&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">reconcileAutoscaler&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">ctx&lt;/span> &lt;span class="nx">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Context&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">hpa&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">autoscalingv2&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">HorizontalPodAutoscaler&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">key&lt;/span> &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	&lt;span class="c1">// ...&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;p>其工作流程可以通过以下流程图来概括：&lt;/p>
-&lt;div class="diagram-container">
- &lt;pre class="mermaid">graph TD
- A[reconcileAutoscaler] --> B{获取 Scale 子资源};
- B --> C[computeReplicasForMetrics];
- C --> D{遍历所有 hpa.Spec.Metrics};
- D --> E[replicaCalc.GetMetricReplicas];
- E --> F{指标类型?};
- F -- Resource --> G1[GetResourceReplicas];
- F -- Pods --> G2[GetPodsMetricReplicas];
- F -- Object --> G3[GetObjectMetricReplicas];
- F -- External --> G4[GetExternalMetricReplicas];
- F -- ContainerResource --> G5[GetContainerResourceReplicas];
- G1 --> H["计算期望副本数 = ceil(当前副本数 * (当前指标值 / 目标指标值))"];
- G2 --> H;
- G3 --> H;
- G4 --> H;
- G5 --> H;
- H --> I[返回所有指标计算结果的最大值];
- I --> J{hpa.Spec.Behavior 是否定义?};
-
- J -- 是 --> K_subgraph;
- subgraph K_subgraph [normalizeDesiredReplicasWithBehaviors]
- K1[stabilizeRecommendationWithBehaviors&lt;br>稳定化推荐值] 
- K2["convertDesiredReplicasWithBehaviorRate&lt;br>限制变更速率"];
- K1 --> K2
- end
-
- J -- 否 --> L_subgraph;
- subgraph L_subgraph [normalizeDesiredReplicas]
- L1[stabilizeRecommendation] --> L2[convertDesiredReplicasWithRules];
- end
-
- K_subgraph --> O{最终期望副本数};
- L_subgraph --> O;
-
- O --> P{是否需要扩缩容?};
- P -- 是 --> Q[更新 Scale 子资源];
- P -- 否 --> R[跳过];
- Q --> S[更新 HPA Status];
- R --> S;&lt;/pre>
- &lt;pre class="mermaid-dark">graph TD
- A[reconcileAutoscaler] --> B{获取 Scale 子资源};
- B --> C[computeReplicasForMetrics];
- C --> D{遍历所有 hpa.Spec.Metrics};
- D --> E[replicaCalc.GetMetricReplicas];
- E --> F{指标类型?};
- F -- Resource --> G1[GetResourceReplicas];
- F -- Pods --> G2[GetPodsMetricReplicas];
- F -- Object --> G3[GetObjectMetricReplicas];
- F -- External --> G4[GetExternalMetricReplicas];
- F -- ContainerResource --> G5[GetContainerResourceReplicas];
- G1 --> H["计算期望副本数 = ceil(当前副本数 * (当前指标值 / 目标指标值))"];
- G2 --> H;
- G3 --> H;
- G4 --> H;
- G5 --> H;
- H --> I[返回所有指标计算结果的最大值];
- I --> J{hpa.Spec.Behavior 是否定义?};
-
- J -- 是 --> K_subgraph;
- subgraph K_subgraph [normalizeDesiredReplicasWithBehaviors]
- K1[stabilizeRecommendationWithBehaviors&lt;br>稳定化推荐值] 
- K2["convertDesiredReplicasWithBehaviorRate&lt;br>限制变更速率"];
- K1 --> K2
- end
-
- J -- 否 --> L_subgraph;
- subgraph L_subgraph [normalizeDesiredReplicas]
- L1[stabilizeRecommendation] --> L2[convertDesiredReplicasWithRules];
- end
-
- K_subgraph --> O{最终期望副本数};
- L_subgraph --> O;
-
- O --> P{是否需要扩缩容?};
- P -- 是 --> Q[更新 Scale 子资源];
- P -- 否 --> R[跳过];
- Q --> S[更新 HPA Status];
- R --> S;&lt;/pre>
- &lt;pre class="mermaid-neutral">graph TD
- A[reconcileAutoscaler] --> B{获取 Scale 子资源};
- B --> C[computeReplicasForMetrics];
- C --> D{遍历所有 hpa.Spec.Metrics};
- D --> E[replicaCalc.GetMetricReplicas];
- E --> F{指标类型?};
- F -- Resource --> G1[GetResourceReplicas];
- F -- Pods --> G2[GetPodsMetricReplicas];
- F -- Object --> G3[GetObjectMetricReplicas];
- F -- External --> G4[GetExternalMetricReplicas];
- F -- ContainerResource --> G5[GetContainerResourceReplicas];
- G1 --> H["计算期望副本数 = ceil(当前副本数 * (当前指标值 / 目标指标值))"];
- G2 --> H;
- G3 --> H;
- G4 --> H;
- G5 --> H;
- H --> I[返回所有指标计算结果的最大值];
- I --> J{hpa.Spec.Behavior 是否定义?};
-
- J -- 是 --> K_subgraph;
- subgraph K_subgraph [normalizeDesiredReplicasWithBehaviors]
- K1[stabilizeRecommendationWithBehaviors&lt;br>稳定化推荐值] 
- K2["convertDesiredReplicasWithBehaviorRate&lt;br>限制变更速率"];
- K1 --> K2
- end
-
- J -- 否 --> L_subgraph;
- subgraph L_subgraph [normalizeDesiredReplicas]
- L1[stabilizeRecommendation] --> L2[convertDesiredReplicasWithRules];
- end
-
- K_subgraph --> O{最终期望副本数};
- L_subgraph --> O;
-
- O --> P{是否需要扩缩容?};
- P -- 是 --> Q[更新 Scale 子资源];
- P -- 否 --> R[跳过];
- Q --> S[更新 HPA Status];
- R --> S;&lt;/pre>&lt;div class="diagram-copy-btn" aria-label="Copy Mermaid code" role="button">&lt;i class="fa-regular fa-clone" aria-hidden="true">&lt;/i>&lt;i class="fa-solid fa-check text-success" aria-hidden="true">&lt;/i>&lt;/div>
-&lt;template>&lt;pre>graph TD
- A[reconcileAutoscaler] --> B{获取 Scale 子资源};
- B --> C[computeReplicasForMetrics];
- C --> D{遍历所有 hpa.Spec.Metrics};
- D --> E[replicaCalc.GetMetricReplicas];
- E --> F{指标类型?};
- F -- Resource --> G1[GetResourceReplicas];
- F -- Pods --> G2[GetPodsMetricReplicas];
- F -- Object --> G3[GetObjectMetricReplicas];
- F -- External --> G4[GetExternalMetricReplicas];
- F -- ContainerResource --> G5[GetContainerResourceReplicas];
- G1 --> H["计算期望副本数 = ceil(当前副本数 * (当前指标值 / 目标指标值))"];
- G2 --> H;
- G3 --> H;
- G4 --> H;
- G5 --> H;
- H --> I[返回所有指标计算结果的最大值];
- I --> J{hpa.Spec.Behavior 是否定义?};
-
- J -- 是 --> K_subgraph;
- subgraph K_subgraph [normalizeDesiredReplicasWithBehaviors]
- K1[stabilizeRecommendationWithBehaviors&lt;br>稳定化推荐值] 
- K2["convertDesiredReplicasWithBehaviorRate&lt;br>限制变更速率"];
- K1 --> K2
- end
-
- J -- 否 --> L_subgraph;
- subgraph L_subgraph [normalizeDesiredReplicas]
- L1[stabilizeRecommendation] --> L2[convertDesiredReplicasWithRules];
- end
-
- K_subgraph --> O{最终期望副本数};
- L_subgraph --> O;
-
- O --> P{是否需要扩缩容?};
- P -- 是 --> Q[更新 Scale 子资源];
- P -- 否 --> R[跳过];
- Q --> S[更新 HPA Status];
- R --> S;&lt;/pre>&lt;/template>
-&lt;/div>&lt;p>下面我们来详细解析其中的关键步骤。&lt;/p>
-&lt;h3 class="heading-element" id="1-获取-scale-子资源">&lt;span>1. 获取 Scale 子资源&lt;/span>
- &lt;a href="#1-%e8%8e%b7%e5%8f%96-scale-%e5%ad%90%e8%b5%84%e6%ba%90" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;ul>
-&lt;li>控制器首先解析 HPA 的 &lt;code>scaleTargetRef&lt;/code>，以确定要扩缩容的目标资源（例如 Deployment、ReplicaSet）。&lt;/li>
-&lt;li>然后，它使用 &lt;code>scaleNamespacer&lt;/code> 客户端获取该目标资源的 &lt;code>scale&lt;/code> 子资源。&lt;code>scale&lt;/code> 子资源包含了当前的副本数（&lt;code>spec.replicas&lt;/code> 和 &lt;code>status.replicas&lt;/code>）。&lt;/li>
-&lt;/ul>
-&lt;h3 class="heading-element" id="2-计算期望副本数-computereplicasformetrics">&lt;span>2. 计算期望副本数 (&lt;code>computeReplicasForMetrics&lt;/code>)&lt;/span>
- &lt;a href="#2-%e8%ae%a1%e7%ae%97%e6%9c%9f%e6%9c%9b%e5%89%af%e6%9c%ac%e6%95%b0-computereplicasformetrics" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;p>&lt;code>computeReplicasForMetrics&lt;/code> 函数负责根据 HPA 规范中定义的所有指标计算最终的期望副本数。它的核心逻辑是：&lt;/p>
-&lt;ol>
-&lt;li>
-&lt;p>&lt;strong>遍历所有指标&lt;/strong>：函数会迭代处理 &lt;code>hpa.Spec.Metrics&lt;/code> 中定义的每一个指标。&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>调用 &lt;code>replicaCalc.GetMetricReplicas&lt;/code>&lt;/strong>：对于每个指标，它都会调用 &lt;code>replicaCalc.GetMetricReplicas&lt;/code> 来计算一个独立的期望副本数。&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>分派到具体实现&lt;/strong>：&lt;code>GetMetricReplicas&lt;/code> 内部会根据指标的 &lt;code>Type&lt;/code>（&lt;code>Resource&lt;/code>、&lt;code>Pods&lt;/code>、&lt;code>Object&lt;/code>、&lt;code>External&lt;/code>、&lt;code>ContainerResource&lt;/code>）将计算任务分派给更具体的函数：&lt;/p>
-&lt;ul>
-&lt;li>&lt;code>GetResourceReplicas&lt;/code>：处理 &lt;code>Resource&lt;/code> 指标，如 CPU 和内存。&lt;/li>
-&lt;li>&lt;code>GetPodsMetricReplicas&lt;/code>：处理 &lt;code>Pods&lt;/code> 指标。&lt;/li>
-&lt;li>&lt;code>GetObjectMetricReplicas&lt;/code>：处理 &lt;code>Object&lt;/code> 指标。&lt;/li>
-&lt;li>&lt;code>GetExternalMetricReplicas&lt;/code>：处理 &lt;code>External&lt;/code> 指标。&lt;/li>
-&lt;li>&lt;code>GetContainerResourceReplicas&lt;/code>：处理 &lt;code>ContainerResource&lt;/code> 指标。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>获取指标并计算&lt;/strong>：这些具体的函数会通过 &lt;code>metricsClient&lt;/code> 从 &lt;code>metrics-server&lt;/code> 或其他指标源获取指标的当前值，然后根据目标值计算期望副本数。其通用计算公式为：&lt;/p>
-&lt;p>&lt;code>期望副本数 = ceil(当前副本数 * (当前指标值 / 目标指标值))&lt;/code>&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>选择最大值&lt;/strong>：&lt;code>computeReplicasForMetrics&lt;/code> 会在所有指标计算出的期望副本数中，选择&lt;strong>最大值&lt;/strong>作为最终的计算结果。这是为了确保能够满足所有指标的资源需求。&lt;/p>
-&lt;/li>
-&lt;/ol>
-&lt;h3 class="heading-element" id="3-稳定期望副本数">&lt;span>3. 稳定期望副本数&lt;/span>
- &lt;a href="#3-%e7%a8%b3%e5%ae%9a%e6%9c%9f%e6%9c%9b%e5%89%af%e6%9c%ac%e6%95%b0" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;p>计算出的期望副本数并不会立即被采用，而是会经过一个稳定化过程，以避免因指标的短暂波动而导致过于频繁的扩缩容（抖动）。&lt;/p>
-&lt;h4 class="heading-element" id="带-behavior-的稳定化-normalizedesiredreplicaswithbehaviors">&lt;span>带 &lt;code>behavior&lt;/code> 的稳定化 (&lt;code>normalizeDesiredReplicasWithBehaviors&lt;/code>)&lt;/span>
- &lt;a href="#%e5%b8%a6-behavior-%e7%9a%84%e7%a8%b3%e5%ae%9a%e5%8c%96-normalizedesiredreplicaswithbehaviors" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h4>&lt;p>如果 HPA 规范中定义了 &lt;code>behavior&lt;/code> 字段，控制器会调用 &lt;code>normalizeDesiredReplicasWithBehaviors&lt;/code> 函数。此函数提供了更精细的扩缩容速率控制。其底层实现分为两个核心步骤：&lt;/p>
-&lt;ol>
-&lt;li>
-&lt;p>&lt;strong>稳定化推荐值 (&lt;code>stabilizeRecommendationWithBehaviors&lt;/code>)&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>此函数负责处理 &lt;code>scaleUp&lt;/code> 和 &lt;code>scaleDown&lt;/code> 行为中定义的 &lt;code>stabilizationWindowSeconds&lt;/code>，以平滑期望副本数的变化。&lt;/li>
-&lt;li>&lt;strong>扩容基准计算&lt;/strong>：当考虑扩容时，它会回顾 &lt;code>scaleUp.stabilizationWindowSeconds&lt;/code> 时间窗口内的所有历史推荐值。然后，它会选择这些历史值与当前计算出的期望值中的&lt;strong>最小值&lt;/strong>作为扩容基准。这种保守策略可以有效防止因指标短暂飙升而导致的过度扩容。&lt;/li>
-&lt;li>&lt;strong>缩容基准计算&lt;/strong>：当考虑缩容时，它会回顾 &lt;code>scaleDown.stabilizationWindowSeconds&lt;/code> 时间窗口内的所有历史推荐值。然后，它会选择这些历史值与当前计算出的期望值中的&lt;strong>最大值&lt;/strong>作为缩容基准。这可以防止因指标短暂下跌而导致的过度缩容，确保服务的稳定性。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>限制变更速率 (&lt;code>convertDesiredReplicasWithBehaviorRate&lt;/code>)&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>
-&lt;p>此函数负责处理 &lt;code>behavior&lt;/code> 中定义的 &lt;code>policies&lt;/code>，以限制单位时间内的副本数变更速率。&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>核心思想&lt;/strong>：计算出基于速率策略的扩容上限和缩容下限，然后将稳定化后的期望副本数限制在此范围内。&lt;/p>
-&lt;ul>
-&lt;li>&lt;code>最终副本数 = min(期望副本数, 扩容上限)&lt;/code> (扩容时)&lt;/li>
-&lt;li>&lt;code>最终副本数 = max(期望副本数, 缩容下限)&lt;/code> (缩容时)&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>&amp;ldquo;期望副本数&amp;rdquo; vs &amp;ldquo;提议副本数&amp;rdquo;&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;strong>期望副本数 (Desired Replicas)&lt;/strong>：这是 HPA 根据&lt;strong>当前指标利用率&lt;/strong>计算出的&amp;quot;理想&amp;quot;副本数，旨在使资源利用率趋近目标值。它是扩缩容的&lt;strong>最终目标&lt;/strong>。&lt;/li>
-&lt;li>&lt;strong>提议副本数 (Proposed Replicas)&lt;/strong>：这是在速率限制环节中，根据 &lt;code>behavior&lt;/code> 的&lt;strong>每一条策略&lt;/strong>单独计算出的&amp;quot;建议副本数&amp;quot;。它是用于计算最终速率限制的&lt;strong>中间值&lt;/strong>。&lt;/li>
-&lt;li>&lt;strong>关系&lt;/strong>：HPA 首先计算出 &amp;ldquo;期望副本数&amp;rdquo;。然后，通过计算多个 &amp;ldquo;提议副本数&amp;rdquo; 并根据 &lt;code>selectPolicy&lt;/code> 从中选择，得出最终的 &amp;ldquo;扩容上限&amp;rdquo; 或 &amp;ldquo;缩容下限&amp;rdquo;。最后，用这个限制去约束&amp;quot;期望副本数&amp;quot;，从而得到最终要执行的副本数量。简单来说，&amp;ldquo;期望副本数&amp;quot;是目标，而&amp;quot;提议副本数&amp;quot;是计算速率限制的工具。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>扩容上限计算&lt;/strong>：它会遍历所有 &lt;code>scaleUp&lt;/code> 策略（&lt;code>policies&lt;/code>），并为每个策略计算出允许增加的最大副本数。在所有策略计算出的允许值中，它会选择&lt;strong>最激进&lt;/strong>（允许增加最多副本数）的一个作为最终的扩容上限。&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>缩容下限计算&lt;/strong>：它会遍历所有 &lt;code>scaleDown&lt;/code> 策略，并为每个策略计算出允许减少的最大副本数。在所有策略计算出的允许值中，它会选择&lt;strong>最保守&lt;/strong>（允许减少最少副本数）的一个作为最终的缩容下限。&lt;/p>
-&lt;/li>
-&lt;/ul>
-&lt;p>&lt;strong>计算公式:&lt;/strong>&lt;/p>
-&lt;p>为了更清晰地理解速率限制，我们可以将其计算逻辑简化为以下公式：&lt;/p>
-&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>扩容 (&lt;code>scaleUp&lt;/code>)&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;code>提议副本数 (固定值) = 周期初副本数 + 策略值&lt;/code>&lt;/li>
-&lt;li>&lt;code>提议副本数 (百分比) = ceil(周期初副本数 * (1 + 策略值 / 100))&lt;/code>&lt;/li>
-&lt;li>&lt;code>扩容上限 = max(所有 scaleUp 策略计算出的提议副本数)&lt;/code> &lt;em>(因为 &lt;code>selectPolicy&lt;/code> 默认为 &lt;code>Max&lt;/code>，选择最激进的策略)&lt;/em>&lt;/li>
-&lt;li>&lt;code>最终扩容上限 = min(HPA.maxReplicas, 扩容上限)&lt;/code>&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>缩容 (&lt;code>scaleDown&lt;/code>)&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;code>提议副本数 (固定值) = 周期初副本数 - 策略值&lt;/code>&lt;/li>
-&lt;li>&lt;code>提议副本数 (百分比) = floor(周期初副本数 * (1 - 策略值 / 100))&lt;/code>&lt;/li>
-&lt;li>&lt;code>缩容下限 = max(所有 scaleDown 策略计算出的提议副本数)&lt;/code> &lt;em>(因为 &lt;code>selectPolicy&lt;/code> 默认为 &lt;code>Max&lt;/code>，选择最保守的策略，即副本数最多的那个)&lt;/em>&lt;/li>
-&lt;li>&lt;code>最终缩容下限 = max(HPA.minReplicas, 缩容下限)&lt;/code>&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;p>&lt;strong>代码实现:&lt;/strong>&lt;/p>
-&lt;p>&lt;code>convertDesiredReplicasWithBehaviorRate&lt;/code> 函数是速率限制的入口，它根据扩容或缩容场景，分别调用 &lt;code>calculateScaleUpLimitWithScalingRules&lt;/code> 和 &lt;code>calculateScaleDownLimitWithBehaviors&lt;/code>。&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
-&lt;/span>&lt;span class="lnt"> 2
-&lt;/span>&lt;span class="lnt"> 3
-&lt;/span>&lt;span class="lnt"> 4
-&lt;/span>&lt;span class="lnt"> 5
-&lt;/span>&lt;span class="lnt"> 6
-&lt;/span>&lt;span class="lnt"> 7
-&lt;/span>&lt;span class="lnt"> 8
-&lt;/span>&lt;span class="lnt"> 9
-&lt;/span>&lt;span class="lnt">10
-&lt;/span>&lt;span class="lnt">11
-&lt;/span>&lt;span class="lnt">12
-&lt;/span>&lt;span class="lnt">13
-&lt;/span>&lt;span class="lnt">14
-&lt;/span>&lt;span class="lnt">15
-&lt;/span>&lt;span class="lnt">16
-&lt;/span>&lt;span class="lnt">17
-&lt;/span>&lt;span class="lnt">18
-&lt;/span>&lt;span class="lnt">19
-&lt;/span>&lt;span class="lnt">20
-&lt;/span>&lt;span class="lnt">21
-&lt;/span>&lt;span class="lnt">22
-&lt;/span>&lt;span class="lnt">23
-&lt;/span>&lt;span class="lnt">24
-&lt;/span>&lt;span class="lnt">25
-&lt;/span>&lt;span class="lnt">26
-&lt;/span>&lt;span class="lnt">27
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// pkg/controller/podautoscaler/horizontal.go&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">a&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">HorizontalController&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">convertDesiredReplicasWithBehaviorRate&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">ctx&lt;/span> &lt;span class="nx">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Context&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">args&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">conversionArgs&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="kt">int32&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">args&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">DesiredReplicas&lt;/span> &lt;span class="p">&amp;gt;&lt;/span> &lt;span class="nx">args&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">CurrentReplicas&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">scaleUpLimit&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nf">calculateScaleUpLimitWithScalingRules&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">args&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">CurrentReplicas&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">a&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">scaleUpEvents&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">args&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Key&lt;/span>&lt;span class="p">],&lt;/span> &lt;span class="nx">a&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">scaleDownEvents&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">args&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Key&lt;/span>&lt;span class="p">],&lt;/span> &lt;span class="nx">args&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Hpa&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Spec&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Behavior&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ScaleUp&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">maximumAllowedReplicas&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nb">min&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">args&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Hpa&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Spec&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">MaxReplicas&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">scaleUpLimit&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">args&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">DesiredReplicas&lt;/span> &lt;span class="p">&amp;gt;&lt;/span> &lt;span class="nx">maximumAllowedReplicas&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">maximumAllowedReplicas&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;ScaleUpLimit&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;the desired replica count is increasing faster than the maximum scale rate&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">args&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">DesiredReplicas&lt;/span> &lt;span class="p">&amp;lt;&lt;/span> &lt;span class="nx">args&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">CurrentReplicas&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">scaleDownLimit&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nf">calculateScaleDownLimitWithBehaviors&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">args&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">CurrentReplicas&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">a&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">scaleUpEvents&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">args&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Key&lt;/span>&lt;span class="p">],&lt;/span> &lt;span class="nx">a&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">scaleDownEvents&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">args&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Key&lt;/span>&lt;span class="p">],&lt;/span> &lt;span class="nx">args&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Hpa&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Spec&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Behavior&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ScaleDown&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">minimumAllowedReplicas&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nb">max&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">args&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Hpa&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Spec&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">MinReplicas&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">scaleDownLimit&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">args&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">DesiredReplicas&lt;/span> &lt;span class="p">&amp;lt;&lt;/span> &lt;span class="nx">minimumAllowedReplicas&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">minimumAllowedReplicas&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;ScaleDownLimit&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;the desired replica count is decreasing faster than the maximum scale rate&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">args&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">DesiredReplicas&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;DesiredReplicas&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;the desired replica count is within the acceptable range&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;p>&lt;code>calculateScaleUpLimitWithScalingRules&lt;/code> 函数负责计算扩容上限。它会遍历所有 &lt;code>scaleUp&lt;/code> 策略，并根据 &lt;code>SelectPolicy&lt;/code>（默认为 &lt;code>Max&lt;/code>）选择最激进的结果。&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
-&lt;/span>&lt;span class="lnt"> 2
-&lt;/span>&lt;span class="lnt"> 3
-&lt;/span>&lt;span class="lnt"> 4
-&lt;/span>&lt;span class="lnt"> 5
-&lt;/span>&lt;span class="lnt"> 6
-&lt;/span>&lt;span class="lnt"> 7
-&lt;/span>&lt;span class="lnt"> 8
-&lt;/span>&lt;span class="lnt"> 9
-&lt;/span>&lt;span class="lnt">10
-&lt;/span>&lt;span class="lnt">11
-&lt;/span>&lt;span class="lnt">12
-&lt;/span>&lt;span class="lnt">13
-&lt;/span>&lt;span class="lnt">14
-&lt;/span>&lt;span class="lnt">15
-&lt;/span>&lt;span class="lnt">16
-&lt;/span>&lt;span class="lnt">17
-&lt;/span>&lt;span class="lnt">18
-&lt;/span>&lt;span class="lnt">19
-&lt;/span>&lt;span class="lnt">20
-&lt;/span>&lt;span class="lnt">21
-&lt;/span>&lt;span class="lnt">22
-&lt;/span>&lt;span class="lnt">23
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// pkg/controller/podautoscaler/horizontal.go&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">calculateScaleUpLimitWithScalingRules&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">currentReplicas&lt;/span> &lt;span class="kt">int32&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">scaleUpEvents&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">scaleDownEvents&lt;/span> &lt;span class="p">[]&lt;/span>&lt;span class="nx">timestampedScaleEvent&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">scalingRules&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">autoscalingv2&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">HPAScalingRules&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kt">int32&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">var&lt;/span> &lt;span class="nx">result&lt;/span> &lt;span class="kt">int32&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">var&lt;/span> &lt;span class="nx">proposed&lt;/span> &lt;span class="kt">int32&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">var&lt;/span> &lt;span class="nx">selectPolicyFn&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int32&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">int32&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kt">int32&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 默认使用 max 函数，选择最激进的策略&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">result&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">math&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">MinInt32&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">selectPolicyFn&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">max&lt;/span> 
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">policy&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="k">range&lt;/span> &lt;span class="nx">scalingRules&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Policies&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ... 计算周期初的副本数 periodStartReplicas ...&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">policy&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Type&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="nx">autoscalingv2&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">PodsScalingPolicy&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">proposed&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">periodStartReplicas&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="nx">policy&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Value&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="nx">policy&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Type&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="nx">autoscalingv2&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">PercentScalingPolicy&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">proposed&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">int32&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">math&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Ceil&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nb">float64&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">periodStartReplicas&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="nb">float64&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">policy&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Value&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">100&lt;/span>&lt;span class="p">)))&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">result&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nf">selectPolicyFn&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">result&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">proposed&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">result&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;p>&lt;code>calculateScaleDownLimitWithBehaviors&lt;/code> 函数负责计算缩容下限。它会遍历所有 &lt;code>scaleDown&lt;/code> 策略，并根据 &lt;code>SelectPolicy&lt;/code>（默认为 &lt;code>Max&lt;/code>，但对于缩容场景，&lt;code>Max&lt;/code> 意味着选择变化最小的策略）选择最保守的结果。&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
-&lt;/span>&lt;span class="lnt"> 2
-&lt;/span>&lt;span class="lnt"> 3
-&lt;/span>&lt;span class="lnt"> 4
-&lt;/span>&lt;span class="lnt"> 5
-&lt;/span>&lt;span class="lnt"> 6
-&lt;/span>&lt;span class="lnt"> 7
-&lt;/span>&lt;span class="lnt"> 8
-&lt;/span>&lt;span class="lnt"> 9
-&lt;/span>&lt;span class="lnt">10
-&lt;/span>&lt;span class="lnt">11
-&lt;/span>&lt;span class="lnt">12
-&lt;/span>&lt;span class="lnt">13
-&lt;/span>&lt;span class="lnt">14
-&lt;/span>&lt;span class="lnt">15
-&lt;/span>&lt;span class="lnt">16
-&lt;/span>&lt;span class="lnt">17
-&lt;/span>&lt;span class="lnt">18
-&lt;/span>&lt;span class="lnt">19
-&lt;/span>&lt;span class="lnt">20
-&lt;/span>&lt;span class="lnt">21
-&lt;/span>&lt;span class="lnt">22
-&lt;/span>&lt;span class="lnt">23
-&lt;/span>&lt;span class="lnt">24
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// pkg/controller/podautoscaler/horizontal.go&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">calculateScaleDownLimitWithBehaviors&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">currentReplicas&lt;/span> &lt;span class="kt">int32&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">scaleUpEvents&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">scaleDownEvents&lt;/span> &lt;span class="p">[]&lt;/span>&lt;span class="nx">timestampedScaleEvent&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">scalingRules&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">autoscalingv2&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">HPAScalingRules&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kt">int32&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">var&lt;/span> &lt;span class="nx">result&lt;/span> &lt;span class="kt">int32&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">var&lt;/span> &lt;span class="nx">proposed&lt;/span> &lt;span class="kt">int32&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">var&lt;/span> &lt;span class="nx">selectPolicyFn&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int32&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">int32&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kt">int32&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 默认使用 min 函数，选择最激进的策略（减少最多）&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 但 SelectPolicy 默认为 Max，所以会使用 min 函数，选择最保守的策略&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">result&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">math&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">MaxInt32&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">selectPolicyFn&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">min&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">policy&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="k">range&lt;/span> &lt;span class="nx">scalingRules&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Policies&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ... 计算周期初的副本数 periodStartReplicas ...&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">policy&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Type&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="nx">autoscalingv2&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">PodsScalingPolicy&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">proposed&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">periodStartReplicas&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="nx">policy&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Value&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="nx">policy&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Type&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="nx">autoscalingv2&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">PercentScalingPolicy&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">proposed&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">int32&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nb">float64&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">periodStartReplicas&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="nb">float64&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">policy&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Value&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">100&lt;/span>&lt;span class="p">))&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">result&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nf">selectPolicyFn&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">result&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">proposed&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">result&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;/li>
-&lt;/ol>
-&lt;h4 class="heading-element" id="配置策略示例">&lt;span>配置策略示例&lt;/span>
- &lt;a href="#%e9%85%8d%e7%bd%ae%e7%ad%96%e7%95%a5%e7%a4%ba%e4%be%8b" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h4>&lt;p>为了更具体地理解 &lt;code>behavior&lt;/code> 配置如何工作，我们可以参考一个实际的 &lt;code>hpa.yaml&lt;/code> 文件示例。&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
-&lt;/span>&lt;span class="lnt"> 2
-&lt;/span>&lt;span class="lnt"> 3
-&lt;/span>&lt;span class="lnt"> 4
-&lt;/span>&lt;span class="lnt"> 5
-&lt;/span>&lt;span class="lnt"> 6
-&lt;/span>&lt;span class="lnt"> 7
-&lt;/span>&lt;span class="lnt"> 8
-&lt;/span>&lt;span class="lnt"> 9
-&lt;/span>&lt;span class="lnt">10
-&lt;/span>&lt;span class="lnt">11
-&lt;/span>&lt;span class="lnt">12
-&lt;/span>&lt;span class="lnt">13
-&lt;/span>&lt;span class="lnt">14
-&lt;/span>&lt;span class="lnt">15
-&lt;/span>&lt;span class="lnt">16
-&lt;/span>&lt;span class="lnt">17
-&lt;/span>&lt;span class="lnt">18
-&lt;/span>&lt;span class="lnt">19
-&lt;/span>&lt;span class="lnt">20
-&lt;/span>&lt;span class="lnt">21
-&lt;/span>&lt;span class="lnt">22
-&lt;/span>&lt;span class="lnt">23
-&lt;/span>&lt;span class="lnt">24
-&lt;/span>&lt;span class="lnt">25
-&lt;/span>&lt;span class="lnt">26
-&lt;/span>&lt;span class="lnt">27
-&lt;/span>&lt;span class="lnt">28
-&lt;/span>&lt;span class="lnt">29
-&lt;/span>&lt;span class="lnt">30
-&lt;/span>&lt;span class="lnt">31
-&lt;/span>&lt;span class="lnt">32
-&lt;/span>&lt;span class="lnt">33
-&lt;/span>&lt;span class="lnt">34
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-yaml" data-lang="yaml">&lt;span class="line">&lt;span class="cl">&lt;span class="c"># hpa.yaml&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nt">apiVersion&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">autoscaling/v2&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nt">kind&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">HorizontalPodAutoscaler&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nt">metadata&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">name&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">example-hpa&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nt">spec&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">scaleTargetRef&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">apiVersion&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">apps/v1&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">kind&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">Deployment&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">name&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">example-deployment&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">minReplicas&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="m">2&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">maxReplicas&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="m">10&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">behavior&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">scaleUp&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">stabilizationWindowSeconds&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="m">0&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">selectPolicy&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">Max&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">policies&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="nt">type&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">Percent&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">value&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="m">100&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">periodSeconds&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="m">180&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">scaleDown&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">stabilizationWindowSeconds&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="m">300&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">selectPolicy&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">Max&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">policies&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="nt">type&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">Percent&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">value&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="m">100&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">periodSeconds&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="m">30&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">metrics&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="nt">type&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">Resource&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">resource&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">name&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">cpu&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">target&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">type&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">Utilization&lt;/span>&lt;span class="w">
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">averageUtilization&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="m">50&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;p>在这个示例中，我们定义了以下扩缩容行为：&lt;/p>
-&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>扩容 (&lt;code>scaleUp&lt;/code>)&lt;/strong>:&lt;/p>
-&lt;ul>
-&lt;li>&lt;code>stabilizationWindowSeconds: 0&lt;/code>: 扩容时没有稳定窗口。这意味着一旦指标超过阈值，HPA 会立即计算新的期望副本数，而不会回顾历史推荐值。&lt;/li>
-&lt;li>&lt;code>selectPolicy: Max&lt;/code>: 如果有多个扩容策略，选择最激进的（允许增加最多副本数）一个。&lt;/li>
-&lt;li>&lt;code>policies&lt;/code>:
-&lt;ul>
-&lt;li>&lt;code>type: Percent&lt;/code>, &lt;code>value: 100&lt;/code>, &lt;code>periodSeconds: 180&lt;/code>: 在 180 秒的时间窗口内，最多允许将副本数翻倍（增加 100%）。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>缩容 (&lt;code>scaleDown&lt;/code>)&lt;/strong>:&lt;/p>
-&lt;ul>
-&lt;li>&lt;code>stabilizationWindowSeconds: 300&lt;/code>: 缩容前有 300 秒（5 分钟）的稳定窗口。HPA 会回顾这 5 分钟内的历史推荐值，并选择其中的最大值作为缩容基准，以防止因指标短暂下降而过快缩容。&lt;/li>
-&lt;li>&lt;code>selectPolicy: Max&lt;/code>: 如果有多个缩容策略，选择最保守的（允许减少最少副本数）一个。&lt;/li>
-&lt;li>&lt;code>policies&lt;/code>:
-&lt;ul>
-&lt;li>&lt;code>type: Percent&lt;/code>, &lt;code>value: 100&lt;/code>, &lt;code>periodSeconds: 30&lt;/code>: 在 30 秒的时间窗口内，最多允许将副本数减少 100%（即缩容到 &lt;code>minReplicas&lt;/code>）。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;p>这个配置旨在实现“快速扩容，缓慢缩容”的策略，这在应对突发流量和保证服务稳定性方面是一种常见的最佳实践。&lt;/p>
-&lt;h4 class="heading-element" id="传统的稳定化-normalizedesiredreplicas">&lt;span>传统的稳定化 (&lt;code>normalizeDesiredReplicas&lt;/code>)&lt;/span>
- &lt;a href="#%e4%bc%a0%e7%bb%9f%e7%9a%84%e7%a8%b3%e5%ae%9a%e5%8c%96-normalizedesiredreplicas" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h4>&lt;p>如果 HPA 规范中未定义 &lt;code>behavior&lt;/code> 字段，则会调用传统的 &lt;code>normalizeDesiredReplicas&lt;/code> 函数。此函数只对缩容进行稳定化处理。其底层实现依赖于 &lt;code>stabilizeRecommendation&lt;/code> 函数：&lt;/p>
-&lt;ol>
-&lt;li>
-&lt;p>&lt;strong>稳定化推荐值 (&lt;code>stabilizeRecommendation&lt;/code>)&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>此函数是传统缩容稳定化的核心。它使用 &lt;code>downscaleStabilisationWindow&lt;/code>（默认为 5 分钟）作为时间窗口。&lt;/li>
-&lt;li>当需要缩容时（即计算出的期望副本数小于当前副本数），它会回顾这个稳定窗口内的所有历史推荐值。&lt;/li>
-&lt;li>然后，它会选择这些历史推荐值中的&lt;strong>最大值&lt;/strong>作为最终的期望副本数。&lt;/li>
-&lt;li>这种机制可以有效地防止因指标短暂下跌（例如，一次性的请求低谷）而触发不必要的缩容，从而保证了服务的稳定性。&lt;/li>
-&lt;li>对于扩容，此函数不做任何限制，计算出的期望副本数会被直接采纳。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>边界检查 (&lt;code>convertDesiredReplicasWithRules&lt;/code>)&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>在稳定化之后，&lt;code>normalizeDesiredReplicas&lt;/code> 还会调用 &lt;code>convertDesiredReplicasWithRules&lt;/code> 函数。&lt;/li>
-&lt;li>这个函数非常简单，它只负责确保最终的副本数不会超过 HPA 定义的 &lt;code>minReplicas&lt;/code> 和 &lt;code>maxReplicas&lt;/code> 边界。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ol>
-&lt;h3 class="heading-element" id="4-执行扩缩容策略">&lt;span>4. 执行扩缩容策略&lt;/span>
- &lt;a href="#4-%e6%89%a7%e8%a1%8c%e6%89%a9%e7%bc%a9%e5%ae%b9%e7%ad%96%e7%95%a5" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;p>在计算并稳定期望副本数之后，控制器就进入了最终的执行阶段。&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
-&lt;/span>&lt;span class="lnt"> 2
-&lt;/span>&lt;span class="lnt"> 3
-&lt;/span>&lt;span class="lnt"> 4
-&lt;/span>&lt;span class="lnt"> 5
-&lt;/span>&lt;span class="lnt"> 6
-&lt;/span>&lt;span class="lnt"> 7
-&lt;/span>&lt;span class="lnt"> 8
-&lt;/span>&lt;span class="lnt"> 9
-&lt;/span>&lt;span class="lnt">10
-&lt;/span>&lt;span class="lnt">11
-&lt;/span>&lt;span class="lnt">12
-&lt;/span>&lt;span class="lnt">13
-&lt;/span>&lt;span class="lnt">14
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// pkg/controller/podautoscaler/horizontal.go&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="nx">rescale&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">scale&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Spec&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Replicas&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">desiredReplicas&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">_&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">a&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">scaleNamespacer&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Scales&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">hpa&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Namespace&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="nf">Update&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">ctx&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">targetGR&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">scale&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">metav1&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">UpdateOptions&lt;/span>&lt;span class="p">{})&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ... 错误处理和事件记录 ...&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Errorf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;failed to rescale %s: %v&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">reference&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ... 成功处理和事件记录 ...&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">a&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">storeScaleEvent&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">hpa&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Spec&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Behavior&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">key&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">currentReplicas&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">desiredReplicas&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ... 记录无需扩缩容的日志 ...&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;ol>
-&lt;li>
-&lt;p>&lt;strong>判断是否需要扩缩容&lt;/strong>：&lt;code>rescale&lt;/code> 标志位决定了是否执行扩缩容。只有当稳定化后的 &lt;code>desiredReplicas&lt;/code> 与 &lt;code>currentReplicas&lt;/code> 不相等时，该标志位才为 &lt;code>true&lt;/code>。&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>更新 Scale 子资源&lt;/strong>：如果需要扩缩容，控制器会：&lt;/p>
-&lt;ul>
-&lt;li>将目标资源的 &lt;code>scale&lt;/code> 对象的 &lt;code>spec.replicas&lt;/code> 字段更新为最终的 &lt;code>desiredReplicas&lt;/code>。&lt;/li>
-&lt;li>调用 &lt;code>a.scaleNamespacer.Scales(hpa.Namespace).Update(...)&lt;/code> 方法。这个调用会向 Kubernetes API Server 发送一个 &lt;code>UPDATE&lt;/code> 请求，目标是 HPA &lt;code>scaleTargetRef&lt;/code> 所指向资源的 &lt;code>scale&lt;/code> 子资源。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>触发实际的 Pod 数量调整&lt;/strong>：一旦 &lt;code>scale&lt;/code> 子资源被成功更新，相应的工作负载控制器（如 Deployment 或 ReplicaSet 控制器）会监听到这一变化，并负责创建或删除 Pod，以使实际的副本数与新的期望值保持一致。&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>处理结果&lt;/strong>：&lt;/p>
-&lt;ul>
-&lt;li>&lt;strong>成功&lt;/strong>：如果 &lt;code>Update&lt;/code> 调用成功，HPA 控制器会记录一个 &lt;code>SuccessfulRescale&lt;/code> 的 &lt;code>Normal&lt;/code> 事件，更新 &lt;code>AbleToScale&lt;/code> 条件为 &lt;code>True&lt;/code>，并调用 &lt;code>storeScaleEvent&lt;/code> 来记录此次扩缩容事件，以供未来的 &lt;code>behavior&lt;/code> 稳定化计算使用。&lt;/li>
-&lt;li>&lt;strong>失败&lt;/strong>：如果 &lt;code>Update&lt;/code> 调用失败（例如，由于网络问题或权限不足），控制器会记录一个 &lt;code>FailedRescale&lt;/code> 的 &lt;code>Warning&lt;/code> 事件，将 &lt;code>AbleToScale&lt;/code> 条件设置为 &lt;code>False&lt;/code>，并返回错误。返回的错误会使该 HPA 的 &lt;code>key&lt;/code> 被重新放回工作队列，以便稍后重试。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>无需扩缩容&lt;/strong>：如果 &lt;code>rescale&lt;/code> 为 &lt;code>false&lt;/code>，控制器仅记录一条日志，表明本次协调周期内无需进行扩缩容操作。&lt;/p>
-&lt;/li>
-&lt;/ol>
-&lt;p>这一步是整个 HPA 流程的闭环，它将计算得出的决策转化为对集群状态的实际变更。&lt;/p>
-&lt;h3 class="heading-element" id="5-更新-hpa-状态">&lt;span>5. 更新 HPA 状态&lt;/span>
- &lt;a href="#5-%e6%9b%b4%e6%96%b0-hpa-%e7%8a%b6%e6%80%81" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;ul>
-&lt;li>最后，控制器会调用 &lt;code>setStatus&lt;/code> 函数来更新 HPA 对象的 &lt;code>.status&lt;/code> 字段，包括 &lt;code>currentReplicas&lt;/code>、&lt;code>desiredReplicas&lt;/code>、&lt;code>lastScaleTime&lt;/code> 以及每个指标的当前状态。&lt;/li>
-&lt;/ul>
-&lt;h3 class="heading-element" id="6-周期性同步与扩缩容延迟">&lt;span>6. 周期性同步与扩缩容延迟&lt;/span>
- &lt;a href="#6-%e5%91%a8%e6%9c%9f%e6%80%a7%e5%90%8c%e6%ad%a5%e4%b8%8e%e6%89%a9%e7%bc%a9%e5%ae%b9%e5%bb%b6%e8%bf%9f" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;p>HPA 控制器的扩缩容决策并非实时触发，而是依赖于周期性的协调循环。这个循环的频率由 &lt;code>kube-controller-manager&lt;/code> 的启动参数 &lt;code>--horizontal-pod-autoscaler-sync-period&lt;/code> 控制，默认值为 &lt;strong>15 秒&lt;/strong>。&lt;/p>
-&lt;p>这意味着，HPA 控制器每 15 秒才会执行一次完整的 &lt;code>reconcile&lt;/code> 流程，包括从 &lt;code>metrics-server&lt;/code> 获取指标、计算期望副本数、应用稳定化策略等。&lt;/p>
-&lt;p>&lt;strong>延迟的来源：&lt;/strong>&lt;/p>
-&lt;p>扩缩容的端到端延迟主要来自两个方面：&lt;/p>
-&lt;ol>
-&lt;li>&lt;strong>HPA 同步周期&lt;/strong>：由 &lt;code>--horizontal-pod-autoscaler-sync-period&lt;/code> 参数决定，默认为 15 秒。&lt;/li>
-&lt;li>&lt;strong>指标采集延迟&lt;/strong>：&lt;code>metrics-server&lt;/code> 本身也是周期性地从每个节点的 Kubelet 上抓取指标的，由 &lt;code>--metric-resolution&lt;/code> 参数决定，这个周期默认为 15 秒。&lt;/li>
-&lt;li>Kubelet 通过其内嵌的 cAdvisor 来获取容器指标的，这个获取周期由 Kubelet 的 &lt;code>--housekeeping-interval&lt;/code> 参数控制，默认为 &lt;strong>10 秒&lt;/strong>。因此，指标从容器产生到被 HPA 控制器获取，中间经过了多层缓存和周期性采集。&lt;/li>
-&lt;/ol>
-&lt;p>&lt;strong>极端情况下的延迟分析：&lt;/strong>&lt;/p>
-&lt;p>在最坏的情况下，当流量高峰到来时，一个完整的扩容决策可能面临的延迟是 &lt;code>HPA 同步周期 + metrics-server 采集周期 + kubelet 采集周期&lt;/code> 的总和。例如，如果一次流量高峰恰好发生在 &lt;code>metrics-server&lt;/code> 采集之后、HPA 同步之前，那么 HPA 需要等待下一个同步周期才能看到上一个采集周期的&amp;quot;旧&amp;quot;数据，然后做出决策。&lt;/p>
-&lt;p>这种固有的延迟意味着 HPA 更适合应对&lt;strong>可预测的、缓慢变化的负载&lt;/strong>。对于需要秒级响应的突发流量，单纯依赖 HPA 可能无法满足需求，此时可以考虑结合使用其他技术，例如基于请求的预测性扩缩容工具（如 KEDA）或预先保留足够的缓冲资源。&lt;/p>
-&lt;h2 class="heading-element" id="总结">&lt;span>总结&lt;/span>
- &lt;a href="#%e6%80%bb%e7%bb%93" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;p>HPA 控制器通过一个持续的协调循环，周期性地监控指标、计算期望副本数，并通过一个精密的稳定化机制来避免过于频繁的扩缩容。它提供了丰富的配置选项（特别是 &lt;code>behavior&lt;/code> 字段），允许用户根据应用特性和稳定性要求，精细地调整扩缩容的行为。&lt;/p>
-&lt;p>理解 HPA 的工作原理、计算公式和稳定化策略，对于在生产环境中有效利用 Kubernetes 的自动扩缩容能力至关重要。&lt;/p></description></item></channel></rss>
+&lt;/ul></description></item></channel></rss>
