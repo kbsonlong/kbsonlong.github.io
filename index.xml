@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>蜷缩的蜗牛</title><link>https://www.kbsonlong.com/</link><description>云原生时代运维</description><generator>Hugo 0.147.7 &amp; FixIt v0.4.0-alpha.2-20251022034748-fe129dd2</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 19 Jan 2026 10:00:00 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/index.xml" rel="self" type="application/rss+xml"/><item><title>Falco 与 Tetragon 最小化 POC 验证指南</title><link>https://www.kbsonlong.com/posts/falco-%E4%B8%8E-tetragon-%E6%9C%80%E5%B0%8F%E5%8C%96-poc-%E9%AA%8C%E8%AF%81%E6%8C%87%E5%8D%97/</link><pubDate>Fri, 19 Dec 2025 16:51:25 +0800</pubDate><guid>https://www.kbsonlong.com/posts/falco-%E4%B8%8E-tetragon-%E6%9C%80%E5%B0%8F%E5%8C%96-poc-%E9%AA%8C%E8%AF%81%E6%8C%87%E5%8D%97/</guid><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><category domain="https://www.kbsonlong.com/categories/%E5%AE%89%E5%85%A8/">安全</category><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><description>&lt;h1 class="heading-element" id="falco-与-tetragon-最小化-poc-验证指南">&lt;span>Falco 与 Tetragon 最小化 POC 验证指南&lt;/span>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>蜷缩的蜗牛</title><link>https://www.kbsonlong.com/</link><description>云原生时代运维</description><generator>Hugo 0.147.7 &amp; FixIt v0.4.0-alpha.2-20251022034748-fe129dd2</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Thu, 22 Jan 2026 10:00:00 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/index.xml" rel="self" type="application/rss+xml"/><item><title>Falco 与 Tetragon 最小化 POC 验证指南</title><link>https://www.kbsonlong.com/posts/falco-%E4%B8%8E-tetragon-%E6%9C%80%E5%B0%8F%E5%8C%96-poc-%E9%AA%8C%E8%AF%81%E6%8C%87%E5%8D%97/</link><pubDate>Fri, 19 Dec 2025 16:51:25 +0800</pubDate><guid>https://www.kbsonlong.com/posts/falco-%E4%B8%8E-tetragon-%E6%9C%80%E5%B0%8F%E5%8C%96-poc-%E9%AA%8C%E8%AF%81%E6%8C%87%E5%8D%97/</guid><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><category domain="https://www.kbsonlong.com/categories/%E5%AE%89%E5%85%A8/">安全</category><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><description>&lt;h1 class="heading-element" id="falco-与-tetragon-最小化-poc-验证指南">&lt;span>Falco 与 Tetragon 最小化 POC 验证指南&lt;/span>
  &lt;a href="#falco-%e4%b8%8e-tetragon-%e6%9c%80%e5%b0%8f%e5%8c%96-poc-%e9%aa%8c%e8%af%81%e6%8c%87%e5%8d%97" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -369,7 +369,253 @@
 &lt;/h2>&lt;ul>
 &lt;li>&lt;strong>Falco Pod 启动失败&lt;/strong>: 检查节点内核版本是否支持 eBPF。&lt;/li>
 &lt;li>&lt;strong>Tetragon 没有日志&lt;/strong>: 确认 &lt;code>TracingPolicy&lt;/code> 是否正确应用，以及 Pod 所在的节点是否运行了 Tetragon Agent。&lt;/li>
-&lt;/ul></description></item><item><title>Linux 性能分析：60,000 毫秒速查</title><link>https://www.kbsonlong.com/posts/linux-performance-analysis-in-60000-milliseconds/</link><pubDate>Mon, 19 Jan 2026 10:00:00 +0800</pubDate><guid>https://www.kbsonlong.com/posts/linux-performance-analysis-in-60000-milliseconds/</guid><description>&lt;h1 class="heading-element" id="linux-性能分析60000-毫秒速查">&lt;span>Linux 性能分析：60,000 毫秒速查&lt;/span>
+&lt;/ul></description></item><item><title>Kubernetes 使用 DaemonSet 部署 cri-dockerd 实战指南</title><link>https://www.kbsonlong.com/posts/kubernetes-%E4%BD%BF%E7%94%A8-daemonset-%E9%83%A8%E7%BD%B2-cri-dockerd-%E5%AE%9E%E6%88%98%E6%8C%87%E5%8D%97/</link><pubDate>Thu, 22 Jan 2026 10:00:00 +0800</pubDate><guid>https://www.kbsonlong.com/posts/kubernetes-%E4%BD%BF%E7%94%A8-daemonset-%E9%83%A8%E7%BD%B2-cri-dockerd-%E5%AE%9E%E6%88%98%E6%8C%87%E5%8D%97/</guid><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><description>&lt;h1 class="heading-element" id="为什么需要-cri-dockerd">&lt;span>为什么需要 cri-dockerd？&lt;/span>
+ &lt;a href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e9%9c%80%e8%a6%81-cri-dockerd" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h1>&lt;p>想象一下，Kubernetes (K8s) 是一辆新款的高科技跑车，而 Docker 是你熟悉的老款高性能引擎。从 K8s 1.24 版本开始，这辆跑车为了统一标准（CRI 标准），不再直接支持 Docker 这款引擎了。&lt;/p>
+&lt;p>但是，很多时候我们还在用 Docker（比如版本 20.10），这时候就需要一个“适配器”来连接 K8s 和 Docker。这个适配器就是 &lt;strong>cri-dockerd&lt;/strong>。&lt;/p>
+&lt;p>通常我们会在每台机器上像安装软件一样安装 cri-dockerd（使用 systemd）。但今天，我们换个更酷的方法：&lt;strong>用 K8s 自己来管理这个适配器&lt;/strong>，也就是使用 &lt;strong>DaemonSet&lt;/strong>。这就像是派出一队“自动维修工”，确保每台机器上都自动插上了这个适配器。&lt;/p>
+&lt;h1 class="heading-element" id="部署方案">&lt;span>部署方案&lt;/span>
+ &lt;a href="#%e9%83%a8%e7%bd%b2%e6%96%b9%e6%a1%88" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h1>&lt;p>我们将创建一个 DaemonSet，它会在集群的每个节点上启动一个 cri-dockerd 容器。这个容器会做两件事：&lt;/p>
+&lt;ol>
+&lt;li>&lt;strong>连接 Docker&lt;/strong>：通过挂载 &lt;code>/var/run/docker.sock&lt;/code>，让容器能指挥宿主机上的 Docker。&lt;/li>
+&lt;li>&lt;strong>暴露接口&lt;/strong>：生成一个新的 Socket 文件（比如 &lt;code>/etc/cri-dockerd.sock&lt;/code>），供 Kubelet 使用。&lt;/li>
+&lt;/ol>
+&lt;h2 class="heading-element" id="前置条件">&lt;span>前置条件&lt;/span>
+ &lt;a href="#%e5%89%8d%e7%bd%ae%e6%9d%a1%e4%bb%b6" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;ul>
+&lt;li>集群节点上已经安装并运行了 Docker (例如 20.10 版本)。&lt;/li>
+&lt;li>你需要有权限修改 Kubelet 的启动参数（因为光部署好适配器还不够，还得告诉 Kubelet 去插这个新插座）。&lt;/li>
+&lt;/ul>
+&lt;h2 class="heading-element" id="资源清单-yaml">&lt;span>资源清单 (YAML)&lt;/span>
+ &lt;a href="#%e8%b5%84%e6%ba%90%e6%b8%85%e5%8d%95-yaml" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>保存以下内容为 &lt;code>cri-dockerd-ds.yaml&lt;/code>：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;span class="lnt">56
+&lt;/span>&lt;span class="lnt">57
+&lt;/span>&lt;span class="lnt">58
+&lt;/span>&lt;span class="lnt">59
+&lt;/span>&lt;span class="lnt">60
+&lt;/span>&lt;span class="lnt">61
+&lt;/span>&lt;span class="lnt">62
+&lt;/span>&lt;span class="lnt">63
+&lt;/span>&lt;span class="lnt">64
+&lt;/span>&lt;span class="lnt">65
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-yaml" data-lang="yaml">&lt;span class="line">&lt;span class="cl">&lt;span class="nt">apiVersion&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">apps/v1&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nt">kind&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">DaemonSet&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nt">metadata&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">name&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">cri-dockerd&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">namespace&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">kube-system&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">labels&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">k8s-app&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">cri-dockerd&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nt">spec&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">selector&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">matchLabels&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">k8s-app&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">cri-dockerd&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">template&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">metadata&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">labels&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">k8s-app&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">cri-dockerd&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">spec&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">hostNetwork&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kc">true&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">tolerations&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="nt">key&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">node-role.kubernetes.io/master&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">effect&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">NoSchedule&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="nt">key&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">node-role.kubernetes.io/control-plane&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">effect&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">NoSchedule&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">containers&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="nt">name&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">cri-dockerd&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="c"># 使用 Mirantis 官方或社区维护的镜像，注意架构匹配&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">image&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">ghcr.io/mirantis/cri-dockerd:v0.3.4 &lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">command&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="l">cri-dockerd&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">args&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="c"># 指定 Docker 的 Socket 路径&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- --&lt;span class="l">docker-endpoint=unix:///var/run/docker.sock&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="c"># 这一点很重要：告诉 cri-dockerd 不要使用 systemd socket 激活，而是直接创建 socket&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="c"># 注意：不同版本的 cri-dockerd 参数可能略有不同，请参考具体版本文档&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- --&lt;span class="l">container-runtime-endpoint=unix:///etc/cri-dockerd/cri-dockerd.sock&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="c"># 指定 CNI 插件位置，通常是 /opt/cni/bin&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- --&lt;span class="l">cni-bin-dir=/opt/cni/bin&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- --&lt;span class="l">cni-conf-dir=/etc/cni/net.d&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="c"># 指定 pause 镜像，根据你的 K8s 版本选择合适的 tag&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- --&lt;span class="l">pod-infra-container-image=registry.k8s.io/pause:3.9&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">securityContext&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">privileged&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kc">true&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">volumeMounts&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="nt">name&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">docker-sock&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">mountPath&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">/var/run/docker.sock&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="nt">name&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">cri-sock-dir&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">mountPath&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">/etc/cri-dockerd&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="nt">name&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">cni-bin&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">mountPath&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">/opt/cni/bin&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="nt">name&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">cni-conf&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">mountPath&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">/etc/cni/net.d&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">volumes&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="nt">name&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">docker-sock&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">hostPath&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">path&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">/var/run/docker.sock&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">type&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">Socket&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="nt">name&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">cri-sock-dir&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">hostPath&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">path&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">/etc/cri-dockerd&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">type&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">DirectoryOrCreate&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="nt">name&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">cni-bin&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">hostPath&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">path&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">/opt/cni/bin&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="nt">name&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">cni-conf&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">hostPath&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">path&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">/etc/cni/net.d&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 class="heading-element" id="关键配置解析">&lt;span>关键配置解析&lt;/span>
+ &lt;a href="#%e5%85%b3%e9%94%ae%e9%85%8d%e7%bd%ae%e8%a7%a3%e6%9e%90" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;ol>
+&lt;li>&lt;strong>&lt;code>hostNetwork: true&lt;/code>&lt;/strong>: 使用宿主机网络，这对 CNI 插件正常工作很重要。&lt;/li>
+&lt;li>&lt;strong>&lt;code>privileged: true&lt;/code>&lt;/strong>: 特权模式，必须开启，否则无法完全控制 Docker。&lt;/li>
+&lt;li>&lt;strong>挂载点&lt;/strong>:
+&lt;ul>
+&lt;li>&lt;code>/var/run/docker.sock&lt;/code>: 这是 cri-dockerd 指挥 Docker 的遥控器。&lt;/li>
+&lt;li>&lt;code>/etc/cri-dockerd&lt;/code>: 这是我们存放新生成的“适配器插口”的地方。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;h1 class="heading-element" id="启用步骤">&lt;span>启用步骤&lt;/span>
+ &lt;a href="#%e5%90%af%e7%94%a8%e6%ad%a5%e9%aa%a4" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h1>&lt;ol>
+&lt;li>
+&lt;p>&lt;strong>应用 YAML&lt;/strong>:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">kubectl apply -f cri-dockerd-ds.yaml&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>确认运行状态&lt;/strong>:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">kubectl get ds -n kube-system cri-dockerd&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>确保所有 Pod 都变成了 &lt;code>Running&lt;/code> 状态。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>修改 Kubelet 参数 (关键一步)&lt;/strong>:
+你需要登录到&lt;strong>每个&lt;/strong>节点，修改 Kubelet 的配置文件或启动参数，将其容器运行时指向我们刚刚创建的 socket。&lt;/p>
+&lt;p>编辑 &lt;code>/var/lib/kubelet/kubeadm-flags.env&lt;/code> (如果是 kubeadm 安装) 或者 &lt;code>/etc/default/kubelet&lt;/code>，添加或修改：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">--container-runtime-endpoint&lt;span class="o">=&lt;/span>unix:///etc/cri-dockerd/cri-dockerd.sock&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>重启 Kubelet&lt;/strong>:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">systemctl restart kubelet&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ol>
+&lt;h1 class="heading-element" id="常见问题-troubleshooting">&lt;span>常见问题 (Troubleshooting)&lt;/span>
+ &lt;a href="#%e5%b8%b8%e8%a7%81%e9%97%ae%e9%a2%98-troubleshooting" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h1>&lt;ul>
+&lt;li>&lt;strong>Socket 找不到&lt;/strong>: 检查宿主机的 &lt;code>/etc/cri-dockerd/&lt;/code> 目录下是否有 &lt;code>cri-dockerd.sock&lt;/code> 文件。如果没有，查看 DaemonSet 的日志：
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">kubectl logs -l k8s-app&lt;span class="o">=&lt;/span>cri-dockerd -n kube-system&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>&lt;strong>CNI 报错&lt;/strong>: 确保挂载的 &lt;code>/opt/cni/bin&lt;/code> 和 &lt;code>/etc/cni/net.d&lt;/code> 与宿主机实际路径一致。&lt;/li>
+&lt;li>&lt;strong>Cgroup 驱动不一致&lt;/strong>: 最好确保 Docker (&lt;code>/etc/docker/daemon.json&lt;/code>) 和 Kubelet 都配置为使用 &lt;code>systemd&lt;/code> 作为 Cgroup 驱动。&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;blockquote>
+&lt;p>&lt;strong>小贴士&lt;/strong>: 虽然 DaemonSet 部署很方便，但生产环境中，直接在宿主机上通过 systemd 安装 cri-dockerd 通常更稳定，因为这样可以避免“容器管理容器”带来的复杂性（比如循环依赖问题）。DaemonSet 方案更适合快速测试或者不方便修改宿主机系统配置的场景。&lt;/p>&lt;/blockquote></description></item><item><title>Linux 性能分析：60,000 毫秒速查</title><link>https://www.kbsonlong.com/posts/linux-performance-analysis-in-60000-milliseconds/</link><pubDate>Mon, 19 Jan 2026 10:00:00 +0800</pubDate><guid>https://www.kbsonlong.com/posts/linux-performance-analysis-in-60000-milliseconds/</guid><description>&lt;h1 class="heading-element" id="linux-性能分析60000-毫秒速查">&lt;span>Linux 性能分析：60,000 毫秒速查&lt;/span>
  &lt;a href="#linux-%e6%80%a7%e8%83%bd%e5%88%86%e6%9e%9060000-%e6%af%ab%e7%a7%92%e9%80%9f%e6%9f%a5" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -5884,472 +6130,4 @@
 &lt;li>&lt;code>pilot/pkg/xds/filters/filters.go&lt;/code>：常用过滤器静态定义；&lt;/li>
 &lt;li>&lt;code>serviceregistry/kube/...&lt;/code>：Kubernetes 源与端点构建逻辑；&lt;/li>
 &lt;li>&lt;code>pilot/pkg/xds/debug.go&lt;/code>：调试与状态接口。&lt;/li>
-&lt;/ul></description></item><item><title>06-Kubelet 源码解析：从启动到 Pod 管理与指标监控</title><link>https://www.kbsonlong.com/posts/06-kubelet-%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E4%BB%8E%E5%90%AF%E5%8A%A8%E5%88%B0-pod-%E7%AE%A1%E7%90%86%E4%B8%8E%E6%8C%87%E6%A0%87%E7%9B%91%E6%8E%A7/</link><pubDate>Wed, 22 Oct 2025 18:31:54 +0800</pubDate><guid>https://www.kbsonlong.com/posts/06-kubelet-%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E4%BB%8E%E5%90%AF%E5%8A%A8%E5%88%B0-pod-%E7%AE%A1%E7%90%86%E4%B8%8E%E6%8C%87%E6%A0%87%E7%9B%91%E6%8E%A7/</guid><category domain="https://www.kbsonlong.com/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">源码分析</category><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><description>&lt;p>本文基于&lt;a href="https://github.com/kubernetes/kubernetes/tree/v1.29.0"target="_blank" rel="external nofollow noopener noreferrer">1.29.0&lt;/a>版本&lt;/p>
-&lt;h1 class="heading-element" id="kubelet-源码解析从启动到-pod-管理与指标监控">&lt;span>Kubelet 源码解析：从启动到 Pod 管理与指标监控&lt;/span>
- &lt;a href="#kubelet-%e6%ba%90%e7%a0%81%e8%a7%a3%e6%9e%90%e4%bb%8e%e5%90%af%e5%8a%a8%e5%88%b0-pod-%e7%ae%a1%e7%90%86%e4%b8%8e%e6%8c%87%e6%a0%87%e7%9b%91%e6%8e%a7" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h1>&lt;h2 class="heading-element" id="摘要">&lt;span>摘要&lt;/span>
- &lt;a href="#%e6%91%98%e8%a6%81" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;p>Kubelet 是 Kubernetes 集群中不可或缺的节点代理，负责管理 Pod 的生命周期、监控资源并确保节点上的容器按照预期状态运行。本文旨在通过对 Kubelet 源码的深度剖析，揭示其核心工作机制，内容涵盖从启动初始化、核心工作循环、Pod 生命周期管理到基于 cAdvisor 的指标监控全流程。通过对这些关键模块的分析，我们将构建一个关于 Kubelet 如何作为节点&amp;quot;管家&amp;quot;维持集群稳定性的完整视图。&lt;/p>
-&lt;h2 class="heading-element" id="1-kubelet-的职责与定位">&lt;span>1. Kubelet 的职责与定位&lt;/span>
- &lt;a href="#1-kubelet-%e7%9a%84%e8%81%8c%e8%b4%a3%e4%b8%8e%e5%ae%9a%e4%bd%8d" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;p>在 Kubernetes 的宏伟蓝图中，Kubelet 扮演着连接&amp;quot;大脑&amp;quot;（Master 节点）与&amp;quot;四肢&amp;quot;（工作节点）的关键角色。它的核心职责可以概括为：&lt;/p>
-&lt;ul>
-&lt;li>&lt;strong>Pod 管理&lt;/strong>：作为 Pod 生命周期的直接执行者，负责根据 &lt;code>kube-apiserver&lt;/code> 的指令或静态配置文件创建、销毁和管理 Pod。&lt;/li>
-&lt;li>&lt;strong>健康检查&lt;/strong>：通过 Liveness 和 Readiness 探针持续监控容器的健康状况，并执行重启等恢复策略。&lt;/li>
-&lt;li>&lt;strong>资源监控&lt;/strong>：利用内嵌的 cAdvisor 收集节点和容器的资源使用情况（CPU、内存、磁盘、网络），为 &lt;code>metrics-server&lt;/code> 和 HPA 提供数据基础。&lt;/li>
-&lt;li>&lt;strong>存储卷管理&lt;/strong>：为 Pod 动态挂载和卸载所需的存储卷。&lt;/li>
-&lt;li>&lt;strong>状态上报&lt;/strong>：定期向 &lt;code>kube-apiserver&lt;/code> 汇报节点状态、资源容量和运行中的 Pod 列表。&lt;/li>
-&lt;/ul>
-&lt;h2 class="heading-element" id="2-启动流程从-main-函数到-syncloop">&lt;span>2. 启动流程：从 &lt;code>main&lt;/code> 函数到 &lt;code>syncLoop&lt;/code>&lt;/span>
- &lt;a href="#2-%e5%90%af%e5%8a%a8%e6%b5%81%e7%a8%8b%e4%bb%8e-main-%e5%87%bd%e6%95%b0%e5%88%b0-syncloop" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;p>Kubelet 的启动过程是一个精心设计的初始化序列，它通过命令行解析、配置加载和依赖注入，最终构建出一个功能完备的 Kubelet 实例。&lt;/p>
-&lt;h3 class="heading-element" id="21-入口与命令构建">&lt;span>2.1. 入口与命令构建&lt;/span>
- &lt;a href="#21-%e5%85%a5%e5%8f%a3%e4%b8%8e%e5%91%bd%e4%bb%a4%e6%9e%84%e5%bb%ba" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;p>Kubelet 的生命始于 &lt;code>cmd/kubelet/kubelet.go&lt;/code> 的 &lt;code>main&lt;/code> 函数，它通过调用 &lt;code>app.NewKubeletCommand()&lt;/code> 创建一个 Cobra 命令行应用。这个过程封装了所有启动逻辑，包括参数解析和服务的最终运行。&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;span class="lnt">4
-&lt;/span>&lt;span class="lnt">5
-&lt;/span>&lt;span class="lnt">6
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// cmd/kubelet/kubelet.go&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">command&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">app&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">NewKubeletCommand&lt;/span>&lt;span class="p">()&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">code&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">cli&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Run&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">command&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">os&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Exit&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">code&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;h3 class="heading-element" id="22-依赖注入与初始化">&lt;span>2.2. 依赖注入与初始化&lt;/span>
- &lt;a href="#22-%e4%be%9d%e8%b5%96%e6%b3%a8%e5%85%a5%e4%b8%8e%e5%88%9d%e5%a7%8b%e5%8c%96" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;p>&lt;code>NewKubeletCommand&lt;/code> 的核心在于其 &lt;code>Run&lt;/code> 函数，它负责协调整个初始化过程。关键步骤如下：&lt;/p>
-&lt;ol>
-&lt;li>&lt;strong>构建依赖 (&lt;code>KubeletDeps&lt;/code>)&lt;/strong>：通过 &lt;code>UnsecuredDependencies&lt;/code> 创建 Kubelet 运行所需的核心依赖项，如 &lt;code>CAdvisorInterface&lt;/code>、&lt;code>ContainerManager&lt;/code> 和 &lt;code>StatsProvider&lt;/code> 等。&lt;/li>
-&lt;li>&lt;strong>创建 Kubelet 实例&lt;/strong>：&lt;code>RunKubelet&lt;/code> -&amp;gt; &lt;code>createAndInitKubelet&lt;/code> -&amp;gt; &lt;code>kubelet.NewMainKubelet&lt;/code>，这一系列调用最终创建并初始化了 &lt;code>Kubelet&lt;/code> 核心对象。&lt;/li>
-&lt;li>&lt;strong>启动核心循环&lt;/strong>：初始化完成后，Kubelet 启动其&amp;quot;心脏&amp;quot;——&lt;code>syncLoop&lt;/code>。&lt;/li>
-&lt;/ol>
-&lt;div class="diagram-container">
- &lt;pre class="mermaid">graph TD
- A[main] --> B[app.NewKubeletCommand];
- B --> C{创建 Flags 和 Config};
- B --> D[创建 cobra.Command];
- D -- 执行 --> E[RunE 函数];
- E --> F[构建 KubeletServer];
- F --> G[UnsecuredDependencies -> 创建 KubeletDeps];
- G --> H[RunKubelet];
- H --> I[createAndInitKubelet];
- I --> J[kubelet.NewMainKubelet];
- J --> K[返回初始化的 Kubelet 实例];
- K --> L[启动 syncLoop];&lt;/pre>
- &lt;pre class="mermaid-dark">graph TD
- A[main] --> B[app.NewKubeletCommand];
- B --> C{创建 Flags 和 Config};
- B --> D[创建 cobra.Command];
- D -- 执行 --> E[RunE 函数];
- E --> F[构建 KubeletServer];
- F --> G[UnsecuredDependencies -> 创建 KubeletDeps];
- G --> H[RunKubelet];
- H --> I[createAndInitKubelet];
- I --> J[kubelet.NewMainKubelet];
- J --> K[返回初始化的 Kubelet 实例];
- K --> L[启动 syncLoop];&lt;/pre>
- &lt;pre class="mermaid-neutral">graph TD
- A[main] --> B[app.NewKubeletCommand];
- B --> C{创建 Flags 和 Config};
- B --> D[创建 cobra.Command];
- D -- 执行 --> E[RunE 函数];
- E --> F[构建 KubeletServer];
- F --> G[UnsecuredDependencies -> 创建 KubeletDeps];
- G --> H[RunKubelet];
- H --> I[createAndInitKubelet];
- I --> J[kubelet.NewMainKubelet];
- J --> K[返回初始化的 Kubelet 实例];
- K --> L[启动 syncLoop];&lt;/pre>&lt;div class="diagram-copy-btn" aria-label="Copy Mermaid code" role="button">&lt;i class="fa-regular fa-clone" aria-hidden="true">&lt;/i>&lt;i class="fa-solid fa-check text-success" aria-hidden="true">&lt;/i>&lt;/div>
-&lt;template>&lt;pre>graph TD
- A[main] --> B[app.NewKubeletCommand];
- B --> C{创建 Flags 和 Config};
- B --> D[创建 cobra.Command];
- D -- 执行 --> E[RunE 函数];
- E --> F[构建 KubeletServer];
- F --> G[UnsecuredDependencies -> 创建 KubeletDeps];
- G --> H[RunKubelet];
- H --> I[createAndInitKubelet];
- I --> J[kubelet.NewMainKubelet];
- J --> K[返回初始化的 Kubelet 实例];
- K --> L[启动 syncLoop];&lt;/pre>&lt;/template>
-&lt;/div>&lt;h2 class="heading-element" id="3-核心工作循环syncloop-的事件驱动模型">&lt;span>3. 核心工作循环：&lt;code>syncLoop&lt;/code> 的事件驱动模型&lt;/span>
- &lt;a href="#3-%e6%a0%b8%e5%bf%83%e5%b7%a5%e4%bd%9c%e5%be%aa%e7%8e%afsyncloop-%e7%9a%84%e4%ba%8b%e4%bb%b6%e9%a9%b1%e5%8a%a8%e6%a8%a1%e5%9e%8b" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;p>&lt;code>syncLoop&lt;/code> 是 Kubelet 的主控制循环，它通过 &lt;code>syncLoopIteration&lt;/code> 函数以事件驱动的方式工作，确保 Pod 的&amp;quot;期望状态&amp;quot;与节点的&amp;quot;实际状态&amp;quot;保持同步。&lt;/p>
-&lt;h3 class="heading-element" id="31-多路事件监听">&lt;span>3.1. 多路事件监听&lt;/span>
- &lt;a href="#31-%e5%a4%9a%e8%b7%af%e4%ba%8b%e4%bb%b6%e7%9b%91%e5%90%ac" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;p>&lt;code>syncLoopIteration&lt;/code> 使用 &lt;code>select&lt;/code> 语句同时监听来自多个 Channel 的事件，实现了高效的并发处理：&lt;/p>
-&lt;ul>
-&lt;li>&lt;strong>&lt;code>configCh&lt;/code> (配置变更)&lt;/strong>：接收来自 &lt;code>kube-apiserver&lt;/code>、静态 Pod 文件或 HTTP 端点的 Pod 配置更新，触发 &lt;code>HandlePodAdditions&lt;/code>、&lt;code>HandlePodUpdates&lt;/code> 等操作。&lt;/li>
-&lt;li>&lt;strong>&lt;code>plegCh&lt;/code> (Pod 生命周期事件)&lt;/strong>：PLEG (Pod Lifecycle Event Generator) 监控容器运行时的底层变化（如容器启动、停止），生成事件以驱动 Kubelet 快速响应。&lt;/li>
-&lt;li>&lt;strong>&lt;code>syncCh&lt;/code> (定期同步)&lt;/strong>：默认每秒触发一次，确保即使没有外部事件，Kubelet 也会定期检查所有 Pod 的状态。&lt;/li>
-&lt;li>&lt;strong>&lt;code>housekeepingCh&lt;/code> (定期清理)&lt;/strong>：执行周期性任务，如清理孤儿 Pod 和无效的目录。&lt;/li>
-&lt;li>&lt;strong>&lt;code>livenessManager.Updates()&lt;/code> (存活探针)&lt;/strong>：处理 Liveness Probe 的失败结果，通常会导致容器重启。&lt;/li>
-&lt;/ul>
-&lt;div class="diagram-container">
- &lt;pre class="mermaid">graph TD
- A[syncLoop] --> B{select};
- B --> C[configCh: 配置变更];
- B --> D[plegCh: 容器状态变更];
- B --> E[syncCh: 定期同步];
- B --> F[housekeepingCh: 定期清理];
- B --> G[livenessManager: 探针结果];
-
- C --> H[HandlePodAdditions/Updates/Removes];
- D --> I[HandlePodSyncs];
- E --> I;
- G --> I;
-
- H --> J[podManager: 更新 Pod 缓存];
- J --> K[dispatchWork: 异步同步 Pod];
- I --> K;
-
- K --> L[syncPod: 同步单个 Pod];&lt;/pre>
- &lt;pre class="mermaid-dark">graph TD
- A[syncLoop] --> B{select};
- B --> C[configCh: 配置变更];
- B --> D[plegCh: 容器状态变更];
- B --> E[syncCh: 定期同步];
- B --> F[housekeepingCh: 定期清理];
- B --> G[livenessManager: 探针结果];
-
- C --> H[HandlePodAdditions/Updates/Removes];
- D --> I[HandlePodSyncs];
- E --> I;
- G --> I;
-
- H --> J[podManager: 更新 Pod 缓存];
- J --> K[dispatchWork: 异步同步 Pod];
- I --> K;
-
- K --> L[syncPod: 同步单个 Pod];&lt;/pre>
- &lt;pre class="mermaid-neutral">graph TD
- A[syncLoop] --> B{select};
- B --> C[configCh: 配置变更];
- B --> D[plegCh: 容器状态变更];
- B --> E[syncCh: 定期同步];
- B --> F[housekeepingCh: 定期清理];
- B --> G[livenessManager: 探针结果];
-
- C --> H[HandlePodAdditions/Updates/Removes];
- D --> I[HandlePodSyncs];
- E --> I;
- G --> I;
-
- H --> J[podManager: 更新 Pod 缓存];
- J --> K[dispatchWork: 异步同步 Pod];
- I --> K;
-
- K --> L[syncPod: 同步单个 Pod];&lt;/pre>&lt;div class="diagram-copy-btn" aria-label="Copy Mermaid code" role="button">&lt;i class="fa-regular fa-clone" aria-hidden="true">&lt;/i>&lt;i class="fa-solid fa-check text-success" aria-hidden="true">&lt;/i>&lt;/div>
-&lt;template>&lt;pre>graph TD
- A[syncLoop] --> B{select};
- B --> C[configCh: 配置变更];
- B --> D[plegCh: 容器状态变更];
- B --> E[syncCh: 定期同步];
- B --> F[housekeepingCh: 定期清理];
- B --> G[livenessManager: 探针结果];
-
- C --> H[HandlePodAdditions/Updates/Removes];
- D --> I[HandlePodSyncs];
- E --> I;
- G --> I;
-
- H --> J[podManager: 更新 Pod 缓存];
- J --> K[dispatchWork: 异步同步 Pod];
- I --> K;
-
- K --> L[syncPod: 同步单个 Pod];&lt;/pre>&lt;/template>
-&lt;/div>&lt;h2 class="heading-element" id="4-pod-生命周期管理syncpod-的同步逻辑">&lt;span>4. Pod 生命周期管理：&lt;code>syncPod&lt;/code> 的同步逻辑&lt;/span>
- &lt;a href="#4-pod-%e7%94%9f%e5%91%bd%e5%91%a8%e6%9c%9f%e7%ae%a1%e7%90%86syncpod-%e7%9a%84%e5%90%8c%e6%ad%a5%e9%80%bb%e8%be%91" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;p>&lt;code>syncPod&lt;/code> 是 Kubelet 中负责同步单个 Pod 状态的核心函数。它是一个庞大而复杂的函数，包含了 Pod 从创建到销毁的全套管理逻辑。&lt;/p>
-&lt;h3 class="heading-element" id="41-syncpod-的核心步骤">&lt;span>4.1. &lt;code>syncPod&lt;/code> 的核心步骤&lt;/span>
- &lt;a href="#41-syncpod-%e7%9a%84%e6%a0%b8%e5%bf%83%e6%ad%a5%e9%aa%a4" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;ol>
-&lt;li>&lt;strong>终止处理&lt;/strong>：如果 Pod 被标记为删除 (&lt;code>SyncPodKill&lt;/code>)，则立即调用 &lt;code>killPod&lt;/code> 流程。&lt;/li>
-&lt;li>&lt;strong>状态计算与更新&lt;/strong>：调用 &lt;code>generateAPIPodStatus&lt;/code> 计算 Pod 的最新状态，并通过 &lt;code>statusManager&lt;/code> 异步上报给 &lt;code>kube-apiserver&lt;/code>。&lt;/li>
-&lt;li>&lt;strong>运行状态检查&lt;/strong>：通过 &lt;code>podShouldnotBeRunning&lt;/code> 判断 Pod 是否已完成或失败，如果是，则执行清理。&lt;/li>
-&lt;li>&lt;strong>环境准备&lt;/strong>：创建 Pod 所需的数据目录 (&lt;code>makePodDataDirs&lt;/code>) 并等待存储卷挂载就绪 (&lt;code>waitForVolumes&lt;/code>)。&lt;/li>
-&lt;li>&lt;strong>调用容器运行时 (CRI)&lt;/strong>：这是最关键的一步。Kubelet 调用 &lt;code>containerRuntime.SyncPod&lt;/code>，将 Pod 的期望状态传递给容器运行时（如 containerd），由其完成具体的容器操作（拉取镜像、创建/销毁容器等）。&lt;/li>
-&lt;/ol>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;span class="lnt">4
-&lt;/span>&lt;span class="lnt">5
-&lt;/span>&lt;span class="lnt">6
-&lt;/span>&lt;span class="lnt">7
-&lt;/span>&lt;span class="lnt">8
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// pkg/kubelet/kubelet.go&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">kl&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">Kubelet&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">syncPod&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">o&lt;/span> &lt;span class="nx">syncPodOptions&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 核心逻辑：调用容器运行时 (CRI) 的 SyncPod&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">result&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">kl&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">containerRuntime&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">SyncPod&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">pod&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">podStatus&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">pullSecrets&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">kl&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">backOff&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="kc">nil&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;h3 class="heading-element" id="42-pod-创建更新与删除流程图">&lt;span>4.2. Pod 创建、更新与删除流程图&lt;/span>
- &lt;a href="#42-pod-%e5%88%9b%e5%bb%ba%e6%9b%b4%e6%96%b0%e4%b8%8e%e5%88%a0%e9%99%a4%e6%b5%81%e7%a8%8b%e5%9b%be" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;div class="diagram-container">
- &lt;pre class="mermaid">graph TD
- subgraph "事件分发"
- A[dispatchWork] --> B{根据事件类型};
- B -- ADD/UPDATE/SYNC --> C[podWorkers.UpdatePod];
- B -- REMOVE --> C;
- end
-
- subgraph "Pod 同步执行"
- C --> D["工作协程 (Worker Goroutine)"];
- D --> E(syncPod);
- end
-
- subgraph "syncPod 内部逻辑"
- E --> F{"检查 Pod 是否需要终止 (deletionTimestamp?)"};
- F -- 是 --> G[执行 killPod 流程];
- F -- 否 --> L{"Pod 是否应该运行?"};
- 
- subgraph "终止流程"
- G --> H[CRI: StopPodSandbox/RemovePodSandbox];
- H --> I[清理 Pod 目录和卷];
- end
-
- L -- 否 --> M["执行 killPod (如果容器仍在运行)"];
- L -- 是 --> O["调用 CRI: SyncPod"];
- 
- subgraph "CRI: SyncPod 内部"
- O --> T{"容器运行时"};
- T -- 容器不存在 --> U[创建沙箱和容器];
- T -- 容器状态与期望不符 --> V[停止并重建容器];
- T -- 容器状态一致 --> W[不执行操作];
- end
- end&lt;/pre>
- &lt;pre class="mermaid-dark">graph TD
- subgraph "事件分发"
- A[dispatchWork] --> B{根据事件类型};
- B -- ADD/UPDATE/SYNC --> C[podWorkers.UpdatePod];
- B -- REMOVE --> C;
- end
-
- subgraph "Pod 同步执行"
- C --> D["工作协程 (Worker Goroutine)"];
- D --> E(syncPod);
- end
-
- subgraph "syncPod 内部逻辑"
- E --> F{"检查 Pod 是否需要终止 (deletionTimestamp?)"};
- F -- 是 --> G[执行 killPod 流程];
- F -- 否 --> L{"Pod 是否应该运行?"};
- 
- subgraph "终止流程"
- G --> H[CRI: StopPodSandbox/RemovePodSandbox];
- H --> I[清理 Pod 目录和卷];
- end
-
- L -- 否 --> M["执行 killPod (如果容器仍在运行)"];
- L -- 是 --> O["调用 CRI: SyncPod"];
- 
- subgraph "CRI: SyncPod 内部"
- O --> T{"容器运行时"};
- T -- 容器不存在 --> U[创建沙箱和容器];
- T -- 容器状态与期望不符 --> V[停止并重建容器];
- T -- 容器状态一致 --> W[不执行操作];
- end
- end&lt;/pre>
- &lt;pre class="mermaid-neutral">graph TD
- subgraph "事件分发"
- A[dispatchWork] --> B{根据事件类型};
- B -- ADD/UPDATE/SYNC --> C[podWorkers.UpdatePod];
- B -- REMOVE --> C;
- end
-
- subgraph "Pod 同步执行"
- C --> D["工作协程 (Worker Goroutine)"];
- D --> E(syncPod);
- end
-
- subgraph "syncPod 内部逻辑"
- E --> F{"检查 Pod 是否需要终止 (deletionTimestamp?)"};
- F -- 是 --> G[执行 killPod 流程];
- F -- 否 --> L{"Pod 是否应该运行?"};
- 
- subgraph "终止流程"
- G --> H[CRI: StopPodSandbox/RemovePodSandbox];
- H --> I[清理 Pod 目录和卷];
- end
-
- L -- 否 --> M["执行 killPod (如果容器仍在运行)"];
- L -- 是 --> O["调用 CRI: SyncPod"];
- 
- subgraph "CRI: SyncPod 内部"
- O --> T{"容器运行时"};
- T -- 容器不存在 --> U[创建沙箱和容器];
- T -- 容器状态与期望不符 --> V[停止并重建容器];
- T -- 容器状态一致 --> W[不执行操作];
- end
- end&lt;/pre>&lt;div class="diagram-copy-btn" aria-label="Copy Mermaid code" role="button">&lt;i class="fa-regular fa-clone" aria-hidden="true">&lt;/i>&lt;i class="fa-solid fa-check text-success" aria-hidden="true">&lt;/i>&lt;/div>
-&lt;template>&lt;pre>graph TD
- subgraph "事件分发"
- A[dispatchWork] --> B{根据事件类型};
- B -- ADD/UPDATE/SYNC --> C[podWorkers.UpdatePod];
- B -- REMOVE --> C;
- end
-
- subgraph "Pod 同步执行"
- C --> D["工作协程 (Worker Goroutine)"];
- D --> E(syncPod);
- end
-
- subgraph "syncPod 内部逻辑"
- E --> F{"检查 Pod 是否需要终止 (deletionTimestamp?)"};
- F -- 是 --> G[执行 killPod 流程];
- F -- 否 --> L{"Pod 是否应该运行?"};
- 
- subgraph "终止流程"
- G --> H[CRI: StopPodSandbox/RemovePodSandbox];
- H --> I[清理 Pod 目录和卷];
- end
-
- L -- 否 --> M["执行 killPod (如果容器仍在运行)"];
- L -- 是 --> O["调用 CRI: SyncPod"];
- 
- subgraph "CRI: SyncPod 内部"
- O --> T{"容器运行时"};
- T -- 容器不存在 --> U[创建沙箱和容器];
- T -- 容器状态与期望不符 --> V[停止并重建容器];
- T -- 容器状态一致 --> W[不执行操作];
- end
- end&lt;/pre>&lt;/template>
-&lt;/div>&lt;h2 class="heading-element" id="5-指标监控cadvisor-的集成与工作机制">&lt;span>5. 指标监控：cAdvisor 的集成与工作机制&lt;/span>
- &lt;a href="#5-%e6%8c%87%e6%a0%87%e7%9b%91%e6%8e%a7cadvisor-%e7%9a%84%e9%9b%86%e6%88%90%e4%b8%8e%e5%b7%a5%e4%bd%9c%e6%9c%ba%e5%88%b6" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;p>Kubelet 的资源监控能力由内嵌的 &lt;strong>cAdvisor&lt;/strong> 提供。cAdvisor 负责收集、处理和暴露容器与节点的性能指标。&lt;/p>
-&lt;h3 class="heading-element" id="51-初始化与启动">&lt;span>5.1. 初始化与启动&lt;/span>
- &lt;a href="#51-%e5%88%9d%e5%a7%8b%e5%8c%96%e4%b8%8e%e5%90%af%e5%8a%a8" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;p>cAdvisor 在 Kubelet 启动时被初始化和启动。&lt;code>buildKubeletDeps&lt;/code> 函数创建 cAdvisor 实例，随后 &lt;code>initializeRuntimeDependentModules&lt;/code> 调用 &lt;code>kl.cadvisor.Start()&lt;/code> 启动其后台收集任务。&lt;/p>
-&lt;h3 class="heading-element" id="52-指标收集周期与实现">&lt;span>5.2. 指标收集周期与实现&lt;/span>
- &lt;a href="#52-%e6%8c%87%e6%a0%87%e6%94%b6%e9%9b%86%e5%91%a8%e6%9c%9f%e4%b8%8e%e5%ae%9e%e7%8e%b0" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;p>cAdvisor 的指标收集频率由 Kubelet 的 &lt;code>--housekeeping-interval&lt;/code> 参数（默认 10 秒）控制。其实现机制如下：&lt;/p>
-&lt;ol>
-&lt;li>&lt;strong>参数传递&lt;/strong>：Kubelet 通过一个&amp;quot;hack&amp;quot;方式，在启动时将自己的 &lt;code>--housekeeping-interval&lt;/code> 值设置给 cAdvisor 库的全局标志 &lt;code>housekeeping_interval&lt;/code>。&lt;/li>
-&lt;li>&lt;strong>容器级 &lt;code>housekeeping&lt;/code>&lt;/strong>：cAdvisor 为每个容器启动一个独立的 &lt;code>housekeeping&lt;/code> goroutine。这个 goroutine 使用 &lt;code>time.Timer&lt;/code> 来周期性地触发指标收集。&lt;/li>
-&lt;li>&lt;strong>数据采集&lt;/strong>：&lt;code>housekeeping&lt;/code> 循环最终调用 &lt;code>updateStats&lt;/code>，该函数通过容器处理器 (&lt;code>containerHandler&lt;/code>) 从 cgroup 文件系统或 CRI 获取原始的 CPU、内存等数据。&lt;/li>
-&lt;/ol>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
-&lt;/span>&lt;span class="lnt"> 2
-&lt;/span>&lt;span class="lnt"> 3
-&lt;/span>&lt;span class="lnt"> 4
-&lt;/span>&lt;span class="lnt"> 5
-&lt;/span>&lt;span class="lnt"> 6
-&lt;/span>&lt;span class="lnt"> 7
-&lt;/span>&lt;span class="lnt"> 8
-&lt;/span>&lt;span class="lnt"> 9
-&lt;/span>&lt;span class="lnt">10
-&lt;/span>&lt;span class="lnt">11
-&lt;/span>&lt;span class="lnt">12
-&lt;/span>&lt;span class="lnt">13
-&lt;/span>&lt;span class="lnt">14
-&lt;/span>&lt;span class="lnt">15
-&lt;/span>&lt;span class="lnt">16
-&lt;/span>&lt;span class="lnt">17
-&lt;/span>&lt;span class="lnt">18
-&lt;/span>&lt;span class="lnt">19
-&lt;/span>&lt;span class="lnt">20
-&lt;/span>&lt;span class="lnt">21
-&lt;/span>&lt;span class="lnt">22
-&lt;/span>&lt;span class="lnt">23
-&lt;/span>&lt;span class="lnt">24
-&lt;/span>&lt;span class="lnt">25
-&lt;/span>&lt;span class="lnt">26
-&lt;/span>&lt;span class="lnt">27
-&lt;/span>&lt;span class="lnt">28
-&lt;/span>&lt;span class="lnt">29
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// vendor/github.com/google/cadvisor/manager/container.go&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// housekeeping 是每个容器指标收集的主循环&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">cd&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">containerData&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">housekeeping&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">houseKeepingTimer&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">cd&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">clock&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">NewTimer&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">cd&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">housekeepingInterval&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">defer&lt;/span> &lt;span class="nx">houseKeepingTimer&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Stop&lt;/span>&lt;span class="p">()&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">select&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span>&lt;span class="nx">cd&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">stop&lt;/span>&lt;span class="p">:&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span>&lt;span class="nx">houseKeepingTimer&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">C&lt;/span>&lt;span class="p">():&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 定时器触发，执行单次指标收集&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">cd&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">updateStats&lt;/span>&lt;span class="p">();&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">klog&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Errorf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Failed to update stats for container %q: %v&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">cd&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">info&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Name&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">houseKeepingTimer&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Reset&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">cd&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">nextHousekeepingInterval&lt;/span>&lt;span class="p">())&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// updateStats 调用 handler 获取并存储指标&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">cd&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">containerData&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">updateStats&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">stats&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">statsErr&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">cd&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">handler&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">GetStats&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="c1">// &amp;lt;-- 从 cgroup 或 CRI 获取数据&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">statsErr&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">statsErr&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 将统计数据添加到内存缓存&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">cd&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">memoryCache&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">AddStats&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">cd&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">info&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">stats&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;h3 class="heading-element" id="53-指标存储inmemorycache">&lt;span>5.3. 指标存储：&lt;code>InMemoryCache&lt;/code>&lt;/span>
- &lt;a href="#53-%e6%8c%87%e6%a0%87%e5%ad%98%e5%82%a8inmemorycache" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;p>cAdvisor 采集的指标存储在名为 &lt;code>InMemoryCache&lt;/code> 的内存缓存中，其核心特点是：&lt;/p>
-&lt;ul>
-&lt;li>&lt;strong>环形缓冲区 (Ring Buffer)&lt;/strong>：为每个容器维护一个固定大小的环形缓冲区，用于存储最近一段时间（默认 60 秒）的时间序列数据。&lt;/li>
-&lt;li>&lt;strong>数据写入&lt;/strong>：&lt;code>updateStats&lt;/code> 函数调用 &lt;code>memoryCache.AddStats()&lt;/code> 将新采集的指标存入缓冲区，旧数据会被自动覆盖。&lt;/li>
-&lt;li>&lt;strong>数据读取&lt;/strong>：当外部请求（如 &lt;code>metrics-server&lt;/code>）访问 Kubelet 的 &lt;code>/stats/summary&lt;/code> 端点时，&lt;code>StatsProvider&lt;/code> 会调用 &lt;code>RecentStats&lt;/code> 从缓存中提取数据用于聚合。&lt;/li>
-&lt;/ul>
-&lt;p>这种设计使得 cAdvisor 能够在不引入磁盘 I/O 的情况下，高效地提供短期、高分辨率的性能指标。&lt;/p>
-&lt;h2 class="heading-element" id="6-总结">&lt;span>6. 总结&lt;/span>
- &lt;a href="#6-%e6%80%bb%e7%bb%93" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;p>通过对 Kubelet 源码的深入探索，我们揭示了其作为 Kubernetes 节点核心代理的复杂而精妙的工作机制。从命令行的解析启动，到依赖注入的构建，再到事件驱动的 &lt;code>syncLoop&lt;/code> 核心循环，Kubelet 的设计处处体现着健壮性与可扩展性。&lt;/p>
-&lt;p>&lt;code>syncPod&lt;/code> 作为 Pod 生命周期管理的最终执行者，通过与容器运行时的紧密协作，精确地将声明式 API 转化为实际的容器操作。而内嵌的 cAdvisor 则为 Kubelet 提供了强大的监控能力，通过高效的周期性采集和内存缓存机制，为整个集群的调度和自动扩缩容提供了关键的数据支持。&lt;/p>
-&lt;p>理解 Kubelet 的内部工作原理，不仅有助于我们更好地排查节点问题，也让我们对 Kubernetes 的分布式系统设计哲学有了更深刻的认识。Kubelet 正是这一哲学在节点侧的完美体现，是确保云原生应用稳定、高效运行的基石。&lt;/p></description></item></channel></rss>
+&lt;/ul></description></item></channel></rss>
