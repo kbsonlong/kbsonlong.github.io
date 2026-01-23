@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>蜷缩的蜗牛</title><link>https://www.kbsonlong.com/</link><description>云原生时代运维</description><generator>Hugo 0.147.7 &amp; FixIt v0.4.0-alpha.2-20251022034748-fe129dd2</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Thu, 22 Jan 2026 10:10:00 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/index.xml" rel="self" type="application/rss+xml"/><item><title>Falco 与 Tetragon 最小化 POC 验证指南</title><link>https://www.kbsonlong.com/posts/falco-%E4%B8%8E-tetragon-%E6%9C%80%E5%B0%8F%E5%8C%96-poc-%E9%AA%8C%E8%AF%81%E6%8C%87%E5%8D%97/</link><pubDate>Fri, 19 Dec 2025 16:51:25 +0800</pubDate><guid>https://www.kbsonlong.com/posts/falco-%E4%B8%8E-tetragon-%E6%9C%80%E5%B0%8F%E5%8C%96-poc-%E9%AA%8C%E8%AF%81%E6%8C%87%E5%8D%97/</guid><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><category domain="https://www.kbsonlong.com/categories/%E5%AE%89%E5%85%A8/">安全</category><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><description>&lt;h1 class="heading-element" id="falco-与-tetragon-最小化-poc-验证指南">&lt;span>Falco 与 Tetragon 最小化 POC 验证指南&lt;/span>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>蜷缩的蜗牛</title><link>https://www.kbsonlong.com/</link><description>云原生时代运维</description><generator>Hugo 0.147.7 &amp; FixIt v0.4.0-alpha.2-20251022034748-fe129dd2</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 23 Jan 2026 10:00:00 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/index.xml" rel="self" type="application/rss+xml"/><item><title>Falco 与 Tetragon 最小化 POC 验证指南</title><link>https://www.kbsonlong.com/posts/falco-%E4%B8%8E-tetragon-%E6%9C%80%E5%B0%8F%E5%8C%96-poc-%E9%AA%8C%E8%AF%81%E6%8C%87%E5%8D%97/</link><pubDate>Fri, 19 Dec 2025 16:51:25 +0800</pubDate><guid>https://www.kbsonlong.com/posts/falco-%E4%B8%8E-tetragon-%E6%9C%80%E5%B0%8F%E5%8C%96-poc-%E9%AA%8C%E8%AF%81%E6%8C%87%E5%8D%97/</guid><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><category domain="https://www.kbsonlong.com/categories/%E5%AE%89%E5%85%A8/">安全</category><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><description>&lt;h1 class="heading-element" id="falco-与-tetragon-最小化-poc-验证指南">&lt;span>Falco 与 Tetragon 最小化 POC 验证指南&lt;/span>
  &lt;a href="#falco-%e4%b8%8e-tetragon-%e6%9c%80%e5%b0%8f%e5%8c%96-poc-%e9%aa%8c%e8%af%81%e6%8c%87%e5%8d%97" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -369,7 +369,278 @@
 &lt;/h2>&lt;ul>
 &lt;li>&lt;strong>Falco Pod 启动失败&lt;/strong>: 检查节点内核版本是否支持 eBPF。&lt;/li>
 &lt;li>&lt;strong>Tetragon 没有日志&lt;/strong>: 确认 &lt;code>TracingPolicy&lt;/code> 是否正确应用，以及 Pod 所在的节点是否运行了 Tetragon Agent。&lt;/li>
-&lt;/ul></description></item><item><title>Kubernetes 生产环境 cri-dockerd 二进制部署指南</title><link>https://www.kbsonlong.com/posts/kubernetes-%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83-cri-dockerd-%E4%BA%8C%E8%BF%9B%E5%88%B6%E9%83%A8%E7%BD%B2%E6%8C%87%E5%8D%97/</link><pubDate>Thu, 22 Jan 2026 10:10:00 +0800</pubDate><guid>https://www.kbsonlong.com/posts/kubernetes-%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83-cri-dockerd-%E4%BA%8C%E8%BF%9B%E5%88%B6%E9%83%A8%E7%BD%B2%E6%8C%87%E5%8D%97/</guid><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><description>&lt;h1 class="heading-element" id="部署全流程">&lt;span>部署全流程&lt;/span>
+&lt;/ul></description></item><item><title>Prometheus PromQL 查询最佳实践与性能优化</title><link>https://www.kbsonlong.com/posts/prometheus-promql-%E6%9F%A5%E8%AF%A2%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%E4%B8%8E%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/</link><pubDate>Fri, 23 Jan 2026 10:00:00 +0800</pubDate><guid>https://www.kbsonlong.com/posts/prometheus-promql-%E6%9F%A5%E8%AF%A2%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%E4%B8%8E%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/</guid><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><category domain="https://www.kbsonlong.com/categories/prometheus/">Prometheus</category><description>&lt;h1 class="heading-element" id="promql-查询最佳实践与性能优化">&lt;span>PromQL 查询最佳实践与性能优化&lt;/span>
+ &lt;a href="#promql-%e6%9f%a5%e8%af%a2%e6%9c%80%e4%bd%b3%e5%ae%9e%e8%b7%b5%e4%b8%8e%e6%80%a7%e8%83%bd%e4%bc%98%e5%8c%96" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h1>&lt;p>作为一名 SRE，编写高效且可读性强的 PromQL (Prometheus Query Language) 是日常工作中不可或缺的技能。糟糕的查询不仅会导致 Dashboard 加载缓慢，甚至可能导致 Prometheus OOM (Out of Memory)。本文将总结 PromQL 的查询技巧，重点关注性能优化和代码可读性。&lt;/p>
+&lt;h2 class="heading-element" id="1-标签选择器的性能考量">&lt;span>1. 标签选择器的性能考量&lt;/span>
+ &lt;a href="#1-%e6%a0%87%e7%ad%be%e9%80%89%e6%8b%a9%e5%99%a8%e7%9a%84%e6%80%a7%e8%83%bd%e8%80%83%e9%87%8f" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;h3 class="heading-element" id="精确匹配-vs-正则匹配">&lt;span>精确匹配 vs 正则匹配&lt;/span>
+ &lt;a href="#%e7%b2%be%e7%a1%ae%e5%8c%b9%e9%85%8d-vs-%e6%ad%a3%e5%88%99%e5%8c%b9%e9%85%8d" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;p>Prometheus 的倒排索引对精确匹配（&lt;code>=&lt;/code> 和 &lt;code>!=&lt;/code>）进行了高度优化。相比之下，正则匹配（&lt;code>=~&lt;/code> 和 &lt;code>!~&lt;/code>）需要扫描更多的倒排列表，消耗更多的 CPU。&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>推荐&lt;/strong>: 尽可能使用精确匹配。&lt;/li>
+&lt;li>&lt;strong>避免&lt;/strong>: 在高基数（High Cardinality）标签上使用通配符正则（如 &lt;code>pod=~&amp;quot;.*&amp;quot;&lt;/code>），这会拉取所有序列，极易导致性能问题。&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-promql" data-lang="promql">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># ✅ 高效：精确匹配&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nv">http_requests_total&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="nl">status&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">&amp;#34;&lt;/span>&lt;span class="s">500&lt;/span>&lt;span class="p">&amp;#34;}&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="c1"># ❌ 低效：不必要的正则匹配&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nv">http_requests_total&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="nl">status&lt;/span>&lt;span class="o">=~&lt;/span>&lt;span class="p">&amp;#34;&lt;/span>&lt;span class="s">500&lt;/span>&lt;span class="p">&amp;#34;}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 class="heading-element" id="避免空的标签匹配器">&lt;span>避免空的标签匹配器&lt;/span>
+ &lt;a href="#%e9%81%bf%e5%85%8d%e7%a9%ba%e7%9a%84%e6%a0%87%e7%ad%be%e5%8c%b9%e9%85%8d%e5%99%a8" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;p>空的标签匹配器（例如 &lt;code>{job=&amp;quot;&amp;quot;}&lt;/code> 或 &lt;code>{job=~&amp;quot;.*&amp;quot;}&lt;/code>）会匹配所有可能的值，这在大型环境中是非常危险的操作。确保至少有一个具体的标签匹配器。&lt;/p>
+&lt;h2 class="heading-element" id="2-聚合操作与基数控制">&lt;span>2. 聚合操作与基数控制&lt;/span>
+ &lt;a href="#2-%e8%81%9a%e5%90%88%e6%93%8d%e4%bd%9c%e4%b8%8e%e5%9f%ba%e6%95%b0%e6%8e%a7%e5%88%b6" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>聚合操作（&lt;code>sum&lt;/code>, &lt;code>avg&lt;/code>, &lt;code>max&lt;/code>, &lt;code>min&lt;/code> 等）是数据分析的核心，但也最容易引发性能问题。&lt;/p>
+&lt;h3 class="heading-element" id="显式指定-by-或-without">&lt;span>显式指定 &lt;code>by&lt;/code> 或 &lt;code>without&lt;/code>&lt;/span>
+ &lt;a href="#%e6%98%be%e5%bc%8f%e6%8c%87%e5%ae%9a-by-%e6%88%96-without" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;p>在聚合时，始终明确指定保留的标签 (&lt;code>by&lt;/code>) 或移除的标签 (&lt;code>without&lt;/code>)。这不仅提高了查询的可读性，也能防止意外聚合了不该聚合的维度（例如不同的 &lt;code>instance&lt;/code> 或 &lt;code>pod&lt;/code>）。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-promql" data-lang="promql">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># ✅ 推荐：明确按 service 和 code 聚合&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">sum&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">by&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nv">service&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nv">code&lt;/span>&lt;span class="o">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="kr">rate&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nv">http_requests_total&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s">5m&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">))&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="c1"># ❌ 不推荐：隐式聚合，如果未来引入新标签可能会破坏逻辑&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">sum&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="kr">rate&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nv">http_requests_total&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s">5m&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">))&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 class="heading-element" id="尽早聚合">&lt;span>尽早聚合&lt;/span>
+ &lt;a href="#%e5%b0%bd%e6%97%a9%e8%81%9a%e5%90%88" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;p>在计算的早期阶段减少时间序列的数量。如果你的表达式包含多个步骤，尽量在第一步就进行聚合，减少后续步骤处理的数据量。&lt;/p>
+&lt;h2 class="heading-element" id="3-范围向量选择器-range-vectors">&lt;span>3. 范围向量选择器 (Range Vectors)&lt;/span>
+ &lt;a href="#3-%e8%8c%83%e5%9b%b4%e5%90%91%e9%87%8f%e9%80%89%e6%8b%a9%e5%99%a8-range-vectors" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;h3 class="heading-element" id="rate-vs-irate-vs-increase">&lt;span>&lt;code>rate&lt;/code> vs &lt;code>irate&lt;/code> vs &lt;code>increase&lt;/code>&lt;/span>
+ &lt;a href="#rate-vs-irate-vs-increase" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;ul>
+&lt;li>&lt;strong>&lt;code>rate&lt;/code>&lt;/strong>: 计算范围向量内的每秒平均增长率。适合用于告警和长期趋势分析，因为它对瞬时峰值有平滑作用。&lt;/li>
+&lt;li>&lt;strong>&lt;code>irate&lt;/code>&lt;/strong>: 基于范围向量内最后两个数据点计算瞬时增长率。适合用于高精度绘图，能灵敏捕捉瞬间峰值，但由于波动大，&lt;strong>不建议用于告警&lt;/strong>。&lt;/li>
+&lt;li>&lt;strong>&lt;code>increase&lt;/code>&lt;/strong>: 计算范围向量内的增量。&lt;code>increase(v[d])&lt;/code> 等同于 &lt;code>rate(v[d]) * d&lt;/code>。&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>性能提示&lt;/strong>: &lt;code>rate&lt;/code> 和 &lt;code>increase&lt;/code> 在计算时会处理重置（counter resets），这需要一定的计算资源。选择合适的时间窗口（如 &lt;code>[5m]&lt;/code>）很重要。窗口过小（小于抓取间隔）会导致无数据；窗口过大则平滑过度。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-promql" data-lang="promql">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># ✅ 推荐：告警规则中使用 rate&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="kr">rate&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nv">http_requests_total&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s">5m&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">10&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="c1"># ✅ 推荐：排查瞬时抖动时使用 irate&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="kr">irate&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nv">http_requests_total&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s">1m&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">)&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 class="heading-element" id="4-直方图-histogram-与分位数计算">&lt;span>4. 直方图 (Histogram) 与分位数计算&lt;/span>
+ &lt;a href="#4-%e7%9b%b4%e6%96%b9%e5%9b%be-histogram-%e4%b8%8e%e5%88%86%e4%bd%8d%e6%95%b0%e8%ae%a1%e7%ae%97" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>&lt;code>histogram_quantile&lt;/code> 是计算 P99, P95 延迟的常用函数，但计算成本极高。&lt;/p>
+&lt;h3 class="heading-element" id="优化-histogram_quantile">&lt;span>优化 &lt;code>histogram_quantile&lt;/code>&lt;/span>
+ &lt;a href="#%e4%bc%98%e5%8c%96-histogram_quantile" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;ol>
+&lt;li>&lt;strong>先聚合，后计算&lt;/strong>: 必须先对 &lt;code>bucket&lt;/code> 指标进行 &lt;code>sum&lt;/code> 聚合，再计算分位数。这是因为直方图的 bucket 是累积的，且通常跨多个实例。&lt;/li>
+&lt;li>&lt;strong>减少 Bucket 数量&lt;/strong>: 定义指标时，避免创建过多的 bucket，这会直接导致序列数量膨胀。&lt;/li>
+&lt;/ol>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-promql" data-lang="promql">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># ✅ 正确顺序：先 sum by (le, ...)，再 histogram_quantile&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="kr">histogram_quantile&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="mf">0.99&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">sum&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">by&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nv">le&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nv">service&lt;/span>&lt;span class="o">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="kr">rate&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nv">http_request_duration_seconds_bucket&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s">5m&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">)))&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 class="heading-element" id="5-避免高基数陷阱-high-cardinality">&lt;span>5. 避免高基数陷阱 (High Cardinality)&lt;/span>
+ &lt;a href="#5-%e9%81%bf%e5%85%8d%e9%ab%98%e5%9f%ba%e6%95%b0%e9%99%b7%e9%98%b1-high-cardinality" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>高基数问题是 Prometheus 性能杀手。常见的错误包括：&lt;/p>
+&lt;ul>
+&lt;li>将 &lt;code>user_id&lt;/code>, &lt;code>email&lt;/code>, &lt;code>client_ip&lt;/code> 等取值无限的字段作为标签。&lt;/li>
+&lt;li>在查询中未聚合这些高基数标签。&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>查询优化&lt;/strong>: 如果必须查询包含高基数标签的指标，务必使用 &lt;code>sum by&lt;/code> 聚合掉这些标签，或者使用 &lt;code>topk&lt;/code> 限制返回的序列数量。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-promql" data-lang="promql">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># ✅ 限制返回数量，避免浏览器崩溃&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">topk&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="mi">10&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">sum&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">by&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nv">request_path&lt;/span>&lt;span class="o">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="kr">rate&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nv">http_requests_total&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s">5m&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">)))&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 class="heading-element" id="6-使用-recording-rules-预计算">&lt;span>6. 使用 Recording Rules 预计算&lt;/span>
+ &lt;a href="#6-%e4%bd%bf%e7%94%a8-recording-rules-%e9%a2%84%e8%ae%a1%e7%ae%97" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>对于复杂且频繁执行的查询（例如用于 Dashboard 展示的聚合数据），应该使用 Recording Rules 将其预计算为新的时间序列。&lt;/p>
+&lt;p>&lt;strong>优点&lt;/strong>:&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>查询速度快&lt;/strong>: Dashboard 直接查询预计算好的指标。&lt;/li>
+&lt;li>&lt;strong>降低负载&lt;/strong>: 复杂计算转移到写入时（后台评估），而不是查询时。&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-yaml" data-lang="yaml">&lt;span class="line">&lt;span class="cl">&lt;span class="c"># rules.yaml 示例&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nt">groups&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="nt">name&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">example&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">rules&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="nt">record&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">job:http_requests:rate5m&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">expr&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">sum by (job) (rate(http_requests_total[5m]))&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 class="heading-element" id="7-查询可读性与规范">&lt;span>7. 查询可读性与规范&lt;/span>
+ &lt;a href="#7-%e6%9f%a5%e8%af%a2%e5%8f%af%e8%af%bb%e6%80%a7%e4%b8%8e%e8%a7%84%e8%8c%83" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>良好的代码风格有助于团队协作。&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>换行与缩进&lt;/strong>: 对于嵌套复杂的查询，适当换行和缩进。&lt;/li>
+&lt;li>&lt;strong>标签顺序&lt;/strong>: 保持标签选择器内的标签顺序一致（如先 &lt;code>job&lt;/code>, 后 &lt;code>instance&lt;/code>）。&lt;/li>
+&lt;li>&lt;strong>时间范围&lt;/strong>: 在 Grafana 中尽量使用全局变量 &lt;code>$__rate_interval&lt;/code> 代替硬编码的 &lt;code>[5m]&lt;/code>，它会自动根据时间范围调整采样间隔，避免混叠效应。&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-promql" data-lang="promql">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 优化前的单行查询&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">sum&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="kr">rate&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nv">container_cpu_usage_seconds_total&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="nl">image&lt;/span>&lt;span class="o">!=&lt;/span>&lt;span class="p">&amp;#34;&amp;#34;,&lt;/span>&lt;span class="nl">name&lt;/span>&lt;span class="o">=~&lt;/span>&lt;span class="p">&amp;#34;&lt;/span>&lt;span class="s">^k8s_.*&lt;/span>&lt;span class="p">&amp;#34;,&lt;/span>&lt;span class="nl">namespace&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">&amp;#34;&lt;/span>&lt;span class="s">default&lt;/span>&lt;span class="p">&amp;#34;}[&lt;/span>&lt;span class="s">1m&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">))&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">by&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nv">pod_name&lt;/span>&lt;span class="o">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="c1"># 优化后的多行查询（在 Grafana 或代码中）&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">sum&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">by&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nv">pod&lt;/span>&lt;span class="o">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="kr">rate&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nv">container_cpu_usage_seconds_total&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nl">namespace&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">&amp;#34;&lt;/span>&lt;span class="s">default&lt;/span>&lt;span class="p">&amp;#34;,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nl">image&lt;/span>&lt;span class="o">!=&lt;/span>&lt;span class="p">&amp;#34;&amp;#34;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">}[&lt;/span>&lt;span class="err">$__rate_interval&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="o">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="o">)&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 class="heading-element" id="8-实战kubernetes-核心监控语句">&lt;span>8. 实战：Kubernetes 核心监控语句&lt;/span>
+ &lt;a href="#8-%e5%ae%9e%e6%88%98kubernetes-%e6%a0%b8%e5%bf%83%e7%9b%91%e6%8e%a7%e8%af%ad%e5%8f%a5" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>以下是几个经过性能优化的常用查询模板：&lt;/p>
+&lt;h3 class="heading-element" id="集群-cpu-使用率-排除不必要的标签">&lt;span>集群 CPU 使用率 (排除不必要的标签)&lt;/span>
+ &lt;a href="#%e9%9b%86%e7%be%a4-cpu-%e4%bd%bf%e7%94%a8%e7%8e%87-%e6%8e%92%e9%99%a4%e4%b8%8d%e5%bf%85%e8%a6%81%e7%9a%84%e6%a0%87%e7%ad%be" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-promql" data-lang="promql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">sum&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">by&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nv">node&lt;/span>&lt;span class="o">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="kr">rate&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nv">node_cpu_seconds_total&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="nl">mode&lt;/span>&lt;span class="o">!=&lt;/span>&lt;span class="p">&amp;#34;&lt;/span>&lt;span class="s">idle&lt;/span>&lt;span class="p">&amp;#34;}[&lt;/span>&lt;span class="s">5m&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="o">)&lt;/span>&lt;span class="w"> 
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="w"> 
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">sum&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">by&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nv">node&lt;/span>&lt;span class="o">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="kr">rate&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nv">node_cpu_seconds_total&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s">5m&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="o">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mi">100&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 class="heading-element" id="pod-内存使用量-top-10">&lt;span>Pod 内存使用量 (Top 10)&lt;/span>
+ &lt;a href="#pod-%e5%86%85%e5%ad%98%e4%bd%bf%e7%94%a8%e9%87%8f-top-10" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-promql" data-lang="promql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">topk&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="mi">10&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> 
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">sum&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">by&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nv">pod&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nv">namespace&lt;/span>&lt;span class="o">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nv">container_memory_working_set_bytes&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="nl">container&lt;/span>&lt;span class="o">!=&lt;/span>&lt;span class="p">&amp;#34;&amp;#34;}&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="o">)&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="o">)&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 class="heading-element" id="网络流量-入站出站">&lt;span>网络流量 (入站/出站)&lt;/span>
+ &lt;a href="#%e7%bd%91%e7%bb%9c%e6%b5%81%e9%87%8f-%e5%85%a5%e7%ab%99%e5%87%ba%e7%ab%99" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-promql" data-lang="promql">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 入站&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">sum&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">by&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nv">pod&lt;/span>&lt;span class="o">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="kr">rate&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nv">container_network_receive_bytes_total&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s">5m&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">))&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="c1"># 出站&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">sum&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">by&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nv">pod&lt;/span>&lt;span class="o">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="kr">rate&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nv">container_network_transmit_bytes_total&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s">5m&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">))&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
+&lt;p>&lt;strong>总结&lt;/strong>: 优秀的 PromQL 应该是在满足监控需求的前提下，消耗最少的计算资源。时刻关注 &lt;code>cardinality&lt;/code>（基数）和 &lt;code>execution time&lt;/code>（执行时间），合理利用 Recording Rules，是迈向高级 SRE 的必经之路。&lt;/p></description></item><item><title>Kubernetes 生产环境 cri-dockerd 二进制部署指南</title><link>https://www.kbsonlong.com/posts/kubernetes-%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83-cri-dockerd-%E4%BA%8C%E8%BF%9B%E5%88%B6%E9%83%A8%E7%BD%B2%E6%8C%87%E5%8D%97/</link><pubDate>Thu, 22 Jan 2026 10:10:00 +0800</pubDate><guid>https://www.kbsonlong.com/posts/kubernetes-%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83-cri-dockerd-%E4%BA%8C%E8%BF%9B%E5%88%B6%E9%83%A8%E7%BD%B2%E6%8C%87%E5%8D%97/</guid><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><description>&lt;h1 class="heading-element" id="部署全流程">&lt;span>部署全流程&lt;/span>
  &lt;a href="#%e9%83%a8%e7%bd%b2%e5%85%a8%e6%b5%81%e7%a8%8b" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -4760,1500 +5031,4 @@
 &lt;li>Kubernetes 文档：https://kubernetes.io/zh-cn/docs/home/&lt;/li>
 &lt;li>Istio 官方文档：https://istio.io/latest/zh/docs/&lt;/li>
 &lt;li>Linux 内核文档：https://docs.kernel.org/translations/zh_CN/index.html&lt;/li>
-&lt;/ul></description></item><item><title>Istio Pilot Discovery 深入剖析与流程图</title><link>https://www.kbsonlong.com/posts/istio-pilot-discovery-insights-and-flowcharts/</link><pubDate>Tue, 04 Nov 2025 13:34:33 +0800</pubDate><guid>https://www.kbsonlong.com/posts/istio-pilot-discovery-insights-and-flowcharts/</guid><category domain="https://www.kbsonlong.com/categories/content/">Content</category><category domain="https://www.kbsonlong.com/categories/posts/">Posts</category><category domain="https://www.kbsonlong.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</category><category domain="https://www.kbsonlong.com/categories/istio/">Istio</category><description>&lt;h1 class="heading-element" id="istio-pilot-discovery-深入剖析与流程图">&lt;span>Istio Pilot-Discovery 深入剖析与流程图&lt;/span>
- &lt;a href="#istio-pilot-discovery-%e6%b7%b1%e5%85%a5%e5%89%96%e6%9e%90%e4%b8%8e%e6%b5%81%e7%a8%8b%e5%9b%be" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h1>&lt;p>本文对 Istio 控制面的核心组件 Pilot-Discovery（通常作为 Istiod 的发现服务部分）进行系统性拆解与讲解，并配套 Mermaid 流程图来说明其关键启动路径、ADS 连接与订阅、以及 Push 配置下发流程。全文以仓库中的源码为依据，保证技术细节准确可溯源。&lt;/p>
-&lt;p>参考源码入口与目录：&lt;/p>
-&lt;ul>
-&lt;li>启动命令入口：&lt;code>pilot/cmd/pilot-discovery/main.go&lt;/code>、&lt;code>pilot/cmd/pilot-discovery/app/cmd.go&lt;/code>&lt;/li>
-&lt;li>服务器参数与选项：&lt;code>pilot/pkg/bootstrap/options.go&lt;/code>&lt;/li>
-&lt;li>XDS 发现与推送核心：&lt;code>pilot/pkg/xds/discovery.go&lt;/code> 及各类型生成器（LDS/RDS/CDS/EDS/ECDS/NDS）&lt;/li>
-&lt;/ul>
-&lt;hr>
-&lt;h2 class="heading-element" id="1-组件职责与定位">&lt;span>1. 组件职责与定位&lt;/span>
- &lt;a href="#1-%e7%bb%84%e4%bb%b6%e8%81%8c%e8%b4%a3%e4%b8%8e%e5%ae%9a%e4%bd%8d" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;p>Pilot-Discovery 是 Istio 控制面中为数据面（Envoy/Sidecar）提供动态配置的服务。核心职责：&lt;/p>
-&lt;ul>
-&lt;li>暴露 gRPC 的 XDS/ADS 接口，接收 Sidecar 订阅并推送配置；&lt;/li>
-&lt;li>维护全局服务与端点缓存（EndpointShards）、PushContext 以及各类生成器；&lt;/li>
-&lt;li>聚合多个服务注册中心（默认 Kubernetes），监听配置/服务变化并去抖合并事件；&lt;/li>
-&lt;li>提供监控与调试接口（HTTP/Monitoring、CtrlZ），可选地提供注入与校验的 HTTPS Webhook；&lt;/li>
-&lt;li>管理连接状态、流控与速率限制，支持增量/全量推送与缓存优化。&lt;/li>
-&lt;/ul>
-&lt;hr>
-&lt;h2 class="heading-element" id="2-启动流程总览">&lt;span>2. 启动流程总览&lt;/span>
- &lt;a href="#2-%e5%90%af%e5%8a%a8%e6%b5%81%e7%a8%8b%e6%80%bb%e8%a7%88" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;p>入口位于 &lt;code>pilot/cmd/pilot-discovery/main.go&lt;/code>：&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;span class="lnt">4
-&lt;/span>&lt;span class="lnt">5
-&lt;/span>&lt;span class="lnt">6
-&lt;/span>&lt;span class="lnt">7
-&lt;/span>&lt;span class="lnt">8
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">log&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">EnableKlogWithCobra&lt;/span>&lt;span class="p">()&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">rootCmd&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">app&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">NewRootCommand&lt;/span>&lt;span class="p">()&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">rootCmd&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Execute&lt;/span>&lt;span class="p">();&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">log&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Error&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">os&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Exit&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;p>&lt;code>NewRootCommand()&lt;/code> 在 &lt;code>app/cmd.go&lt;/code> 中定义。其子命令 &lt;code>discovery&lt;/code> 的 &lt;code>RunE&lt;/code> 会：&lt;/p>
-&lt;ol>
-&lt;li>打印 flags，创建 stop channel；&lt;/li>
-&lt;li>调用 &lt;code>bootstrap.NewServer(serverArgs)&lt;/code> 构建发现服务实例；&lt;/li>
-&lt;li>调用 &lt;code>discoveryServer.Start(stop)&lt;/code> 启动所有端口与控制循环；&lt;/li>
-&lt;li>监听退出信号并优雅关闭。&lt;/li>
-&lt;/ol>
-&lt;p>关键端口（均由 &lt;code>addFlags&lt;/code> 通过 &lt;code>PersistentFlags&lt;/code> 配置）：&lt;/p>
-&lt;ul>
-&lt;li>&lt;code>httpAddr&lt;/code>（默认 &lt;code>:8080&lt;/code>）：调试/健康检查/部分 HTTP 接口；&lt;/li>
-&lt;li>&lt;code>httpsAddr&lt;/code>（默认 &lt;code>:15017&lt;/code>）：注入与校验 Webhook（可选）；&lt;/li>
-&lt;li>&lt;code>grpcAddr&lt;/code>（默认 &lt;code>:15010&lt;/code>）：XDS/ADS 非 TLS gRPC；&lt;/li>
-&lt;li>&lt;code>secureGRPCAddr&lt;/code>（默认 &lt;code>:15012&lt;/code>）：XDS/ADS TLS gRPC；&lt;/li>
-&lt;li>&lt;code>monitoringAddr&lt;/code>（默认 &lt;code>:15014&lt;/code>）：自监控/指标暴露。&lt;/li>
-&lt;/ul>
-&lt;p>PilotArgs 与 DiscoveryServerOptions 定义在 &lt;code>pilot/pkg/bootstrap/options.go&lt;/code>，可通过命令行与环境变量（如 &lt;code>POD_NAMESPACE&lt;/code>、&lt;code>REVISION&lt;/code>）定制。&lt;/p>
-&lt;h3 class="heading-element" id="关键代码片段cmdgo---prerune-与-rune">&lt;span>关键代码片段（cmd.go - PreRunE 与 RunE）&lt;/span>
- &lt;a href="#%e5%85%b3%e9%94%ae%e4%bb%a3%e7%a0%81%e7%89%87%e6%ae%b5cmdgo---prerune-%e4%b8%8e-rune" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
-&lt;/span>&lt;span class="lnt"> 2
-&lt;/span>&lt;span class="lnt"> 3
-&lt;/span>&lt;span class="lnt"> 4
-&lt;/span>&lt;span class="lnt"> 5
-&lt;/span>&lt;span class="lnt"> 6
-&lt;/span>&lt;span class="lnt"> 7
-&lt;/span>&lt;span class="lnt"> 8
-&lt;/span>&lt;span class="lnt"> 9
-&lt;/span>&lt;span class="lnt">10
-&lt;/span>&lt;span class="lnt">11
-&lt;/span>&lt;span class="lnt">12
-&lt;/span>&lt;span class="lnt">13
-&lt;/span>&lt;span class="lnt">14
-&lt;/span>&lt;span class="lnt">15
-&lt;/span>&lt;span class="lnt">16
-&lt;/span>&lt;span class="lnt">17
-&lt;/span>&lt;span class="lnt">18
-&lt;/span>&lt;span class="lnt">19
-&lt;/span>&lt;span class="lnt">20
-&lt;/span>&lt;span class="lnt">21
-&lt;/span>&lt;span class="lnt">22
-&lt;/span>&lt;span class="lnt">23
-&lt;/span>&lt;span class="lnt">24
-&lt;/span>&lt;span class="lnt">25
-&lt;/span>&lt;span class="lnt">26
-&lt;/span>&lt;span class="lnt">27
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">newDiscoveryCommand&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">cobra&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Command&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="nx">cobra&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Command&lt;/span>&lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">Use&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s">&amp;#34;discovery&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">Short&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s">&amp;#34;Start Istio proxy discovery service.&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">Args&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="nx">cobra&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">ExactArgs&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">),&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">PreRunE&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">c&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">cobra&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Command&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">args&lt;/span> &lt;span class="p">[]&lt;/span>&lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">log&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Configure&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">loggingOptions&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nf">validateFlags&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">serverArgs&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">serverArgs&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Complete&lt;/span>&lt;span class="p">();&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="kc">nil&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">RunE&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="kd">func&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">c&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">cobra&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Command&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">args&lt;/span> &lt;span class="p">[]&lt;/span>&lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">cmd&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">PrintFlags&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">c&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Flags&lt;/span>&lt;span class="p">())&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">stop&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nb">make&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kd">chan&lt;/span> &lt;span class="kd">struct&lt;/span>&lt;span class="p">{})&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">discoveryServer&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">bootstrap&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">NewServer&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">serverArgs&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Errorf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;failed to create discovery service: %v&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">discoveryServer&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Start&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">stop&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">fmt&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Errorf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;failed to start discovery service: %v&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">cmd&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">WaitSignal&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">stop&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">discoveryServer&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">WaitUntilCompletion&lt;/span>&lt;span class="p">()&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="kc">nil&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;h3 class="heading-element" id="启动流程图mermaid">&lt;span>启动流程图（Mermaid）&lt;/span>
- &lt;a href="#%e5%90%af%e5%8a%a8%e6%b5%81%e7%a8%8b%e5%9b%bemermaid" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;div class="diagram-container">
- &lt;pre class="mermaid">flowchart TD
- A[main.go 启动] --> B[app.NewRootCommand]
- B --> C{选择子命令}
- C -->|discovery| D[PreRun: 配置日志/校验/Complete]
- D --> E[RunE: 打印flags, 创建stop chan]
- E --> F["bootstrap.NewServer(serverArgs)"]
- F --> G[构建 Model Environment / 注册中心 / XDS DiscoveryServer]
- G --> H["Start(): 启动 HTTP/HTTPS/gRPC/监控端口"]
- H --> I[初始化生成器、缓存、去抖队列]
- I --> J[侦听注册中心与配置变化]
- J --> K[等候退出信号]
- K --> L[WaitUntilCompletion &amp; 优雅关闭]&lt;/pre>
- &lt;pre class="mermaid-dark">flowchart TD
- A[main.go 启动] --> B[app.NewRootCommand]
- B --> C{选择子命令}
- C -->|discovery| D[PreRun: 配置日志/校验/Complete]
- D --> E[RunE: 打印flags, 创建stop chan]
- E --> F["bootstrap.NewServer(serverArgs)"]
- F --> G[构建 Model Environment / 注册中心 / XDS DiscoveryServer]
- G --> H["Start(): 启动 HTTP/HTTPS/gRPC/监控端口"]
- H --> I[初始化生成器、缓存、去抖队列]
- I --> J[侦听注册中心与配置变化]
- J --> K[等候退出信号]
- K --> L[WaitUntilCompletion &amp; 优雅关闭]&lt;/pre>
- &lt;pre class="mermaid-neutral">flowchart TD
- A[main.go 启动] --> B[app.NewRootCommand]
- B --> C{选择子命令}
- C -->|discovery| D[PreRun: 配置日志/校验/Complete]
- D --> E[RunE: 打印flags, 创建stop chan]
- E --> F["bootstrap.NewServer(serverArgs)"]
- F --> G[构建 Model Environment / 注册中心 / XDS DiscoveryServer]
- G --> H["Start(): 启动 HTTP/HTTPS/gRPC/监控端口"]
- H --> I[初始化生成器、缓存、去抖队列]
- I --> J[侦听注册中心与配置变化]
- J --> K[等候退出信号]
- K --> L[WaitUntilCompletion &amp; 优雅关闭]&lt;/pre>&lt;div class="diagram-copy-btn" aria-label="Copy Mermaid code" role="button">&lt;i class="fa-regular fa-clone" aria-hidden="true">&lt;/i>&lt;i class="fa-solid fa-check text-success" aria-hidden="true">&lt;/i>&lt;/div>
-&lt;template>&lt;pre>flowchart TD
- A[main.go 启动] --> B[app.NewRootCommand]
- B --> C{选择子命令}
- C -->|discovery| D[PreRun: 配置日志/校验/Complete]
- D --> E[RunE: 打印flags, 创建stop chan]
- E --> F["bootstrap.NewServer(serverArgs)"]
- F --> G[构建 Model Environment / 注册中心 / XDS DiscoveryServer]
- G --> H["Start(): 启动 HTTP/HTTPS/gRPC/监控端口"]
- H --> I[初始化生成器、缓存、去抖队列]
- I --> J[侦听注册中心与配置变化]
- J --> K[等候退出信号]
- K --> L[WaitUntilCompletion &amp; 优雅关闭]&lt;/pre>&lt;/template>
-&lt;/div>&lt;hr>
-&lt;h2 class="heading-element" id="3-discoveryserver-核心数据结构与职责">&lt;span>3. DiscoveryServer 核心数据结构与职责&lt;/span>
- &lt;a href="#3-discoveryserver-%e6%a0%b8%e5%bf%83%e6%95%b0%e6%8d%ae%e7%bb%93%e6%9e%84%e4%b8%8e%e8%81%8c%e8%b4%a3" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;p>位于 &lt;code>pilot/pkg/xds/discovery.go&lt;/code> 的 &lt;code>DiscoveryServer&lt;/code> 是 ADS/XDS 的核心，其关键字段与职责包括：&lt;/p>
-&lt;ul>
-&lt;li>&lt;code>Env *model.Environment&lt;/code>：全局环境上下文，含 Mesh 配置、服务注册表等；&lt;/li>
-&lt;li>&lt;code>EndpointShardsByService&lt;/code>：按服务/命名空间聚合的端点分片缓存（来自不同注册中心/集群）；&lt;/li>
-&lt;li>&lt;code>pushChannel&lt;/code> 与 &lt;code>pushQueue&lt;/code>：用于去抖（debounce）后的异步推送队列；&lt;/li>
-&lt;li>&lt;code>Generators&lt;/code> 与 &lt;code>ConfigGenerator&lt;/code>：按 TypeURL（LDS/RDS/CDS/EDS/ECDS/NDS）生成对应配置；&lt;/li>
-&lt;li>&lt;code>adsClients&lt;/code>：当前活跃的 ADS/EDS gRPC 连接集合，管理连接状态与订阅主题；&lt;/li>
-&lt;li>&lt;code>ProxyNeedsPush&lt;/code>：判断某代理是否需要本次 Push 的谓词，避免不必要下发；&lt;/li>
-&lt;li>&lt;code>Cache&lt;/code>：XDS 缓存（由特性 &lt;code>EnableXDSCaching&lt;/code> 控制）；&lt;/li>
-&lt;li>&lt;code>debounceOptions&lt;/code>：去抖窗口（&lt;code>DebounceAfter&lt;/code>/&lt;code>DebounceMax&lt;/code>，含 EDS 专用）；&lt;/li>
-&lt;li>监控与状态：&lt;code>InboundUpdates&lt;/code>、&lt;code>CommittedUpdates&lt;/code>、&lt;code>StatusReporter&lt;/code> 等。&lt;/li>
-&lt;/ul>
-&lt;p>构造函数 &lt;code>NewDiscoveryServer(env, plugins, instanceID, systemNamespace, clusterAliases)&lt;/code> 完成初始化（JWT 解析器、缓存开关、ConfigGenerator 实例化等）。&lt;/p>
-&lt;hr>
-&lt;h2 class="heading-element" id="4-ads-连接与订阅">&lt;span>4. ADS 连接与订阅&lt;/span>
- &lt;a href="#4-ads-%e8%bf%9e%e6%8e%a5%e4%b8%8e%e8%ae%a2%e9%98%85" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;p>Sidecar 与 Pilot-Discovery 建立 gRPC 流（ADS/增量），按需订阅 TypeURL。&lt;/p>
-&lt;ul>
-&lt;li>Pilot 注册 gRPC 服务（&lt;code>Register(rpcs *grpc.Server)&lt;/code>），挂载 Discovery/DeltaDiscovery；&lt;/li>
-&lt;li>首次连接进行认证（&lt;code>Authenticators&lt;/code>）与集群别名映射（&lt;code>ClusterAliases&lt;/code>）；&lt;/li>
-&lt;li>连接建立后，&lt;code>Connection&lt;/code> 跟踪订阅类型、nonce/version 以及上次 ACK/NACK 状态。&lt;/li>
-&lt;/ul>
-&lt;h3 class="heading-element" id="ads-连接与订阅流程图mermaid">&lt;span>ADS 连接与订阅流程图（Mermaid）&lt;/span>
- &lt;a href="#ads-%e8%bf%9e%e6%8e%a5%e4%b8%8e%e8%ae%a2%e9%98%85%e6%b5%81%e7%a8%8b%e5%9b%bemermaid" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;div class="diagram-container">
- &lt;pre class="mermaid">flowchart TD
- A[Sidecar 启动] --> B["连接 Pilot gRPC (15010/15012)"]
- B --> C{认证/握手}
- C -->|通过| D[建立 ADS 双向流]
- D --> E["发送初始 DiscoveryRequest(含 TypeURL/token/node)"]
- E --> F[Pilot 记录连接/订阅信息]
- F --> G[生成初始配置并返回 DiscoveryResponse]
- G --> H{Sidecar 校验}
- H -->|ACK| I[更新订阅状态, 继续增量或后续订阅]
- H -->|NACK| J[记录错误, 可重试/修复后再次下发]&lt;/pre>
- &lt;pre class="mermaid-dark">flowchart TD
- A[Sidecar 启动] --> B["连接 Pilot gRPC (15010/15012)"]
- B --> C{认证/握手}
- C -->|通过| D[建立 ADS 双向流]
- D --> E["发送初始 DiscoveryRequest(含 TypeURL/token/node)"]
- E --> F[Pilot 记录连接/订阅信息]
- F --> G[生成初始配置并返回 DiscoveryResponse]
- G --> H{Sidecar 校验}
- H -->|ACK| I[更新订阅状态, 继续增量或后续订阅]
- H -->|NACK| J[记录错误, 可重试/修复后再次下发]&lt;/pre>
- &lt;pre class="mermaid-neutral">flowchart TD
- A[Sidecar 启动] --> B["连接 Pilot gRPC (15010/15012)"]
- B --> C{认证/握手}
- C -->|通过| D[建立 ADS 双向流]
- D --> E["发送初始 DiscoveryRequest(含 TypeURL/token/node)"]
- E --> F[Pilot 记录连接/订阅信息]
- F --> G[生成初始配置并返回 DiscoveryResponse]
- G --> H{Sidecar 校验}
- H -->|ACK| I[更新订阅状态, 继续增量或后续订阅]
- H -->|NACK| J[记录错误, 可重试/修复后再次下发]&lt;/pre>&lt;div class="diagram-copy-btn" aria-label="Copy Mermaid code" role="button">&lt;i class="fa-regular fa-clone" aria-hidden="true">&lt;/i>&lt;i class="fa-solid fa-check text-success" aria-hidden="true">&lt;/i>&lt;/div>
-&lt;template>&lt;pre>flowchart TD
- A[Sidecar 启动] --> B["连接 Pilot gRPC (15010/15012)"]
- B --> C{认证/握手}
- C -->|通过| D[建立 ADS 双向流]
- D --> E["发送初始 DiscoveryRequest(含 TypeURL/token/node)"]
- E --> F[Pilot 记录连接/订阅信息]
- F --> G[生成初始配置并返回 DiscoveryResponse]
- G --> H{Sidecar 校验}
- H -->|ACK| I[更新订阅状态, 继续增量或后续订阅]
- H -->|NACK| J[记录错误, 可重试/修复后再次下发]&lt;/pre>&lt;/template>
-&lt;/div>&lt;hr>
-&lt;h2 class="heading-element" id="5-推送流程与触发源">&lt;span>5. 推送流程与触发源&lt;/span>
- &lt;a href="#5-%e6%8e%a8%e9%80%81%e6%b5%81%e7%a8%8b%e4%b8%8e%e8%a7%a6%e5%8f%91%e6%ba%90" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;p>当注册中心（服务/端点）或 Istio 配置（VirtualService/Gateway 等）发生变化时，会触发 Push：&lt;/p>
-&lt;ol>
-&lt;li>事件入队：&lt;code>ConfigUpdate(req *model.PushRequest)&lt;/code> 写入 &lt;code>pushChannel&lt;/code>；&lt;/li>
-&lt;li>去抖与合并：在 &lt;code>debounceAfter&lt;/code> 与 &lt;code>debounceMax&lt;/code> 窗口内合并事件；&lt;/li>
-&lt;li>构建上下文：&lt;code>initPushContext(req, old, version)&lt;/code> 汇总变更为 &lt;code>PushContext&lt;/code>；&lt;/li>
-&lt;li>筛选代理：遍历 &lt;code>adsClients&lt;/code>，结合 &lt;code>ProxyNeedsPush&lt;/code> 与订阅类型过滤；&lt;/li>
-&lt;li>调用生成器：按 TypeURL（LDS/RDS/CDS/EDS/ECDS/NDS）生成资源；&lt;/li>
-&lt;li>缓存与版本：命中/回填 XDS 缓存，生成 &lt;code>nonce/version&lt;/code>；&lt;/li>
-&lt;li>通过 gRPC 流发送 &lt;code>DiscoveryResponse&lt;/code>，并记录指标。&lt;/li>
-&lt;/ol>
-&lt;h3 class="heading-element" id="触发-push-的典型来源">&lt;span>触发 Push 的典型来源&lt;/span>
- &lt;a href="#%e8%a7%a6%e5%8f%91-push-%e7%9a%84%e5%85%b8%e5%9e%8b%e6%9d%a5%e6%ba%90" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;ul>
-&lt;li>
-&lt;p>控制面配置变化（常导致 Full 或按类型的 Push）：&lt;/p>
-&lt;ul>
-&lt;li>VirtualService、DestinationRule、Gateway、Sidecar、EnvoyFilter 的新增/更新/删除；&lt;/li>
-&lt;li>ServiceEntry、WorkloadEntry/WorkloadGroup 变更（地址、端口、标签、证书等）；&lt;/li>
-&lt;li>认证与安全策略：RequestAuthentication、AuthorizationPolicy、PeerAuthentication、Telemetry；&lt;/li>
-&lt;li>MeshConfig、Networks 文件变更（如 &lt;code>meshConfig&lt;/code>、&lt;code>meshNetworks&lt;/code>）；&lt;/li>
-&lt;li>命名空间或选择器影响范围变化（Sidecar 作用域、命名空间标签变化）。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>服务注册中心事件（通常为增量 EDS，必要时扩展为 CDS/RDS/LDS）：&lt;/p>
-&lt;ul>
-&lt;li>Kubernetes Service/EndpointSlice 的新增/删除/更新（端口、标签、选择器变化）；&lt;/li>
-&lt;li>Pod/Workload 的新增/删除/状态变化（Ready/NotReady、IP 变更、注入状态/labels/annotations 变化）；&lt;/li>
-&lt;li>多集群/多注册中心端点变更（分片 ShardKey 更新）。当 &lt;code>EndpointShards.ServiceAccounts&lt;/code> 变化时，为更新 SAN 会触发 Full Push。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>证书与信任相关触发：&lt;/p>
-&lt;ul>
-&lt;li>JWT 公钥变更：&lt;code>JwtKeyResolver.PushFunc&lt;/code> 检测到更新时触发 &lt;code>Full: true&lt;/code>；&lt;/li>
-&lt;li>Trust bundle/根证书更新：影响双向 TLS 校验，通常触发 CDS/LDS/RDS 的重建。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>连接与会话层触发：&lt;/p>
-&lt;ul>
-&lt;li>Sidecar 新连接/重连：首次建立 ADS 流时发送初始配置；重连基于当前 &lt;code>PushContext&lt;/code> 重新下发；&lt;/li>
-&lt;li>NACK：Envoy 对某次下发 NACK（资源校验失败）时，Pilot 记录并在修复后重推该类型资源。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>手动/运维触发：&lt;/p>
-&lt;ul>
-&lt;li>通过调试接口或管理命令触发重建上下文或清理缓存（可强制全量下发）。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h3 class="heading-element" id="push-下发流程图mermaid">&lt;span>Push 下发流程图（Mermaid）&lt;/span>
- &lt;a href="#push-%e4%b8%8b%e5%8f%91%e6%b5%81%e7%a8%8b%e5%9b%bemermaid" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;div class="diagram-container">
- &lt;pre class="mermaid">flowchart TD
- A[配置/服务事件] --> B[ConfigUpdate: 写入 pushChannel]
- B --> C{Debounce: 等待窗口}
- C -->|窗口结束| D[合并请求 → pushQueue]
- D --> E[initPushContext: 生成全局上下文]
- E --> F["选择需要推送的连接(adsClients)"]
- F --> G[按订阅类型调用生成器: LDS/RDS/CDS/EDS/...]
- G --> H[命中/回填 XDS 缓存]
- H --> I["组装 DiscoveryResponse(nonce/version)"]
- I --> J[通过 gRPC 流发送]
- J --> K{Sidecar ACK/NACK}
- K -->|ACK| L[推进版本, 记录状态]
- K -->|NACK| M[记录错误, 可重试]&lt;/pre>
- &lt;pre class="mermaid-dark">flowchart TD
- A[配置/服务事件] --> B[ConfigUpdate: 写入 pushChannel]
- B --> C{Debounce: 等待窗口}
- C -->|窗口结束| D[合并请求 → pushQueue]
- D --> E[initPushContext: 生成全局上下文]
- E --> F["选择需要推送的连接(adsClients)"]
- F --> G[按订阅类型调用生成器: LDS/RDS/CDS/EDS/...]
- G --> H[命中/回填 XDS 缓存]
- H --> I["组装 DiscoveryResponse(nonce/version)"]
- I --> J[通过 gRPC 流发送]
- J --> K{Sidecar ACK/NACK}
- K -->|ACK| L[推进版本, 记录状态]
- K -->|NACK| M[记录错误, 可重试]&lt;/pre>
- &lt;pre class="mermaid-neutral">flowchart TD
- A[配置/服务事件] --> B[ConfigUpdate: 写入 pushChannel]
- B --> C{Debounce: 等待窗口}
- C -->|窗口结束| D[合并请求 → pushQueue]
- D --> E[initPushContext: 生成全局上下文]
- E --> F["选择需要推送的连接(adsClients)"]
- F --> G[按订阅类型调用生成器: LDS/RDS/CDS/EDS/...]
- G --> H[命中/回填 XDS 缓存]
- H --> I["组装 DiscoveryResponse(nonce/version)"]
- I --> J[通过 gRPC 流发送]
- J --> K{Sidecar ACK/NACK}
- K -->|ACK| L[推进版本, 记录状态]
- K -->|NACK| M[记录错误, 可重试]&lt;/pre>&lt;div class="diagram-copy-btn" aria-label="Copy Mermaid code" role="button">&lt;i class="fa-regular fa-clone" aria-hidden="true">&lt;/i>&lt;i class="fa-solid fa-check text-success" aria-hidden="true">&lt;/i>&lt;/div>
-&lt;template>&lt;pre>flowchart TD
- A[配置/服务事件] --> B[ConfigUpdate: 写入 pushChannel]
- B --> C{Debounce: 等待窗口}
- C -->|窗口结束| D[合并请求 → pushQueue]
- D --> E[initPushContext: 生成全局上下文]
- E --> F["选择需要推送的连接(adsClients)"]
- F --> G[按订阅类型调用生成器: LDS/RDS/CDS/EDS/...]
- G --> H[命中/回填 XDS 缓存]
- H --> I["组装 DiscoveryResponse(nonce/version)"]
- I --> J[通过 gRPC 流发送]
- J --> K{Sidecar ACK/NACK}
- K -->|ACK| L[推进版本, 记录状态]
- K -->|NACK| M[记录错误, 可重试]&lt;/pre>&lt;/template>
-&lt;/div>&lt;hr>
-&lt;h2 class="heading-element" id="6-性能与可靠性机制">&lt;span>6. 性能与可靠性机制&lt;/span>
- &lt;a href="#6-%e6%80%a7%e8%83%bd%e4%b8%8e%e5%8f%af%e9%9d%a0%e6%80%a7%e6%9c%ba%e5%88%b6" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;ul>
-&lt;li>去抖（Debounce）：通过 &lt;code>debounceAfter&lt;/code> 与 &lt;code>debounceMax&lt;/code> 控制推送频率，平衡时延与抖动；&lt;/li>
-&lt;li>并发与限流：&lt;code>concurrentPushLimit&lt;/code> 控制并发推送；&lt;code>requestRateLimit&lt;/code> 控制连接请求速率；&lt;/li>
-&lt;li>缓存（XdsCache）：减少重复生成开销，提高大规模环境下的推送效率；&lt;/li>
-&lt;li>增量更新：按端点分片（EndpointShards）与订阅类型进行增量下发；&lt;/li>
-&lt;li>状态与监控：&lt;code>pilot_xds_push_time&lt;/code>、&lt;code>pilot_xds_send_time&lt;/code> 等指标便于观测与优化。&lt;/li>
-&lt;/ul>
-&lt;hr>
-&lt;h2 class="heading-element" id="7-端口与子系统">&lt;span>7. 端口与子系统&lt;/span>
- &lt;a href="#7-%e7%ab%af%e5%8f%a3%e4%b8%8e%e5%ad%90%e7%b3%bb%e7%bb%9f" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;ul>
-&lt;li>gRPC（:15010 / :15012）：ADS/XDS（支持 TLS），数据面主要入口；&lt;/li>
-&lt;li>HTTP（:8080）：调试与部分公开接口，HTTPS 关闭时可能承载非安全 Webhook；&lt;/li>
-&lt;li>HTTPS（:15017）：注入与校验 Webhook（安全）；&lt;/li>
-&lt;li>Monitoring（:15014）：自监控指标暴露；&lt;/li>
-&lt;li>CtrlZ：交互式诊断（命令行可开启）。&lt;/li>
-&lt;/ul>
-&lt;hr>
-&lt;h2 class="heading-element" id="8-注册中心与多集群">&lt;span>8. 注册中心与多集群&lt;/span>
- &lt;a href="#8-%e6%b3%a8%e5%86%8c%e4%b8%ad%e5%bf%83%e4%b8%8e%e5%a4%9a%e9%9b%86%e7%be%a4" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;ul>
-&lt;li>默认注册中心为 Kubernetes（&lt;code>--registries=kubernetes&lt;/code>），也可启用 Mock 等；&lt;/li>
-&lt;li>通过 &lt;code>ClusterAliases&lt;/code> 统一多集群 ID，便于筛选与推送；&lt;/li>
-&lt;li>端点分片（EndpointShards）以 &lt;code>ShardKey&lt;/code> 分组（通常为注册中心/集群标识）。&lt;/li>
-&lt;/ul>
-&lt;hr>
-&lt;h2 class="heading-element" id="9-调试与问题定位建议">&lt;span>9. 调试与问题定位建议&lt;/span>
- &lt;a href="#9-%e8%b0%83%e8%af%95%e4%b8%8e%e9%97%ae%e9%a2%98%e5%ae%9a%e4%bd%8d%e5%bb%ba%e8%ae%ae" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;ul>
-&lt;li>连接检查：确认 Sidecar 到 Pilot 的 gRPC 连接（查看 ADS 客户端与握手日志）；&lt;/li>
-&lt;li>ACK/NACK 观察：通过调试接口或日志查看 NACK 原因（常为过滤器不兼容或资源缺失）；&lt;/li>
-&lt;li>Debounce：频繁更新时调大 &lt;code>DebounceAfter&lt;/code> 或检查事件来源是否异常；&lt;/li>
-&lt;li>缓存失效策略：必要时在 &lt;code>ConfigUpdate&lt;/code> 中强制 &lt;code>Full&lt;/code> 推送，排查缓存一致性问题；&lt;/li>
-&lt;li>指标与火焰图：关注 &lt;code>pilot_xds_push_time&lt;/code>、&lt;code>_send_time&lt;/code> 的分布，定位生成/发送热点。&lt;/li>
-&lt;/ul>
-&lt;hr>
-&lt;h3 class="heading-element" id="91-实操调试命令与手动触发上下文重建缓存清理">&lt;span>9.1 实操：调试命令与手动触发上下文重建/缓存清理&lt;/span>
- &lt;a href="#91-%e5%ae%9e%e6%93%8d%e8%b0%83%e8%af%95%e5%91%bd%e4%bb%a4%e4%b8%8e%e6%89%8b%e5%8a%a8%e8%a7%a6%e5%8f%91%e4%b8%8a%e4%b8%8b%e6%96%87%e9%87%8d%e5%bb%ba%e7%bc%93%e5%ad%98%e6%b8%85%e7%90%86" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;p>为便于快速定位与验证，下列命令可直接复制使用。建议先将 istiod 的调试端口通过本地转发暴露出来：&lt;/p>
-&lt;ul>
-&lt;li>
-&lt;p>端口转发（默认 istiod 调试端口为 8080）：&lt;/p>
-&lt;ul>
-&lt;li>kubectl -n istio-system port-forward deploy/istiod-&lt;REVISION> 8080:8080&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>列出所有调试端点：&lt;/p>
-&lt;ul>
-&lt;li>curl -s http://localhost:8080/debug/list | jq .&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>查看 ADS 客户端连接与订阅资源：&lt;/p>
-&lt;ul>
-&lt;li>curl -s http://localhost:8080/debug/adsz | jq .&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>查看各代理的 xDS 同步状态（ACK/NACK）：&lt;/p>
-&lt;ul>
-&lt;li>curl -s http://localhost:8080/debug/syncz | jq .&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>配置分发版本概览：&lt;/p>
-&lt;ul>
-&lt;li>curl -s http://localhost:8080/debug/config_distribution | jq .&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>查看/清理 Pilot 的 XDS 缓存：&lt;/p>
-&lt;ul>
-&lt;li>查看缓存条目：curl -s &amp;ldquo;http://localhost:8080/debug/cachez&amp;rdquo; | jq .&lt;/li>
-&lt;li>查看缓存大小：curl -s &amp;ldquo;http://localhost:8080/debug/cachez?sizes=true&amp;rdquo; | jq .&lt;/li>
-&lt;li>清空缓存：curl -s &amp;ldquo;http://localhost:8080/debug/cachez?clear=true&amp;rdquo;&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>当前 PushContext 与最近一次推送状态：&lt;/p>
-&lt;ul>
-&lt;li>当前 PushContext：curl -s http://localhost:8080/debug/pushcontext | jq .&lt;/li>
-&lt;li>最近一次推送状态：curl -s http://localhost:8080/debug/push_status | jq .&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>针对某代理的 Sidecar 可见范围：&lt;/p>
-&lt;ul>
-&lt;li>curl -s &amp;ldquo;http://localhost:8080/debug/sidecarz?proxyID=&lt;pod>.&lt;namespace>&amp;rdquo; | jq .&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>查看指定服务实例：&lt;/p>
-&lt;ul>
-&lt;li>curl -s &amp;ldquo;http://localhost:8080/debug/instancesz?svc=&lt;serviceFQDN>&amp;rdquo; | jq .&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>断开某代理连接（强制重连）：&lt;/p>
-&lt;ul>
-&lt;li>curl -s &amp;ldquo;http://localhost:8080/debug/force_disconnect?proxyID=&lt;pod>.&lt;namespace>&amp;rdquo;&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>面向单代理的服务端 ConfigDump（Pilot 生成的期望动态配置）：&lt;/p>
-&lt;ul>
-&lt;li>curl -s &amp;ldquo;http://localhost:8080/debug/config_dump?proxyID=&lt;pod>.&lt;namespace>&amp;rdquo; &amp;gt; pilot-config-dump.json&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>Envoy 侧实际配置（sidecar admin API）：&lt;/p>
-&lt;ul>
-&lt;li>kubectl -n &lt;ns> exec -it &lt;pod> -c istio-proxy &amp;ndash; curl -sS http://localhost:15000/config_dump &amp;gt; envoy-config-dump.json&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;p>手动触发（说明与示例）：&lt;/p>
-&lt;ul>
-&lt;li>
-&lt;p>一次性全量下发（不重建 PushContext）：&lt;/p>
-&lt;ul>
-&lt;li>curl -s &amp;ldquo;http://localhost:8080/debug/adsz?push=true&amp;rdquo;&lt;/li>
-&lt;li>根据 &lt;code>pilot/pkg/xds/debug.go&lt;/code> 的 &lt;code>handlePushRequest&lt;/code> 逻辑，带 &lt;code>push&lt;/code> 参数访问 &lt;code>/debug/adsz&lt;/code> 会调用 &lt;code>AdsPushAll&lt;/code>，使用当前的 PushContext 发起一次全量下发。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>清理缓存后全量下发：&lt;/p>
-&lt;ul>
-&lt;li>curl -s &amp;ldquo;http://localhost:8080/debug/cachez?clear=true&amp;rdquo; &amp;amp;&amp;amp; curl -s &amp;ldquo;http://localhost:8080/debug/adsz?push=true&amp;rdquo;&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>“重建” PushContext 的推荐方式（通过轻量配置变更触发 Full Push）：&lt;/p>
-&lt;ul>
-&lt;li>原理：PushContext 的重建发生在服务端处理 &lt;code>ConfigUpdate&lt;/code> 并进入 Full Push 时；调试端点不直接提供重建开关，但可以通过对任意被 Pilot 监听的资源进行无侵入的元数据变更来触发。&lt;/li>
-&lt;li>示例 A（为某 Istio 资源添加/删除临时注解）：
-&lt;ol>
-&lt;li>添加注解：kubectl -n &lt;ns> annotate destinationrule &lt;name> debug-force-rebuild=&amp;quot;$(date +%s)&amp;quot; &amp;ndash;overwrite&lt;/li>
-&lt;li>删除注解：kubectl -n &lt;ns> annotate destinationrule &lt;name> debug-force-rebuild- &amp;ndash;overwrite&lt;/li>
-&lt;li>观察：Pilot 将产生新的 Push 版本；可通过 &lt;code>/debug/push_status&lt;/code> 与 &lt;code>/debug/pushcontext&lt;/code> 验证。&lt;/li>
-&lt;/ol>
-&lt;/li>
-&lt;li>示例 B（为 mesh ConfigMap 添加临时注解）：
-&lt;ol>
-&lt;li>kubectl -n istio-system patch configmap istio -p &amp;lsquo;{&amp;ldquo;metadata&amp;rdquo;:{&amp;ldquo;annotations&amp;rdquo;:{&amp;ldquo;debug-force-rebuild&amp;rdquo;:&amp;quot;&amp;rsquo;&amp;quot;$(date +%s)&amp;quot;&amp;rsquo;&amp;quot;}}}&amp;rsquo;&lt;/li>
-&lt;li>注意：避免更改 MeshConfig 的功能性字段；仅做注解增删等元数据变更。&lt;/li>
-&lt;/ol>
-&lt;/li>
-&lt;li>示例 C（JWT 公钥变化触发）：更新 &lt;code>RequestAuthentication&lt;/code> 的 JWKS 或其 URL 时，Pilot 的 &lt;code>JwtKeyResolver&lt;/code> 会清空缓存并触发推送（谨慎使用）。&lt;/li>
-&lt;li>示例 D（创建后删除一个临时 ServiceEntry，不被现有路由引用）：&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;p>安全提示：&lt;/p>
-&lt;ul>
-&lt;li>调试端点通常要求本地访问或通过与 XDS 相同的认证；使用 &lt;code>kubectl port-forward&lt;/code> 到本地是最简单方式。&lt;/li>
-&lt;li>在生产环境使用 &lt;code>/debug/force_disconnect&lt;/code>、清理缓存或触发 Full Push 前，请评估对流量的影响并选择低峰期操作。&lt;/li>
-&lt;li>通过“元数据注解”触发的上下文重建应确保不被业务逻辑引用，避免产生行为变更。&lt;/li>
-&lt;/ul>
-&lt;hr>
-&lt;h3 class="heading-element" id="92-故障排查清单checklist">&lt;span>9.2 故障排查清单（Checklist）&lt;/span>
- &lt;a href="#92-%e6%95%85%e9%9a%9c%e6%8e%92%e6%9f%a5%e6%b8%85%e5%8d%95checklist" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;ul>
-&lt;li>
-&lt;p>连接与证书（mTLS）：&lt;/p>
-&lt;ul>
-&lt;li>检查 sidecar 到 Pilot 的 gRPC 连接是否稳定：&lt;code>/debug/connections&lt;/code> 与 &lt;code>/debug/adsz&lt;/code>；查看 &lt;code>istio-proxy&lt;/code> 与 Pilot 日志是否出现握手失败/证书错误。&lt;/li>
-&lt;li>确认证书链与时间同步：SDS 是否正常下发，节点时钟是否偏差过大（&amp;gt; 1 分钟可能导致证书无效）。&lt;/li>
-&lt;li>检查代理身份（SPIFFE ID）与命名空间是否匹配 Mesh 配置与授权策略。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>订阅与资源可见性：&lt;/p>
-&lt;ul>
-&lt;li>使用 &lt;code>/debug/adsz&lt;/code> 查看每个连接的 &lt;code>Watches&lt;/code>（订阅的 typeURL 与资源名），确认订阅是否覆盖预期资源。&lt;/li>
-&lt;li>使用 &lt;code>/debug/sidecarz?proxyID=&amp;lt;pod&amp;gt;.&amp;lt;ns&amp;gt;&lt;/code> 检查可见范围与 Sidecar 的入/出站主机；如可见性异常，检查 Sidecar CR 与 workloadSelector。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>PushContext 与缓存：&lt;/p>
-&lt;ul>
-&lt;li>查看 &lt;code>/debug/push_status&lt;/code> 与 &lt;code>/debug/pushcontext&lt;/code>，确认最近一次推送版本与关键视图（授权策略、跨网络网关）是否符合预期。&lt;/li>
-&lt;li>若怀疑缓存污染，先 &lt;code>/debug/cachez?clear=true&lt;/code> 清理缓存，再 &lt;code>/debug/adsz?push=true&lt;/code> 发起全量下发观察效果。&lt;/li>
-&lt;li>关注 Debounce 与并发限制：频繁更新导致推送延迟时，评估 &lt;code>DebounceAfter&lt;/code>/&lt;code>DebounceMax&lt;/code> 与 &lt;code>requestRateLimit&lt;/code> 设置；检查 pushQueue 是否积压。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>生成器输出差异对比：&lt;/p>
-&lt;ul>
-&lt;li>Pilot 期望配置：&lt;code>/debug/config_dump?proxyID=&amp;lt;pod&amp;gt;.&amp;lt;ns&amp;gt;&lt;/code> 导出期望的动态配置（listeners/clusters/routes/endpoints）。&lt;/li>
-&lt;li>Envoy 实际配置：从 sidecar admin API 获取 &lt;code>http://localhost:15000/config_dump&lt;/code>。&lt;/li>
-&lt;li>对比两者的动态部分，重点检查：
-&lt;ul>
-&lt;li>Listener 冲突（端口/地址重复）、TLS 配置（SNI/证书引用）是否一致。&lt;/li>
-&lt;li>Route 规则（VirtualService 匹配、正则/前缀、重试/超时/故障注入）是否按预期展开；目标 cluster 是否存在。&lt;/li>
-&lt;li>Cluster 的 TLS/负载均衡设置与 DestinationRule 子集是否匹配；EDS 是否有健康端点。&lt;/li>
-&lt;li>EnvoyFilter/WasmPlugin 是否改写了关键字段导致结构不合法。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>注册中心与端点：&lt;/p>
-&lt;ul>
-&lt;li>使用 &lt;code>/debug/endpointz&lt;/code>、&lt;code>/debug/instancesz?svc=&amp;lt;FQDN&amp;gt;&lt;/code> 与 &lt;code>/debug/endpointShardz&lt;/code> 检查端点分片与实例视图是否完整。&lt;/li>
-&lt;li>多集群/跨网络场景：&lt;code>/debug/clusterz&lt;/code>、&lt;code>/debug/networkz&lt;/code>、&lt;code>/debug/mcsz&lt;/code> 检查远端集群/网关/MCS 服务是否可见。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>网关/TLS：&lt;/p>
-&lt;ul>
-&lt;li>检查 Gateway 与 HTTP/TLS 监听器的 SNI、证书 Secret 引用与 SDS 下发状态；必要时比对 Pilot/Envoy 两侧的 listener 与 secret 状态。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>常用操作序列：&lt;/p>
-&lt;ul>
-&lt;li>清缓存 → 全量推送：&lt;code>/debug/cachez?clear=true&lt;/code> → &lt;code>/debug/adsz?push=true&lt;/code>。&lt;/li>
-&lt;li>断开重连单代理：&lt;code>/debug/force_disconnect?proxyID=&amp;lt;pod&amp;gt;.&amp;lt;ns&amp;gt;&lt;/code> → 观察其重新订阅与下发。&lt;/li>
-&lt;li>通过元数据注解触发上下文重建（见 9.1 手动触发）。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h3 class="heading-element" id="93-常见-nack-原因速查">&lt;span>9.3 常见 NACK 原因速查&lt;/span>
- &lt;a href="#93-%e5%b8%b8%e8%a7%81-nack-%e5%8e%9f%e5%9b%a0%e9%80%9f%e6%9f%a5" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;ul>
-&lt;li>
-&lt;p>EnvoyFilter/插件导致无效配置：&lt;/p>
-&lt;ul>
-&lt;li>JSONPatch/mergePatch 改写错误路径或类型，生成非法 listener/route/cluster；Wasm 插件 ABI 或配置不兼容。&lt;/li>
-&lt;li>处置：暂时禁用相关 EnvoyFilter/WasmPlugin 验证；在 Pilot 期望配置与 Envoy 实际配置中定位差异点。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>监听器冲突与非法组合：&lt;/p>
-&lt;ul>
-&lt;li>同地址/端口重复监听；过滤器链匹配条件重复或冲突；TLS Inspector 缺失但需要基于 SNI 的匹配。&lt;/li>
-&lt;li>处置：检查 VirtualService/Gateway 下的端口/SNI 与 filter chain 组装顺序；必要时限缩可见性以避免重叠。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>路由配置错误：&lt;/p>
-&lt;ul>
-&lt;li>无效的 header/URI 匹配（正则不合法）；引用的 subset/cluster 不存在；权重求和不为 100；非法重试/超时配置。&lt;/li>
-&lt;li>处置：在 &lt;code>/debug/config_dump&lt;/code> 的 routeConfiguration 中逐条核对匹配与目标 cluster；修正 DestinationRule 与 VirtualService。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>集群/TLS 配置异常：&lt;/p>
-&lt;ul>
-&lt;li>DestinationRule 的 TLS 设置与服务端证书不匹配；引用的 Secret 不存在或 SDS 未就绪；&lt;/li>
-&lt;li>处置：核对 TLS 模式（ISTIO_MUTUAL/SIMPLE/PASSTHROUGH）与证书链；检查 SDS 与 cert/key 路径。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>端点与网络可达性问题：&lt;/p>
-&lt;ul>
-&lt;li>EDS 下发空或不健康；跨网络网关不可达；多集群远端未同步。&lt;/li>
-&lt;li>处置：&lt;code>/debug/endpointz&lt;/code>、&lt;code>/debug/networkz&lt;/code>、&lt;code>/debug/clusterz&lt;/code> 验证可达性与健康状态。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>版本/特性不匹配：&lt;/p>
-&lt;ul>
-&lt;li>使用了不被当前 Envoy 版本支持的过滤器或 API；typed_config 类型或版本不匹配。&lt;/li>
-&lt;li>处置：检查代理与控制面的版本兼容矩阵；回退或升级相应扩展。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>识别 NACK 的方法：&lt;/p>
-&lt;ul>
-&lt;li>&lt;code>kubectl logs -n &amp;lt;ns&amp;gt; &amp;lt;pod&amp;gt; -c istio-proxy&lt;/code> 关键字过滤：&lt;code>NACK&lt;/code>、&lt;code>[xds]&lt;/code>、&lt;code>envoy config&lt;/code>。&lt;/li>
-&lt;li>&lt;code>/debug/syncz&lt;/code> 中可见最近下发的版本与 ACK/NACK 状态，配合 &lt;code>/debug/adsz&lt;/code> 的订阅资源定位类型。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h3 class="heading-element" id="94-推荐观测指标与阈值15014prometheus">&lt;span>9.4 推荐观测指标与阈值（15014/Prometheus）&lt;/span>
- &lt;a href="#94-%e6%8e%a8%e8%8d%90%e8%a7%82%e6%b5%8b%e6%8c%87%e6%a0%87%e4%b8%8e%e9%98%88%e5%80%bc15014prometheus" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;ul>
-&lt;li>
-&lt;p>推送耗时相关：&lt;/p>
-&lt;ul>
-&lt;li>pilot_xds_push_time_seconds（推送生成阶段的耗时分布）&lt;/li>
-&lt;li>pilot_xds_send_time_seconds（发送阶段耗时分布）&lt;/li>
-&lt;li>建议：在中小规模集群中，P95 &amp;lt; 1s、P99 &amp;lt; 2s；超出需检查生成器热点与缓存/并发设置。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>推送频率与队列：
-－ inbound_updates_total / committed_updates_total（进入/提交的更新次数）
-－ push_queue_depth（如有暴露，关注队列长度是否长期&amp;gt;0）&lt;/p>
-&lt;ul>
-&lt;li>建议：队列深度长期为 0 或极低；若持续升高，检查 debounce 与事件风暴。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>连接与同步：&lt;/p>
-&lt;ul>
-&lt;li>pilot_total_ads_clients（连接的 ADS 客户端数）&lt;/li>
-&lt;li>xds_acked_total / xds_nacked_total（如有对应指标，关注 NACK 比例）&lt;/li>
-&lt;li>建议：NACK 比例应接近 0；若 &amp;gt; 1% 持续存在，应按“9.3 常见 NACK 原因速查”逐项排查。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>生成器与资源规模：&lt;/p>
-&lt;ul>
-&lt;li>listeners/routes/clusters/endpoints 数量与大小（可从 config_dump 或 Prom 指标侧观测）&lt;/li>
-&lt;li>建议：规模快速增长时，关注内存使用与生成/发送耗时的同步增长是否线性；必要时分域/分片。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>进程与性能：&lt;/p>
-&lt;ul>
-&lt;li>Go runtime 指标（goroutines、GC、CPU）：当推送高峰时是否出现过度 GC 或 goroutine 激增。&lt;/li>
-&lt;li>pprof（/debug/pprof）采样：定位生成器热路径与 JSON/Proto 序列化热点。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;p>说明：以上指标名与阈值为通用参考，具体名称可能因版本/部署方式略有差异；建议结合你的监控栈（Prometheus/Grafana）实际看板校准阈值，并按集群规模调整期望值。&lt;/p>
-&lt;h3 class="heading-element" id="95-多集群状态调试方法">&lt;span>9.5 多集群状态调试方法&lt;/span>
- &lt;a href="#95-%e5%a4%9a%e9%9b%86%e7%be%a4%e7%8a%b6%e6%80%81%e8%b0%83%e8%af%95%e6%96%b9%e6%b3%95" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;ul>
-&lt;li>
-&lt;p>基本拓扑确认：&lt;/p>
-&lt;ul>
-&lt;li>明确部署架构（primary-remote、多 primary、跨网络）与各集群的 clusterID、network 名称；&lt;/li>
-&lt;li>确认东西向网关（eastwest gateway）与远端集群的 API 访问是否通畅。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>Pilot 控制面视图验证（15014）：&lt;/p>
-&lt;ul>
-&lt;li>/debug/networkz：查看跨网络网关与网络拓扑是否识别正确。
-&lt;ul>
-&lt;li>端口转发：kubectl -n istio-system port-forward deploy/istiod-&lt;rev> 15014:15014&lt;/li>
-&lt;li>查看：curl -s http://localhost:15014/debug/networkz&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>/debug/clusterz：查看服务注册源（本地/远端）是否被 Pilot 发现。
-&lt;ul>
-&lt;li>curl -s http://localhost:15014/debug/clusterz&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>/debug/mcsz：查看多集群服务（MCS）的发现与同步状态（如开启）。
-&lt;ul>
-&lt;li>curl -s http://localhost:15014/debug/mcsz&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>/debug/endpointShardz：按 cluster 维度查看端点分片（远端集群的 endpoints 是否到位）。
-&lt;ul>
-&lt;li>curl -s http://localhost:15014/debug/endpointShardz&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>/debug/endpointz 与 /debug/instancesz?svc=&lt;FQDN>：核对某服务在不同 cluster 的实例/端点视图。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>代理侧视图验证（Envoy admin 15000）：&lt;/p>
-&lt;ul>
-&lt;li>端口转发：kubectl -n &lt;ns> port-forward pod/&lt;pod> 15000:15000&lt;/li>
-&lt;li>导出实际配置：curl -s http://localhost:15000/config_dump &amp;gt; envoy-config.json&lt;/li>
-&lt;li>核对要点：
-&lt;ul>
-&lt;li>listeners/clusters/routes/endpoints 的数量与关键条目名称是否与 Pilot 的 &lt;code>/debug/config_dump?proxyID=&amp;lt;pod&amp;gt;.&amp;lt;ns&amp;gt;&lt;/code> 一致；&lt;/li>
-&lt;li>EDS 中是否包含来自远端集群的端点（可通过 locality 或标签识别，或在 &lt;code>/debug/endpointShardz&lt;/code> 中确认分片来源）；&lt;/li>
-&lt;li>gateway/sidecar 的 TLS 与 SNI 配置是否合理，避免跨网络路由失败。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>同步与 ACK 状态：&lt;/p>
-&lt;ul>
-&lt;li>/debug/adsz：查看每个连接的订阅类型与资源名，确认跨集群服务已被订阅。&lt;/li>
-&lt;li>/debug/syncz：查看最近一次下发的版本与 ACK/NACK；如出现 NACK，按 9.3 排查。&lt;/li>
-&lt;li>建议配合 &lt;code>istioctl proxy-status&lt;/code> 查看 SYNCED/STALENESS 快速定位。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>常见问题快速排查：&lt;/p>
-&lt;ul>
-&lt;li>远端集群访问授权：
-&lt;ul>
-&lt;li>检查 istio-system 命名空间的远端 secret（名称通常包含 remote/clusterId）：kubectl -n istio-system get secret | grep -i remote&lt;/li>
-&lt;li>如需重建远端 secret，请使用 istioctl x create-remote-secret（参考官方文档）。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>东西向网关与网络定义：
-&lt;ul>
-&lt;li>kubectl -n istio-system get svc istio-eastwestgateway&lt;/li>
-&lt;li>/debug/networkz 中是否识别到正确的网关地址与网络映射。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>端点聚合：
-&lt;ul>
-&lt;li>/debug/endpointShardz 是否显示来自远端集群的分片；如缺失，检查远端集群与主控面的连接与 RBAC。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>资源可见性：
-&lt;ul>
-&lt;li>/debug/sidecarz?proxyID=&lt;pod>.&lt;ns> 验证该工作负载的可见服务集合是否涵盖远端服务；必要时调整 Sidecar CR 的 egress/ingress hosts。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>快速操作流程（控制面）：&lt;/p>
-&lt;ul>
-&lt;li>清缓存 → 全量推送：curl -s &amp;ldquo;http://localhost:15014/debug/cachez?clear=true&amp;rdquo;；curl -s &amp;ldquo;http://localhost:15014/debug/adsz?push=true&amp;rdquo;&lt;/li>
-&lt;li>断开重连单代理：curl -s &amp;ldquo;http://localhost:15014/debug/force_disconnect?proxyID=&lt;pod>.&lt;ns>&amp;rdquo;&lt;/li>
-&lt;li>观察推送状态：curl -s http://localhost:15014/debug/push_status；curl -s http://localhost:15014/debug/pushcontext&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;hr>
-&lt;h2 class="heading-element" id="10-典型时序">&lt;span>10. 典型时序&lt;/span>
- &lt;a href="#10-%e5%85%b8%e5%9e%8b%e6%97%b6%e5%ba%8f" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;h3 class="heading-element" id="典型时序图">&lt;span>典型时序图&lt;/span>
- &lt;a href="#%e5%85%b8%e5%9e%8b%e6%97%b6%e5%ba%8f%e5%9b%be" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;div class="diagram-container">
- &lt;pre class="mermaid">flowchart TD
- A[Sidecar 启动] --> B["连接 Pilot ADS (15010/15012)"]
- B --> C[首次订阅资源: LDS/CDS]
- C --> D[Pilot 返回 DiscoveryResponse]
- D --> E{Sidecar 校验}
- E -->|ACK| F[继续订阅 RDS/EDS]
- E -->|NACK| G[记录错误, 等待修复后重试]
- F --> H[进入稳定运行]
- H --> I[服务/配置发生变化]
- I --> J[ConfigUpdate → Debounce → pushQueue]
- J --> K[initPushContext 构建全局上下文]
- K --> L["筛选需要下发的连接(adsClients)"]
- L --> M[按订阅类型生成资源: LDS/RDS/CDS/EDS/...]
- M --> N[命中/回填 XDS 缓存]
- N --> O["下发 DiscoveryResponse (version/nonce)"]
- O --> P{Sidecar ACK/NACK}
- P -->|ACK| Q[推进版本/状态, 持续运行]
- P -->|NACK| R[记录错误, 修复后重推]&lt;/pre>
- &lt;pre class="mermaid-dark">flowchart TD
- A[Sidecar 启动] --> B["连接 Pilot ADS (15010/15012)"]
- B --> C[首次订阅资源: LDS/CDS]
- C --> D[Pilot 返回 DiscoveryResponse]
- D --> E{Sidecar 校验}
- E -->|ACK| F[继续订阅 RDS/EDS]
- E -->|NACK| G[记录错误, 等待修复后重试]
- F --> H[进入稳定运行]
- H --> I[服务/配置发生变化]
- I --> J[ConfigUpdate → Debounce → pushQueue]
- J --> K[initPushContext 构建全局上下文]
- K --> L["筛选需要下发的连接(adsClients)"]
- L --> M[按订阅类型生成资源: LDS/RDS/CDS/EDS/...]
- M --> N[命中/回填 XDS 缓存]
- N --> O["下发 DiscoveryResponse (version/nonce)"]
- O --> P{Sidecar ACK/NACK}
- P -->|ACK| Q[推进版本/状态, 持续运行]
- P -->|NACK| R[记录错误, 修复后重推]&lt;/pre>
- &lt;pre class="mermaid-neutral">flowchart TD
- A[Sidecar 启动] --> B["连接 Pilot ADS (15010/15012)"]
- B --> C[首次订阅资源: LDS/CDS]
- C --> D[Pilot 返回 DiscoveryResponse]
- D --> E{Sidecar 校验}
- E -->|ACK| F[继续订阅 RDS/EDS]
- E -->|NACK| G[记录错误, 等待修复后重试]
- F --> H[进入稳定运行]
- H --> I[服务/配置发生变化]
- I --> J[ConfigUpdate → Debounce → pushQueue]
- J --> K[initPushContext 构建全局上下文]
- K --> L["筛选需要下发的连接(adsClients)"]
- L --> M[按订阅类型生成资源: LDS/RDS/CDS/EDS/...]
- M --> N[命中/回填 XDS 缓存]
- N --> O["下发 DiscoveryResponse (version/nonce)"]
- O --> P{Sidecar ACK/NACK}
- P -->|ACK| Q[推进版本/状态, 持续运行]
- P -->|NACK| R[记录错误, 修复后重推]&lt;/pre>&lt;div class="diagram-copy-btn" aria-label="Copy Mermaid code" role="button">&lt;i class="fa-regular fa-clone" aria-hidden="true">&lt;/i>&lt;i class="fa-solid fa-check text-success" aria-hidden="true">&lt;/i>&lt;/div>
-&lt;template>&lt;pre>flowchart TD
- A[Sidecar 启动] --> B["连接 Pilot ADS (15010/15012)"]
- B --> C[首次订阅资源: LDS/CDS]
- C --> D[Pilot 返回 DiscoveryResponse]
- D --> E{Sidecar 校验}
- E -->|ACK| F[继续订阅 RDS/EDS]
- E -->|NACK| G[记录错误, 等待修复后重试]
- F --> H[进入稳定运行]
- H --> I[服务/配置发生变化]
- I --> J[ConfigUpdate → Debounce → pushQueue]
- J --> K[initPushContext 构建全局上下文]
- K --> L["筛选需要下发的连接(adsClients)"]
- L --> M[按订阅类型生成资源: LDS/RDS/CDS/EDS/...]
- M --> N[命中/回填 XDS 缓存]
- N --> O["下发 DiscoveryResponse (version/nonce)"]
- O --> P{Sidecar ACK/NACK}
- P -->|ACK| Q[推进版本/状态, 持续运行]
- P -->|NACK| R[记录错误, 修复后重推]&lt;/pre>&lt;/template>
-&lt;/div>&lt;hr>
-&lt;h2 class="heading-element" id="11-pushcontext-构建逻辑解析">&lt;span>11. PushContext 构建逻辑解析&lt;/span>
- &lt;a href="#11-pushcontext-%e6%9e%84%e5%bb%ba%e9%80%bb%e8%be%91%e8%a7%a3%e6%9e%90" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;p>PushContext 的职责是在一次 Push 周期内，将控制面与服务注册表的最新视图整合为“可生成 xDS”的统一上下文，包括索引、策略、可见性、网关与网络分区信息等。&lt;/p>
-&lt;p>生成时机：在 DiscoveryServer 的 Push 流程中，Full Push 重建上下文；增量则按 Config 更新做选择性重建。&lt;/p>
-&lt;p>关键入口 &lt;code>InitContext&lt;/code>：&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
-&lt;/span>&lt;span class="lnt"> 2
-&lt;/span>&lt;span class="lnt"> 3
-&lt;/span>&lt;span class="lnt"> 4
-&lt;/span>&lt;span class="lnt"> 5
-&lt;/span>&lt;span class="lnt"> 6
-&lt;/span>&lt;span class="lnt"> 7
-&lt;/span>&lt;span class="lnt"> 8
-&lt;/span>&lt;span class="lnt"> 9
-&lt;/span>&lt;span class="lnt">10
-&lt;/span>&lt;span class="lnt">11
-&lt;/span>&lt;span class="lnt">12
-&lt;/span>&lt;span class="lnt">13
-&lt;/span>&lt;span class="lnt">14
-&lt;/span>&lt;span class="lnt">15
-&lt;/span>&lt;span class="lnt">16
-&lt;/span>&lt;span class="lnt">17
-&lt;/span>&lt;span class="lnt">18
-&lt;/span>&lt;span class="lnt">19
-&lt;/span>&lt;span class="lnt">20
-&lt;/span>&lt;span class="lnt">21
-&lt;/span>&lt;span class="lnt">22
-&lt;/span>&lt;span class="lnt">23
-&lt;/span>&lt;span class="lnt">24
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// pilot/pkg/model/push_context.go&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">ps&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">PushContext&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">InitContext&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">env&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">Environment&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">oldPushContext&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">PushContext&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">pushReq&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">PushRequest&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">ps&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">initializeMutex&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Lock&lt;/span>&lt;span class="p">()&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">defer&lt;/span> &lt;span class="nx">ps&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">initializeMutex&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Unlock&lt;/span>&lt;span class="p">()&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">ps&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">InitDone&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Load&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="kc">nil&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">ps&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Mesh&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">env&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Mesh&lt;/span>&lt;span class="p">()&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">ps&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">LedgerVersion&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">env&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Version&lt;/span>&lt;span class="p">()&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">ps&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">initDefaultExportMaps&lt;/span>&lt;span class="p">()&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// create new or incremental update&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">pushReq&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="o">||&lt;/span> &lt;span class="nx">oldPushContext&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="o">||&lt;/span> &lt;span class="p">!&lt;/span>&lt;span class="nx">oldPushContext&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">InitDone&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Load&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">||&lt;/span> &lt;span class="nb">len&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">pushReq&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ConfigsUpdated&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">ps&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">createNewContext&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">env&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">ps&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">updateContext&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">env&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">oldPushContext&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">pushReq&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">ps&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">networkMgr&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">env&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">NetworkManager&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">ps&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">clusterLocalHosts&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">env&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">ClusterLocal&lt;/span>&lt;span class="p">().&lt;/span>&lt;span class="nf">GetClusterLocalHosts&lt;/span>&lt;span class="p">()&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">ps&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">InitDone&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Store&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kc">true&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="kc">nil&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;p>全量重建 &lt;code>createNewContext&lt;/code> 的阶段顺序：&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
-&lt;/span>&lt;span class="lnt"> 2
-&lt;/span>&lt;span class="lnt"> 3
-&lt;/span>&lt;span class="lnt"> 4
-&lt;/span>&lt;span class="lnt"> 5
-&lt;/span>&lt;span class="lnt"> 6
-&lt;/span>&lt;span class="lnt"> 7
-&lt;/span>&lt;span class="lnt"> 8
-&lt;/span>&lt;span class="lnt"> 9
-&lt;/span>&lt;span class="lnt">10
-&lt;/span>&lt;span class="lnt">11
-&lt;/span>&lt;span class="lnt">12
-&lt;/span>&lt;span class="lnt">13
-&lt;/span>&lt;span class="lnt">14
-&lt;/span>&lt;span class="lnt">15
-&lt;/span>&lt;span class="lnt">16
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">ps&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">PushContext&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">createNewContext&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">env&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">Environment&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">ps&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">initServiceRegistry&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">env&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">ps&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">initKubernetesGateways&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">env&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">ps&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">initVirtualServices&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">env&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">ps&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">initDestinationRules&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">env&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">ps&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">initAuthnPolicies&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">env&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">ps&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">initAuthorizationPolicies&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">env&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">ps&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">initTelemetry&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">env&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">ps&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">initProxyConfigs&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">env&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">ps&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">initWasmPlugins&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">env&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">ps&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">initEnvoyFilters&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">env&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">ps&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">initGateways&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">env&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// Must be initialized in the end&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">ps&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">initSidecarScopes&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">env&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="kc">nil&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;p>增量选择性重建 &lt;code>updateContext&lt;/code>（按变更点触发）：&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
-&lt;/span>&lt;span class="lnt"> 2
-&lt;/span>&lt;span class="lnt"> 3
-&lt;/span>&lt;span class="lnt"> 4
-&lt;/span>&lt;span class="lnt"> 5
-&lt;/span>&lt;span class="lnt"> 6
-&lt;/span>&lt;span class="lnt"> 7
-&lt;/span>&lt;span class="lnt"> 8
-&lt;/span>&lt;span class="lnt"> 9
-&lt;/span>&lt;span class="lnt">10
-&lt;/span>&lt;span class="lnt">11
-&lt;/span>&lt;span class="lnt">12
-&lt;/span>&lt;span class="lnt">13
-&lt;/span>&lt;span class="lnt">14
-&lt;/span>&lt;span class="lnt">15
-&lt;/span>&lt;span class="lnt">16
-&lt;/span>&lt;span class="lnt">17
-&lt;/span>&lt;span class="lnt">18
-&lt;/span>&lt;span class="lnt">19
-&lt;/span>&lt;span class="lnt">20
-&lt;/span>&lt;span class="lnt">21
-&lt;/span>&lt;span class="lnt">22
-&lt;/span>&lt;span class="lnt">23
-&lt;/span>&lt;span class="lnt">24
-&lt;/span>&lt;span class="lnt">25
-&lt;/span>&lt;span class="lnt">26
-&lt;/span>&lt;span class="lnt">27
-&lt;/span>&lt;span class="lnt">28
-&lt;/span>&lt;span class="lnt">29
-&lt;/span>&lt;span class="lnt">30
-&lt;/span>&lt;span class="lnt">31
-&lt;/span>&lt;span class="lnt">32
-&lt;/span>&lt;span class="lnt">33
-&lt;/span>&lt;span class="lnt">34
-&lt;/span>&lt;span class="lnt">35
-&lt;/span>&lt;span class="lnt">36
-&lt;/span>&lt;span class="lnt">37
-&lt;/span>&lt;span class="lnt">38
-&lt;/span>&lt;span class="lnt">39
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">ps&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">PushContext&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">updateContext&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">env&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">Environment&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">oldPushContext&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">PushContext&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">pushReq&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">PushRequest&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">var&lt;/span> &lt;span class="nx">servicesChanged&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">virtualServicesChanged&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">destinationRulesChanged&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">gatewayChanged&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">authnChanged&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">authzChanged&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">envoyFiltersChanged&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">sidecarsChanged&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">telemetryChanged&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">gatewayAPIChanged&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">wasmPluginsChanged&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">proxyConfigsChanged&lt;/span> &lt;span class="kt">bool&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="nx">conf&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="k">range&lt;/span> &lt;span class="nx">pushReq&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ConfigsUpdated&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">switch&lt;/span> &lt;span class="nx">conf&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Kind&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="nx">gvk&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ServiceEntry&lt;/span>&lt;span class="p">:&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">servicesChanged&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="kc">true&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="nx">gvk&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">DestinationRule&lt;/span>&lt;span class="p">:&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">destinationRulesChanged&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="kc">true&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="nx">gvk&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">VirtualService&lt;/span>&lt;span class="p">:&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">virtualServicesChanged&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="kc">true&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="nx">gvk&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Gateway&lt;/span>&lt;span class="p">:&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">gatewayChanged&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="kc">true&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="nx">gvk&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Sidecar&lt;/span>&lt;span class="p">:&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">sidecarsChanged&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="kc">true&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="nx">gvk&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">WasmPlugin&lt;/span>&lt;span class="p">:&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">wasmPluginsChanged&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="kc">true&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="nx">gvk&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">EnvoyFilter&lt;/span>&lt;span class="p">:&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">envoyFiltersChanged&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="kc">true&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="nx">gvk&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">AuthorizationPolicy&lt;/span>&lt;span class="p">:&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">authzChanged&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="kc">true&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="nx">gvk&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">RequestAuthentication&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">gvk&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">PeerAuthentication&lt;/span>&lt;span class="p">:&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">authnChanged&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="kc">true&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="nx">gvk&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">HTTPRoute&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">gvk&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">TCPRoute&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">gvk&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">GatewayClass&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">gvk&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">KubernetesGateway&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">gvk&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">TLSRoute&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">gvk&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ReferencePolicy&lt;/span>&lt;span class="p">:&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">gatewayAPIChanged&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="kc">true&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">virtualServicesChanged&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="kc">true&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">gatewayChanged&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="kc">true&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="nx">gvk&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Telemetry&lt;/span>&lt;span class="p">:&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">telemetryChanged&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="kc">true&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="nx">gvk&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ProxyConfig&lt;/span>&lt;span class="p">:&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">proxyConfigsChanged&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="kc">true&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 按变更点选择性重建各子视图（服务、VS、DR、Authn/Authz、Telemetry、EnvoyFilter、Sidecar、K8s Gateway 等）&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...（省略后续赋值与回收逻辑）&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="kc">nil&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;h3 class="heading-element" id="111-服务与端点索引serviceindexserviceinstances">&lt;span>11.1 服务与端点索引（ServiceIndex/ServiceInstances）&lt;/span>
- &lt;a href="#111-%e6%9c%8d%e5%8a%a1%e4%b8%8e%e7%ab%af%e7%82%b9%e7%b4%a2%e5%bc%95serviceindexserviceinstances" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;ul>
-&lt;li>来源：&lt;code>initServiceRegistry&lt;/code> 遍历服务，建立 Hostname+Namespace 查找表，并为每个端口预缓存实例集合；&lt;/li>
-&lt;li>作用：为后续 CDS/EDS/RDS/LDS 生成提供基础数据（例如 EDS 的端点来源、CDS 的服务维度聚合）。&lt;/li>
-&lt;/ul>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
-&lt;/span>&lt;span class="lnt"> 2
-&lt;/span>&lt;span class="lnt"> 3
-&lt;/span>&lt;span class="lnt"> 4
-&lt;/span>&lt;span class="lnt"> 5
-&lt;/span>&lt;span class="lnt"> 6
-&lt;/span>&lt;span class="lnt"> 7
-&lt;/span>&lt;span class="lnt"> 8
-&lt;/span>&lt;span class="lnt"> 9
-&lt;/span>&lt;span class="lnt">10
-&lt;/span>&lt;span class="lnt">11
-&lt;/span>&lt;span class="lnt">12
-&lt;/span>&lt;span class="lnt">13
-&lt;/span>&lt;span class="lnt">14
-&lt;/span>&lt;span class="lnt">15
-&lt;/span>&lt;span class="lnt">16
-&lt;/span>&lt;span class="lnt">17
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">ps&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">PushContext&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">initServiceRegistry&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">env&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">Environment&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">services&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">env&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Services&lt;/span>&lt;span class="p">();&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="kc">nil&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="nx">err&lt;/span> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">allServices&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nf">SortServicesByCreationTime&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">services&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">s&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="k">range&lt;/span> &lt;span class="nx">allServices&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">svcKey&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">s&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Key&lt;/span>&lt;span class="p">()&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// Precache instances&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">port&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="k">range&lt;/span> &lt;span class="nx">s&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Ports&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">_&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">ok&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">ps&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ServiceIndex&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">instancesByPort&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">svcKey&lt;/span>&lt;span class="p">];&lt;/span> &lt;span class="p">!&lt;/span>&lt;span class="nx">ok&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">ps&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ServiceIndex&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">instancesByPort&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">svcKey&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">make&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kd">map&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">][]&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="nx">ServiceInstance&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...填充每个端口的实例列表（省略细节）&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...维护 HostnameAndNamespace、public/private/exportedTo 等视图&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...同步 ServiceAccounts 与 Inbound/Outbound 可见性&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="kc">nil&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;h3 class="heading-element" id="112-路由视图virtualserviceindex">&lt;span>11.2 路由视图（VirtualServiceIndex）&lt;/span>
- &lt;a href="#112-%e8%b7%af%e7%94%b1%e8%a7%86%e5%9b%bevirtualserviceindex" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;ul>
-&lt;li>来源：&lt;code>initVirtualServices&lt;/code> 收集并索引 VS，按网关、命名空间与 ExportTo 分组；支持委托（delegates）与多网关派生；&lt;/li>
-&lt;li>作用：为 RDS 的 routeConfiguration 生成提供匹配条件、目标权重、重试/故障注入等策略输入。&lt;/li>
-&lt;/ul>
-&lt;p>提示：&lt;code>push_context.go&lt;/code> 中包含 &lt;code>getGatewayNames&lt;/code>、&lt;code>DelegateVirtualServicesConfigKey&lt;/code> 等辅助函数用于 VS 的派生与关联。&lt;/p>
-&lt;h3 class="heading-element" id="113-集群视图destinationruleindex--service">&lt;span>11.3 集群视图（DestinationRuleIndex + Service）&lt;/span>
- &lt;a href="#113-%e9%9b%86%e7%be%a4%e8%a7%86%e5%9b%bedestinationruleindex--service" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;ul>
-&lt;li>来源：&lt;code>initDestinationRules&lt;/code> 构建 &lt;code>processedDestRules&lt;/code>（hosts/exports/destRule），并合并命名空间继承与 Mesh Root 的默认策略；支持子集（subset）与流量策略（TrafficPolicy）。&lt;/li>
-&lt;li>作用：为 CDS 的 cluster 生成与路由子集选择提供依据；并影响 EDS 的 locality、负载均衡、熔断等配置。&lt;/li>
-&lt;/ul>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;span class="lnt">4
-&lt;/span>&lt;span class="lnt">5
-&lt;/span>&lt;span class="lnt">6
-&lt;/span>&lt;span class="lnt">7
-&lt;/span>&lt;span class="lnt">8
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">type&lt;/span> &lt;span class="nx">processedDestRules&lt;/span> &lt;span class="kd">struct&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">hosts&lt;/span> &lt;span class="p">[]&lt;/span>&lt;span class="nx">host&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Name&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">hostsMap&lt;/span> &lt;span class="kd">map&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">host&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Name&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="kd">struct&lt;/span>&lt;span class="p">{}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">exportTo&lt;/span> &lt;span class="kd">map&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">host&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Name&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="kd">map&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">visibility&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Instance&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="kt">bool&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">destRule&lt;/span> &lt;span class="kd">map&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">host&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Name&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="nx">config&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Config&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">ps&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">PushContext&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">SetDestinationRules&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">configs&lt;/span> &lt;span class="p">[]&lt;/span>&lt;span class="nx">config&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Config&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="cm">/* 合并并索引 */&lt;/span> &lt;span class="p">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;h3 class="heading-element" id="114-过滤器链与可插拔扩展envoyfilterwasmauthnauthztelemetryproxyconfig">&lt;span>11.4 过滤器链与可插拔扩展（EnvoyFilter/Wasm/Authn/Authz/Telemetry/ProxyConfig）&lt;/span>
- &lt;a href="#114-%e8%bf%87%e6%bb%a4%e5%99%a8%e9%93%be%e4%b8%8e%e5%8f%af%e6%8f%92%e6%8b%94%e6%89%a9%e5%b1%95envoyfilterwasmauthnauthztelemetryproxyconfig" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;ul>
-&lt;li>EnvoyFilter：&lt;code>initEnvoyFilters&lt;/code> 读取并按命名空间索引 EnvoyFilterWrapper，生成时对 LDS/RDS/CDS/EDS 做 Patch 与 Match；&lt;/li>
-&lt;li>WasmPlugin：&lt;code>initWasmPlugins&lt;/code> 构建各命名空间的插件清单，按 Phase（inbound/outbound、listener/http）分配；&lt;/li>
-&lt;li>认证鉴权：&lt;code>initAuthnPolicies&lt;/code>/&lt;code>initAuthorizationPolicies&lt;/code> 为 FilterChain 注入 mTLS、JWT、RBAC 等策略输入；&lt;/li>
-&lt;li>Telemetry/ProxyConfig：影响统计、访问日志与代理行为的默认参数，生成时结合 Sidecar/Workload 特性选择性应用。&lt;/li>
-&lt;/ul>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;span class="lnt">4
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">ps&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">PushContext&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">initEnvoyFilters&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">env&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">Environment&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="cm">/* 加载与索引 */&lt;/span> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">ps&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">PushContext&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">WasmPlugins&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">proxy&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">Proxy&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kd">map&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">extensions&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">PluginPhase&lt;/span>&lt;span class="p">][]&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="nx">WasmPluginWrapper&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="cm">/* 选择插件 */&lt;/span> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">ps&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">PushContext&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">initAuthnPolicies&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">env&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">Environment&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="cm">/* JWT/PeerAuth */&lt;/span> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">ps&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">PushContext&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">initAuthorizationPolicies&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">env&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">Environment&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="cm">/* RBAC */&lt;/span> &lt;span class="p">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;h3 class="heading-element" id="115-sidecar-作用域与可见性sidecarindex">&lt;span>11.5 Sidecar 作用域与可见性（SidecarIndex）&lt;/span>
- &lt;a href="#115-sidecar-%e4%bd%9c%e7%94%a8%e5%9f%9f%e4%b8%8e%e5%8f%af%e8%a7%81%e6%80%a7sidecarindex" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;ul>
-&lt;li>来源：&lt;code>initSidecarScopes&lt;/code> 在所有子视图完成后执行，计算每命名空间的 SidecarScope，包括默认作用域与 Gateway 场景特例；&lt;/li>
-&lt;li>作用：限制工作负载可见的服务集合与入/出站 Listener/Route 可见性，直接影响 LDS/RDS 的生成范围与规模。&lt;/li>
-&lt;/ul>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">ps&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">PushContext&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">initSidecarScopes&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">env&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">Environment&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="cm">/* 计算默认与命名空间作用域 */&lt;/span> &lt;span class="p">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;h3 class="heading-element" id="116-网关与-gateway-api-视图">&lt;span>11.6 网关与 Gateway API 视图&lt;/span>
- &lt;a href="#116-%e7%bd%91%e5%85%b3%e4%b8%8e-gateway-api-%e8%a7%86%e5%9b%be" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;ul>
-&lt;li>KubernetesGateway/GatewayClass/HTTPRoute/TLSRoute 等资源变更被合并到 VS/Gateway 派生，&lt;code>initKubernetesGateways&lt;/code> 与 &lt;code>initGateways&lt;/code> 维护对应索引与状态；&lt;/li>
-&lt;li>生成时，&lt;code>GatewayContext.MergeGateways&lt;/code>/&lt;code>ResolveGatewayInstances&lt;/code> 用于聚合跨服务的网关实例与端口，最终驱动 LDS/RDS 构建。&lt;/li>
-&lt;/ul>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">ps&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">PushContext&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">initKubernetesGateways&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">env&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">Environment&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="cm">/* 解析 K8s Gateway */&lt;/span> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">ps&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">PushContext&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">initGateways&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">env&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">Environment&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="cm">/* 解析 Istio Gateway */&lt;/span> &lt;span class="p">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;hr>
-&lt;h2 class="heading-element" id="12-xds-生成器拆解cdsldsrdseds">&lt;span>12. xDS 生成器拆解（CDS/LDS/RDS/EDS）&lt;/span>
- &lt;a href="#12-xds-%e7%94%9f%e6%88%90%e5%99%a8%e6%8b%86%e8%a7%a3cdsldsrdseds" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;h3 class="heading-element" id="121-cdscluster-生成实现与关键点">&lt;span>12.1 CDS（Cluster 生成）实现与关键点&lt;/span>
- &lt;a href="#121-cdscluster-%e7%94%9f%e6%88%90%e5%ae%9e%e7%8e%b0%e4%b8%8e%e5%85%b3%e9%94%ae%e7%82%b9" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;ul>
-&lt;li>
-&lt;p>入口与接口定义：&lt;/p>
-&lt;ul>
-&lt;li>接口声明：&lt;code>pilot/pkg/networking/core/configgen.go&lt;/code>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="nf">BuildClusters&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">node&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">model&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Proxy&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">req&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">model&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">PushRequest&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">([]&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="nx">discovery&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Resource&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">model&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">XdsLogDetails&lt;/span>&lt;span class="p">)&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;/li>
-&lt;li>入口实现：&lt;code>pilot/pkg/networking/core/v1alpha3/cluster.go&lt;/code>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;span class="lnt">4
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">configgen&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">ConfigGeneratorImpl&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">BuildClusters&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">proxy&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">model&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Proxy&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">req&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">model&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">PushRequest&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">([]&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="nx">discovery&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Resource&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">model&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">XdsLogDetails&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">services&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">req&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Push&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">Services&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">proxy&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">configgen&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">buildClusters&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">proxy&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">req&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">services&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>出站/入站/特殊场景：&lt;/p>
-&lt;ul>
-&lt;li>出站：&lt;code>buildOutboundClusters&lt;/code> 解析 Sidecar 作用域、ServiceEntry、VirtualService 导向的路由目标，并拼装 TLS（mTLS/Passthrough）、LB 策略、熔断等；&lt;/li>
-&lt;li>入站：&lt;code>buildInboundClusters&lt;/code> 为每个入站端口/UDS 构造本地 cluster；&lt;/li>
-&lt;li>SNI+DNAT：&lt;code>buildOutboundSniDnatClusters&lt;/code> 用于网关或跨网络场景，按 SNI 名称拆分 cluster 并应用对等 TLS 与网络过滤。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>调用链概览（CDS）：&lt;/p>
-&lt;ul>
-&lt;li>入口：&lt;code>ConfigGeneratorImpl.BuildClusters&lt;/code> → &lt;code>buildClusters&lt;/code>；&lt;/li>
-&lt;li>构建器：&lt;code>NewClusterBuilder&lt;/code> 初始化上下文（req、push、locality、labels 等）；&lt;/li>
-&lt;li>出站路径：遍历服务与端口 → 计算发现类型（EDS/STRICT_DNS/LOGICAL_DNS/ORIGINAL_DST） → 生成基础 Cluster → 应用 DestinationRule 与 TrafficPolicy（连接池、负载、熔断、TLS 等） → 子集（subset）派生；&lt;/li>
-&lt;li>入站路径：按实例/端口构造本地 Cluster；&lt;/li>
-&lt;li>SNI+DNAT：生成 SNI-DNAT 模式的 Cluster；&lt;/li>
-&lt;li>最终：通过 EnvoyFilter 的 ClusterPatcher 做增删改补丁后输出。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h3 class="heading-element" id="122-ldslistener-生成实现与过滤器装配">&lt;span>12.2 LDS（Listener 生成）实现与过滤器装配&lt;/span>
- &lt;a href="#122-ldslistener-%e7%94%9f%e6%88%90%e5%ae%9e%e7%8e%b0%e4%b8%8e%e8%bf%87%e6%bb%a4%e5%99%a8%e8%a3%85%e9%85%8d" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;ul>
-&lt;li>
-&lt;p>入口与接口定义：&lt;/p>
-&lt;ul>
-&lt;li>接口声明：&lt;code>pilot/pkg/networking/core/configgen.go&lt;/code>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="nf">BuildListeners&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">node&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">model&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Proxy&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">push&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">model&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">PushContext&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">[]&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="nx">listener&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Listener&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;/li>
-&lt;li>入口实现：&lt;code>pilot/pkg/networking/core/v1alpha3/listener.go&lt;/code>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">configgen&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">ConfigGeneratorImpl&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">BuildListeners&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">node&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">model&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Proxy&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">push&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">model&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">PushContext&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">[]&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="nx">listener&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Listener&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">configgen&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">buildSidecarListeners&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">builder&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="nx">Listeners&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>侧车 Listener 主流程：&lt;/p>
-&lt;ul>
-&lt;li>入站：逐端口/UDS 生成 inbound listener 与 filter chains；&lt;/li>
-&lt;li>出站：生成虚拟出站监听（如 0.0.0.0:15006）与具体目标端口监听，挂载路由过滤器。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>关键过滤器拼装：&lt;/p>
-&lt;ul>
-&lt;li>HTTP：&lt;code>buildHTTPConnectionManager&lt;/code> 构造 HCM 并按序追加 http_filters：HTTPMx → GrpcWeb → GrpcStats → Alpn → Fault → Cors → Telemetry → Router；&lt;/li>
-&lt;li>TCP：&lt;code>setAccessLogAndBuildTCPFilter&lt;/code> 构建 TCP Proxy 并按协议装配 Mongo/Redis/MySQL 等专用网络过滤器；&lt;/li>
-&lt;li>Listener 层：TLSInspector/HTTPInspector/OriginalSource/OriginalDestination 根据场景条件性插入。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h3 class="heading-element" id="123-rdsroute-生成实现与路由规则拼装">&lt;span>12.3 RDS（Route 生成）实现与路由规则拼装&lt;/span>
- &lt;a href="#123-rdsroute-%e7%94%9f%e6%88%90%e5%ae%9e%e7%8e%b0%e4%b8%8e%e8%b7%af%e7%94%b1%e8%a7%84%e5%88%99%e6%8b%bc%e8%a3%85" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;ul>
-&lt;li>
-&lt;p>入口与接口定义：&lt;/p>
-&lt;ul>
-&lt;li>接口声明：&lt;code>pilot/pkg/networking/core/configgen.go&lt;/code>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="nf">BuildHTTPRoutes&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">node&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">model&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Proxy&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">req&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">model&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">PushRequest&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">routeNames&lt;/span> &lt;span class="p">[]&lt;/span>&lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">([]&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="nx">discovery&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Resource&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">model&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">XdsLogDetails&lt;/span>&lt;span class="p">)&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;/li>
-&lt;li>入口实现：&lt;code>pilot/pkg/networking/core/v1alpha3/httproute.go&lt;/code>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">configgen&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">ConfigGeneratorImpl&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">BuildHTTPRoutes&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">node&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">model&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Proxy&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">req&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">model&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">PushRequest&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">routeNames&lt;/span> &lt;span class="p">[]&lt;/span>&lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">([]&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="nx">discovery&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Resource&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">model&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">XdsLogDetails&lt;/span>&lt;span class="p">)&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>关键点：&lt;/p>
-&lt;ul>
-&lt;li>VirtualService 中的 HTTP/TCP 路由匹配（主机名、前缀、Header/Query、Method）；&lt;/li>
-&lt;li>目标聚合与 Subset（基于 DestinationRule）；&lt;/li>
-&lt;li>重试、超时、熔断、Fault Injection、Mirror、WASM/ext_proc 扩展；&lt;/li>
-&lt;li>SidecarScope 的 egress 限定与 Gateway 的 server 绑定；&lt;/li>
-&lt;li>gRPC 路由最小化生成（按 routeNames 子集）。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h3 class="heading-element" id="124-edsendpoint-生成实现与过滤策略">&lt;span>12.4 EDS（Endpoint 生成）实现与过滤策略&lt;/span>
- &lt;a href="#124-edsendpoint-%e7%94%9f%e6%88%90%e5%ae%9e%e7%8e%b0%e4%b8%8e%e8%bf%87%e6%bb%a4%e7%ad%96%e7%95%a5" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h3>&lt;ul>
-&lt;li>
-&lt;p>入口与生成逻辑：&lt;code>pilot/pkg/xds/eds.go&lt;/code>&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
-&lt;/span>&lt;span class="lnt"> 2
-&lt;/span>&lt;span class="lnt"> 3
-&lt;/span>&lt;span class="lnt"> 4
-&lt;/span>&lt;span class="lnt"> 5
-&lt;/span>&lt;span class="lnt"> 6
-&lt;/span>&lt;span class="lnt"> 7
-&lt;/span>&lt;span class="lnt"> 8
-&lt;/span>&lt;span class="lnt"> 9
-&lt;/span>&lt;span class="lnt">10
-&lt;/span>&lt;span class="lnt">11
-&lt;/span>&lt;span class="lnt">12
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">eds&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">EdsGenerator&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">buildEndpoints&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">proxy&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">model&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Proxy&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">push&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">model&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">PushContext&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">req&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">model&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">PushRequest&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">w&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">model&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">WatchedResource&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 读取缓存：Server.Cache.Get(builder)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 无缓存则调用 Server.generateEndpoints(builder) 生成 CLA&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 结果写入缓存：Server.Cache.Add(builder, req, resource)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">s&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">DiscoveryServer&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">generateEndpoints&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">b&lt;/span> &lt;span class="nx">EndpointBuilder&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">endpoint&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ClusterLoadAssignment&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">llbOpts&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">s&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">llbEndpointAndOptionsForCluster&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">b&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">llbOpts&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">b&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">EndpointsByNetworkFilter&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">llbOpts&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">llbOpts&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">b&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nf">EndpointsWithMTLSFilter&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">llbOpts&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 应用 locality LB，封装为 CLA 返回&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;/li>
-&lt;li>
-&lt;p>服务分片与增量更新：&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">s&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">DiscoveryServer&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">UpdateServiceShards&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">push&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">model&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">PushContext&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kt">error&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="cm">/* 更新 EndpointShardsByService */&lt;/span> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">s&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">DiscoveryServer&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">edsCacheUpdate&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">shard&lt;/span> &lt;span class="nx">model&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">ShardKey&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">hostname&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">namespace&lt;/span> &lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">istioEndpoints&lt;/span> &lt;span class="p">[]&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="nx">model&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">IstioEndpoint&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kt">bool&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="cm">/* 分片缓存更新/删除 */&lt;/span> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">s&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">DiscoveryServer&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">llbEndpointAndOptionsForCluster&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">b&lt;/span> &lt;span class="nx">EndpointBuilder&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">([]&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="nx">LocLbEndpointsAndOptions&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">error&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="cm">/* 从 shards 拼 locality 列表 */&lt;/span> &lt;span class="p">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;/li>
-&lt;li>
-&lt;p>端点构建器与过滤器：&lt;code>pilot/pkg/xds/endpoint_builder.go&lt;/code>&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd" style="display:none">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;span class="lnt">4
-&lt;/span>&lt;span class="lnt">5
-&lt;/span>&lt;span class="lnt">6
-&lt;/span>&lt;span class="lnt">7
-&lt;/span>&lt;span class="lnt">8
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">type&lt;/span> &lt;span class="nx">LocLbEndpointsAndOptions&lt;/span> &lt;span class="kd">struct&lt;/span> &lt;span class="p">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">istioEndpoints&lt;/span> &lt;span class="p">[]&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="nx">model&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">IstioEndpoint&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">llbEndpoints&lt;/span> &lt;span class="nx">endpoint&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">LocalityLbEndpoints&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">e&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">LocLbEndpointsAndOptions&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="nf">refreshWeight&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="cm">/* 依据 lbEndpoints 数量刷新权重 */&lt;/span> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 关键过滤：跨网络视图过滤、mTLS 能力筛选、从分片构造 locality&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;/li>
-&lt;/ul>
-&lt;hr>
-&lt;h2 class="heading-element" id="13-扩展与过滤器装配注意事项wasmext_procrbaccorsfault-等">&lt;span>13. 扩展与过滤器装配注意事项（WASM/ext_proc/RBAC/CORS/Fault 等）&lt;/span>
- &lt;a href="#13-%e6%89%a9%e5%b1%95%e4%b8%8e%e8%bf%87%e6%bb%a4%e5%99%a8%e8%a3%85%e9%85%8d%e6%b3%a8%e6%84%8f%e4%ba%8b%e9%a1%b9wasmext_procrbaccorsfault-%e7%ad%89" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;ul>
-&lt;li>HTTP 过滤器：主要挂载在 HCM 的 &lt;code>http_filters&lt;/code> 列表。参考 &lt;code>createGatewayHTTPFilterChainOpts&lt;/code>（gateway.go）与 &lt;code>buildInboundFilterchains&lt;/code>（listener_builder.go）。&lt;/li>
-&lt;li>TCP/网络过滤器：TCP Proxy、Mongo、Redis 等协议专用过滤器在 &lt;code>network_filters&lt;/code> 列表；兜底出站链路见 &lt;code>buildOutboundCatchAllNetworkFilterChains&lt;/code>。&lt;/li>
-&lt;li>WASM 插件：
-&lt;ul>
-&lt;li>注入函数：&lt;code>pilot/pkg/networking/core/v1alpha3/extension/wasmplugin.go&lt;/code> 的 &lt;code>AddWasmPluginsToMutableObjects&lt;/code>；&lt;/li>
-&lt;li>注入算法基于内置过滤器的相对顺序定位：在 JWT/AuthN/RBAC/Stats 等内置过滤器前按 Phase 插入；其余未知过滤器保持原顺序，尾部补齐未插入的扩展；&lt;/li>
-&lt;li>插件选择来源：&lt;code>PushContext.WasmPlugins(proxy)&lt;/code> 按命名空间与 workloadSelector 选择并按 Priority 预排序。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>Telemetry（Stats/Metadata Exchange）：
-&lt;ul>
-&lt;li>&lt;code>istio.stats&lt;/code> 作为 Wasm HTTP 过滤器由 Telemetry/插件管线插入，名称为 &lt;code>xdsfilters.StatsFilterName&lt;/code>；&lt;/li>
-&lt;li>Metadata Exchange（MX）HTTP 与 TCP 过滤器分别为 &lt;code>xdsfilters.HTTPMx&lt;/code> 与 &lt;code>buildMetadataExchangeNetworkFilters&lt;/code>，在开启 &lt;code>features.MetadataExchange&lt;/code> 时注入；&lt;/li>
-&lt;li>gRPC 统计：&lt;code>xdsfilters.GrpcStats&lt;/code>（envoy.extensions.filters.http.grpc_stats.v3）。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>CORS 与 Fault：
-&lt;ul>
-&lt;li>静态过滤器定义：&lt;code>pilot/pkg/xds/filters/filters.go&lt;/code> 中的 &lt;code>xdsfilters.Cors&lt;/code> 与 &lt;code>xdsfilters.Fault&lt;/code>；&lt;/li>
-&lt;li>配置转换：
-&lt;ul>
-&lt;li>CORS：&lt;code>translateCORSPolicy&lt;/code>（route.go）将 Istio CorsPolicy 转为 Envoy route.CorsPolicy；&lt;/li>
-&lt;li>Fault：&lt;code>translateFault&lt;/code>（route.go、virtualservice.go）将 Istio HTTPFaultInjection 转为 Envoy HTTPFault。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>RBAC 与外部鉴权（ext_authz）：
-&lt;ul>
-&lt;li>RBAC 过滤器由 Authorization 插件在 Listener 构建阶段插入（&lt;code>authorization.go&lt;/code> 等）；&lt;/li>
-&lt;li>外部鉴权由 &lt;code>extauthz.go&lt;/code> 处理，在启用时插入到 HCM 的 &lt;code>http_filters&lt;/code> 中。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>RateLimit 与 ext_proc：
-&lt;ul>
-&lt;li>Pilot 默认不主动拼装 HTTP RateLimit 过滤器，可通过外部 Envoy Rate Limit Service 集成（参考 &lt;code>samples/ratelimit&lt;/code>）；&lt;/li>
-&lt;li>&lt;code>ext_proc&lt;/code> 在类型映射（&lt;code>pkg/config/xds/filter_types.gen.go&lt;/code>）中可见，但默认 HTTP 过滤器链不包含，需通过 EnvoyFilter 或 WasmPlugin 显式注入。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;hr>
-&lt;h2 class="heading-element" id="14-参考源码路径总览">&lt;span>14. 参考源码路径总览&lt;/span>
- &lt;a href="#14-%e5%8f%82%e8%80%83%e6%ba%90%e7%a0%81%e8%b7%af%e5%be%84%e6%80%bb%e8%a7%88" class="heading-mark">
- &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
- &lt;/a>
-&lt;/h2>&lt;ul>
-&lt;li>&lt;code>pilot/cmd/pilot-discovery/app/cmd.go&lt;/code>：命令与 ServerArgs/Flags；&lt;/li>
-&lt;li>&lt;code>pilot/pkg/bootstrap/options.go&lt;/code>：DiscoveryServerOptions、PilotArgs、TLS 与环境变量；&lt;/li>
-&lt;li>&lt;code>pilot/pkg/xds/discovery.go&lt;/code>：DiscoveryServer 初始化、去抖/队列、Push/ConfigUpdate、缓存与生成器注册；&lt;/li>
-&lt;li>&lt;code>pilot/pkg/xds/*.go&lt;/code>：各 TypeURL 的生成器与处理逻辑（LDS/RDS/CDS/EDS/ECDS/NDS）；&lt;/li>
-&lt;li>&lt;code>pilot/pkg/model/push_context.go&lt;/code>：PushContext 构建与增量更新；&lt;/li>
-&lt;li>&lt;code>pilot/pkg/networking/core/v1alpha3/*.go&lt;/code>：Listener/Route/Cluster 构建与过滤器装配；&lt;/li>
-&lt;li>&lt;code>pilot/pkg/xds/filters/filters.go&lt;/code>：常用过滤器静态定义；&lt;/li>
-&lt;li>&lt;code>serviceregistry/kube/...&lt;/code>：Kubernetes 源与端点构建逻辑；&lt;/li>
-&lt;li>&lt;code>pilot/pkg/xds/debug.go&lt;/code>：调试与状态接口。&lt;/li>
 &lt;/ul></description></item></channel></rss>
