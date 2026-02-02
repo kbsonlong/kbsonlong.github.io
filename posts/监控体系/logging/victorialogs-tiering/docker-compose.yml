@@ -1,0 +1,27 @@
+version: "3.8"
+services:
+  victorialogs-ssd:
+    image: victoriametrics/victorialogs:v1.27.0
+    container_name: victorialogs-ssd
+    ports:
+      - "9428:9428"
+    volumes:
+      - ./data/vl-ssd:/data/vl
+    command:
+      - -storageDataPath=/data/vl
+      - -retentionPeriod=7d
+      - -httpListenAddr=:9428
+    restart: unless-stopped
+
+  victorialogs-hdd:
+    image: victoriametrics/victorialogs:v1.27.0
+    container_name: victorialogs-hdd
+    ports:
+      - "9438:9428"
+    volumes:
+      - ./data/vl-hdd:/data/vl
+    command:
+      - -storageDataPath=/data/vl
+      - -retentionPeriod=187d
+      - -httpListenAddr=:9428
+    restart: unless-stopped
