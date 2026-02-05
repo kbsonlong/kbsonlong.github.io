@@ -2,7 +2,6 @@ version: "3.8"
 services:
   victoria-logs-hot:
     image: victoriametrics/victoria-logs:v1.44.0
-    platform: linux/amd64
     container_name: victoria-logs-hot
     ports:
       - "9428:9428"
@@ -18,9 +17,23 @@ services:
     restart: unless-stopped
     security_opt:
       - seccomp:unconfined
+
+  victoria-logs-select:
+    image: victoriametrics/victoria-logs:v1.44.0
+    container_name: victoria-logs-select
+    ports:
+      - "9430:9430"
+    command:
+      - --storageNode=victoria-logs-hot:9428,victoria-logs-warn:9429
+      - --httpListenAddr=:9430
+    restart: unless-stopped
+    depends_on:
+      - victoria-logs-hot
+      - victoria-logs-warn
+    security_opt:
+      - seccomp:unconfined
   victoria-logs-warn:
     image: victoriametrics/victoria-logs:v1.44.0
-    platform: linux/amd64
     container_name: victoria-logs-warn
     ports:
       - "9429:9429"
