@@ -1,27 +1,38 @@
 version: "3.8"
 services:
-  victorialogs-ssd:
-    image: victoriametrics/victorialogs:v1.27.0
-    container_name: victorialogs-ssd
+  victoria-logs-hot:
+    image: victoriametrics/victoria-logs:v1.44.0
+    platform: linux/amd64
+    container_name: victoria-logs-hot
     ports:
       - "9428:9428"
     volumes:
-      - ./data/vl-ssd:/data/vl
+      - ./data/vl7d:/data/vl
     command:
-      - -storageDataPath=/data/vl
-      - -retentionPeriod=7d
-      - -httpListenAddr=:9428
+      - --envflag.enable
+      - --http.shutdownDelay=15s
+      - --httpListenAddr=:9428
+      - --loggerFormat=json
+      - --storageDataPath=/data/vl
+      - --retentionPeriod=14d
     restart: unless-stopped
-
-  victorialogs-hdd:
-    image: victoriametrics/victorialogs:v1.27.0
-    container_name: victorialogs-hdd
+    security_opt:
+      - seccomp:unconfined
+  victoria-logs-warn:
+    image: victoriametrics/victoria-logs:v1.44.0
+    platform: linux/amd64
+    container_name: victoria-logs-warn
     ports:
-      - "9438:9428"
+      - "9429:9429"
     volumes:
-      - ./data/vl-hdd:/data/vl
+      - ./data/vl180d:/data/vl
     command:
-      - -storageDataPath=/data/vl
-      - -retentionPeriod=187d
-      - -httpListenAddr=:9428
+      - --envflag.enable
+      - --http.shutdownDelay=15s
+      - --httpListenAddr=:9429
+      - --loggerFormat=json
+      - --storageDataPath=/data/vl
+      - --retentionPeriod=180d
     restart: unless-stopped
+    security_opt:
+      - seccomp:unconfined
