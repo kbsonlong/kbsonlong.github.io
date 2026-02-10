@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Observability - 分类 - 蜷缩的蜗牛</title><link>https://www.kbsonlong.com/categories/observability/</link><description>云原生时代运维</description><generator>Hugo 0.147.7 &amp; FixIt v0.4.0-alpha.2-20251022034748-fe129dd2</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 10 Feb 2026 17:45:00 +0800</lastBuildDate><atom:link href="https://www.kbsonlong.com/categories/observability/index.xml" rel="self" type="application/rss+xml"/><item><title>Kubernetes Node Exporter Down 告警排查实战：隐形杀手 processes 采集器</title><link>https://www.kbsonlong.com/posts/k8s-node-exporter-down-troubleshooting-processes-collector/</link><pubDate>Tue, 10 Feb 2026 17:45:00 +0800</pubDate><guid>https://www.kbsonlong.com/posts/k8s-node-exporter-down-troubleshooting-processes-collector/</guid><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><category domain="https://www.kbsonlong.com/categories/observability/">Observability</category><description>&lt;blockquote>
+&lt;p>&lt;strong>摘要&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>告警现象&lt;/strong>: 核心 OLAP 节点 Node Exporter Down，日志报 &lt;code>broken pipe&lt;/code>。&lt;/li>
+&lt;li>&lt;strong>排查路径&lt;/strong>: 从网络连通性验证到具体采集器性能分析，逐步缩小范围。&lt;/li>
+&lt;li>&lt;strong>根因定位&lt;/strong>: &lt;code>processes&lt;/code> 采集器在遍历海量进程时耗时过长（&amp;gt;30s），导致抓取超时。&lt;/li>
+&lt;li>&lt;strong>解决方案&lt;/strong>: 禁用高开销采集器，恢复监控稳定性。&lt;/li>
+&lt;/ul>&lt;/blockquote></description></item></channel></rss>
