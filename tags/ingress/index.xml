@@ -91,4 +91,17 @@
 &lt;/div>
 &lt;/div>&lt;blockquote>
 &lt;p>从上面可以看出整个Ingress Nginx Controller Pod 包含两部分 nginx-ingress-controller 和 Nginx&lt;/p>&lt;/blockquote>
-&lt;p>&lt;img loading="lazy" src='https://raw.githubusercontent.com/kbsonlong/notes_statics/main/diagrams/ingress-nginx-controller.png' alt="https://raw.githubusercontent.com/kbsonlong/notes_statics/main/diagrams/ingress-nginx-controller.png">&lt;/p></description></item></channel></rss>
+&lt;p>&lt;img loading="lazy" src='https://raw.githubusercontent.com/kbsonlong/notes_statics/main/diagrams/ingress-nginx-controller.png' alt="https://raw.githubusercontent.com/kbsonlong/notes_statics/main/diagrams/ingress-nginx-controller.png">&lt;/p></description></item><item><title>Kubernetes Gateway API v1 完全指南：从 Ingress 到新一代网络标准</title><link>https://www.kbsonlong.com/posts/kubernetes-gateway-api-v1-%E5%AE%8C%E5%85%A8%E6%8C%87%E5%8D%97%E4%BB%8E-ingress-%E5%88%B0%E6%96%B0%E4%B8%80%E4%BB%A3%E7%BD%91%E7%BB%9C%E6%A0%87%E5%87%86/</link><pubDate>Fri, 29 Jul 2022 15:54:52 +0800</pubDate><guid>https://www.kbsonlong.com/posts/kubernetes-gateway-api-v1-%E5%AE%8C%E5%85%A8%E6%8C%87%E5%8D%97%E4%BB%8E-ingress-%E5%88%B0%E6%96%B0%E4%B8%80%E4%BB%A3%E7%BD%91%E7%BB%9C%E6%A0%87%E5%87%86/</guid><category domain="https://www.kbsonlong.com/categories/kubernetes/">Kubernetes</category><description>&lt;blockquote>
+&lt;p>&lt;strong>更新说明&lt;/strong>: 本文已更新至 Gateway API v1.0.0 (2024年11月 GA)，涵盖 GRPCRoute、ReferenceGrant、BackendTLSPolicy 等生产级特性。&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h2 class="heading-element" id="引言ingress-的局限性">&lt;span>引言：Ingress 的局限性&lt;/span>
+ &lt;a href="#%e5%bc%95%e8%a8%80ingress-%e7%9a%84%e5%b1%80%e9%99%90%e6%80%a7" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;p>Ingress 资源是 Kubernetes 众多成功故事之一。它创建了一个不同的 Ingress 控制器生态系统，这些控制器以标准化和一致的方式在成千上万的集群中使用。然而，在 Ingress 创建 5 年后，问题逐渐显现：&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>功能碎片化&lt;/strong>：不同控制器通过自定义 CRD 和注解实现相同功能&lt;/li>
+&lt;li>&lt;strong>表达能力不足&lt;/strong>：HTTP 头操作、流量镜像、TCP/UDP 路由等高级功能无法标准化&lt;/li>
+&lt;li>&lt;strong>角色混乱&lt;/strong>：单一资源无法反映多团队协作的职责分离&lt;/li>
+&lt;li>&lt;strong>扩展性受限&lt;/strong>：注解机制难以支持复杂场景&lt;/li>
+&lt;/ul></description></item></channel></rss>
