@@ -233,7 +233,199 @@ kbsonlong</span></span>&nbsp;<span class=post-publish title='2023-03-31 21:13:29
 </span></span><span class=line><span class=cl>
 </span></span><span class=line><span class=cl>kubectl <span class=nb>exec</span> -ti -n <span class=si>${</span><span class=nv>namespace</span><span class=si>}</span> <span class=si>${</span><span class=nv>pod_name</span><span class=si>}</span> -c istio-proxy -- curl http://127.0.0.1:15000/config_dump &gt; config_dump.json</span></span></code></pre></td></tr></table></div></div><h4 class=heading-element id=导出clusterendpoint><span>导出cluster,(endpoint)</span>
 <a href=#%e5%af%bc%e5%87%baclusterendpoint class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
-</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl <span class=nb>exec</span> -ti -n <span class=si>${</span><span class=nv>namespace</span><span class=si>}</span> <span class=si>${</span><span class=nv>pod_name</span><span class=si>}</span> -c istio-proxy -- curl <span class=s2>&#34;http://127.0.0.1:15000/clusters?format=json&#34;</span> &gt; envoy-clusters.json</span></span></code></pre></td></tr></table></div></div><h4 class=heading-element id=istioctl-分析文件><span>istioctl 分析文件</span>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl <span class=nb>exec</span> -ti -n <span class=si>${</span><span class=nv>namespace</span><span class=si>}</span> <span class=si>${</span><span class=nv>pod_name</span><span class=si>}</span> -c istio-proxy -- curl <span class=s2>&#34;http://127.0.0.1:15000/clusters?format=json&#34;</span> &gt; envoy-clusters.json</span></span></code></pre></td></tr></table></div></div><h4 class=heading-element id=计算header-元数据大小><span>计算Header 元数据大小</span>
+<a href=#%e8%ae%a1%e7%ae%97header-%e5%85%83%e6%95%b0%e6%8d%ae%e5%a4%a7%e5%b0%8f class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h4><ul><li>x-envoy-peer-metadata：包含客户端的元数据，例如客户端的IP地址、端口号、协议等。</li><li>x-envoy-peer-metadata-id：包含客户端的唯一标识符，用于在客户端和服务器之间进行通信。</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span><span class=lnt>76
+</span><span class=lnt>77
+</span><span class=lnt>78
+</span><span class=lnt>79
+</span><span class=lnt>80
+</span><span class=lnt>81
+</span><span class=lnt>82
+</span><span class=lnt>83
+</span><span class=lnt>84
+</span><span class=lnt>85
+</span><span class=lnt>86
+</span><span class=lnt>87
+</span><span class=lnt>88
+</span><span class=lnt>89
+</span><span class=lnt>90
+</span><span class=lnt>91
+</span><span class=lnt>92
+</span><span class=lnt>93
+</span><span class=lnt>94
+</span><span class=lnt>95
+</span><span class=lnt>96
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># kubectl exec -it &lt;pod_name&gt; -n &lt;NAMESPACE&gt; -c istio-proxy -- \</span>
+</span></span><span class=line><span class=cl>curl -s localhost:15000/config_dump <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span><span class=p>|</span> jq -j <span class=s1>&#39;.configs[] | select(.[&#34;@type&#34;] == &#34;type.googleapis.com/envoy.admin.v3.BootstrapConfigDump&#34;) | .bootstrap.node.metadata&#39;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span><span class=p>|</span> base64 <span class=p>|</span> tr -d <span class=s1>&#39;\n&#39;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># kubectl exec -it &lt;pod_name&gt; -n &lt;NAMESPACE&gt; -c istio-proxy -- \</span>
+</span></span><span class=line><span class=cl>curl -s localhost:15000/config_dump <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span><span class=p>|</span> jq <span class=s1>&#39;.configs[] | select(.[&#34;@type&#34;] == &#34;type.googleapis.com/envoy.admin.v3.BootstrapConfigDump&#34;) | .bootstrap.node.metadata&#39;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span><span class=p>|</span> jq <span class=s1>&#39;to_entries | map({key: .key, length: (.value | tostring | length)}) | sort_by(-.length)&#39;</span>
+</span></span><span class=line><span class=cl><span class=o>[</span>
+</span></span><span class=line><span class=cl>  <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;key&#34;</span>: <span class=s2>&#34;ANNOTATIONS&#34;</span>,
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;length&#34;</span>: <span class=m>1357</span>
+</span></span><span class=line><span class=cl>  <span class=o>}</span>,
+</span></span><span class=line><span class=cl>  <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;key&#34;</span>: <span class=s2>&#34;LABELS&#34;</span>,
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;length&#34;</span>: <span class=m>931</span>
+</span></span><span class=line><span class=cl>  <span class=o>}</span>,
+</span></span><span class=line><span class=cl>  <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;key&#34;</span>: <span class=s2>&#34;PROXY_CONFIG&#34;</span>,
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;length&#34;</span>: <span class=m>544</span>
+</span></span><span class=line><span class=cl>  <span class=o>}</span>,
+</span></span><span class=line><span class=cl>  <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;key&#34;</span>: <span class=s2>&#34;OWNER&#34;</span>,
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;length&#34;</span>: <span class=m>110</span>
+</span></span><span class=line><span class=cl>  <span class=o>}</span>,
+</span></span><span class=line><span class=cl>  <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;key&#34;</span>: <span class=s2>&#34;ISTIO_PROXY_SHA&#34;</span>,
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;length&#34;</span>: <span class=m>40</span>
+</span></span><span class=line><span class=cl>  <span class=o>}</span>,
+</span></span><span class=line><span class=cl>  <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;key&#34;</span>: <span class=s2>&#34;INSTANCE_IPS&#34;</span>,
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;length&#34;</span>: <span class=m>38</span>
+</span></span><span class=line><span class=cl>  <span class=o>}</span>,
+</span></span><span class=line><span class=cl>  <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;key&#34;</span>: <span class=s2>&#34;NAME&#34;</span>,
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;length&#34;</span>: <span class=m>37</span>
+</span></span><span class=line><span class=cl>  <span class=o>}</span>,
+</span></span><span class=line><span class=cl>  <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;key&#34;</span>: <span class=s2>&#34;PROV_CERT&#34;</span>,
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;length&#34;</span>: <span class=m>35</span>
+</span></span><span class=line><span class=cl>  <span class=o>}</span>,
+</span></span><span class=line><span class=cl>  <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;key&#34;</span>: <span class=s2>&#34;WORKLOAD_NAME&#34;</span>,
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;length&#34;</span>: <span class=m>31</span>
+</span></span><span class=line><span class=cl>  <span class=o>}</span>,
+</span></span><span class=line><span class=cl>  <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;key&#34;</span>: <span class=s2>&#34;PILOT_SAN&#34;</span>,
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;length&#34;</span>: <span class=m>27</span>
+</span></span><span class=line><span class=cl>  <span class=o>}</span>,
+</span></span><span class=line><span class=cl>  <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;key&#34;</span>: <span class=s2>&#34;NAMESPACE&#34;</span>,
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;length&#34;</span>: <span class=m>15</span>
+</span></span><span class=line><span class=cl>  <span class=o>}</span>,
+</span></span><span class=line><span class=cl>  <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;key&#34;</span>: <span class=s2>&#34;APP_CONTAINERS&#34;</span>,
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;length&#34;</span>: <span class=m>13</span>
+</span></span><span class=line><span class=cl>  <span class=o>}</span>,
+</span></span><span class=line><span class=cl>  <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;key&#34;</span>: <span class=s2>&#34;MESH_ID&#34;</span>,
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;length&#34;</span>: <span class=m>10</span>
+</span></span><span class=line><span class=cl>  <span class=o>}</span>,
+</span></span><span class=line><span class=cl>  <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;key&#34;</span>: <span class=s2>&#34;CLUSTER_ID&#34;</span>,
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;length&#34;</span>: <span class=m>10</span>
+</span></span><span class=line><span class=cl>  <span class=o>}</span>,
+</span></span><span class=line><span class=cl>  <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;key&#34;</span>: <span class=s2>&#34;INTERCEPTION_MODE&#34;</span>,
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;length&#34;</span>: <span class=m>8</span>
+</span></span><span class=line><span class=cl>  <span class=o>}</span>,
+</span></span><span class=line><span class=cl>  <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;key&#34;</span>: <span class=s2>&#34;SERVICE_ACCOUNT&#34;</span>,
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;length&#34;</span>: <span class=m>7</span>
+</span></span><span class=line><span class=cl>  <span class=o>}</span>,
+</span></span><span class=line><span class=cl>  <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;key&#34;</span>: <span class=s2>&#34;ISTIO_VERSION&#34;</span>,
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;length&#34;</span>: <span class=m>6</span>
+</span></span><span class=line><span class=cl>  <span class=o>}</span>,
+</span></span><span class=line><span class=cl>  <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;key&#34;</span>: <span class=s2>&#34;ENVOY_STATUS_PORT&#34;</span>,
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;length&#34;</span>: <span class=m>5</span>
+</span></span><span class=line><span class=cl>  <span class=o>}</span>,
+</span></span><span class=line><span class=cl>  <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;key&#34;</span>: <span class=s2>&#34;ENVOY_PROMETHEUS_PORT&#34;</span>,
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;length&#34;</span>: <span class=m>5</span>
+</span></span><span class=line><span class=cl>  <span class=o>}</span>,
+</span></span><span class=line><span class=cl>  <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;key&#34;</span>: <span class=s2>&#34;DNS_CAPTURE&#34;</span>,
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;length&#34;</span>: <span class=m>4</span>
+</span></span><span class=line><span class=cl>  <span class=o>}</span>,
+</span></span><span class=line><span class=cl>  <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;key&#34;</span>: <span class=s2>&#34;POD_PORTS&#34;</span>,
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;length&#34;</span>: <span class=m>3</span>
+</span></span><span class=line><span class=cl>  <span class=o>}</span>
+</span></span><span class=line><span class=cl><span class=o>]</span></span></span></code></pre></td></tr></table></div></div><h4 class=heading-element id=istioctl-分析文件><span>istioctl 分析文件</span>
 <a href=#istioctl-%e5%88%86%e6%9e%90%e6%96%87%e4%bb%b6 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
 </span><span class=lnt>2
 </span><span class=lnt>3
